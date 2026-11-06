@@ -1,0 +1,54 @@
+/* Shared styles for inventory stub pages (FE-INVS-0) */
+.inv-stub-wrap {
+  padding: 24px 8px 48px;
+  display: flex;
+  justify-content: center;
+}
+.inv-stub-card {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  padding: 40px 28px;
+  border-radius: 16px;
+  background: var(--ls2, #161616);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.inv-stub-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(122, 204, 0, 0.12);
+  color: #7acc00;
+  font-size: 32px;
+}
+.inv-stub-title {
+  font-family: 'Cairo', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: var(--lts, #f0f0f0);
+}
+.inv-stub-title .title-ar {
+  font-weight: 500;
+  opacity: 0.65;
+  font-size: 0.85em;
+}
+.inv-stub-msg {
+  margin: 0 0 10px;
+  color: var(--ltt, #999);
+  line-height: 1.5;
+}
+.inv-stub-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ltt, #777);
+}
+.inv-stub-hint code {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  color: #7acc00;
+}

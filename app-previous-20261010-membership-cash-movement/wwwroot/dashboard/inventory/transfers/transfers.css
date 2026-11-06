@@ -1,0 +1,24 @@
+@import url('../warehouses/warehouses.css');
+.modal-body textarea,.modal-body select,.modal-body input[type=number],.modal-body input[type=text]{height:auto;min-height:38px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:8px 10px;font:inherit}
+.modal-body select,.modal-body input[type=number]{height:38px;padding:0 10px}
+.modal.wide{max-width:760px}
+.line-row{display:grid;grid-template-columns:2fr 1fr auto;gap:8px;align-items:end;margin-bottom:8px}
+.detail-card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:16px 18px}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.layout-split{display:grid;grid-template-columns:1fr 1.15fr;gap:16px}
+@media(max-width:960px){.layout-split{grid-template-columns:1fr}.line-row{grid-template-columns:1fr}}
+.badge-pending{background:var(--wrn100,#FEF3C7);color:var(--wrn500,#F59E0B)}
+.badge-transit{background:var(--inf100,#DBEAFE);color:#1E40AF}
+.badge-completed{background:var(--suc100,#DCFCE7);color:var(--suc500,#22C55E)}
+.badge-cancelled{background:var(--dng100,#FEE2E2);color:#991B1B}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:var(--ls2)}
+.trunc-banner{background:var(--wrn100,#FEF3C7);color:#92400E;border:1px solid rgba(245,158,11,.35);border-radius:var(--rmd);padding:10px 12px;margin-bottom:12px;font-size:13px}
+.warn-hint{margin:8px 0 0;font-size:12px;color:#92400E;max-width:52rem;line-height:1.45}
+html[data-theme="dark"] .badge-transit{color:var(--gfp-inf)}
+html[data-theme="dark"] .badge-cancelled{color:var(--gfp-dng)}
+html[data-theme="dark"] .trunc-banner,
+html[data-theme="dark"] .warn-hint{color:var(--gfp-wrn)}
+.muted{font-size:12px;color:var(--ltt)}
+.toolbar select{height:36px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 10px;font:inherit}
+.toolbar label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--lts)}

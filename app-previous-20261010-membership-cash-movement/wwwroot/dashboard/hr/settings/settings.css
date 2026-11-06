@@ -1,0 +1,42 @@
+@import url('../hr.css');
+
+.hr-settings-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+  margin-top:8px;
+}
+.hr-settings-card{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  padding:20px;
+  border:1px solid var(--ls3);
+  border-radius:var(--rlg);
+  background:var(--ls1);
+  text-decoration:none;
+  color:inherit;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.hr-settings-card:hover{
+  border-color:var(--l500);
+  transform:translateY(-1px);
+}
+.hr-settings-card i{
+  font-size:28px;
+  color:var(--l500);
+}
+.hr-settings-card h2{
+  margin:0;
+  font-size:18px;
+  font-weight:700;
+}
+.hr-settings-card p{
+  margin:0;
+  font-size:13px;
+  color:var(--ltt);
+  line-height:1.45;
+}
+@media (max-width:720px){
+  .hr-settings-grid{grid-template-columns:1fr}
+}

@@ -321,7 +321,7 @@ const S7Brand = ({ dur }) => {
   return (
     <SceneWrap dur={dur}>
       <TopBrand />
-      <Headline lines={['السيستم بشكل جيمك انت']} top={190} size={80} accent={['جيمك']} />
+      <Headline lines={['السيستم بشكل جيمك انت']} top={200} size={66} accent={['جيمك']} />
       <Panel w={980} h={560} top={330} delay={4}>
         <Shot src="settings2.png" w={980} h={560} from={{ x: 0.0, y: 0.2, zw: 0.82 }} to={{ x: 0.0, y: 0.33, zw: 0.78 }} start={10} dur={110} />
       </Panel>

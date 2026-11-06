@@ -1,0 +1,29 @@
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end}
+.filters input{height:36px;border:2px solid var(--ls3);border-radius:var(--rmd);padding:0 10px;font:inherit}
+.filters .flt{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;color:var(--ltt)}
+.table-wrap{overflow:auto;border:1px solid var(--ls3);border-radius:var(--rmd)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 12px;background:var(--ls2);font-size:11px;text-transform:uppercase;color:var(--ltt)}
+td{padding:10px 12px;border-top:1px solid var(--ls3);vertical-align:top}
+.actor-sys{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--ls2);font-size:11px;font-weight:700;color:var(--lts)}
+.pager{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--ltt)}
+.pager .btn{height:32px;padding:0 10px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:300;padding:16px}
+.modal-overlay.show{display:flex}
+.diff-box{background:var(--ls1);border-radius:var(--rlg);padding:18px;width:100%;max-width:920px;max-height:90vh;overflow:auto}
+.diff-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.diff-hdr h3{font-family:var(--fd)}
+.diff-panes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:800px){.diff-panes{grid-template-columns:1fr}}
+.pane-lbl{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--ltt);margin-bottom:6px}
+.json-pre{background:var(--ls2);border:1px solid var(--ls3);border-radius:var(--rmd);padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;overflow:auto;max-height:360px;white-space:pre-wrap;word-break:break-word}
+.diff-raw-details{margin-top:14px}
+.diff-raw-details summary{cursor:pointer;font-size:11px;font-weight:700;color:var(--ltt);text-transform:uppercase}
+.diff-raw-details .diff-panes{margin-top:10px}
+.diff-keys{margin-top:14px;font-size:12px}
+.diff-keys h4{font-family:var(--fd);font-size:13px;margin-bottom:8px}
+.diff-row{display:grid;grid-template-columns:140px 1fr 1fr;gap:8px;padding:6px 0;border-bottom:1px solid var(--ls2)}
+.diff-row.changed{background:rgba(245,158,11,.08)}
+.diff-row.added{background:rgba(34,197,94,.08)}
+.diff-row.removed{background:rgba(239,68,68,.08)}
+.diff-k{font-weight:700;font-family:var(--fm,'JetBrains Mono',monospace);font-size:11px}

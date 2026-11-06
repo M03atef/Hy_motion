@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Offers &amp; Promotions</title>
+<meta name="description" content="Create and manage gym offers for memberships and products. Promo codes are an optional redemption method.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="offers.css?v=theme2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span>Money</span><span class="sep">/</span><span class="current" id="crumbCur">Offers &amp; Promotions</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <!-- LIST -->
+  <div id="viewList">
+    <div class="page-header offers-hdr">
+      <div>
+        <h1 class="page-title">Offers &amp; Promotions</h1>
+        <p class="page-subtitle">Who can get a deal, for how long, and how it is redeemed.</p>
+      </div>
+      <div class="hdr-actions">
+        <a class="quiet-link" href="/dashboard/promo-codes/" id="linkLegacyPromo">Promo codes</a>
+        <button type="button" class="btn secondary" id="btnMemberApp">Member App</button>
+        <button type="button" class="btn primary" id="btnCreateOffer">Create Offer</button>
+      </div>
+    </div>
+
+    <div class="offers-toolbar">
+      <div class="offers-search"><i class="ti ti-search"></i><input id="searchQ" type="search" placeholder="Search offers…" autocomplete="off"></div>
+      <select id="filterType" aria-label="Type">
+        <option value="">All types</option>
+        <option value="percentage">Percentage</option>
+        <option value="fixed">Fixed amount</option>
+        <option value="bxgy">Buy X Get Y</option>
+      </select>
+      <select id="filterApplies" aria-label="Applies to">
+        <option value="">All</option>
+        <option value="memberships">Memberships</option>
+        <option value="products">Products</option>
+        <option value="both">Both</option>
+      </select>
+    </div>
+
+    <div class="status-tabs" id="statusTabs">
+      <button type="button" class="tab act" data-tab="all">All <span class="n" id="nAll">0</span></button>
+      <button type="button" class="tab" data-tab="active">Active <span class="n" id="nActive">0</span></button>
+      <button type="button" class="tab" data-tab="scheduled">Scheduled <span class="n" id="nScheduled">0</span></button>
+      <button type="button" class="tab" data-tab="draft">Draft <span class="n" id="nDraft">0</span></button>
+      <button type="button" class="tab" data-tab="expired">Expired <span class="n" id="nExpired">0</span></button>
+    </div>
+
+    <div class="offers-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Offer</th>
+            <th>Discount</th>
+            <th class="col-for">For</th>
+            <th class="col-dates">Validity</th>
+            <th class="col-use">Usage</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="offersBody"></tbody>
+      </table>
+      <div class="offers-empty" id="offersEmpty" hidden>
+        <i class="ti ti-discount-off"></i>
+        <div class="offers-empty-title">No offers yet</div>
+        <div id="offersEmptyHint">Create an offer for memberships or products.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE / EDIT WIZARD -->
+  <div id="viewCreate" hidden>
+    <div class="page-header offers-hdr">
+      <div>
+        <h1 class="page-title" id="wizTitle"><i class="ti ti-plus"></i> Create Offer</h1>
+        <p class="page-subtitle">Guided setup for gym owners — memberships and products share one offer model.</p>
+      </div>
+      <button type="button" class="btn secondary" id="btnBackList"><i class="ti ti-arrow-left"></i> Back to list</button>
+    </div>
+
+    <div class="wiz-shell">
+      <nav class="wiz-steps" id="wizNav" aria-label="Offer steps">
+        <button type="button" class="wiz-step act" data-step="1"><div class="num">1</div><div><div class="lab">Offer details</div><div class="sub">Name, copy, dates</div></div></button>
+        <button type="button" class="wiz-step" data-step="2"><div class="num">2</div><div><div class="lab">Applies to</div><div class="sub">Memberships / products</div></div></button>
+        <button type="button" class="wiz-step" data-step="3"><div class="num">3</div><div><div class="lab">Discount</div><div class="sub">% · amount · BXGY</div></div></button>
+        <button type="button" class="wiz-step" data-step="4"><div class="num">4</div><div><div class="lab">Eligibility</div><div class="sub">Who &amp; limits</div></div></button>
+        <button type="button" class="wiz-step" data-step="5"><div class="num">5</div><div><div class="lab">Member App</div><div class="sub">Visibility &amp; banner</div></div></button>
+        <button type="button" class="wiz-step" data-step="6"><div class="num">6</div><div><div class="lab">Redemption</div><div class="sub">Auto or promo code</div></div></button>
+        <button type="button" class="wiz-step" data-step="7"><div class="num">7</div><div><div class="lab">Review</div><div class="sub">Confirm &amp; publish</div></div></button>
+      </nav>
+
+      <div class="wiz-panel" id="wizPanel"></div>
+
+      <aside class="live-preview">
+        <h3><i class="ti ti-device-mobile"></i> Member App live preview</h3>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" id="livePhone"></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- MEMBER APP -->
+  <div id="viewMember" hidden>
+    <div class="page-header offers-hdr">
+      <div>
+        <h1 class="page-title" id="memberViewTitle">Member App</h1>
+        <p class="page-subtitle">How visible offers look to members. Prices here are illustrative.</p>
+      </div>
+      <button type="button" class="btn secondary" id="btnBackMember"><i class="ti ti-arrow-left"></i> Back to list</button>
+    </div>
+    <div class="member-grid" id="memberFrames"></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast offer-toast" id="toast"></div>
+<div class="offer-menu" id="offerMenu" hidden></div>
+<div class="offer-drawer-ov" id="offerDrawerOv" hidden></div>
+<div class="offer-modal-ov" id="offerEndOv" hidden>
+  <div class="offer-modal">
+    <h3>End this offer?</h3>
+    <p id="offerEndCopy">This offer will expire immediately. A linked promo code is deactivated.</p>
+    <div class="offer-modal-row">
+      <button type="button" class="btn secondary" id="offerEndNo">Cancel</button>
+      <button type="button" class="btn danger" id="offerEndYes">End offer</button>
+    </div>
+  </div>
+</div>
+<script src="offers-app.js?v=5"></script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Attendance</title>
+<meta name="description" content="Front-desk check-in: barcode scan, manual fallback, live attendance.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="attendance.css?v=desk2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">SM</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<div class="live-bar">
+  <div class="live-bar-left">
+    <div class="live-indicator"><span class="live-dot"></span><span data-en="LIVE" data-ar="مباشر">LIVE</span></div>
+    <div class="live-counter"><span class="counter-val" id="liveCount">0</span><span class="counter-label" data-en="checked in today" data-ar="حضور اليوم">checked in today</span></div>
+  </div>
+  <div class="live-bar-center">
+    <div class="live-stat"><i class="ti ti-qrcode"></i><span id="qrCount">0</span> <span data-en="QR" data-ar="QR">QR</span></div>
+    <div class="live-divider"></div>
+    <div class="live-stat"><i class="ti ti-barcode"></i><span id="barcodeCount">0</span> <span data-en="Card" data-ar="كارنيه">Card</span></div>
+    <div class="live-divider"></div>
+    <div class="live-stat"><i class="ti ti-hand-stop"></i><span id="manualCount">0</span> <span data-en="Manual" data-ar="يدوي">Manual</span></div>
+    <div class="live-divider"></div>
+    <div class="live-stat"><i class="ti ti-login"></i><span id="currentlyIn">0</span> <span data-en="In Gym" data-ar="في الصالة">In Gym</span></div>
+  </div>
+  <div class="live-bar-right">
+    <div class="peak-indicator" id="peakInfo"><i class="ti ti-chart-arrows-vertical"></i><span data-en="Peak" data-ar="الذروة">Peak</span>: <strong dir="ltr">—</strong></div>
+    <div class="signal-status" id="signalStatus"><span class="signal-dot offline"></span><span data-en="SignalR" data-ar="الاتصال">SignalR</span></div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- A. Check-in Desk (primary) -->
+  <section class="panel-card desk-panel" id="deskPanel" aria-label="Check-in desk">
+    <div class="panel-header desk-header">
+      <div>
+        <h1 class="desk-title"><i class="ti ti-door-enter"></i> <span data-en="Check-in desk" data-ar="تسجيل الحضور">Check-in desk</span></h1>
+        <p class="desk-subtitle" data-en="Scan a member card — or search by name / member number below" data-ar="امسح كارت العضو — أو ابحث بالاسم أو رقم العضوية">Scan a member card — or search by name / member number below</p>
+      </div>
+      <span class="desk-kbd" data-en="Scanner · Enter" data-ar="الماسح · ⁨Enter⁩">Scanner · Enter</span>
+    </div>
+    <div class="desk-body" id="deskBody">
+      <div class="desk-scan" id="barcodeScanBox">
+        <label class="sr-only" for="barcodeScanInput">Scan member card / امسح كارنيه العضو</label>
+        <div class="desk-scan-row">
+          <i class="ti ti-barcode desk-scan-ico" aria-hidden="true"></i>
+          <input
+            type="text"
+            id="barcodeScanInput"
+            class="barcode-scan-input"
+            placeholder="GYM-042"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            dir="ltr"
+            aria-describedby="scanHint scanProcessing"
+          >
+        </div>
+        <p class="scan-hint" id="scanHint" data-en="USB scanner types MemberNumber then Enter" data-ar="الماسح بيكتب رقم العضو ثم ⁨Enter⁩">USB scanner types MemberNumber then Enter</p>
+        <div class="scan-processing" id="scanProcessing" hidden role="status" aria-live="polite">
+          <i class="ti ti-loader-2 spin" aria-hidden="true"></i>
+          <span data-en="Checking in…" data-ar="جاري تسجيل الحضور…">Checking in…</span>
+        </div>
+      </div>
+
+      <!-- B. Shared result (barcode + manual) -->
+      <div class="checkin-result" id="checkinResult" hidden role="status" aria-live="polite"></div>
+
+      <!-- C. Manual fallback -->
+      <div class="manual-fallback" id="manualFallback">
+        <div class="manual-fallback-hdr">
+          <h2 class="manual-fallback-title"><i class="ti ti-search"></i> <span data-en="Manual search" data-ar="بحث يدوي">Manual search</span></h2>
+          <span class="manual-fallback-tag" data-en="Fallback" data-ar="بديل">Fallback</span>
+        </div>
+        <div class="search-box">
+          <i class="ti ti-search search-icon"></i>
+          <input type="text" id="memberSearch" placeholder="Search member by name, phone, or ID..." data-en-placeholder="Search member by name, phone, or ID..." data-ar-placeholder="ابحث بالاسم أو رقم العضوية أو الموبايل…" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="searchResults" aria-autocomplete="list">
+          <div class="search-results" id="searchResults" role="listbox" aria-label="Members"></div>
+        </div>
+        <div class="usrch-hints">
+          <span><span class="kbd">↑ ↓</span> <span data-en="navigate" data-ar="تنقّل">navigate</span></span>
+          <span><span class="kbd">Enter</span> <span data-en="select" data-ar="اختيار">select</span></span>
+          <span><span class="kbd">Esc</span> <span data-en="close" data-ar="إغلاق">close</span></span>
+        </div>
+        <div class="selected-member" id="selectedMember" style="display:none"></div>
+        <div class="reason-section" id="reasonSection" style="display:none">
+          <label class="section-label"><span data-en="Reason for manual check-in" data-ar="سبب التسجيل اليدوي">Reason for manual check-in</span></label>
+          <div class="reason-grid">
+            <label class="reason-card selected"><input type="radio" name="reason" value="1" checked><i class="ti ti-battery-off"></i><span><span class="rc-ar" data-en="Dead phone" data-ar="الموبايل بايظ">Dead phone</span><small data-en="Battery dead / forgot it" data-ar="البطارية خلصت أو نسيه">Battery dead / forgot it</small></span></label>
+            <label class="reason-card"><input type="radio" name="reason" value="2"><i class="ti ti-app-window"></i><span><span class="rc-ar" data-en="No app yet" data-ar="لسه مش مركّب التطبيق">No app yet</span><small data-en="New member" data-ar="عضو جديد">New member</small></span></label>
+            <label class="reason-card"><input type="radio" name="reason" value="3"><i class="ti ti-bug"></i><span><span class="rc-ar" data-en="App issue" data-ar="فيه مشكلة في التطبيق">App issue</span><small data-en="QR not working" data-ar="الـ QR مش شغّال">QR not working</small></span></label>
+            <label class="reason-card"><input type="radio" name="reason" value="4"><i class="ti ti-dots"></i><span><span class="rc-ar" data-en="Other" data-ar="سبب تاني">Other</span><small data-en="Note required" data-ar="مطلوب كتابة السبب">Note required</small></span></label>
+          </div>
+          <div class="notes-field" id="notesField" style="display:none">
+            <textarea id="notes" placeholder="Enter reason details..." data-en-placeholder="Enter reason details..." data-ar-placeholder="اكتب تفاصيل السبب…" rows="2"></textarea>
+          </div>
+          <button type="button" class="btn-checkin" id="btnCheckin" disabled><i class="ti ti-login"></i> <span data-en="Check in" data-ar="تسجيل الحضور">Check In</span></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="panels">
+    <!-- D. Today's feed -->
+    <div class="panel-left">
+      <div class="panel-card">
+        <div class="panel-header">
+          <div class="panel-title-row">
+            <h2 class="panel-title"><i class="ti ti-list-check"></i> <span data-en="Today's Attendance" data-ar="حضور اليوم">Today's Attendance</span></h2>
+            <span class="record-count" id="recordCount"><span data-en="0 records" data-ar="٠ سجل">0 records</span></span>
+          </div>
+          <div class="filter-tabs">
+            <button type="button" class="filter-tab active" data-filter="all"><i class="ti ti-list"></i> <span data-en="All" data-ar="الكل">All</span></button>
+            <button type="button" class="filter-tab" data-filter="qr"><i class="ti ti-qrcode"></i> <span data-en="QR" data-ar="QR">QR</span></button>
+            <button type="button" class="filter-tab" data-filter="barcode"><i class="ti ti-barcode"></i> <span data-en="Card" data-ar="كارنيه">Card</span></button>
+            <button type="button" class="filter-tab" data-filter="manual"><i class="ti ti-hand-stop"></i> <span data-en="Manual" data-ar="يدوي">Manual</span></button>
+          </div>
+        </div>
+        <div class="att-table-wrap">
+          <table class="att-table">
+            <thead><tr>
+              <th data-en="Member" data-ar="العضو">Member</th>
+              <th data-en="Check-in" data-ar="دخول">Check-in</th>
+              <th data-en="Method" data-ar="الطريقة">Method</th>
+              <th data-en="Plan" data-ar="الخطة">Plan</th>
+              <th data-en="Status" data-ar="الحالة">Status</th>
+            </tr></thead>
+            <tbody id="attBody"><tr><td colspan="5" class="empty-msg"><div class="loader-sm"></div> <span data-en="Loading..." data-ar="جاري التحميل...">Loading...</span></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel-card heatmap-card">
+        <div class="panel-header">
+          <h2 class="panel-title"><i class="ti ti-flame"></i> <span data-en="Attendance Heatmap" data-ar="خريطة الحضور الحرارية">Attendance Heatmap</span></h2>
+          <span class="heatmap-legend"><span class="hl-low"></span><span data-en="Low" data-ar="منخفض">Low</span><span class="hl-high"></span><span data-en="High" data-ar="مرتفع">High</span></span>
+        </div>
+        <div class="heatmap-wrap" id="heatmapWrap"></div>
+      </div>
+    </div>
+
+    <div class="panel-right">
+      <div class="panel-card guest-invite-card" id="guestInviteCard" hidden>
+        <div class="panel-header">
+          <h2 class="panel-title"><i class="ti ti-ticket"></i> Guest invite redeem</h2>
+          <span class="panel-title-ar">استرداد دعوة ضيف</span>
+        </div>
+        <div class="checkin-body">
+          <div class="search-box">
+            <i class="ti ti-search search-icon"></i>
+            <input type="text" id="guestInviteSearch" placeholder="Search guest by name or phone..." data-en-placeholder="Search guest by name or phone..." data-ar-placeholder="ابحث عن الضيف بالاسم أو الهاتف..." autocomplete="off">
+            <div class="search-results" id="guestInviteResults"></div>
+          </div>
+          <div class="selected-member" id="selectedGuestInvite" style="display:none"></div>
+          <button type="button" class="btn-checkin" id="btnRedeemGuest" disabled style="display:none">
+            <i class="ti ti-check"></i> Redeem visit
+          </button>
+          <div class="success-card" id="guestRedeemSuccess" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/shared/vendor/signalr/signalr.min.js"></script>
+<script src="attendance-app.js?v=desk2"></script>
+</body>
+</html>

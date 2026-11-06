@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Shift Templates</title>
+<script src="../hr-ops-embed.js?v=4"></script>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="shifts.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Shift Templates" data-ar="قوالب الورديات">Shift Templates</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Shift templates are not available for your role." data-ar="قوالب الورديات غير متاحة لدورك.">Shift templates are not available for your role.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div id="backToSchedule" class="toolbar" hidden style="margin-bottom:8px">
+      <a href="/dashboard/hr/schedule/" class="btn-secondary" style="width:auto;padding:0 14px;gap:6px;text-decoration:none"><i class="ti ti-arrow-left"></i> <span data-en="Back to Schedule" data-ar="العودة للجدول">Back to Schedule</span></a>
+    </div>
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Shift Templates" data-ar="قوالب الورديات">Shift Templates</h1>
+        <p class="page-subtitle" data-en="Reusable work shifts (Morning, Evening, Night, ...) you assign employees to." data-ar="ورديات عمل قابلة لإعادة الاستخدام (صباحية، مسائية، ليلية، ...) تعيّن الموظفين إليها.">Reusable work shifts (Morning, Evening, Night, ...) you assign employees to.</p>
+      </div>
+      <div id="manageActions" hidden>
+        <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New shift template" data-ar="قالب وردية جديد">New shift template</span></button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="chk"><input type="checkbox" id="filterInactive"> <span data-en="Include inactive" data-ar="إظهار غير النشط">Include inactive</span></label>
+      <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="shiftModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="shiftModalTitle" data-en="New shift template" data-ar="قالب وردية جديد">New shift template</h2>
+      <button type="button" class="modal-close" data-close="shiftModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="shiftForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Name *" data-ar="الاسم *">Name *</span><input id="sName" required maxlength="80"></label>
+        <label class="fg"><span data-en="Start time *" data-ar="وقت البدء *">Start time *</span><input id="sStart" type="time" required></label>
+        <label class="fg"><span data-en="End time *" data-ar="وقت الانتهاء *">End time *</span><input id="sEnd" type="time" required></label>
+        <label class="fg"><span data-en="Break (minutes)" data-ar="الاستراحة (دقائق)">Break (minutes)</span><input id="sBreak" type="number" min="0" value="0"></label>
+        <label class="fg"><span data-en="Grace period (minutes)" data-ar="فترة السماح (دقائق)">Grace period (minutes)</span><input id="sGrace" type="number" min="0" value="0"></label>
+      </div>
+      <p class="page-subtitle" data-en="If end time is not after start time, the shift is treated as crossing midnight (e.g. Evening 16:00 → 00:00)." data-ar="إذا كان وقت الانتهاء لا يأتي بعد وقت البدء، تُعامل الوردية كأنها تمتد لما بعد منتصف الليل (مثل: مسائية 16:00 ← 00:00).">If end time is not after start time, the shift is treated as crossing midnight (e.g. Evening 16:00 → 00:00).</p>
+      <label class="chk" id="sActiveRow" hidden><input type="checkbox" id="sActive" checked> <span data-en="Active" data-ar="نشط">Active</span></label>
+      <p class="form-hint" id="shiftHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="shiftModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveShift" data-en="Save" data-ar="حفظ">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="shifts-app.js?v=2"></script>
+</body>
+</html>

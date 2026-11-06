@@ -1,0 +1,10 @@
+@import url('../hr.css');
+
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.kpi-tile{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:18px;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:inherit;transition:box-shadow var(--tf),transform var(--tf)}
+.kpi-tile.clickable{cursor:pointer}
+.kpi-tile.clickable:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.kpi-tile .kpi-label{font-size:12px;color:var(--ltt);font-weight:600}
+.kpi-tile .kpi-value{font-family:var(--fd);font-size:28px;font-weight:700}
+.kpi-tile .kpi-value.warn{color:var(--dng500)}
+.kpi-tile .kpi-sub{font-size:11px;color:var(--ltt)}

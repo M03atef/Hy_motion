@@ -1,0 +1,21 @@
+@import url('../warehouses/warehouses.css');
+.modal-body select,.modal-body input[type=number],.modal-body textarea{border:1px solid var(--ls3);border-radius:var(--rmd);padding:8px 10px;font:inherit}
+.modal-body select,.modal-body input[type=number]{height:38px;padding:0 10px}
+.detail-card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:16px 18px}
+.detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.layout-split{display:grid;grid-template-columns:1fr 1.25fr;gap:16px}
+@media(max-width:960px){.layout-split{grid-template-columns:1fr}}
+.badge-draft{background:var(--ls2);color:var(--lts)}
+.badge-submitted{background:var(--wrn100,#FEF3C7);color:var(--wrn500,#F59E0B)}
+.badge-approved{background:var(--suc100,#DCFCE7);color:var(--suc500,#22C55E)}
+.badge-cancelled{background:var(--dng100,#FEE2E2);color:#991B1B}
+html[data-theme="dark"] .badge-cancelled{color:var(--gfp-dng)}
+tr.clickable{cursor:pointer}
+tr.clickable:hover td{background:var(--ls2)}
+.muted{font-size:12px;color:var(--ltt)}
+.var-pos{color:var(--suc500);font-weight:700}
+.var-neg{color:var(--dng500);font-weight:700}
+.toolbar select{height:36px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 10px;font:inherit}
+.toolbar label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--lts)}
+.count-input{width:90px;height:34px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 8px;font:inherit}
+.form-hint{font-size:12px;color:var(--dng500);min-height:1em;margin-top:8px}

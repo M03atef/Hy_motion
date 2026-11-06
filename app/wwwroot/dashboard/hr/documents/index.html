@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Documents</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="documents.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Documents" data-ar="المستندات">Documents</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Employee documents are not available for your role." data-ar="مستندات الموظفين غير متاحة لدورك.">Employee documents are not available for your role.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Documents" data-ar="المستندات">Documents</h1>
+        <p class="page-subtitle" data-en="National IDs, contracts, and certificates — with expiry tracking." data-ar="البطاقات الشخصية والعقود والشهادات — مع تتبع تاريخ الانتهاء.">National IDs, contracts, and certificates — with expiry tracking.</p>
+      </div>
+      <div id="manageActions" hidden>
+        <button type="button" class="btn-create" id="btnUpload"><i class="ti ti-upload"></i> <span data-en="Upload document" data-ar="رفع مستند">Upload document</span></button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <select id="filterExpiry" aria-label="Expiry">
+        <option value="" data-en="All" data-ar="الكل">All</option>
+        <option value="Expired" data-en="Expired" data-ar="منتهي">Expired</option>
+        <option value="ExpiringSoon" data-en="Expiring soon" data-ar="قارب على الانتهاء">Expiring soon</option>
+        <option value="Valid" data-en="Valid" data-ar="سليم">Valid</option>
+      </select>
+      <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="uploadModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="Upload document" data-ar="رفع مستند">Upload document</h2>
+      <button type="button" class="modal-close" data-close="uploadModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="uploadForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Employee *" data-ar="الموظف *">Employee *</span><select id="uEmployee" required></select></label>
+        <label class="fg"><span data-en="Document type *" data-ar="نوع المستند *">Document type *</span>
+          <select id="uType">
+            <option value="NationalId" data-en="National ID" data-ar="الرقم القومي">National ID</option>
+            <option value="Contract" data-en="Contract" data-ar="عقد">Contract</option>
+            <option value="Certificate" data-en="Certificate" data-ar="شهادة">Certificate</option>
+            <option value="TrainingCertificate" data-en="Training Certificate" data-ar="شهادة تدريب">Training Certificate</option>
+            <option value="Other" data-en="Other" data-ar="أخرى">Other</option>
+          </select>
+        </label>
+        <label class="fg"><span data-en="Issue date" data-ar="تاريخ الإصدار">Issue date</span><input id="uIssue" type="date"></label>
+        <label class="fg"><span data-en="Expiry date" data-ar="تاريخ الانتهاء">Expiry date</span><input id="uExpiry" type="date"></label>
+      </div>
+      <label class="fg"><span data-en="File * (image or PDF, max 10MB)" data-ar="الملف * (صورة أو PDF، حتى 10 ميجا)">File * (image or PDF, max 10MB)</span><input id="uFile" type="file" accept="image/*,application/pdf" required></label>
+      <label class="fg"><span data-en="Notes" data-ar="ملاحظات">Notes</span><input id="uNotes" maxlength="500"></label>
+      <p class="form-hint" id="uploadHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="uploadModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveUpload" data-en="Upload" data-ar="رفع">Upload</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="documents-app.js?v=1"></script>
+</body>
+</html>

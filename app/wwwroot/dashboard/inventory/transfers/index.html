@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Move stock</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../stock-ops-shared.css?v=2">
+<link rel="stylesheet" href="transfers.css?v=sm3">
+<script src="../stock-ops-embed.js?v=1"></script>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Stock Management" data-ar="إدارة المخزون">Stock Management</span><span class="sep">/</span><span class="current" data-en="Move stock" data-ar="نقل مخزون">Move stock</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Move stock" data-ar="نقل المخزون">Move stock</h1>
+      <p class="page-subtitle" data-en="Send products from one warehouse to another. Create → send → receive at the other side." data-ar="ابعت منتجات من مستودع لمستودع. أنشئ ← أرسل ← استلم في الجانب التاني.">Send products from one warehouse to another. Create → send → receive at the other side.</p>
+    </div>
+    <div>
+      <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New transfer" data-ar="تحويل جديد" data-i18n-text>New transfer</span></button>
+    </div>
+  </div>
+  <div class="layout-split">
+    <div>
+      <div class="toolbar">
+        <label><span data-en="Status" data-ar="الحالة">Status</span>
+          <select id="filterStatus">
+            <option value="" data-en="All" data-ar="الكل">All</option>
+            <option value="pending" data-en="Pending" data-ar="معلّق">Pending</option>
+            <option value="in_transit" data-en="On the way" data-ar="في الطريق">On the way</option>
+            <option value="completed" data-en="Done" data-ar="تم">Done</option>
+            <option value="cancelled" data-en="Cancelled" data-ar="ملغي">Cancelled</option>
+          </select>
+        </label>
+        <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+      </div>
+      <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+    </div>
+    <div class="detail-card" id="detailHost"><p class="muted" data-en="Pick a transfer on the left to see next steps." data-ar="اختار تحويل من الشمال عشان تشوف الخطوة الجاية.">Pick a transfer on the left to see next steps.</p></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="trModal" hidden>
+  <div class="modal wide">
+    <div class="modal-hdr">
+      <h2 data-en="New transfer" data-ar="تحويل جديد">New transfer</h2>
+      <button type="button" class="modal-close" data-close="trModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="trForm" class="modal-body">
+      <label><span data-en="From warehouse *" data-ar="من مستودع *">From warehouse *</span>
+        <select id="trFrom" required><option value="">…</option></select>
+      </label>
+      <label><span data-en="To warehouse *" data-ar="إلى مستودع *">To warehouse *</span>
+        <select id="trTo" required><option value="">…</option></select>
+      </label>
+      <label><span data-en="Note" data-ar="ملاحظة">Note</span><textarea id="trNote" rows="2" maxlength="500"></textarea></label>
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong style="font-size:13px" data-en="Lines" data-ar="البنود">Lines</strong>
+          <button type="button" class="btn-link" id="btnAddLine" data-en="+ Add line" data-ar="+ بند">+ Add line</button>
+        </div>
+        <div id="trLines"></div>
+      </div>
+      <p class="form-hint" id="trHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" data-close="trModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-create" data-en="Create pending" data-ar="إنشاء معلّق">Create pending</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="transfers-app.js?v=sm2"></script>
+</body>
+</html>

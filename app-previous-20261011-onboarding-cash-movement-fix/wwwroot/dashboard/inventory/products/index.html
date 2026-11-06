@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Products</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="products.css?v=catdel4">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Catalog" data-ar="الكتالوج">Catalog</span><span class="sep">/</span><span class="current" data-en="Products" data-ar="المنتجات">Products</span></div></div>
+  <div class="tb-right">
+    <div class="gym-name" id="gymName">HyMotion</div>
+    <div class="gym-name-ar" id="gymNameAr"></div>
+  </div>
+</header>
+
+<div class="content">
+  <div class="page-header">
+    <div class="ph-left">
+      <h1 class="page-title" data-en="Products" data-ar="المنتجات">Products</h1>
+      <p class="page-subtitle" id="pageSubtitle" data-en="What you sell, the price, and how many you have. Buy from a supplier — no warehouse screens." data-ar="إيه اللي بتبيعه، السعر، والكمية. اشتري من المورد — من غير شاشات مخازن.">What you sell, the price, and how many you have. Buy from a supplier — no warehouse screens.</p>
+    </div>
+    <div class="ph-right" id="manageActions" hidden>
+      <a class="btn-secondary" href="/dashboard/inventory/purchase-orders/" style="text-decoration:none"><i class="ti ti-shopping-bag"></i> <span data-en="Purchases" data-ar="المشتريات" data-i18n-text>Purchases</span></a>
+      <button type="button" class="btn-secondary" id="btnCategories"><i class="ti ti-folder"></i> <span data-en="Categories" data-ar="الفئات" data-i18n-text>Categories</span></button>
+      <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New product" data-ar="منتج جديد" data-i18n-text>New product</span></button>
+    </div>
+  </div>
+
+  <div id="alertBanner" class="alert-banner" hidden></div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <i class="ti ti-search"></i>
+      <input type="search" id="filterQ" data-en-placeholder="Search name, SKU, barcode…" data-ar-placeholder="بحث: اسم، SKU، باركود…" placeholder="Search name, SKU, barcode…" autocomplete="off">
+    </div>
+    <select id="filterCategory" aria-label="Category">
+      <option value="" data-en="All categories" data-ar="كل التصنيفات">All categories</option>
+    </select>
+    <div class="chips" id="stockChips" hidden>
+      <button type="button" class="chip act" data-alert="">All</button>
+      <button type="button" class="chip" data-alert="low" data-en="Low" data-ar="منخفض">Low</button>
+      <button type="button" class="chip" data-alert="oos" data-en="Out" data-ar="نفذ">Out</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="filterArchived"> <span data-en="Archived" data-ar="المحفوظة">Archived</span></label>
+    <div class="view-toggle shop-hide" role="group" aria-label="View mode">
+      <button type="button" class="view-btn act" data-view="table"><i class="ti ti-list"></i> <span data-en="List" data-ar="قائمة" data-i18n-text>List</span></button>
+      <button type="button" class="view-btn" data-view="cards"><i class="ti ti-layout-grid"></i> <span data-en="Grid" data-ar="شبكة" data-i18n-text>Grid</span></button>
+    </div>
+    <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-pill"><i class="ti ti-box"></i><span id="statTotal">0</span> <span data-en="shown" data-ar="معروض">shown</span></div>
+    <div class="stat-pill active" id="statActivePill"><i class="ti ti-check"></i><span id="statActive">0</span> <span data-en="active" data-ar="نشط">active</span></div>
+    <div class="stat-pill inactive" id="statArchivedPill"><i class="ti ti-archive"></i><span id="statArchived">0</span> <span data-en="archived" data-ar="مؤرشف">archived</span></div>
+    <div class="stat-pill warn" id="statLowPill" hidden><i class="ti ti-alert-triangle"></i><span id="statLow">0</span> low</div>
+    <div class="stat-pill danger" id="statOutPill" hidden><i class="ti ti-circle-x"></i><span id="statOut">0</span> out</div>
+  </div>
+
+  <div id="tableHost">
+    <div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Product detail drawer -->
+<div class="drawer-overlay" id="detailDrawer" hidden>
+  <aside class="drawer" role="dialog" aria-labelledby="detailTitle">
+    <div class="drawer-hdr">
+      <h2 id="detailTitle">تفاصيل المنتج</h2>
+      <button type="button" class="modal-close" id="btnCloseDetail"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="drawer-body" id="detailBody"></div>
+  </aside>
+</div>
+
+<!-- Simple desk: Add stock / Fix qty -->
+<div class="drawer-overlay" id="stockDrawer" hidden>
+  <aside class="drawer stock-drawer" role="dialog" aria-labelledby="stockDrawerTitle">
+    <div class="drawer-hdr">
+      <div>
+        <h2 id="stockDrawerTitle">Stock</h2>
+        <div class="stock-drawer-meta" id="stockDrawerMeta"></div>
+      </div>
+      <button type="button" class="modal-close" id="btnCloseStockDrawer"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="qty-hero">
+        <div class="qty-hero-l" data-en="Qty left (sellable)" data-ar="الكمية القابلة للبيع">Qty left (sellable)</div>
+        <div class="qty-hero-v" id="stockDrawerQty">—</div>
+        <div class="qty-hero-h" data-en="Same number Sale uses when you sell this item" data-ar="نفس الرقم اللي شاشة البيع بتستخدمه">Same number Sale uses when you sell this item</div>
+      </div>
+      <label class="ef-field" id="stockAddField">
+        <span id="stockInputLabel">Add stock</span>
+        <input type="number" id="stockInputQty" min="0" step="0.001" placeholder="e.g. 24">
+      </label>
+      <p class="field-hint" id="stockDrawerHint"></p>
+      <div class="detail-actions">
+        <button type="button" class="btn-create" id="btnStockSubmit"><i class="ti ti-package-import"></i> <span id="btnStockSubmitLabel">Put stock in</span></button>
+        <a class="btn-secondary" id="btnStockSell" href="/dashboard/pos/" style="text-decoration:none"><i class="ti ti-shopping-cart"></i> Sell</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Simple desk: Buy from supplier (no warehouse UI — uses default behind the scenes) -->
+<div class="drawer-overlay" id="buyDrawer" hidden>
+  <aside class="drawer stock-drawer" role="dialog" aria-labelledby="buyDrawerTitle">
+    <div class="drawer-hdr">
+      <div>
+        <h2 id="buyDrawerTitle">Buy</h2>
+        <div class="stock-drawer-meta" id="buyDrawerMeta"></div>
+        <p class="buy-hdr-hint" data-en="Stock goes up when you save." data-ar="الكمية هتزيد لما تحفظ.">Stock goes up when you save.</p>
+      </div>
+      <button type="button" class="modal-close" id="btnCloseBuyDrawer"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="buy-step">
+        <div class="buy-step-label" data-en="1 · From" data-ar="١ · من المورد">1 · From</div>
+        <label class="ef-field">
+          <span data-en="Supplier *" data-ar="المورد *">Supplier *</span>
+          <select id="buySupplier"><option value="">Select supplier</option></select>
+          <p class="buy-supplier-meta" id="buySupplierMeta" hidden></p>
+        </label>
+        <label class="ef-field" id="buyNewSupplierWrap" hidden>
+          <span data-en="New supplier name" data-ar="اسم مورد جديد">New supplier name</span>
+          <input type="text" id="buyNewSupplier" maxlength="150" placeholder="e.g. Cairo Wholesale" autocomplete="off">
+        </label>
+        <label class="ef-field" id="buyNewSupplierPhoneWrap" hidden>
+          <span data-en="Phone" data-ar="التليفون">Phone</span>
+          <input type="tel" id="buyNewSupplierPhone" maxlength="40" inputmode="tel" placeholder="01…" autocomplete="off">
+        </label>
+      </div>
+      <div class="buy-step">
+        <div class="buy-step-label" data-en="2 · How many" data-ar="٢ · الكمية">2 · How many</div>
+        <div class="buy-pair">
+          <label class="ef-field">
+            <span data-en="Qty *" data-ar="الكمية *">Qty *</span>
+            <input type="number" id="buyQty" min="0.001" step="0.001" placeholder="24" inputmode="decimal">
+          </label>
+          <label class="ef-field" id="buyCostWrap">
+            <span data-en="Cost each *" data-ar="سعر الوحدة *">Cost each *</span>
+            <input type="number" id="buyUnitCost" min="0" step="0.01" value="0" inputmode="decimal">
+          </label>
+        </div>
+        <div class="buy-total-hero" id="buyMoneyBox">
+          <div>
+            <div class="buy-total-k" data-en="This purchase" data-ar="قيمة الشراء">This purchase</div>
+            <div class="buy-total-h" data-en="Qty × cost" data-ar="الكمية × السعر">Qty × cost</div>
+          </div>
+          <strong class="buy-total-v" id="buyTotalPreview">EGP 0.00</strong>
+        </div>
+      </div>
+      <div class="buy-step" id="buyPayStep">
+        <div class="buy-step-label" data-en="3 · Pay now" data-ar="٣ · الدفع">3 · Pay now</div>
+        <label class="ef-field">
+          <span data-en="Paid now" data-ar="دفعت كام دلوقتي">Paid now</span>
+          <input type="number" id="buyPaidNow" min="0" step="0.01" value="0" inputmode="decimal">
+        </label>
+        <p class="field-hint" data-en="Leave 0 to pay later. After you save, we show what is still open with this supplier." data-ar="سيب صفر لو هتدفع بعدين. بعد الحفظ هيبان الحساب مع المورد.">Leave 0 to pay later. After you save, we show what is still open with this supplier.</p>
+        <label class="ef-field" id="buyPayMethodWrap">
+          <span data-en="How you paid" data-ar="طريقة الدفع">How you paid</span>
+          <select id="buyPayMethod">
+            <option value="cash">Cash</option>
+            <option value="card">Card</option>
+            <option value="transfer">Transfer</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+      </div>
+      <label class="ef-field" id="buyBatchWrap" hidden>
+        <span data-en="Batch #" data-ar="رقم التشغيلة">Batch #</span>
+        <input type="text" id="buyBatch" maxlength="80" autocomplete="off">
+      </label>
+      <label class="ef-field" id="buyExpiryWrap" hidden>
+        <span data-en="Expires on" data-ar="تاريخ الصلاحية">Expires on</span>
+        <input type="date" id="buyExpiry">
+      </label>
+      <label class="ef-field">
+        <span data-en="Notes" data-ar="ملاحظات">Notes <span class="ef-optional">(optional)</span></span>
+        <input type="text" id="buyNotes" maxlength="200">
+      </label>
+      <p class="field-hint" id="buyDrawerHint"></p>
+      <div id="buyResultPanel" class="buy-result" hidden></div>
+      <div class="detail-actions" id="buyActions">
+        <button type="button" class="btn-create" id="btnBuySubmit"><i class="ti ti-package-import"></i> <span data-en="Save &amp; add stock" data-ar="حفظ وإضافة للمخزون">Save &amp; add stock</span></button>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Product modal — name, price, photo first. Extra fields stay hidden. -->
+<div class="modal-overlay" id="productModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <div>
+        <h2 id="productModalTitle" data-en="New product" data-ar="منتج جديد">New product</h2>
+        <p class="modal-sub" id="productModalSub" data-en="Name and sell price. You can add a photo." data-ar="الاسم وسعر البيع. تقدر تضيف صورة">Name and sell price. You can add a photo.</p>
+      </div>
+      <button type="button" class="modal-close" data-close="productModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="productForm" class="modal-body">
+      <input type="hidden" id="pId">
+      <div class="easy-form">
+        <label class="ef-field ef-span-2">
+          <span data-en="Name *" data-ar="الاسم *">Name *</span>
+          <input name="name" id="pName" required maxlength="150" data-en-placeholder="e.g. Protein shake" data-ar-placeholder="مثال: بروتين شيك" placeholder="e.g. Protein shake" autocomplete="off">
+        </label>
+        <label class="ef-field">
+          <span data-en="Sell price *" data-ar="سعر البيع *">Sell price *</span>
+          <input type="number" id="pSell" min="0" step="0.01" value="0" required>
+        </label>
+        <label class="ef-field" id="pCostWrap">
+          <span data-en="Cost" data-ar="التكلفة">Cost</span>
+          <input type="number" id="pCost" min="0" step="0.01" value="0">
+        </label>
+        <div class="ef-field" id="pProfitWrap">
+          <span data-en="Profit" data-ar="الربح">Profit</span>
+          <div class="ef-profit-box" id="pProfit">EGP 0.00</div>
+        </div>
+        <label class="ef-field">
+          <span data-en="Category" data-ar="التصنيف">Category</span>
+          <select id="pCategory"></select>
+        </label>
+        <label class="ef-field" id="pOpeningWrap">
+          <span data-en="Qty now" data-ar="الكمية دلوقتي">Qty now</span>
+          <input type="number" id="pOpeningQty" min="0" step="0.001" value="0" placeholder="0">
+        </label>
+        <label class="ef-field ef-span-2">
+          <span data-en="Default supplier" data-ar="المورد الافتراضي">Default supplier</span>
+          <select id="pDefaultSupplier"></select>
+          <span class="field-hint" data-en="The supplier normally used when buying this product." data-ar="المورد اللي بنشتري منه المنتج عادة.">The supplier normally used when buying this product.</span>
+        </label>
+        <label class="ef-field ef-span-2 chk-inline">
+          <input type="checkbox" id="pVisibleToMembers">
+          <span data-en="Show in Member App" data-ar="إظهار في تطبيق الأعضاء">Show in Member App</span>
+        </label>
+        <div class="ef-field ef-span-2">
+          <span><span data-en="Photo" data-ar="صورة">Photo</span> <span class="ef-optional" data-en="(optional)" data-ar="(اختياري)">(optional)</span></span>
+          <div class="ef-photo-row">
+            <input type="file" id="pImageFile" accept="image/*" class="ef-file-native" tabindex="-1" aria-hidden="true">
+            <button type="button" class="btn-choose-photo" id="btnChoosePhoto"><i class="ti ti-photo-up"></i> <span id="btnChoosePhotoLabel" data-en="Choose photo" data-ar="اختار صورة">Choose photo</span></button>
+            <span class="ef-file-name" id="pImageFileName" data-en="No photo chosen" data-ar="مفيش صورة متختارة">No photo chosen</span>
+          </div>
+          <div class="image-preview-wrap">
+            <div class="image-preview" id="pImagePreview"><i class="ti ti-photo"></i><span data-en="No photo" data-ar="مفيش صورة">No photo</span></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="more-toggle" id="btnMoreProduct" aria-expanded="false" data-en="More options" data-ar="خيارات زيادة">More options</button>
+      <div id="productMore" hidden>
+        <div class="easy-form">
+          <label class="ef-field ef-span-2">
+            <span data-en="Barcode" data-ar="الباركود">Barcode</span>
+            <div class="ef-barcode-row">
+              <input name="barcode" id="pBarcode" maxlength="64" autocomplete="off" data-en-placeholder="Scan or type" data-ar-placeholder="امسح أو اكتب" placeholder="Scan or type">
+              <button type="button" class="btn-scan" id="btnScanBarcode" data-en-title="Scan with camera" data-ar-title="امسح بالكاميرا" title="Scan with camera"><i class="ti ti-camera"></i></button>
+            </div>
+          </label>
+          <label class="ef-field">
+            <span data-en="Unit" data-ar="الوحدة">Unit</span>
+            <select id="pUom">
+              <option value="pcs" data-en="Piece" data-ar="قطعة">Piece</option>
+              <option value="box" data-en="Box" data-ar="علبة">Box</option>
+              <option value="pack" data-en="Pack" data-ar="باكت">Pack</option>
+              <option value="kg">kg</option>
+              <option value="g">g</option>
+              <option value="L">L</option>
+              <option value="ml">ml</option>
+            </select>
+          </label>
+          <label class="ef-field">
+            <span data-en="Low-stock alert" data-ar="تنبيه نقص المخزون">Low-stock alert</span>
+            <input type="number" id="pReorder" min="0" step="0.001" value="5">
+          </label>
+          <label class="ef-field">
+            <span data-en="SKU (auto if empty)" data-ar="SKU (تلقائي لو فاضي)">SKU <span class="ef-optional">(auto if empty)</span></span>
+            <input name="sku" id="pSku" maxlength="64" autocomplete="off">
+          </label>
+          <label class="ef-field">
+            <span data-en="Name (AR)" data-ar="الاسم (عربي)">Name (AR)</span>
+            <input name="nameAr" id="pNameAr" maxlength="150" dir="rtl">
+          </label>
+          <label class="ef-field">
+            <span data-en="Brand" data-ar="الماركة">Brand</span>
+            <input id="pBrand" maxlength="100">
+          </label>
+          <label class="ef-field">
+            <span data-en="Currency" data-ar="العملة">Currency</span>
+            <input id="pCurrency" maxlength="3" value="EGP">
+          </label>
+          <label class="ef-field">
+            <span data-en="VAT %" data-ar="ضريبة %">VAT %</span>
+            <input type="number" id="pVat" min="0" step="0.01">
+          </label>
+          <label class="ef-field ef-span-2">
+            <span data-en="Photo URL" data-ar="رابط الصورة">Photo URL</span>
+            <input id="pImage" maxlength="500" placeholder="https://…">
+          </label>
+          <label class="ef-field ef-span-2">
+            <span data-en="Description" data-ar="الوصف">Description</span>
+            <textarea id="pDesc" rows="2" maxlength="500"></textarea>
+          </label>
+          <label class="ef-field ef-span-2">
+            <span data-en="Description (AR)" data-ar="الوصف (عربي)">Description (AR)</span>
+            <textarea id="pDescAr" rows="2" maxlength="500" dir="rtl"></textarea>
+          </label>
+        </div>
+        <div class="flags">
+          <label class="chk"><input type="checkbox" id="pTaxable" checked> <span data-en="Taxable" data-ar="خاضع للضريبة">Taxable</span></label>
+          <label class="chk"><input type="checkbox" id="pTrackStock" checked> <span data-en="Track stock" data-ar="تتبع المخزون">Track stock</span></label>
+          <label class="chk"><input type="checkbox" id="pTrackBatch"> <span data-en="Track batch" data-ar="تتبع التشغيلة">Track batch</span></label>
+          <label class="chk"><input type="checkbox" id="pTrackExpiry"> <span data-en="Track expiry" data-ar="تتبع الصلاحية">Track expiry</span></label>
+          <label class="chk"><input type="checkbox" id="pFractional"> <span data-en="Fractional qty" data-ar="كمية كسرية">Fractional qty</span></label>
+          <label class="chk"><input type="checkbox" id="pSellable" checked> <span data-en="Sellable" data-ar="قابل للبيع">Sellable</span></label>
+          <label class="chk"><input type="checkbox" id="pPurchasable" checked> <span data-en="Purchasable" data-ar="قابل للشراء">Purchasable</span></label>
+          <label class="chk"><input type="checkbox" id="pActive" checked> <span data-en="Active" data-ar="نشط">Active</span></label>
+        </div>
+      </div>
+
+      <p class="form-hint" id="productFormHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" data-close="productModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-create" id="btnSaveProduct"><i class="ti ti-device-floppy"></i> <span data-en="Save product" data-ar="حفظ المنتج">Save product</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Categories modal -->
+<div class="modal-overlay" id="categoryModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="Categories" data-ar="الفئات">Categories</h2>
+      <button type="button" class="modal-close" data-close="categoryModal"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="categoryForm" class="cat-form">
+        <input type="hidden" id="cId">
+        <label><span data-en="Name *" data-ar="الاسم *">Name *</span><input id="cName" required maxlength="150"></label>
+        <label><span data-en="Name (AR)" data-ar="الاسم (عربي)">Name (AR)</span><input id="cNameAr" maxlength="150" dir="rtl"></label>
+        <label><span data-en="Sort" data-ar="الترتيب">Sort</span><input type="number" id="cSort" value="0"></label>
+        <label class="chk"><input type="checkbox" id="cActive" checked> <span data-en="Active" data-ar="نشط">Active</span></label>
+        <button type="submit" class="btn-create" id="btnSaveCategory" data-en="Add" data-ar="إضافة">Add</button>
+      </form>
+      <div id="categoryList" class="cat-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- In-app category delete confirm (no browser alert) -->
+<div class="modal-overlay" id="categoryDeleteModal" hidden>
+  <div class="modal cat-del-modal">
+    <div class="modal-hdr">
+      <h2 data-en="Delete category" data-ar="حذف التصنيف">Delete category</h2>
+      <button type="button" class="modal-close" id="btnCatDelCancelX"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p id="catDelMessage" class="cat-del-msg"></p>
+      <p class="cat-del-hint" data-en="This permanently deletes the category. Products that used it will keep selling with no category." data-ar="هيتشال التصنيف نهائي. المنتجات اللي كانت عليه هتفضل تبيع من غير تصنيف.">This permanently deletes the category. Products that used it will keep selling with no category.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="btnCatDelCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="btn-danger" id="btnCatDelConfirm" data-en="Delete" data-ar="حذف">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  function gfpBuyTotals() {
+    var q = document.getElementById('buyQty');
+    var u = document.getElementById('buyUnitCost');
+    var t = document.getElementById('buyTotalPreview');
+    if (!q || !u || !t) return;
+    var n = (Number(q.value) || 0) * (Number(u.value) || 0);
+    if (!isFinite(n) || n < 0) n = 0;
+    t.textContent = 'EGP ' + n.toFixed(2);
+    t.classList.toggle('is-zero', n < 0.005);
+  }
+  window.gfpBuyTotals = gfpBuyTotals;
+  document.addEventListener('input', function (e) {
+    var id = e.target && e.target.id;
+    if (id === 'buyQty' || id === 'buyUnitCost' || id === 'buyPaidNow') gfpBuyTotals();
+  });
+})();
+</script>
+<script src="products-app.js?v=catdel4"></script>
+</body>
+</html>

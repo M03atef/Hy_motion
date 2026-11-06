@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Settings</title>
+<meta name="description" content="Manage gym settings, QR check-in, and subscription for your fitness business.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="/dashboard/settings/settings.css?v=theme2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg width="32" height="32" viewBox="0 0 148 167" fill="none" aria-hidden="true"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">AO</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current" data-en="Settings" data-ar="الإعدادات">Settings</span></div></div>
+  <div class="tb-right">
+    <div class="status-pills">
+      <span class="st-pill" id="tenantStatus"><span class="st-dot active"></span><span data-en="Active" data-ar="نشط" data-i18n-text>Active</span></span>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+  <div class="page-header">
+    <h1 class="page-title"><i class="ti ti-building-store"></i> <span data-en="Gym Identity &amp; Settings" data-ar="هوية النادي والإعدادات" data-i18n-text>Gym Identity &amp; Settings</span></h1>
+    <p class="page-subtitle" data-en="Appearance, gym name, logo, brand colors, tax/VAT, and front-desk QR check-in" data-ar="المظهر، واسم النادي، والشعار، وألوان العلامة، والضريبة، ورمز تسجيل الدخول بالاستقبال">Appearance, gym name, logo, brand colors, tax/VAT, and front-desk QR check-in</p>
+  </div>
+
+  <div class="card" id="appearanceCard">
+    <div class="card-header"><h2><i class="ti ti-moon-stars"></i> <span data-en="Appearance" data-ar="المظهر" data-i18n-text>Appearance</span></h2></div>
+    <div class="card-body">
+      <p class="muted-hint" style="margin:0 0 14px;font-size:13px;color:var(--ltt)" data-en="Choose how HyMotion looks on this device. This does not change your gym logo or brand colors." data-ar="اختر شكل HyMotion على هذا الجهاز. هذا لا يغيّر شعار النادي أو ألوان العلامة التجارية.">Choose how HyMotion looks on this device. This does not change your gym logo or brand colors.</p>
+      <div class="gfp-appear" id="appearanceOpts">
+        <button type="button" class="gfp-appear-opt" data-appearance="light">
+          <div class="gfp-appear-mini" style="background:#F3F5F2">
+            <div class="rail" style="background:#0D0D0D"></div>
+            <div class="pane">
+              <div class="bar" style="background:#fff"></div>
+              <div class="ln" style="background:#E4E8E2"></div>
+              <div class="ln" style="background:#E4E8E2;width:55%"></div>
+            </div>
+          </div>
+          <div class="gfp-appear-lab"><span data-en="Light" data-ar="فاتح" style="display:inline;font-weight:700;font-size:13px;color:inherit;margin-top:0">Light</span><span data-en="Current HyMotion look." data-ar="المظهر الحالي في HyMotion.">Current HyMotion look.</span></div>
+        </button>
+        <button type="button" class="gfp-appear-opt" data-appearance="dark">
+          <div class="gfp-appear-mini" style="background:#151716">
+            <div class="rail" style="background:#101210"></div>
+            <div class="pane">
+              <div class="bar" style="background:#1C201D"></div>
+              <div class="ln" style="background:#2E342F"></div>
+              <div class="ln" style="background:#2E342F;width:55%"></div>
+            </div>
+          </div>
+          <div class="gfp-appear-lab"><span data-en="Dark" data-ar="داكن" style="display:inline;font-weight:700;font-size:13px;color:inherit;margin-top:0">Dark</span><span data-en="Neutral surfaces. Lime CTAs." data-ar="أسطح محايدة وأزرار بلون الليمون.">Neutral surfaces. Lime CTAs.</span></div>
+        </button>
+        <button type="button" class="gfp-appear-opt" data-appearance="system">
+          <div class="gfp-appear-mini" style="background:linear-gradient(90deg,#F3F5F2 50%,#151716 50%)">
+            <div class="rail" style="background:#0D0D0D"></div>
+            <div class="pane">
+              <div class="bar" style="background:#7ACC00;opacity:.45"></div>
+              <div class="ln" style="background:#8C8C8C;opacity:.35"></div>
+            </div>
+          </div>
+          <div class="gfp-appear-lab"><span data-en="System" data-ar="النظام" style="display:inline;font-weight:700;font-size:13px;color:inherit;margin-top:0">System</span><span data-en="Follows this device. Updates if the OS theme changes." data-ar="يتبع إعداد جهازك، ويتحدّث تلقائياً عند تغييره.">Follows this device. Updates if the OS theme changes.</span></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="info" id="tabBtnInfo"><i class="ti ti-palette"></i> <span data-en="Gym Identity" data-ar="هوية النادي" data-i18n-text>Gym Identity</span></button>
+    <button class="tab-btn" data-tab="qr"><i class="ti ti-qrcode"></i> <span data-en="QR Code & Check-in" data-ar="رمز QR وتسجيل الدخول" data-i18n-text>QR Code & Check-in</span></button>
+    <button class="tab-btn" data-tab="tax" id="tabBtnTax"><i class="ti ti-receipt-tax"></i> <span data-en="Tax &amp; VAT" data-ar="الضريبة والقيمة المضافة" data-i18n-text>Tax &amp; VAT</span></button>
+    <button class="tab-btn" data-tab="invAlerts" id="tabBtnInvAlerts" style="display:none"><i class="ti ti-bell-ringing"></i> <span data-en="Inventory alerts" data-ar="تنبيهات المخزون" data-i18n-text>Inventory alerts</span></button>
+  </div>
+
+  <!-- Tab 1: Gym Information -->
+  <div class="tab-panel active" id="tab-info">
+    <div class="settings-layout">
+      <div class="settings-main">
+        <div class="card">
+          <div class="card-header"><h2><i class="ti ti-info-circle"></i> <span data-en="Gym Identity" data-ar="هوية النادي" data-i18n-text>Gym Identity</span></h2></div>
+          <div class="owner-gate" id="infoOwnerGate" style="display:none">
+            <i class="ti ti-lock"></i>
+            <div>
+              <strong data-en="Owner only" data-ar="للمالك فقط">Owner only</strong>
+              <p data-en="Gym identity editing requires Owner. Use QR Code &amp; Check-in for the front-desk gym code and poster." data-ar="تعديل هوية النادي يتطلب صلاحية المالك. استخدم رمز QR وتسجيل الدخول لعرض كود النادي والملصق في الاستقبال.">Gym identity editing requires Owner. Use QR Code &amp; Check-in for the front-desk gym code and poster.</p>
+            </div>
+          </div>
+          <form id="infoForm">
+          <div class="card-body">
+            <div class="form-row">
+              <div class="fg"><label><span data-en="Gym Name (English)" data-ar="اسم النادي (إنجليزي)">Gym Name (English)</span> <span class="req">*</span></label><input name="gymName" id="gymName" required placeholder="Fitness Hub"></div>
+              <div class="fg"><label><span data-en="Gym Name (Arabic)" data-ar="اسم النادي (عربي)">Gym Name (Arabic)</span> <span class="req">*</span></label><input name="gymNameAr" id="gymNameAr" required placeholder="فتنس هب" dir="rtl" style="font-family:var(--fa)"></div>
+            </div>
+            <div class="form-row">
+              <div class="fg"><label><span data-en="Short Name" data-ar="الاسم المختصر">Short Name</span> <span class="opt" data-en="(optional)" data-ar="(اختياري)">(optional)</span></label><input name="shortName" id="gymShortName" placeholder="FH" maxlength="40"></div>
+              <div class="fg"><label data-en="Gym Code" data-ar="كود النادي">Gym Code</label>
+                <div class="code-chip-wrap">
+                  <div class="code-chip" id="gymCodeChip">—</div>
+                  <button type="button" class="copy-btn" id="copyCode" data-en-title="Copy" data-ar-title="نسخ" title="Copy"><i class="ti ti-copy"></i></button>
+                </div>
+                <div class="hint" data-en="System-generated, read-only — not sent on save" data-ar="يُنشأ تلقائياً، للقراءة فقط — لا يُرسل عند الحفظ">System-generated, read-only — not sent on save</div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="fg"><label data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</label><input name="phone" id="gymPhone" placeholder="+20 123 456 7890"><div class="hint" data-en="Format: +20 xxx xxx xxxx" data-ar="الصيغة: ‎+20 xxx xxx xxxx">Format: +20 xxx xxx xxxx</div></div>
+              <div class="fg"><label data-en="Email" data-ar="البريد الإلكتروني">Email</label><input name="email" id="gymEmail" type="email" placeholder="hello@gym.eg"></div>
+            </div>
+            <div class="fg"><label><span data-en="Website" data-ar="الموقع الإلكتروني">Website</span> <span class="opt" data-en="(optional)" data-ar="(اختياري)">(optional)</span></label><input name="website" id="gymWebsite" type="text" inputmode="url" placeholder="https://…" autocomplete="url"></div>
+            <div class="fg"><label data-en="Address" data-ar="العنوان">Address</label><textarea name="address" id="gymAddress" placeholder="123 Main Street, Cairo, Egypt" data-en-placeholder="123 Main Street, Cairo, Egypt" data-ar-placeholder="١٢٣ الشارع الرئيسي، القاهرة، مصر" rows="2"></textarea></div>
+            <div class="fg">
+              <label><span data-en="Maximum inside at once" data-ar="أقصى عدد بالداخل في نفس الوقت">Maximum inside at once</span> <span class="opt" data-en="(optional)" data-ar="(اختياري)">(optional)</span></label>
+              <input name="gymMaxCapacity" id="gymMaxCapacity" type="number" min="1" max="9999" inputmode="numeric" placeholder="300">
+              <div class="hint" data-en="Maximum members allowed inside this gym at one time. Occupancy on the dashboard and Member App uses Attendance (checked in today, not checked out)." data-ar="أقصى عدد من الأعضاء يُسمح لهم بالتواجد داخل النادي في نفس الوقت. تعتمد نسبة الإشغال في لوحة التحكم وتطبيق العضو على الحضور (تسجيل دخول اليوم دون تسجيل خروج).">Maximum members allowed inside this gym at one time. Occupancy on the dashboard and Member App uses Attendance (checked in today, not checked out).</div>
+            </div>
+            <div class="fg"><label data-en="Logo" data-ar="الشعار">Logo</label>
+              <input name="logoUrl" id="gymLogoUrl" type="hidden">
+              <div class="logo-upload" id="logoUpload">
+                <div class="logo-preview" id="logoPreview"><i class="ti ti-photo"></i></div>
+                <div class="logo-info">
+                  <div class="logo-title" data-en="Upload gym logo" data-ar="رفع شعار النادي">Upload gym logo</div>
+                  <div class="logo-hint" data-en="JPEG/PNG/WebP/GIF · max 2MB · stored for this gym only" data-ar="JPEG/PNG/WebP/GIF · بحد أقصى 2 ميجابايت · يُخزَّن لهذا النادي فقط">JPEG/PNG/WebP/GIF · max 2MB · stored for this gym only</div>
+                  <input type="file" id="logoFile" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none">
+                  <div class="logo-actions">
+                    <button type="button" class="logo-btn" id="logoBrowse"><i class="ti ti-upload"></i> <span data-en="Choose file" data-ar="اختيار ملف" data-i18n-text>Choose file</span></button>
+                    <button type="button" class="logo-btn outline" id="logoClear" style="display:none"><i class="ti ti-trash"></i> <span data-en="Remove" data-ar="إزالة" data-i18n-text>Remove</span></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="brand-block">
+              <h3 class="brand-block-title"><i class="ti ti-palette"></i> <span data-en="Brand colors" data-ar="ألوان العلامة" data-i18n-text>Brand colors</span></h3>
+              <div class="color-row">
+                <div class="fg color-fg"><label data-en="Primary" data-ar="أساسي">Primary</label><input type="color" id="brandPrimary" value="#7ACC00"></div>
+                <div class="fg color-fg"><label data-en="Secondary" data-ar="ثانوي">Secondary</label><input type="color" id="brandSecondary" value="#148F8F"></div>
+                <div class="fg color-fg"><label data-en="Accent" data-ar="مميز">Accent</label><input type="color" id="brandAccent" value="#A0E040"></div>
+                <div class="fg color-fg"><label data-en="Card mark" data-ar="لون البطاقة">Card mark</label><input type="color" id="cardPrimary" value="#7ACC00"></div>
+              </div>
+              <label class="check-row"><input type="checkbox" id="showGymLogoOnCard" checked> <span data-en="Show logo on membership access card" data-ar="إظهار الشعار على بطاقة العضوية" data-i18n-text>Show logo on membership access card</span></label>
+              <div class="brand-reset-row">
+                <button type="button" class="btn-reset-brand" id="btnResetBrand" data-en-title="Restore HyMotion default colors" data-ar-title="استعادة ألوان HyMotion الافتراضية" title="Restore HyMotion default colors">
+                  <i class="ti ti-restore"></i> <span data-en="Reset to defaults" data-ar="استعادة الافتراضي" data-i18n-text>Reset to defaults</span>
+                </button>
+                <span class="hint" data-en="Restores primary / secondary / accent / card colors to HyMotion lime. Does not change gym name or logo." data-ar="يعيد الألوان (الأساسي/الثانوي/المميز/لون البطاقة) إلى لون HyMotion الليموني الافتراضي، دون تغيير اسم النادي أو الشعار.">Restores primary / secondary / accent / card colors to HyMotion lime. Does not change gym name or logo.</span>
+              </div>
+              <div class="brand-live" id="brandLive">
+                <div class="brand-live-bar"><span class="brand-live-mark" id="brandLiveMark"></span><strong id="brandLiveName">Fitness Hub</strong></div>
+                <div class="brand-live-actions">
+                  <span class="brand-live-cta" id="brandLiveCta" data-en="Primary" data-ar="أساسي">Primary</span>
+                  <span class="brand-live-sec" id="brandLiveSec" data-en="Secondary" data-ar="ثانوي">Secondary</span>
+                  <span class="brand-live-acc" id="brandLiveAcc" data-en="Accent" data-ar="مميز">Accent</span>
+                </div>
+              </div>
+              <div class="card-preview-label" data-en="Membership card preview (CR80)" data-ar="معاينة بطاقة العضوية (CR80)">Membership card preview (CR80)</div>
+              <div class="cr80" id="cr80Preview">
+                <div class="cr80-hdr">
+                  <img class="cr80-logo" id="cr80Logo" alt="" hidden>
+                  <div class="cr80-mark" id="cr80Mark"></div>
+                  <div class="cr80-brand">
+                    <div class="cr80-product">HyMotion</div>
+                    <div class="cr80-gym" id="cr80Gym">Fitness Hub</div>
+                    <div class="cr80-gym-ar" id="cr80GymAr">فتنس هب</div>
+                  </div>
+                </div>
+                <div class="cr80-id">
+                  <div class="cr80-name" data-en="Sample Member" data-ar="عضو تجريبي">Sample Member</div>
+                  <div class="cr80-num">GYM-018</div>
+                </div>
+                <div class="cr80-bars" aria-hidden="true"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer" id="infoFooter">
+            <div class="meta-info">
+              <span id="metaCreated"></span>
+              <span id="metaUpdated"></span>
+            </div>
+            <div class="footer-actions">
+              <button type="button" class="btn-reset-brand" id="btnResetBrandFooter">
+                <i class="ti ti-restore"></i> <span data-en="Reset defaults" data-ar="استعادة الافتراضي" data-i18n-text>Reset defaults</span>
+              </button>
+              <button type="submit" class="btn-save" id="btnSave"><i class="ti ti-device-floppy"></i> <span data-en="Save Changes" data-ar="حفظ التغييرات" data-i18n-text>Save Changes</span></button>
+            </div>
+          </div>
+          </form>
+        </div>
+
+        <!-- Local Edition LAN access (hidden on SaaS): addresses other gym PCs open in a browser.
+             Read-only, populated from /api/deployment/info localAccess.urls by the script below. -->
+        <div class="card" id="lanAccessCard" style="display:none">
+          <div class="card-header"><h2><i class="ti ti-lan"></i> <span data-en="Access from other PCs" data-ar="الدخول من أجهزة أخرى" data-i18n-text>Access from other PCs</span></h2></div>
+          <div class="card-body">
+            <div class="hint" style="margin:0 0 10px" data-en="Other gym PCs on the same network can open HyMotion in a browser at:" data-ar="يمكن لأجهزة الكمبيوتر الأخرى في النادي فتح HyMotion من المتصفح على:">Other gym PCs on the same network can open HyMotion in a browser at:</div>
+            <div id="lanAccessUrls" style="display:flex;flex-direction:column;gap:8px"></div>
+            <div class="hint" style="margin-top:10px" data-en="Each PC signs in with its own user — roles and permissions follow the user, not the PC. If the Host PC's address changes (router restart), refresh this page to see the new address." data-ar="كل جهاز يسجل الدخول بمستخدمه الخاص — الأدوار والصلاحيات تتبع المستخدم لا الجهاز. إذا تغيّر عنوان جهاز الخادم (إعادة تشغيل الراوتر)، حدّث هذه الصفحة لرؤية العنوان الجديد.">Each PC signs in with its own user — roles and permissions follow the user, not the PC. If the Host PC's address changes (router restart), refresh this page to see the new address.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: QR Code -->
+  <div class="tab-panel" id="tab-qr">
+    <div class="qr-layout">
+      <div class="card qr-card">
+        <div class="card-header"><h2><i class="ti ti-qrcode"></i> <span data-en="Live Check-in QR" data-ar="رمز تسجيل الدخول المباشر" data-i18n-text>Live Check-in QR</span></h2></div>
+        <div class="card-body" style="text-align:center;padding:32px">
+          <div class="qr-poster-frame" id="qrFrame">
+            <div class="qr-loading"><div class="loader"></div><span data-en="Loading QR..." data-ar="جارٍ تحميل رمز QR...">Loading QR...</span></div>
+          </div>
+          <div class="qr-code-display">
+            <span class="qr-code-label" data-en="Gym Code:" data-ar="كود النادي:">Gym Code:</span>
+            <span class="qr-code-value" id="qrGymCode">—</span>
+          </div>
+          <div class="qr-live-status" id="qrLiveStatus" style="margin-top:8px;font-size:12px;color:var(--ltt)"></div>
+          <div class="qr-actions">
+            <button class="btn-qr outline" id="btnFullscreenQR"><i class="ti ti-maximize"></i> <span data-en="Open full-screen display" data-ar="فتح شاشة كاملة" data-i18n-text>Open full-screen display</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2><i class="ti ti-info-circle"></i> <span data-en="Instructions" data-ar="التعليمات" data-i18n-text>Instructions</span></h2></div>
+        <div class="card-body">
+          <div class="instruction-list">
+            <div class="instr-item"><div class="instr-num">1</div><div><strong data-en="Display this screen at the entrance" data-ar="اعرض هذه الشاشة عند المدخل">Display this screen at the entrance</strong><p data-en="Open full-screen on a reception tablet/monitor — this QR refreshes automatically every ~45 seconds and cannot be printed or screenshotted for later use." data-ar="افتحها بملء الشاشة على تابلت أو شاشة الاستقبال — يتجدد رمز QR تلقائياً كل ٤٥ ثانية تقريباً، ولا يمكن طباعته أو تصويره لاستخدامه لاحقاً.">Open full-screen on a reception tablet/monitor — this QR refreshes automatically every ~45 seconds and cannot be printed or screenshotted for later use.</p></div></div>
+            <div class="instr-item"><div class="instr-num">2</div><div><strong data-en="Members scan to check in" data-ar="الأعضاء يمسحون الرمز لتسجيل الدخول">Members scan to check in</strong><p data-en="Members open the HyMotion app and scan the current code — attendance is registered immediately." data-ar="يفتح الأعضاء تطبيق HyMotion ويمسحون الرمز الحالي — يُسجَّل الحضور فوراً.">Members open the HyMotion app and scan the current code — attendance is registered immediately.</p></div></div>
+            <div class="instr-item"><div class="instr-num">3</div><div><strong data-en="Employees scan the same code" data-ar="الموظفون يمسحون نفس الرمز">Employees scan the same code</strong><p data-en="Staff use the same live QR from the Employee app's Attendance screen, then confirm their check-in." data-ar="يستخدم الموظفون نفس رمز QR المباشر من شاشة الحضور في تطبيق الموظفين، ثم يؤكدون تسجيل الدخول.">Staff use the same live QR from the Employee app's Attendance screen, then confirm their check-in.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Tax & VAT (Owner only) -->
+  <div class="tab-panel" id="tab-tax">
+    <div class="card">
+      <div class="card-header">
+        <h2><i class="ti ti-receipt-tax"></i> <span data-en="Tax &amp; VAT" data-ar="الضريبة والقيمة المضافة" data-i18n-text>Tax &amp; VAT</span></h2>
+        <span class="audit-badge"><i class="ti ti-shield-check"></i> <span data-en="Changes audited" data-ar="التغييرات مسجّلة في السجل" data-i18n-text>Changes audited</span></span>
+      </div>
+      <form id="taxForm">
+        <div class="card-body">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-label" data-en="Enable VAT on invoices" data-ar="تفعيل الضريبة على الفواتير">Enable VAT on invoices</div>
+              <div class="toggle-sub" data-en="When on, POS and invoices apply the VAT rate below" data-ar="عند التفعيل، تُطبَّق نسبة الضريبة أدناه على نقطة البيع والفواتير">When on, POS and invoices apply the VAT rate below</div>
+            </div>
+            <label class="toggle">
+              <input type="checkbox" id="vatEnabled">
+              <span class="toggle-track"></span>
+              <span class="toggle-knob"></span>
+            </label>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label data-en="VAT rate (%)" data-ar="نسبة الضريبة (%)">VAT rate (%)</label>
+              <input type="number" id="vatRatePct" min="0" max="100" step="0.01" placeholder="14">
+              <div class="hint" data-en="Stored as a fraction (e.g. 14% → 0.14). Default 14%." data-ar="تُخزَّن كنسبة عشرية (مثال: ١٤٪ → ٠.١٤). الافتراضي ١٤٪.">Stored as a fraction (e.g. 14% → 0.14). Default 14%.</div>
+            </div>
+            <div class="fg"><label data-en="Tax registration number" data-ar="الرقم الضريبي">Tax registration number</label>
+              <input id="taxRegNo" placeholder="VAT / tax ID" data-en-placeholder="VAT / tax ID" data-ar-placeholder="الرقم الضريبي" autocomplete="off">
+            </div>
+          </div>
+          <div class="fg"><label data-en="Invoice footer (English)" data-ar="تذييل الفاتورة (إنجليزي)">Invoice footer (English)</label>
+            <textarea id="invoiceFooter" rows="2" placeholder="Thank you for your business"></textarea>
+          </div>
+          <div class="fg"><label data-en="Invoice footer (Arabic)" data-ar="تذييل الفاتورة (عربي)">Invoice footer (Arabic)</label>
+            <textarea id="invoiceFooterAr" rows="2" placeholder="شكراً لتعاملكم معنا" dir="rtl" style="font-family:var(--fa)"></textarea>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="meta-info"><span class="hint" style="margin:0" data-en="Before/after values are written to the audit log" data-ar="تُسجَّل القيم قبل وبعد التعديل في سجل المراجعة">Before/after values are written to the audit log</span></div>
+          <button type="submit" class="btn-save" id="btnSaveTax"><i class="ti ti-device-floppy"></i> <span data-en="Save Tax Settings" data-ar="حفظ إعدادات الضريبة" data-i18n-text>Save Tax Settings</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tab 4: Inventory alerts (Owner only, INVS-10) -->
+  <div class="tab-panel" id="tab-invAlerts">
+    <div class="card">
+      <div class="card-header">
+        <h2><i class="ti ti-bell-ringing"></i> <span data-en="Inventory alerts" data-ar="تنبيهات المخزون">Inventory alerts</span></h2>
+        <span class="audit-badge"><i class="ti ti-shield-check"></i> <span data-en="Daily 08:00 Cairo" data-ar="يومياً ٨:٠٠ القاهرة">Daily 08:00 Cairo</span></span>
+      </div>
+      <form id="invAlertsForm">
+        <div class="card-body">
+          <div class="fg"><label data-en="Notify roles (comma-separated)" data-ar="أدوار التنبيه (مفصولة بفاصلة)">Notify roles (comma-separated)</label>
+            <input id="invNotifyRoles" placeholder="Owner, Manager" autocomplete="off">
+            <div class="hint" data-en="Staff roles receiving low-stock / expiry notifications. Default: Owner, Manager." data-ar="أدوار الموظفين اللي هتوصلهم تنبيهات النفاد / الصلاحية. الافتراضي: Owner, Manager.">Staff roles receiving low-stock / expiry notifications. Default: Owner, Manager.</div>
+          </div>
+          <div class="fg"><label data-en="Expiry windows (days, comma-separated)" data-ar="نوافذ الصلاحية (أيام، مفصولة بفاصلة)">Expiry windows (days, comma-separated)</label>
+            <input id="invExpiryWindows" placeholder="90, 30, 7" autocomplete="off">
+            <div class="hint" data-en="Batches expiring within each window generate alerts. Default: 90, 30, 7." data-ar="التشغيلات اللي هتنتهي خلال كل نافذة تولّد تنبيهاً. الافتراضي: ٩٠، ٣٠، ٧.">Batches expiring within each window generate alerts. Default: 90, 30, 7.</div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="meta-info"><span class="hint" style="margin:0" data-en="Applied by the nightly low-stock job." data-ar="تُطبَّق عبر مهمة تنبيه النفاد اليومية.">Applied by the nightly low-stock job.</span></div>
+          <button type="submit" class="btn-save" id="btnSaveInvAlerts"><i class="ti ti-device-floppy"></i> <span data-en="Save alert settings" data-ar="حفظ إعدادات التنبيه" data-i18n-text>Save alert settings</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  // Prefer shared api-config (ngrok/local); keep trailing /api
+  var API_BASE = (window.API_BASE || window.GFP_DEFAULT_API_BASE || '/api').replace(/\/?$/, '');
+  window.API_BASE = API_BASE;
+
+  function getH(json) {
+    var t = localStorage.getItem('gfp_access_token') || sessionStorage.getItem('gfp_access_token');
+    var h = { 'ngrok-skip-browser-warning': 'true' };
+    if (json !== false) h['Content-Type'] = 'application/json';
+    if (t) h['Authorization'] = 'Bearer ' + t;
+    return h;
+  }
+
+  async function apiGet(p) {
+    var r = await fetch(API_BASE + p, { headers: getH(false) });
+    if (r.status === 401) {
+      window.location.href = '/auth/login/';
+      return null;
+    }
+    if (!r.ok) return null;
+    return r.json().catch(function () { return null; });
+  }
+
+  async function apiPut(p, b) {
+    var r = await fetch(API_BASE + p, {
+      method: 'PUT',
+      headers: getH(true),
+      body: JSON.stringify(b)
+    });
+    var d = await r.json().catch(function () { return null; });
+    return { ok: r.ok, status: r.status, data: d };
+  }
+
+  async function apiDelete(p) {
+    var r = await fetch(API_BASE + p, { method: 'DELETE', headers: getH(false) });
+    var d = await r.json().catch(function () { return null; });
+    return { ok: r.ok, status: r.status, data: d };
+  }
+
+  async function apiUpload(p, file) {
+    var t = localStorage.getItem('gfp_access_token') || sessionStorage.getItem('gfp_access_token');
+    var fd = new FormData();
+    fd.append('file', file, file.name || 'logo.jpg');
+    var r = await fetch(API_BASE + p, {
+      method: 'POST',
+      headers: {
+        Authorization: t ? 'Bearer ' + t : '',
+        'ngrok-skip-browser-warning': 'true'
+      },
+      body: fd
+    });
+    var d = await r.json().catch(function () { return null; });
+    return { ok: r.ok, status: r.status, data: d };
+  }
+
+  window.apiGet = apiGet;
+  window.apiPut = apiPut;
+  window.apiDelete = apiDelete;
+  window.apiUpload = apiUpload;
+
+  function getUser() {
+    try {
+      return JSON.parse(localStorage.getItem('gfp_user') || sessionStorage.getItem('gfp_user'));
+    } catch (e) {
+      return null;
+    }
+  }
+  var user = getUser();
+  if (!user) {
+    window.location.href = '/auth/login/';
+    return;
+  }
+  window.__gfpSettingsUser = user;
+  var ini = (user.fullName || 'U')
+    .split(' ')
+    .map(function (w) { return w[0]; })
+    .join('')
+    .substring(0, 2)
+    .toUpperCase();
+  var av = document.getElementById('userAvatar');
+  var un = document.getElementById('userName');
+  var ur = document.getElementById('userRole');
+  if (av) av.textContent = ini;
+  if (un) un.textContent = user.fullName || 'User';
+  if (ur) ur.textContent = user.role || 'Staff';
+  if ((user.role === 'Owner' || user.role === 'owner') && document.getElementById('navStaff')) {
+    document.getElementById('navStaff').style.display = 'flex';
+  }
+  var btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', function () {
+      if (window.GfpBranding && window.GfpBranding.clear) window.GfpBranding.clear();
+      ['gfp_access_token', 'gfp_refresh_token', 'gfp_user', 'gfp_expires_at'].forEach(function (k) {
+        localStorage.removeItem(k);
+        sessionStorage.removeItem(k);
+      });
+      window.location.href = '/auth/login/';
+    });
+  }
+})();
+</script>
+<script src="/shared/gfp-deployment.js"></script>
+<script src="/dashboard/settings/settings-app.js?v=liveqr2"></script>
+<script>
+// Local Edition has no Member App / QR check-in (Barcode only - see Phase 1/3 boundaries). The QR
+// tab's own CDN library is also broken today regardless of edition (see Phase 2/3 findings) with
+// a fallback that sends the check-in token to a third-party image service (api.qrserver.com) -
+// settings-app.js already null-checks window.QRCode before use, so loading it dynamically here
+// (instead of a static synchronous <script src>) changes only WHEN it loads for SaaS, not
+// whether/how it behaves. For Local it is never requested at all - the only way to guarantee zero
+// network call, since a static tag can't be conditioned on this async edition check.
+(function () {
+  function loadQrLib() {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js';
+    document.body.appendChild(s);
+  }
+  if (window.GfpDeployment) {
+    window.GfpDeployment.getEdition().then(function (edition) {
+      if (edition === 'Local') {
+        var tabBtn = document.querySelector('.tab-btn[data-tab="qr"]');
+        var tabPanel = document.getElementById('tab-qr');
+        if (tabBtn) tabBtn.style.display = 'none';
+        if (tabPanel) tabPanel.remove();
+      } else {
+        loadQrLib();
+      }
+    });
+  } else {
+    loadQrLib();
+  }
+})();
+</script>
+<script>
+// Local Edition LAN access card (multi-PC): /api/deployment/info returns localAccess.urls —
+// the addresses other gym PCs open. SaaS responses have no localAccess, so the card stays hidden.
+(function () {
+  try {
+    var base = String(window.API_BASE || window.GFP_DEFAULT_API_BASE || '/api').replace(/\/+$/, '');
+    fetch(base + '/deployment/info', { headers: { 'ngrok-skip-browser-warning': 'true' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (info) {
+        if (!info || info.edition !== 'Local' || !info.localAccess) return;
+        var urls = (info.localAccess.urls || []).filter(function (u) { return typeof u === 'string' && u; });
+        var card = document.getElementById('lanAccessCard');
+        var list = document.getElementById('lanAccessUrls');
+        if (!card || !list) return;
+        if (!urls.length) {
+          var none = document.createElement('div');
+          none.className = 'hint';
+          none.style.margin = '0';
+          none.setAttribute('data-en', 'No LAN address detected yet. Connect this PC to the gym network and refresh.');
+          none.setAttribute('data-ar', 'لم يتم العثور على عنوان للشبكة المحلية بعد. قم بتوصيل هذا الجهاز بشبكة النادي ثم حدّث الصفحة.');
+          none.textContent = none.getAttribute('data-en');
+          list.appendChild(none);
+        } else {
+          urls.forEach(function (u) {
+            var row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+            var chip = document.createElement('code');
+            chip.textContent = u;
+            chip.style.cssText = 'direction:ltr;unicode-bidi:plaintext;font-size:13px;padding:6px 10px;border-radius:6px;background:var(--ls2,#222722);color:var(--ltp,#E8EBE6);flex:1;';
+            var copy = document.createElement('button');
+            copy.type = 'button';
+            copy.className = 'copy-btn';
+            copy.title = 'Copy';
+            copy.innerHTML = '<i class="ti ti-copy"></i>';
+            copy.addEventListener('click', function () {
+              try { navigator.clipboard.writeText(u); } catch (e) { /* ignore */ }
+            });
+            row.appendChild(chip);
+            row.appendChild(copy);
+            list.appendChild(row);
+          });
+        }
+        card.style.display = '';
+      })
+      .catch(function () { /* card stays hidden */ });
+  } catch (e) { /* ignore */ }
+})();
+</script>
+</body>
+</html>

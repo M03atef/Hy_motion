@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Adjustments</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="adjustments.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb" id="adjBreadcrumb"><span data-en="Inventory" data-ar="المخزون">Inventory</span><span class="sep">/</span><span class="current" data-en="Adjust quantity" data-ar="تعديل الكمية">Adjust quantity</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <p id="adjContextBar" class="hint" hidden style="margin:0 0 12px">
+    <a id="adjBackOnHand" href="/dashboard/inventory/stock/"><i class="ti ti-arrow-left"></i> <span data-en="Back to On Hand" data-ar="رجوع للرصيد">Back to On Hand</span></a>
+  </p>
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Adjust quantity" data-ar="تعديل الكمية">Adjust quantity</h1>
+      <p class="page-subtitle" data-en="Pick an operational reason, adjust qty (and batch when required), then confirm. Drafts do not change stock until posted." data-ar="اختار سبب تشغيلي، عدّل الكمية (والتشغيلة لو مطلوبة)، بعدين أكّد. المسودة مش بتغيّر الرصيد لحد الترحيل.">Pick an operational reason, adjust qty (and batch when required), then confirm. Drafts do not change stock until posted.</p>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <section class="card">
+      <h2 data-en="New adjustment" data-ar="تعديل جديد">New adjustment</h2>
+      <form id="createForm">
+        <label><span data-en="Warehouse" data-ar="المستودع">Warehouse</span> *
+          <select id="aWarehouse" required></select>
+        </label>
+        <label><span data-en="Why?" data-ar="ليه؟">Why?</span> *
+          <select id="aReason" required>
+            <option value="opening" data-en="Opening stock" data-ar="رصيد افتتاحي">Opening stock</option>
+            <option value="damage" data-en="Damage" data-ar="تالف">Damage</option>
+            <option value="lost" data-en="Lost / theft" data-ar="فاقد / سرقة">Lost / theft</option>
+            <option value="expired" data-en="Expired write-off" data-ar="شطب منتهي">Expired write-off</option>
+            <option value="manual_count" data-en="Count correction" data-ar="تصحيح جرد">Count correction</option>
+            <option value="internal_use" data-en="Internal use" data-ar="استخدام داخلي">Internal use</option>
+            <option value="employee" data-en="Employee use" data-ar="استخدام موظف">Employee use</option>
+            <option value="supplier_correction" data-en="Supplier correction" data-ar="تصحيح مورد">Supplier correction</option>
+            <option value="other" data-en="Other (note required)" data-ar="أخرى (ملاحظة مطلوبة)">Other (note required)</option>
+          </select>
+        </label>
+        <label><span data-en="Note" data-ar="ملاحظة">Note</span>
+          <textarea id="aNote" rows="2" maxlength="500" data-en-placeholder="Optional — required for Other" data-ar-placeholder="اختياري — مطلوب لسبب أخرى" placeholder="Optional — required for Other"></textarea>
+        </label>
+        <div class="lines-hdr">
+          <span>الأصناف / Items</span>
+          <button type="button" class="btn-secondary" id="btnAddLine"><i class="ti ti-plus"></i> صنف / Add</button>
+        </div>
+        <div id="linesHost"></div>
+        <p class="form-hint" id="createHint"></p>
+        <button type="submit" class="btn-create" id="btnCreate">حفظ كمسودة / Save draft</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>آخر التسويات / Recent</h2>
+      <p class="owner-hint">اضغط على تسوية من القائمة — مش محتاج رقم طويل.
+        <span class="sub-en">Open from the list — no need to paste a long ID.</span></p>
+      <div id="recentHost" class="recent-list"></div>
+      <details class="adv-id">
+        <summary>فتح برقم التسوية / Open by ID (advanced)</summary>
+        <div class="open-row">
+          <input id="openId" placeholder="Adjustment ID" autocomplete="off" dir="ltr">
+          <button type="button" class="btn-secondary" id="btnOpen">فتح / Load</button>
+        </div>
+      </details>
+      <div id="detailHost" class="detail" hidden></div>
+    </section>
+  </div>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="adjustments-app.js"></script>
+</body>
+</html>

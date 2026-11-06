@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyMotion — Member Sign In</title>
+<meta name="description" content="Sign in with your gym code and activation code to book classes.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<script>window.GFP_LOGIN_PATH = '/member/login/';</script>
+<style>
+/* Token set mirrors auth/login (design-tokens.json) so the member portal reads as one product. */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c600:#3A3A3A;
+  --c500:#4A4A4A;--c400:#6B6B6B;--c300:#8C8C8C;--c200:#B0B0B0;--c100:#D4D4D4;--c50:#F0F0F0;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;--l200:#D8F5A6;--l100:#EDFCD8;--lglow:rgba(160,224,64,.25);
+  --t700:#0A4D4D;--t600:#0D6B6B;--t500:#148F8F;--t400:#3DB5B5;--t300:#70CECE;--t200:#A8E4E4;--t100:#D9F2F2;
+  --dng600:#DC2626;--dng500:#EF4444;--dng100:#FEE2E2;--dngtxt:#991B1B;
+  --lbg:#FAFAFA;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#EBEBEB;--ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;--lbd:#D4D4D4;
+  --fd:'Cairo',sans-serif;--fb:'Cairo',sans-serif;--fa:'Cairo',sans-serif;
+  --rsm:6px;--rmd:10px;--rlg:16px;--rpl:9999px;
+  --sh2:0 2px 8px rgba(0,0,0,.08);--sh3:0 4px 16px rgba(0,0,0,.12);--shg:0 0 20px var(--lglow);
+  --tf:150ms ease;--tb:250ms ease;
+}
+html,body{height:100%}
+body{font-family:var(--fb);background:var(--ls1);color:var(--ltp);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+[dir="rtl"] body{font-family:var(--fa)}
+[dir="rtl"] .brand-panel{direction:ltr}
+[dir="rtl"] .login-panel{direction:rtl}
+[dir="rtl"] .form-input{text-align:right}
+[dir="rtl"] .alert-err{flex-direction:row-reverse;text-align:right}
+[dir="rtl"] .feat{flex-direction:row-reverse;text-align:right}
+
+.split{display:flex;min-height:100vh}
+.brand-panel{
+  width:42%;background:var(--c900);color:var(--c50);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:48px 40px;position:relative;overflow:hidden;
+}
+.brand-panel::after{content:'';position:absolute;pointer-events:none;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(160,224,64,.08) 0%,transparent 70%);bottom:-100px;left:-100px;}
+.brand-content{position:relative;z-index:1;max-width:360px;width:100%}
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:40px}
+.logo-row img{width:44px;height:44px;flex-shrink:0;filter:drop-shadow(0 0 12px var(--lglow))}
+.logo-row span{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.5px;color:var(--l400)}
+.tagline{font-family:var(--fd);font-size:26px;font-weight:700;line-height:1.3;color:var(--c50);margin-bottom:28px}
+.features{display:flex;flex-direction:column;gap:20px}
+.feat{display:flex;align-items:flex-start;gap:14px}
+.feat-icon{width:38px;height:38px;border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px;background:rgba(160,224,64,.1);color:var(--l400)}
+.feat-text h4{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--c50);margin-bottom:2px}
+.feat-text p{font-size:12.5px;color:var(--c400);line-height:1.45}
+.deco-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--l500),var(--t500),var(--l500));background-size:200% 100%;animation:barShift 6s ease infinite}
+@keyframes barShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+.login-panel{width:58%;background:var(--ls1);display:flex;align-items:center;justify-content:center;padding:48px 32px;
+  background-image:radial-gradient(circle at 100% 0%,rgba(160,224,64,.04) 0%,transparent 40%);}
+.login-card{width:100%;max-width:380px}
+.login-card h1{font-family:var(--fd);font-size:26px;font-weight:700;color:var(--ltp);margin-bottom:6px;letter-spacing:-.3px}
+.login-card .sub-label{font-size:14px;color:var(--ltt);margin-bottom:32px;line-height:1.5}
+
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--lts);margin-bottom:6px}
+.form-input{
+  width:100%;font-family:var(--fb);font-size:16px;letter-spacing:.5px;
+  padding:10px 16px;border-radius:var(--rmd);border:2px solid var(--lbd);
+  background:var(--ls1);color:var(--ltp);outline:none;text-transform:uppercase;
+  transition:border-color var(--tf),box-shadow var(--tf);height:48px;
+}
+.form-input:focus{border-color:var(--l500);box-shadow:0 0 0 3px var(--lglow)}
+.form-input::placeholder{color:var(--ltt);text-transform:none;letter-spacing:normal;font-size:14px}
+.form-hint{font-size:11.5px;color:var(--ltt);margin-top:6px;line-height:1.5}
+
+.btn-login{
+  width:100%;height:48px;font-family:var(--fb);font-size:15px;font-weight:600;
+  border:2px solid var(--l500);background:var(--l500);color:var(--c900);
+  border-radius:var(--rpl);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all var(--tf);position:relative;margin-top:8px;
+}
+.btn-login:hover{background:var(--l400);border-color:var(--l400);box-shadow:var(--shg)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;box-shadow:none}
+.btn-login.loading .btn-text{opacity:0}
+.btn-login.loading .spinner{display:flex}
+.spinner{display:none;position:absolute;inset:0;align-items:center;justify-content:center}
+.spinner-circle{width:20px;height:20px;border:3px solid rgba(13,13,13,.15);border-top-color:var(--c900);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.alert-err{display:none;align-items:flex-start;gap:10px;padding:13px 15px;border-radius:var(--rmd);
+  background:var(--dng100);border:1px solid rgba(239,68,68,.3);color:var(--dngtxt);font-size:13px;margin-bottom:18px;line-height:1.5}
+.alert-err.show{display:flex}
+.alert-err svg{width:17px;height:17px;flex-shrink:0;margin-top:1px;color:var(--dng500)}
+
+.help-note{margin-top:28px;padding-top:20px;border-top:1px solid var(--ls3);font-size:12.5px;color:var(--ltt);line-height:1.6}
+
+@media(max-width:860px){
+  .split{flex-direction:column}
+  .brand-panel{width:100%;padding:32px 24px 24px}
+  .login-panel{width:100%;padding:32px 24px}
+  .features{display:none}
+}
+html[data-theme="dark"] .login-panel{background:var(--ls1,#151716)}
+html[data-theme="dark"] .form-input{background:var(--ls1,#1C201D);color:var(--ltp,#E8EBE6);border-color:var(--ls3,#2E342F)}
+html[data-theme="dark"] .login-card h1{color:var(--ltp,#E8EBE6)}
+html[data-theme="dark"] .help-note{border-color:var(--ls3,#2E342F)}
+</style>
+</head>
+<body>
+<div class="split">
+  <div class="brand-panel">
+    <div class="brand-content">
+      <div class="logo-row">
+        <img src="/shared/hymotion-mark.png" alt="HyMotion" width="44" height="44">
+        <span>HyMotion</span>
+      </div>
+      <div class="tagline">Your classes.<br>Booked in seconds.</div>
+      <div class="features">
+        <div class="feat"><div class="feat-icon">📅</div><div class="feat-text"><h4>Book &amp; cancel classes</h4><p>See what's included in your plan and reserve a spot instantly.</p></div></div>
+        <div class="feat"><div class="feat-icon">🏋️</div><div class="feat-text"><h4>Track your bookings</h4><p>Upcoming sessions and your remaining monthly credits, always current.</p></div></div>
+        <div class="feat"><div class="feat-icon">🔑</div><div class="feat-text"><h4>No password needed</h4><p>Sign in with the code your gym gave you.</p></div></div>
+      </div>
+    </div>
+    <div class="deco-bar"></div>
+  </div>
+
+  <div class="login-panel">
+    <div class="login-card">
+      <h1>Sign in</h1>
+      <p class="sub-label">Enter your gym code and the activation code your gym gave you.</p>
+
+      <div class="alert-err" id="errBox">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span id="errText">Something went wrong.</span>
+      </div>
+
+      <form id="activateForm" novalidate>
+        <div class="form-group">
+          <label for="gymCode">Gym code</label>
+          <input class="form-input" id="gymCode" name="gymCode" placeholder="e.g. GYM-CAIRO-01" autocomplete="off" autocapitalize="characters" required>
+        </div>
+        <div class="form-group">
+          <label for="activationCode">Activation code</label>
+          <input class="form-input" id="activationCode" name="activationCode" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" maxlength="9" required>
+          <div class="form-hint">Given to you by front desk staff. Valid for a limited time and can only be used once.</div>
+        </div>
+
+        <button type="submit" class="btn-login" id="btnSubmit">
+          <span class="btn-text">Sign in</span>
+          <span class="spinner"><span class="spinner-circle"></span></span>
+        </button>
+      </form>
+
+      <div class="help-note">Don't have a code? Ask the front desk at your gym to generate one for you from your membership profile.</div>
+    </div>
+  </div>
+</div>
+
+<script src="member-login-app.js"></script>
+</body>
+</html>

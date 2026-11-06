@@ -1,0 +1,187 @@
+/* ═══════════════════════════════════════════════════════════════
+   Member Modals & Drawers — Shared Styles
+   Components: Add Member Modal, Edit Member Drawer, Assign Membership Modal
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Overlay (shared) ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all var(--tb)}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal-overlay.drawer-overlay{justify-content:flex-end;padding:0}
+
+/* ── Base Modal ── */
+.modal-panel{background:var(--ls1);border-radius:var(--rlg);width:100%;max-width:460px;box-shadow:var(--sh4);transform:translateY(20px) scale(.97);transition:all var(--tb);display:flex;flex-direction:column;max-height:90vh;min-height:0;overflow:hidden}
+.modal-overlay.open .modal-panel{transform:translateY(0) scale(1)}
+
+/* ── Wide Modal (560px for Add Member) ── */
+.modal-panel.wide{max-width:560px}
+
+/* ── Drawer Panel (400px right slide) ── */
+.drawer-panel{background:var(--ls1);width:100%;max-width:400px;height:100vh;box-shadow:var(--sh4);transform:translateX(100%);transition:transform var(--tb);display:flex;flex-direction:column;border-radius:0}
+.modal-overlay.open .drawer-panel{transform:translateX(0)}
+
+/* ── Modal Header ── */
+.mdl-hdr{display:flex;align-items:center;justify-content:space-between;padding:24px 28px 0;flex-shrink:0}
+.mdl-title-wrap{display:flex;flex-direction:column;gap:2px}
+.mdl-title{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--ltp);display:flex;align-items:center;gap:8px}
+.mdl-title i{font-size:20px}
+.mdl-subtitle{font-family:var(--fa);font-size:13px;color:var(--ltt);direction:rtl}
+.mdl-close{width:34px;height:34px;border:none;background:var(--ls2);border-radius:50%;cursor:pointer;font-size:18px;color:var(--ltt);display:flex;align-items:center;justify-content:center;transition:all var(--tf);flex-shrink:0}
+.mdl-close:hover{background:var(--ls3);color:var(--ltp)}
+
+/* Drawer header extra: timestamp */
+.mdl-timestamp{font-family:var(--fd);font-size:11px;color:var(--ltt);margin-top:8px;display:flex;align-items:center;gap:4px}
+.mdl-timestamp i{font-size:13px}
+
+/* ── Modal Body (scrollable) ── */
+.mdl-body{padding:20px 28px;overflow-y:auto;flex:1}
+
+/* ── Section ── */
+.form-section{margin-bottom:24px}
+.form-section:last-child{margin-bottom:0}
+.section-hdr{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--ls3)}
+.section-title{font-family:var(--fd);font-size:13px;font-weight:700;color:var(--lts);text-transform:uppercase;letter-spacing:.6px;flex:1;display:flex;align-items:center;gap:6px}
+.section-title i{font-size:15px;color:var(--l500)}
+.section-tag{font-family:var(--fd);font-size:10px;font-weight:700;color:var(--ltt);background:var(--ls2);padding:2px 8px;border-radius:var(--rpl);text-transform:uppercase;letter-spacing:.5px}
+
+/* Collapsible section */
+.section-toggle{width:26px;height:26px;border:1px solid var(--ls3);border-radius:50%;background:var(--ls2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tf);font-size:14px;color:var(--ltt)}
+.section-toggle:hover{border-color:var(--l500);color:var(--l600)}
+.section-toggle.collapsed i{transform:rotate(0deg)}
+.section-toggle i{transition:transform var(--tf);transform:rotate(180deg)}
+.section-body{overflow:hidden;transition:max-height .3s ease,opacity .3s ease;max-height:500px;opacity:1}
+.section-body.collapsed{max-height:0;opacity:0;margin:0}
+
+/* ── Form Elements ── */
+.mdl-form-group{margin-bottom:16px}
+.mdl-form-group:last-child{margin-bottom:0}
+.mdl-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.mdl-form-row{grid-template-columns:1fr}}
+
+.mdl-label{display:flex;align-items:center;gap:4px;font-family:var(--fd);font-size:11px;font-weight:700;color:var(--lts);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.mdl-label .req{color:var(--dng500);font-size:14px;line-height:1}
+
+.mdl-input{width:100%;padding:10px 14px;border:1px solid var(--ls3);border-radius:var(--rmd);font-family:var(--fb);font-size:13px;color:var(--ltp);background:var(--ls1);transition:all var(--tf);line-height:1.5}
+.mdl-input:focus{outline:none;border-color:var(--l500);box-shadow:0 0 0 3px var(--lglow)}
+.mdl-input::placeholder{color:var(--c200)}
+.mdl-input:disabled{background:var(--ls2);color:var(--ltt);cursor:not-allowed}
+.mdl-input.rtl{direction:rtl;font-family:var(--fa);text-align:right}
+.mdl-input.error{border-color:var(--dng500);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+
+textarea.mdl-input{resize:vertical;min-height:72px}
+
+select.mdl-input{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238C8C8C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+/* Phone input with prefix */
+.phone-input-wrap{display:flex;gap:0;border:1px solid var(--ls3);border-radius:var(--rmd);overflow:hidden;transition:all var(--tf)}
+.phone-input-wrap:focus-within{border-color:var(--l500);box-shadow:0 0 0 3px var(--lglow)}
+.phone-input-wrap.error{border-color:var(--dng500);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+.phone-prefix{display:flex;align-items:center;gap:4px;padding:0 12px;background:var(--ls2);border-right:1px solid var(--ls3);font-family:var(--fd);font-size:12px;font-weight:600;color:var(--lts);flex-shrink:0;user-select:none}
+.phone-prefix .flag{font-size:16px;line-height:1}
+.phone-input{flex:1;padding:10px 14px;border:none;font-family:var(--fd);font-size:13px;color:var(--ltp);background:transparent;outline:none;letter-spacing:.5px}
+.phone-input::placeholder{color:var(--c200);letter-spacing:0}
+
+/* Inline error message */
+.field-error{display:flex;align-items:center;gap:4px;margin-top:5px;font-family:var(--fd);font-size:11px;font-weight:500;color:var(--dng500);opacity:0;max-height:0;overflow:hidden;transition:all .2s ease}
+.field-error.show{opacity:1;max-height:30px}
+.field-error i{font-size:13px;flex-shrink:0}
+.field-error-text{flex:1}
+/* Bilingual error - English + Arabic */
+.field-error .err-ar{font-family:var(--fa);direction:rtl;margin-right:auto}
+
+/* ── Modal Footer ── */
+.mdl-footer{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:16px 28px;border-top:1px solid var(--ls3);flex-shrink:0;background:var(--ls2);width:100%;min-width:0}
+.mdl-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:var(--rmd);font-family:var(--fd);font-size:13px;font-weight:700;cursor:pointer;transition:all var(--tf);border:none}
+.mdl-btn i{font-size:15px}
+.mdl-btn.ghost{background:transparent;color:var(--lts);border:1px solid var(--ls3)}
+.mdl-btn.ghost:hover{background:var(--ls3);color:var(--ltp)}
+.mdl-btn.primary{background:var(--l500);color:var(--c900);box-shadow:var(--sh1)}
+.mdl-btn.primary:hover:not(:disabled){background:var(--l400);box-shadow:var(--shg);transform:translateY(-1px)}
+.mdl-btn.primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.mdl-btn.danger{background:var(--dng500);color:#fff}
+.mdl-btn.danger:hover{background:#dc2626}
+
+/* Loading spinner inside button */
+.mdl-btn .btn-spinner{width:14px;height:14px;border:2px solid rgba(0,0,0,.2);border-top-color:var(--c900);border-radius:50%;animation:spin .6s linear infinite;display:none}
+.mdl-btn.loading .btn-spinner{display:inline-block}
+.mdl-btn.loading .btn-label{opacity:.4}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══════════════════════════════════════════════════════════════
+   Assign Membership Modal — Plan Cards & Payment Radio
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Plan selector dropdown / list */
+.plan-selector{margin-bottom:16px}
+.plan-select{width:100%;padding:10px 14px;border:1px solid var(--ls3);border-radius:var(--rmd);font-family:var(--fb);font-size:13px;color:var(--ltp);background:var(--ls1);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238C8C8C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;transition:all var(--tf)}
+.plan-select:focus{outline:none;border-color:var(--l500);box-shadow:0 0 0 3px var(--lglow)}
+
+/* Selected plan detail card */
+.plan-detail-card{background:var(--ls2);border:1px solid var(--ls3);border-radius:var(--rmd);padding:14px 16px;margin-top:10px;display:none}
+.plan-detail-card.show{display:block;animation:fadeSlide .2s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.plan-detail-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.plan-detail-row:last-child{margin-bottom:0}
+.plan-detail-label{font-family:var(--fd);font-size:11px;color:var(--ltt);text-transform:uppercase;letter-spacing:.4px}
+.plan-detail-val{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--ltp)}
+.plan-type-badge{display:inline-flex;align-items:center;gap:4px;background:var(--l100);color:var(--l600);font-family:var(--fd);font-size:10px;font-weight:700;padding:3px 8px;border-radius:var(--rpl);text-transform:uppercase;letter-spacing:.3px}
+.plan-price{font-family:var(--fd);font-size:16px;font-weight:700;color:var(--l600)}
+.plan-price .currency{font-size:11px;font-weight:600;color:var(--ltt)}
+.plan-divider{height:1px;background:var(--ls3);margin:8px 0}
+
+/* Loading state for plans dropdown */
+.plan-loading{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:12px;color:var(--ltt)}
+.plan-loading .dot-pulse{display:inline-flex;gap:4px}
+.plan-loading .dot-pulse span{width:6px;height:6px;border-radius:50%;background:var(--l400);animation:pulse 1.2s ease-in-out infinite}
+.plan-loading .dot-pulse span:nth-child(2){animation-delay:.2s}
+.plan-loading .dot-pulse span:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* ── Payment Method Radio Group ── */
+.payment-radios{display:flex;gap:8px;flex-wrap:wrap}
+.pay-radio{flex:1;min-width:100px}
+.pay-radio input{position:absolute;opacity:0;width:0;height:0}
+.pay-radio-label{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 12px;border:2px solid var(--ls3);border-radius:var(--rmd);cursor:pointer;transition:all var(--tf);background:var(--ls1)}
+.pay-radio-label:hover{border-color:var(--l300);background:var(--l100)}
+.pay-radio input:checked+.pay-radio-label{border-color:var(--l500);background:var(--l100);box-shadow:0 0 0 3px var(--lglow)}
+.pay-radio-icon{font-size:22px;color:var(--ltt);transition:color var(--tf)}
+.pay-radio input:checked+.pay-radio-label .pay-radio-icon{color:var(--l600)}
+.pay-radio-name{font-family:var(--fd);font-size:12px;font-weight:600;color:var(--lts)}
+.pay-radio input:checked+.pay-radio-label .pay-radio-name{color:var(--l600)}
+
+/* Payment info note */
+.payment-note{display:flex;align-items:flex-start;gap:8px;padding:10px 14px;border-radius:var(--rmd);background:var(--inf100);margin-top:12px;font-size:12px;color:#1E40AF;opacity:0;max-height:0;overflow:hidden;transition:all .25s ease}
+.payment-note.show{opacity:1;max-height:120px;margin-top:12px}
+.payment-note i{font-size:16px;flex-shrink:0;margin-top:1px}
+.payment-note.warning{background:rgba(251,191,36,.1);color:#92400E}
+.assign-due-hint{font-size:12px;color:var(--ltt,#8C8C8C);margin-top:6px;line-height:1.4}
+.assign-due-hint.has-due{color:#92400E}
+html[data-theme="dark"] .payment-note{color:var(--gfp-inf)}
+html[data-theme="dark"] .payment-note.warning,
+html[data-theme="dark"] .assign-due-hint.has-due{color:var(--gfp-wrn)}
+
+/* ═══════════════════════════════════════════════════════════════
+   Global Error Banner (for API 400/409/500 errors)
+   ═══════════════════════════════════════════════════════════════ */
+.mdl-error-banner{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--rmd);background:var(--dng100);border:1px solid rgba(239,68,68,.2);margin-bottom:16px;opacity:0;max-height:0;overflow:hidden;transition:all .25s ease}
+.mdl-error-banner.show{opacity:1;max-height:80px}
+.mdl-error-banner i{font-size:16px;color:var(--dng500);flex-shrink:0}
+.mdl-error-banner .error-text{font-size:12px;color:#991B1B;font-weight:500}
+.mdl-error-banner .error-text-ar{font-family:var(--fa);font-size:11px;color:#B91C1C;direction:rtl;margin-top:2px}
+html[data-theme="dark"] .mdl-error-banner .error-text,
+html[data-theme="dark"] .mdl-error-banner .error-text-ar{color:var(--gfp-dng)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:300;padding:12px 20px;border-radius:var(--rmd);font-family:var(--fd);font-size:13px;font-weight:600;color:#fff;box-shadow:var(--sh4);transform:translateY(80px);opacity:0;transition:all var(--tb);display:flex;align-items:center;gap:8px}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{background:var(--suc500)}
+.toast.error{background:var(--dng500)}
+.toast i{font-size:16px}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .modal-panel.wide{max-width:100%;margin:0 10px;max-height:95vh}
+  .drawer-panel{max-width:100%}
+  .mdl-hdr,.mdl-body,.mdl-footer{padding-left:20px;padding-right:20px}
+  .mdl-form-row{grid-template-columns:1fr}
+  .payment-radios{flex-direction:column}
+}

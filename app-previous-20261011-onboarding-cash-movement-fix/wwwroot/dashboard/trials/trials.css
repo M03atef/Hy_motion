@@ -1,0 +1,8 @@
+.ops-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ops-grid .span2{grid-column:1/-1}
+@media(max-width:900px){.ops-grid{grid-template-columns:1fr}}
+.seed-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px}
+@media(max-width:700px){.seed-grid{grid-template-columns:1fr}}
+.seed-grid .row{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid var(--ls2);padding-bottom:6px}
+.seed-grid .row span:first-child{color:var(--ltt)}
+.ms-chip{display:inline-flex;padding:4px 10px;border-radius:999px;background:var(--suc100);font-size:12px;font-weight:700}

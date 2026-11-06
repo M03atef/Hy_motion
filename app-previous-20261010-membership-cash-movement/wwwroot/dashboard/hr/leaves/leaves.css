@@ -1,0 +1,6 @@
+@import url('../hr.css');
+
+.tabs{display:flex;gap:8px;margin-bottom:16px;border-bottom:1px solid var(--ls3)}
+.tab-btn{height:40px;padding:0 4px;margin-bottom:-1px;border:none;border-bottom:2px solid transparent;background:none;font:inherit;font-weight:600;font-size:13px;color:var(--ltt);cursor:pointer}
+.tab-btn.act{color:var(--l600);border-bottom-color:var(--l500)}
+.date-input{height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 10px;font:inherit}

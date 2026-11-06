@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Staff Management</title>
+<meta name="description" content="Manage gym staff members, assign roles, and control access for your gym team.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="staff.css?v=8">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+<a class="sb-item act" href="/dashboard/staff/"><i class="ti ti-user-shield"></i>Staff</a>
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">AO</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">Ahmed Owner</div><div class="sb-ft-role" id="userRole">Owner</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current" data-en="Staff Management" data-ar="إدارة الموظفين">Staff Management</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Fitness Hub</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+
+<div class="content">
+  <!-- Owner Guard Banner -->
+  <div class="owner-guard" id="ownerGuard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Staff management is available to gym owners only." data-ar="إدارة الموظفين متاحة لأصحاب الصالة فقط.">Staff management is available to gym owners only.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+
+  <!-- Page Content (owner only) -->
+  <div id="staffContent">
+    <div class="page-header">
+      <div class="ph-left">
+        <h1 class="page-title"><i class="ti ti-user-shield"></i> <span data-en="Staff" data-ar="الموظفون">Staff</span></h1>
+        <p class="page-subtitle" data-en="People, their job on the floor, and what their system role can do. Change job tasks on Roles." data-ar="فريق العمل، وظيفة كل شخص على الأرض، وما يستطيع دوره في النظام فعله. لتغيير مهام الوظيفة اذهب إلى الأدوار.">People, their job on the floor, and what their system role can do. Change job tasks on Roles.</p>
+      </div>
+      <div class="ph-right">
+        <button class="btn-add-staff" id="btnAddStaff"><i class="ti ti-user-plus"></i> <span data-en="Add staff" data-ar="إضافة موظف">Add staff</span></button>
+      </div>
+    </div>
+
+    <div id="staffPrepareHint" class="pg-page-hint" hidden></div>
+
+    <div class="staff-toolbar">
+      <div class="staff-search"><i class="ti ti-search"></i><input id="staffSearch" type="search" placeholder="Search name, number, phone, email" data-en-placeholder="Search name, number, phone, email" data-ar-placeholder="ابحث بالاسم أو الرقم أو الهاتف أو البريد الإلكتروني" autocomplete="off"></div>
+      <select id="staffRoleFilter" aria-label="Role">
+        <option value="" data-en="All roles" data-ar="كل الأدوار">All roles</option>
+        <option value="Owner" data-en="Owner" data-ar="المالك">Owner</option>
+        <option value="Manager" data-en="Manager" data-ar="المدير">Manager</option>
+        <option value="Trainer" data-en="Trainer" data-ar="المدرب">Trainer</option>
+        <option value="Receptionist" data-en="Receptionist" data-ar="موظف الاستقبال">Receptionist</option>
+      </select>
+      <select id="staffDeptFilter" aria-label="Department">
+        <option value="" data-en="All departments" data-ar="كل الأقسام">All departments</option>
+        <option value="Front Desk" data-en="Front Desk" data-ar="مكتب الاستقبال">Front Desk</option>
+        <option value="Sales" data-en="Sales" data-ar="المبيعات">Sales</option>
+        <option value="Training" data-en="Training" data-ar="التدريب">Training</option>
+        <option value="Management" data-en="Management" data-ar="الإدارة">Management</option>
+        <option value="Operations" data-en="Operations" data-ar="العمليات">Operations</option>
+        <option value="Other" data-en="Other" data-ar="أخرى">Other</option>
+      </select>
+      <select id="staffStatusFilter" aria-label="Status">
+        <option value="" data-en="All statuses" data-ar="كل الحالات">All statuses</option>
+        <option value="active" data-en="Active" data-ar="نشط">Active</option>
+        <option value="inactive" data-en="Inactive" data-ar="غير نشط">Inactive</option>
+      </select>
+    </div>
+
+    <div class="table-card">
+      <table class="staff-table">
+        <thead><tr>
+          <th data-en="Staff" data-ar="الموظف">Staff</th>
+          <th data-en="Number" data-ar="الرقم">Number</th>
+          <th data-en="Job title" data-ar="المسمى الوظيفي">Job title</th>
+          <th data-en="Role" data-ar="الدور">Role</th>
+          <th data-en="Department" data-ar="القسم">Department</th>
+          <th data-en="Status" data-ar="الحالة">Status</th>
+          <th data-en="Last login" data-ar="آخر تسجيل دخول">Last login</th>
+          <th data-en="Actions" data-ar="الإجراءات">Actions</th>
+        </tr></thead>
+        <tbody id="staffBody"><tr><td colspan="8" class="loading-cell"><div class="loader"></div><span data-en="Loading staff..." data-ar="جاري تحميل الموظفين...">Loading staff...</span></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Add Staff Modal -->
+<div class="modal-overlay" id="addModalOverlay">
+  <div class="modal" id="addModalContent"></div>
+</div>
+
+<!-- Reset Password Modal -->
+<div class="modal-overlay" id="resetModalOverlay">
+  <div class="modal modal-sm" id="resetModalContent"></div>
+</div>
+
+<!-- Deactivate Confirm -->
+<div class="modal-overlay" id="deactOverlay">
+  <div class="confirm-dialog" id="deactDialog"></div>
+</div>
+
+<!-- Edit Drawer -->
+<div class="drawer-overlay" id="drawerOverlay">
+  <div class="drawer" id="drawerContent"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API_BASE=window.API_BASE||window.GFP_DEFAULT_API_BASE||'/api';
+function getH(){const t=localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');const h={'Content-Type':'application/json','ngrok-skip-browser-warning':'true'};if(t)h['Authorization']='Bearer '+t;return h;}
+async function apiGet(p){const r=await fetch(API_BASE+p,{headers:getH()});if(r.status===401){window.location.href='/auth/login/';return null;}if(!r.ok)return null;return r.json();}
+async function apiPost(p,b){const r=await fetch(API_BASE+p,{method:'POST',headers:getH(),body:JSON.stringify(b)});const d=await r.json().catch(()=>null);return{ok:r.ok,status:r.status,data:d};}
+async function apiPut(p,b){const r=await fetch(API_BASE+p,{method:'PUT',headers:getH(),body:JSON.stringify(b)});const d=await r.json().catch(()=>null);return{ok:r.ok,status:r.status,data:d};}
+async function apiUpload(p,file){const t=localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');const h={'ngrok-skip-browser-warning':'true'};if(t)h['Authorization']='Bearer '+t;const fd=new FormData();fd.append('file',file);const r=await fetch(API_BASE+p,{method:'POST',headers:h,body:fd});const d=await r.json().catch(()=>null);return{ok:r.ok,status:r.status,data:d};}
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();if(!user){window.location.href='/auth/login/';}
+const ini=(user.fullName||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+document.getElementById('userAvatar').textContent=ini;
+document.getElementById('userName').textContent=user.fullName||'User';
+document.getElementById('userRole').textContent=user.role||'Staff';
+document.getElementById('btnLogout').addEventListener('click',function(){['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});window.location.href='/auth/login/';});
+(async()=>{const s=await apiGet('/settings');if(s){document.getElementById('gymName').textContent=s.gymName||'';document.getElementById('gymNameAr').textContent=s.gymNameAr||'';}})();
+</script>
+<script src="staff-rules.js?v=8"></script>
+<script src="staff-app.js?v=10"></script>
+</body>
+</html>

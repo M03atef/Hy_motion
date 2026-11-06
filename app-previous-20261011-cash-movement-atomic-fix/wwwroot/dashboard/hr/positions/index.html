@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Positions</title>
+<script src="../hr-ops-embed.js?v=4"></script>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="positions.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Positions" data-ar="المسميات الوظيفية">Positions</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Positions are available to owners and managers only." data-ar="المسميات الوظيفية متاحة فقط لأصحاب الصالة والمديرين.">Positions are available to owners and managers only.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Positions" data-ar="المسميات الوظيفية">Positions</h1>
+        <p class="page-subtitle" data-en="Job titles your employees can hold (Personal Trainer, Receptionist, ...)." data-ar="المسميات الوظيفية التي يشغلها موظفوك (مدرب شخصي، موظف استقبال، ...).">Job titles your employees can hold (Personal Trainer, Receptionist, ...).</p>
+      </div>
+      <div id="manageActions" hidden>
+        <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New position" data-ar="مسمى وظيفي جديد">New position</span></button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <select id="filterDept" aria-label="Department"><option value="" data-en="All departments" data-ar="كل الأقسام">All departments</option></select>
+      <label class="chk"><input type="checkbox" id="filterInactive"> <span data-en="Include inactive" data-ar="إظهار غير النشط">Include inactive</span></label>
+      <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="posModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="posModalTitle" data-en="New position" data-ar="مسمى وظيفي جديد">New position</h2>
+      <button type="button" class="modal-close" data-close="posModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="posForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Name *" data-ar="الاسم *">Name *</span><input id="pName" required maxlength="80"></label>
+        <label class="fg"><span data-en="Name (AR)" data-ar="الاسم (عربي)">Name (AR)</span><input id="pNameAr" maxlength="80" dir="rtl"></label>
+        <label class="fg"><span data-en="Department" data-ar="القسم">Department</span><select id="pDepartment"><option value="" data-en="None" data-ar="بدون">None</option></select></label>
+        <label class="fg"><span data-en="Default basic salary (EGP)" data-ar="الراتب الأساسي الافتراضي (جنيه)">Default basic salary (EGP)</span><input id="pSalary" type="number" min="0" step="0.01"></label>
+      </div>
+      <label class="fg"><span data-en="Description" data-ar="الوصف">Description</span><textarea id="pDescription" rows="2" maxlength="500"></textarea></label>
+      <label class="chk"><input type="checkbox" id="pActive" checked> <span data-en="Active" data-ar="نشط">Active</span></label>
+      <p class="form-hint" id="posHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="posModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSavePos" data-en="Save" data-ar="حفظ">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="positions-app.js?v=1"></script>
+</body>
+</html>

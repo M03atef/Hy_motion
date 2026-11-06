@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyMotion — Member Detail</title>
+<meta name="description" content="View and manage individual gym member details, membership, attendance and history.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c600:#3A3A3A;--c500:#4A4A4A;
+  --c400:#6B6B6B;--c300:#8C8C8C;--c200:#B0B0B0;--c100:#D4D4D4;--c50:#F0F0F0;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;--l200:#D8F5A6;
+  --l100:#EDFCD8;--lglow:rgba(160,224,64,0.25);
+  --t700:#0A4D4D;--t600:#0D6B6B;--t500:#148F8F;--t400:#3DB5B5;
+  --suc500:#22C55E;--suc100:#DCFCE7;--suctxt:#166534;
+  --dng500:#EF4444;--dng100:#FEE2E2;
+  --wrn100:#FEF3C7;--wrn500:#F59E0B;--wrn700:#92400E;
+  --inf500:#3B82F6;--inf100:#DBEAFE;
+  --frz500:#22D3EE;--frz100:#CFFAFE;
+  --lbg:#FAFAFA;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#EBEBEB;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --dtp:#F0F0F0;--dts:#B0B0B0;--dtt:#6B6B6B;
+  --fd:'Cairo',sans-serif;--fb:'Cairo',sans-serif;
+  --fa:'Cairo',sans-serif;
+  --rsm:6px;--rmd:10px;--rlg:16px;--rxl:24px;--rpl:9999px;
+  --sh1:0 1px 2px rgba(0,0,0,.06);--sh2:0 2px 8px rgba(0,0,0,.08);
+  --sh3:0 4px 16px rgba(0,0,0,.12);--sh4:0 8px 32px rgba(0,0,0,.18);
+  --shg:0 0 20px var(--lglow);--tf:150ms ease;--tb:250ms ease;--sidebar-w:220px;
+}
+html,body{height:100%}
+body{font-family:var(--fb);background:var(--lbg);color:var(--ltp);line-height:1.6;-webkit-font-smoothing:antialiased}
+.app{display:flex;height:100vh}
+/* ── Sidebar (shared) ── */
+.sidebar{width:var(--sidebar-w);background:var(--c900);color:var(--dtp);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sb-hdr{padding:20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--c700)}
+.sb-hdr svg{width:32px;height:32px;flex-shrink:0}
+.sb-hdr span{font-family:var(--fd);font-weight:700;font-size:16px;color:var(--l400)}
+.sb-nav{padding:8px 0;flex:1}
+.sb-item{display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;transition:all var(--tf);border-left:3px solid transparent;color:var(--c300);text-decoration:none}
+.sb-item:hover{background:var(--c700)}
+.sb-item.act{background:rgba(160,224,64,.08);color:var(--l400);border-left-color:var(--l500)}
+.sb-item i{font-size:18px;opacity:.7;width:20px;text-align:center}
+.sb-item.act i{opacity:1}
+.sb-item .nav-badge{margin-left:auto;background:var(--dng500);color:#fff;font-size:9px;font-weight:700;min-width:18px;height:18px;border-radius:var(--rpl);display:flex;align-items:center;justify-content:center;padding:0 5px}
+.sb-ft{padding:16px;border-top:1px solid var(--c700);display:flex;align-items:center;gap:12px}
+.sb-ft-info{flex:1;min-width:0}
+.sb-ft-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-ft-role{font-size:11px;color:var(--c400)}
+.sb-logout{background:none;border:none;color:var(--c400);cursor:pointer;font-size:18px;padding:4px;transition:color var(--tf)}
+.sb-logout:hover{color:var(--dng500)}
+.av-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:11px;flex-shrink:0;text-transform:uppercase;background:var(--l300);color:var(--c900)}
+/* ── Main ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:60px;background:var(--ls1);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:50}
+.tb-left{display:flex;align-items:center;gap:16px}
+.tb-breadcrumb{font-family:var(--fd);font-size:14px;color:var(--lts)}
+.tb-breadcrumb a{color:var(--ltt);text-decoration:none;font-weight:400}
+.tb-breadcrumb a:hover{color:var(--l600)}
+.tb-breadcrumb .sep{margin:0 6px;color:var(--ltt)}
+.tb-breadcrumb .cur{font-weight:600;color:var(--ltp)}
+.tb-right{display:flex;align-items:center;gap:12px}
+.tb-gym-name{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--lts)}
+.tb-gym-name-ar{font-family:var(--fa);font-size:12px;color:var(--ltt);direction:rtl}
+.content{padding:24px 32px;flex:1}
+.mob-toggle{display:none!important;width:36px;height:36px;align-items:center;justify-content:center;border:none;background:var(--ls2);border-radius:var(--rmd);cursor:pointer;font-size:18px;color:var(--lts)}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}.content{padding:16px}.topbar{padding:0 16px}
+  .mob-toggle{display:flex!important}
+}
+/* Action bar */
+.action-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.action-bar-left{display:flex;align-items:center;gap:10px}
+.back-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border:1px solid var(--ls3);border-radius:var(--rmd);background:var(--ls1);font-family:var(--fd);font-size:13px;font-weight:600;color:var(--lts);cursor:pointer;text-decoration:none;transition:all var(--tf)}
+.back-btn:hover{border-color:var(--l500);color:var(--l600)}
+.action-bar-right{display:flex;gap:10px}
+.btn-action{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--rmd);font-family:var(--fd);font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all var(--tf)}
+.btn-action.primary{background:var(--l500);color:var(--c900)}
+.btn-action.primary:hover{background:var(--l400);box-shadow:var(--shg)}
+.btn-action.outline{background:var(--ls1);color:var(--lts);border:1px solid var(--ls3)}
+.btn-action.outline:hover{border-color:var(--l500);color:var(--l600)}
+.btn-action i{font-size:16px}
+</style>
+<link rel="stylesheet" href="member-detail.css?v=assign-card1">
+<link rel="stylesheet" href="../member-modals.css?v=assign-pay2">
+<link rel="stylesheet" href="/shared/refund-action.css?v=5">
+</head>
+<body>
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-hdr">
+      <svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg>
+      <span>HyMotion</span>
+    </div>
+    <nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+    <div class="sb-ft">
+      <div class="av-sm" id="userAvatar">AO</div>
+      <div class="sb-ft-info">
+        <div class="sb-ft-name" id="userName">Ahmed Owner</div>
+        <div class="sb-ft-role" id="userRole">Owner</div>
+      </div>
+      <button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="mob-toggle" id="mobToggle"><i class="ti ti-menu-2"></i></button>
+        <div class="tb-breadcrumb">
+          <a href="/dashboard/" data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</a>
+          <span class="sep">/</span>
+          <a href="/dashboard/members/" data-en="Members" data-ar="الأعضاء">Members</a>
+          <span class="sep">/</span>
+          <span class="cur" id="breadcrumbName">Loading...</span>
+        </div>
+      </div>
+      <div class="tb-right">
+        <div>
+          <div class="tb-gym-name" id="gymName">FitZone Cairo</div>
+          <div class="tb-gym-name-ar" id="gymNameAr">فيت زون القاهرة</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Action Bar -->
+      <div class="action-bar">
+        <div class="action-bar-left">
+          <a class="back-btn" href="/dashboard/members/"><i class="ti ti-arrow-left"></i> <span data-en="Back to Members" data-ar="العودة للأعضاء">Back to Members</span></a>
+        </div>
+        <div class="action-bar-right">
+          <button class="btn-action outline" id="btnReprintCard" type="button" hidden><i class="ti ti-printer"></i> <span data-en="Reprint card" data-ar="إعادة طباعة الكارنيه">Reprint card</span></button>
+          <button class="btn-action outline" id="btnNotify"><i class="ti ti-bell"></i> <span data-en="Send Notification" data-ar="إرسال إشعار">Send Notification</span></button>
+          <button class="btn-action primary" id="btnEdit"><i class="ti ti-edit"></i> <span data-en="Edit Member" data-ar="تعديل العضو">Edit Member</span></button>
+        </div>
+      </div>
+
+      <!-- 2-Column Layout -->
+      <div class="detail-layout">
+
+        <!-- ── LEFT: Profile Card ── -->
+        <div>
+          <!-- Skeleton -->
+          <div id="skeletonProfile" class="profile-card sk">
+            <div class="sk-circ"></div>
+            <div class="sk-line w60" style="margin:0 auto 8px"></div>
+            <div class="sk-line w40" style="margin:0 auto 20px"></div>
+            <div class="sk-line w80"></div><div class="sk-line w60"></div><div class="sk-line w80"></div>
+          </div>
+          <!-- Profile Content -->
+          <div id="profileContent" style="display:none">
+            <div class="profile-card">
+              <div class="profile-av-wrap">
+                <div class="profile-av" id="profileAv">AA</div>
+                <div class="mem-badge" id="profileMemberNum">#GYM-001</div>
+              </div>
+              <div class="profile-name" id="profileNameEn">Ahmed Ali</div>
+              <div class="profile-name-ar" id="profileNameAr">أحمد علي</div>
+
+              <!-- Status toggle -->
+              <div class="profile-status">
+                <span class="status-dot active" id="profileStatusDot"></span>
+                <span class="status-label" id="statusLabel">Active</span>
+                <label class="status-toggle" title="Toggle active status">
+                  <input type="checkbox" id="statusToggle" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <!-- Info rows -->
+              <div class="profile-info">
+                <div class="info-row"><i class="ti ti-phone"></i><a href="tel:+" id="profilePhone">—</a></div>
+                <div class="info-row"><i class="ti ti-mail"></i><a href="mailto:" id="profileEmail">—</a></div>
+                <div class="info-row"><i class="ti ti-cake"></i><span class="info-val" id="profileDob">—</span></div>
+                <div class="info-row"><i class="ti ti-calendar-plus"></i><span>Joined <span class="info-val" id="profileJoin">—</span></span></div>
+              </div>
+
+              <div class="p-divider"></div>
+
+              <!-- Physical access card (Assigned AccessCard.Code, else MemberNumber legacy) -->
+              <div class="access-card-block" id="accessCardBlock">
+                <div class="access-card-hdr">
+                  <i class="ti ti-id"></i>
+                  <div>
+                    <div class="access-card-title" data-en="Access card" data-ar="كارنيه الدخول">Access card</div>
+                    <div class="access-card-sub" id="accessCardSub" data-en="Assign a blank PVC card from stock" data-ar="عيّن كارنيه PVC من المخزون">Assign a blank PVC card from stock</div>
+                  </div>
+                </div>
+                <div class="access-card-status" id="accessCardStatusRow" hidden>
+                  <span class="access-card-status-pill" id="accessCardStatusPill">—</span>
+                </div>
+                <div class="access-barcode-wrap" id="accessBarcodeWrap" hidden>
+                  <svg id="accessBarcodeSvg" aria-label="Access card barcode"></svg>
+                  <div class="access-barcode-num" id="accessBarcodeNum">—</div>
+                </div>
+                <div class="access-card-empty" id="accessCardEmpty" hidden style="padding:12px 0 4px;font-size:13px;color:var(--lts);line-height:1.45">
+                  <span data-en="No PVC card assigned yet." data-ar="لا يوجد كارنيه معيَّن بعد.">No PVC card assigned yet.</span>
+                </div>
+                <div class="access-card-actions" id="accessCardActions">
+                  <button type="button" class="btn-ms primary" id="btnAssignCard" hidden>
+                    <i class="ti ti-link"></i>
+                    <span data-en="Assign card" data-ar="تعيين كارنيه">Assign card</span>
+                  </button>
+                  <button type="button" class="btn-ms outline" id="btnReplaceCard" hidden>
+                    <i class="ti ti-replace"></i>
+                    <span data-en="Replace card" data-ar="استبدال الكارنيه">Replace card</span>
+                  </button>
+                  <button type="button" class="btn-ms outline danger" id="btnMarkCardLost" hidden>
+                    <i class="ti ti-alert-triangle"></i>
+                    <span data-en="Mark lost" data-ar="تبليغ مفقود">Mark lost</span>
+                  </button>
+                  <button type="button" class="btn-ms outline" id="btnReprintCard2" hidden>
+                    <i class="ti ti-printer"></i>
+                    <span data-en="Reprint barcode card" data-ar="إعادة طباعة كارنيه الباركود">Reprint barcode card</span>
+                  </button>
+                </div>
+                <div class="access-card-scan-row" id="accessCardScanRow" hidden>
+                  <input type="text" id="accessCardScanInput" class="access-card-scan-input" autocomplete="off"
+                    placeholder="Scan Available card…" data-en-placeholder="Scan Available card…" data-ar-placeholder="امسح كارنيه متاح…">
+                  <button type="button" class="btn-ms primary" id="btnConfirmCardScan">
+                    <span data-en="Confirm" data-ar="تأكيد">Confirm</span>
+                  </button>
+                  <button type="button" class="btn-ms outline" id="btnCancelCardScan">
+                    <span data-en="Cancel" data-ar="إلغاء">Cancel</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="p-divider"></div>
+
+              <!-- Invitation remaining -->
+              <div class="quota-chip">
+                <i class="ti ti-user-plus"></i>
+                <span class="q-label" data-en="Invitations left" data-ar="دعوات متبقية">Invitations left</span>
+                <span class="q-num" id="profileQuota">0</span>
+              </div>
+
+              <!-- Sale outstanding (buyer = this GymMember; not membership owner) -->
+              <div class="fin-360" id="fin360" hidden>
+                <div class="fin-360-hdr">
+                  <i class="ti ti-receipt"></i>
+                  <span data-en="Financial" data-ar="المالية">Financial</span>
+                </div>
+                <div class="fin-360-row">
+                  <span class="fin-360-lbl" data-en="Outstanding" data-ar="المستحق">Outstanding</span>
+                  <strong class="fin-360-val" id="fin360Outstanding">—</strong>
+                </div>
+                <button type="button" class="btn-ms primary fin-360-collect" id="btnCollectPayment" hidden>
+                  <i class="ti ti-cash"></i>
+                  <span data-en="Collect Payment" data-ar="تحصيل دفعة">Collect Payment</span>
+                </button>
+                <a class="fin-360-link" id="fin360Invoices" href="/dashboard/invoices/">
+                  <span data-en="View invoices" data-ar="عرض الفواتير">View invoices</span>
+                  <i class="ti ti-chevron-right"></i>
+                </a>
+                <div class="fin-360-row" id="fin360RefundRow" hidden>
+                  <span class="fin-360-lbl" data-en="Refund history" data-ar="سجل الاسترداد">Refund history</span>
+                  <strong class="fin-360-val fin-360-val-sm" id="fin360Refunds">—</strong>
+                </div>
+                <ul class="fin-360-hist" id="fin360RefundList" hidden></ul>
+              </div>
+
+              <!-- Member App activation -->
+              <div class="member-app-card" id="memberAppCard">
+                <div class="member-app-hdr">
+                  <i class="ti ti-device-mobile"></i>
+                  <div>
+                    <div class="member-app-title" data-en="Member App" data-ar="تطبيق العضو">Member App</div>
+                    <div class="member-app-status" id="memberAppStatus" data-en="Status: —" data-ar="الحالة: —">Status: —</div>
+                  </div>
+                </div>
+                <div class="member-app-reveal" id="memberAppReveal" hidden>
+                  <div class="member-app-code-row">
+                    <code class="member-app-code" id="memberAppCode"></code>
+                    <button type="button" class="member-app-copy" id="btnCopyAppCode" title="Copy">
+                      <i class="ti ti-copy"></i>
+                    </button>
+                  </div>
+                  <div class="member-app-expiry" id="memberAppExpiry"></div>
+                  <div class="member-app-warn" data-en="Show once to the member — not stored again" data-ar="الكود يظهر مرة واحدة فقط للعضو">Show once to the member — not stored again</div>
+                </div>
+                <button type="button" class="btn-ms primary member-app-btn" id="btnGenAppCode" hidden>
+                  <span class="btn-spinner" style="display:none"></span>
+                  <span class="btn-label" data-en="Generate Activation Code" data-ar="إنشاء كود التفعيل">Generate Activation Code</span>
+                </button>
+              </div>
+
+              <!-- Quick actions -->
+              <div class="quick-actions">
+                <button class="qa-btn" id="btnEdit2"><i class="ti ti-edit"></i> <span data-en="Edit" data-ar="تعديل">Edit</span></button>
+                <button class="qa-btn danger" id="btnDeactivate"><i class="ti ti-trash"></i> <span data-en="Deactivate" data-ar="إلغاء التفعيل">Deactivate</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RIGHT: Tabs ── -->
+        <div>
+          <!-- Skeleton -->
+          <div id="skeletonTabs" class="tabs-card sk" style="padding:24px">
+            <div class="sk-block" style="height:48px;margin-bottom:20px;border-radius:var(--rmd)"></div>
+            <div class="sk-block"></div>
+          </div>
+          <!-- Tabs Content -->
+          <div id="tabsContent" style="display:none">
+            <div class="tabs-card">
+              <!-- Tab bar -->
+              <div class="tab-bar">
+                <button class="tab-btn act" data-tab="tabMs"><i class="ti ti-id-badge"></i> <span data-en="Membership" data-ar="العضوية">Membership</span></button>
+                <button class="tab-btn" data-tab="tabInv"><i class="ti ti-user-plus"></i> <span data-en="Invitations" data-ar="الدعوات">Invitations</span></button>
+                <button class="tab-btn" data-tab="tabAtt"><i class="ti ti-door-enter"></i> <span data-en="Attendance" data-ar="الحضور">Attendance</span></button>
+                <button class="tab-btn" data-tab="tabOrders"><i class="ti ti-shopping-bag"></i> <span data-en="Orders" data-ar="الطلبات">Orders</span></button>
+                <button class="tab-btn" data-tab="tabHist"><i class="ti ti-history"></i> <span data-en="History" data-ar="السجل">History</span></button>
+              </div>
+
+              <!-- TAB 1: Membership -->
+              <div class="tab-pane act" id="tabMs">
+                <div id="membershipContent">
+                  <div class="sk sk-block"></div>
+                </div>
+                <div id="recentAttWrap" style="display:none;margin-top:20px;padding-top:16px;border-top:1px solid var(--ls3,#E8E8E8)">
+                  <div style="font-size:12px;font-weight:700;color:var(--lts,#4A4A4A);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                    <i class="ti ti-clock"></i>
+                    <span data-en="Recent attendance" data-ar="آخر الحضور">Recent attendance</span>
+                    <span style="font-weight:500;color:var(--ltt,#8C8C8C)" data-en="(last 5)" data-ar="(آخر 5)">(last 5)</span>
+                  </div>
+                  <div id="recentAttList"></div>
+                </div>
+              </div>
+
+              <!-- TAB: Invitations -->
+              <div class="tab-pane" id="tabInv">
+                <div class="inv360-kpis" id="inv360Kpis" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px">
+                  <div class="kpi" style="background:var(--ls2);border-radius:12px;padding:12px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ltt)" data-en="Total" data-ar="الإجمالي">Total</span><strong id="inv360Total" style="font-family:var(--fd);font-size:20px;display:block">0</strong></div>
+                  <div class="kpi" style="background:var(--ls2);border-radius:12px;padding:12px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ltt)" data-en="New" data-ar="جديد">New</span><strong id="inv360New" style="font-family:var(--fd);font-size:20px;display:block">0</strong></div>
+                  <div class="kpi" style="background:var(--ls2);border-radius:12px;padding:12px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ltt)" data-en="Contacted" data-ar="تم التواصل">Contacted</span><strong id="inv360Contacted" style="font-family:var(--fd);font-size:20px;display:block">0</strong></div>
+                  <div class="kpi" style="background:var(--ls2);border-radius:12px;padding:12px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ltt)" data-en="Interested" data-ar="مهتم">Interested</span><strong id="inv360Interested" style="font-family:var(--fd);font-size:20px;display:block">0</strong></div>
+                  <div class="kpi" style="background:var(--ls2);border-radius:12px;padding:12px"><span style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ltt)" data-en="Converted" data-ar="تم التحويل">Converted</span><strong id="inv360Converted" style="font-family:var(--fd);font-size:20px;display:block">0</strong></div>
+                </div>
+                <form id="inv360Form" style="background:var(--ls2);border-radius:12px;padding:14px;margin-bottom:14px">
+                  <div style="font-size:13px;font-weight:700;margin-bottom:10px" data-en="Invite a friend for this member" data-ar="ادعُ صديقاً لهذا العضو">Invite a friend for this member</div>
+                  <p id="inv360QuotaHint" style="font-size:12px;color:var(--ltt);margin:0 0 10px" data-en="Quota loads with the list." data-ar="يتم تحميل الحصة مع القائمة.">Quota loads with the list.</p>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                    <input id="inv360Name" type="text" maxlength="200"
+                      placeholder="Friend's name"
+                      data-en-placeholder="Friend's name"
+                      data-ar-placeholder="اسم الصديق"
+                      style="height:40px;border:1px solid var(--ls3);border-radius:10px;padding:0 10px;font:inherit">
+                    <input id="inv360Phone" type="tel" maxlength="20"
+                      placeholder="Phone"
+                      data-en-placeholder="Phone"
+                      data-ar-placeholder="الهاتف"
+                      style="height:40px;border:1px solid var(--ls3);border-radius:10px;padding:0 10px;font:inherit">
+                    <input id="inv360Nid" type="text" maxlength="14"
+                      placeholder="National ID (optional)"
+                      data-en-placeholder="National ID (optional)"
+                      data-ar-placeholder="الرقم القومي (اختياري)"
+                      style="height:40px;border:1px solid var(--ls3);border-radius:10px;padding:0 10px;font:inherit">
+                    <input id="inv360Notes" type="text" maxlength="1000"
+                      placeholder="Notes (optional)"
+                      data-en-placeholder="Notes (optional)"
+                      data-ar-placeholder="ملاحظات (اختياري)"
+                      style="height:40px;border:1px solid var(--ls3);border-radius:10px;padding:0 10px;font:inherit">
+                  </div>
+                  <button type="submit" class="btn-action primary" id="btnInv360Create" style="margin-top:10px"><i class="ti ti-user-plus"></i> <span data-en="Create invitation" data-ar="إنشاء دعوة">Create invitation</span></button>
+                </form>
+                <div style="overflow-x:auto">
+                  <table class="att-tbl">
+                    <thead>
+                      <tr>
+                        <th data-en="Name" data-ar="الاسم">Name</th>
+                        <th data-en="Phone" data-ar="الهاتف">Phone</th>
+                        <th data-en="Status" data-ar="الحالة">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="inv360Tbody"></tbody>
+                  </table>
+                </div>
+                <div class="no-data" id="inv360Empty" style="display:none">
+                  <i class="ti ti-user-plus"></i>
+                  <p data-en="No invitations yet" data-ar="لا توجد دعوات بعد">No invitations yet</p>
+                </div>
+              </div>
+
+              <!-- TAB 2: Attendance -->
+              <div class="tab-pane" id="tabAtt">
+                <!-- Heatmap -->
+                <div class="heatmap-wrap">
+                  <div class="heatmap-title" data-en="12-Week Attendance Pattern" data-ar="نمط الحضور — ١٢ أسبوعاً">12-Week Attendance Pattern</div>
+                  <div class="heatmap" id="heatmap"></div>
+                  <div class="hm-legend">
+                    <span data-en="Less" data-ar="أقل">Less</span>
+                    <div class="hm-day"></div>
+                    <div class="hm-day l1"></div>
+                    <div class="hm-day l2"></div>
+                    <div class="hm-day l3"></div>
+                    <span data-en="More" data-ar="أكثر">More</span>
+                  </div>
+                </div>
+                <!-- Table -->
+                <div style="overflow-x:auto">
+                  <table class="att-tbl">
+                    <thead>
+                      <tr>
+                        <th data-en="Date" data-ar="التاريخ">Date</th>
+                        <th data-en="Check In" data-ar="دخول">Check In</th>
+                        <th data-en="Check Out" data-ar="خروج">Check Out</th>
+                        <th data-en="Method" data-ar="الطريقة">Method</th>
+                        <th data-en="Duration" data-ar="المدة">Duration</th>
+                      </tr>
+                    </thead>
+                    <tbody id="attTbody"></tbody>
+                  </table>
+                </div>
+                <div class="no-data" id="attEmpty" style="display:none">
+                  <i class="ti ti-door-enter"></i>
+                  <p data-en="No attendance records found" data-ar="لا توجد سجلات حضور">No attendance records found</p>
+                </div>
+              </div>
+
+              <!-- TAB 3: Member Orders -->
+              <div class="tab-pane" id="tabOrders">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px">
+                  <div style="font-size:13px;color:var(--ltt)" data-en="Orders placed from the Member App" data-ar="طلبات من تطبيق العضو">Orders placed from the Member App</div>
+                  <a class="btn secondary" href="/dashboard/member-orders/" style="height:34px;padding:0 10px;font-size:12px">
+                    <i class="ti ti-shopping-bag"></i> <span data-en="Inbox" data-ar="الوارد">Inbox</span>
+                  </a>
+                </div>
+                <div style="overflow-x:auto">
+                  <table class="att-tbl">
+                    <thead>
+                      <tr>
+                        <th data-en="Order #" data-ar="رقم الطلب">Order #</th>
+                        <th data-en="Total" data-ar="الإجمالي">Total</th>
+                        <th data-en="Status" data-ar="الحالة">Status</th>
+                        <th data-en="Created" data-ar="أُنشئ">Created</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody id="ordersTbody"></tbody>
+                  </table>
+                </div>
+                <div class="no-data" id="ordersEmpty" style="display:none">
+                  <i class="ti ti-shopping-bag"></i>
+                  <p data-en="No member orders yet" data-ar="لا توجد طلبات بعد">No member orders yet</p>
+                </div>
+              </div>
+
+              <!-- TAB 4: History -->
+              <div class="tab-pane" id="tabHist">
+                <div class="timeline" id="histTimeline">
+                  <div class="sk sk-block" style="height:80px;margin-bottom:12px"></div>
+                  <div class="sk sk-block" style="height:80px;margin-bottom:12px"></div>
+                  <div class="sk sk-block" style="height:80px"></div>
+                </div>
+              </div>
+
+            </div><!-- /tabs-card -->
+          </div><!-- /tabsContent -->
+        </div><!-- /right -->
+
+      </div><!-- /detail-layout -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ═══ MODALS ═══ -->
+
+<!-- Freeze Modal -->
+<div class="modal-overlay" id="modalFreeze">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title"><i class="ti ti-snowflake" style="color:var(--frz500)"></i> Freeze Membership</div>
+      <button class="modal-close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Freeze Until *</label>
+      <input type="date" class="form-input" id="freezeUntil">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Reason (optional)</label>
+      <input type="text" class="form-input" id="freezeReason" placeholder="e.g. Travel / سفر" data-en-placeholder="e.g. Travel / سفر" data-ar-placeholder="مثال: سفر">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalFreeze')">Cancel</button>
+      <button class="btn-confirm freeze" id="btnFreeze" style="background:var(--frz500);color:#fff"><i class="ti ti-snowflake"></i> Freeze</button>
+    </div>
+  </div>
+</div>
+
+<!-- Deactivate Modal — type Delete to confirm -->
+<div class="modal-overlay" id="modalDeactivate">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="deactivateModalTitle" data-en="Deactivate Member?" data-ar="إلغاء تفعيل العضو؟">Deactivate Member?</div>
+      <button class="modal-close"><i class="ti ti-x"></i></button>
+    </div>
+    <p style="font-size:13px;color:var(--lts);margin-bottom:16px" data-en="This sets the account to inactive (cannot check in). Existing membership plans are not cancelled or expired. You can Activate the account again later without assigning a new plan. Owner only." data-ar="هذا يوقف الحساب (لا يمكن تسجيل الدخول). خطط العضوية الحالية لا تُلغى ولا تنتهي. يمكن تفعيل الحساب لاحقاً دون تعيين خطة جديدة. للمالك فقط.">This sets the <strong>account</strong> to inactive (cannot check in). Existing membership plans are <strong>not</strong> cancelled or expired. You can Activate the account again later without assigning a new plan. Owner only.</p>
+    <div class="confirm-type-box">
+      <label class="form-label" for="deactivateConfirmInput" data-en="Type Delete to confirm" data-ar="اكتب Delete للتأكيد">Type <strong>Delete</strong> to confirm</label>
+      <input type="text" class="form-input" id="deactivateConfirmInput" autocomplete="off" spellcheck="false" dir="ltr" placeholder="Delete" data-en-placeholder="Delete" data-ar-placeholder="Delete">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalDeactivate')"><span data-en="Cancel" data-ar="إلغاء">Cancel</span></button>
+      <button class="btn-confirm danger" id="btnConfirmDeactivate" disabled><i class="ti ti-trash"></i> <span data-en="Deactivate" data-ar="إلغاء التفعيل">Deactivate</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel membership (not a refund, not archive) -->
+<div class="modal-overlay" id="modalCancelMs">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title"><i class="ti ti-ban" style="color:var(--dng500)"></i> Cancel membership?</div>
+      <button class="modal-close"><i class="ti ti-x"></i></button>
+    </div>
+    <p style="font-size:13px;color:var(--lts);line-height:1.5;margin-bottom:12px">
+      <strong id="cancelMsPlan">This plan</strong> stops today. Check-in and invitations close. The plan stays in history.
+    </p>
+    <div class="ms-note warn" style="margin-bottom:16px">
+      <strong>Not a refund.</strong> Cash already taken stays with the gym. Remaining on this plan will not be collected. Refund the sale separately if they should get money back.
+    </div>
+    <div class="mdl-error-banner" id="cancelMsError"><i class="ti ti-alert-circle"></i><span class="error-text"></span></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalCancelMs')">Keep plan</button>
+      <button class="btn-confirm danger" id="btnConfirmCancelMs"><i class="ti ti-ban"></i> Cancel membership</button>
+    </div>
+  </div>
+</div>
+
+<!-- Renew Modal (§4 — transitionMode + renew pay methods include vodafone_cash) -->
+<div class="modal-overlay" id="modalRenew">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title"><i class="ti ti-refresh" style="color:var(--l500)"></i> <span data-en="Renew Membership" data-ar="تجديد العضوية">Renew Membership</span></div>
+      <button class="modal-close"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="renewModeBanner" style="font-size:12px;color:var(--ltt);margin-bottom:8px"></div>
+    <div id="renewPreview" style="font-size:12px;color:var(--l600);margin-bottom:12px"></div>
+    <div class="form-group" id="renewTransitionWrap" style="display:none">
+      <label class="form-label" data-en="When current plan still covers today" data-ar="لما الخطة الحالية لسه سارية النهاردة">When current plan still covers today</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+        <button type="button" class="btn-ms primary" id="renewTransCancel" data-mode="cancel_and_switch"><span data-en="Cancel &amp; switch (starts today)" data-ar="إلغاء والتبديل (تبدأ النهاردة)">Cancel &amp; switch (starts today)</span></button>
+        <button type="button" class="btn-ms" id="renewTransQueue" data-mode="queue_next"><span data-en="Queue next plan" data-ar="حجز الخطة الجاية">Queue next plan</span></button>
+      </div>
+      <details>
+        <summary style="cursor:pointer;font-size:12px;color:var(--ltt)" data-en="Advanced" data-ar="متقدم">Advanced</summary>
+        <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin-top:8px">
+          <input type="checkbox" id="renewRollover">
+          <span data-en="Add remaining days onto new plan (manual rollover)" data-ar="أضف الأيام المتبقية على الخطة الجديدة (ترحيل يدوي)">Add remaining days onto new plan (manual rollover)</span>
+        </label>
+      </details>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-en="Plan" data-ar="الخطة">Plan</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <button type="button" class="btn-ms primary" id="renewModeSame"><span data-en="Same plan" data-ar="نفس الخطة">Same plan</span></button>
+        <button type="button" class="btn-ms" id="renewModeDiff"><span data-en="Different plan" data-ar="خطة مختلفة">Different plan</span></button>
+      </div>
+      <select class="form-input" id="renewPlanSelect" style="display:none">
+        <option value="" data-en="— Select a plan —" data-ar="— اختر خطة —">— Select a plan —</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-en="Payment Method *" data-ar="طريقة الدفع *">Payment Method *</label>
+      <select class="form-input" id="renewPayment">
+        <option value="cash" data-en="Cash" data-ar="نقدًا">Cash</option>
+        <option value="paymob">Paymob</option>
+        <option value="fawry">Fawry</option>
+        <option value="vodafone_cash" data-en="Vodafone Cash" data-ar="فودافون كاش">Vodafone Cash</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-en="Amount Paid (EGP) *" data-ar="المبلغ المدفوع (جنيه) *">Amount Paid (EGP) *</label>
+      <input type="number" class="form-input" id="renewAmount" placeholder="500" min="0" step="0.01">
+    </div>
+    <div id="renewPayHint" style="font-size:12px;color:var(--ltt);margin-bottom:12px"></div>
+    <div class="mdl-error-banner" id="renewErrorBanner" style="display:none"><i class="ti ti-alert-circle"></i><span class="error-text"></span></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalRenew')"><span data-en="Cancel" data-ar="إلغاء">Cancel</span></button>
+      <button class="btn-confirm primary" id="btnDoRenew"><i class="ti ti-refresh"></i> <span data-en="Renew" data-ar="تجديد">Renew</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Membership Modal — Full Implementation -->
+<div class="modal-overlay" id="modalAssign">
+  <div class="modal-panel wide">
+    <!-- Header -->
+    <div class="mdl-hdr">
+      <div class="mdl-title-wrap">
+        <div class="mdl-title"><i class="ti ti-id-badge" style="color:var(--l500)"></i> <span data-en="Assign Membership Plan" data-ar="تعيين خطة اشتراك">Assign Membership Plan</span></div>
+        <div class="mdl-subtitle">تعيين خطة اشتراك</div>
+      </div>
+      <button class="mdl-close"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- Body -->
+    <div class="mdl-body">
+      <!-- Error banner -->
+      <div class="mdl-error-banner" id="assignErrorBanner">
+        <i class="ti ti-alert-circle"></i>
+        <div><div class="error-text"></div><div class="error-text-ar" style="display:none"></div></div>
+      </div>
+
+      <!-- Plan Selector -->
+      <div class="form-section">
+        <div class="section-hdr">
+          <div class="section-title"><i class="ti ti-package"></i> <span data-en="Select Plan" data-ar="اختر الخطة">Select Plan</span></div>
+        </div>
+
+        <!-- Loading state -->
+        <div class="plan-loading" id="planLoading" style="display:none">
+          <div class="dot-pulse"><span></span><span></span><span></span></div>
+          Loading available plans...
+        </div>
+
+        <div class="mdl-form-group">
+          <label class="mdl-label"><span data-en="Membership Plan" data-ar="خطة العضوية">Membership Plan</span> <span class="req">*</span></label>
+          <select class="mdl-input" id="assignPlanSelect">
+            <option value="">— <span data-en="Select a plan" data-ar="اختر خطة">اختر خطة</span> —</option>
+          </select>
+        </div>
+
+        <!-- Plan detail card (shown on selection) -->
+        <div class="plan-detail-card" id="planDetailCard">
+          <div class="plan-detail-row">
+            <span class="plan-detail-label" data-en="Plan" data-ar="الخطة">Plan</span>
+            <span class="plan-detail-val pdc-name"></span>
+          </div>
+          <div class="plan-detail-row">
+            <span class="plan-detail-label">الخطة</span>
+            <span class="plan-detail-val pdc-name-ar" style="font-family:var(--fa);direction:rtl"></span>
+          </div>
+          <div class="plan-divider"></div>
+          <div class="plan-detail-row">
+            <span class="plan-detail-label" data-en="Type" data-ar="النوع">Type</span>
+            <span class="plan-type-badge pdc-type"></span>
+          </div>
+          <div class="plan-detail-row">
+            <span class="plan-detail-label" data-en="Duration" data-ar="المدة">Duration</span>
+            <span class="plan-detail-val pdc-duration"></span>
+          </div>
+          <div class="plan-divider"></div>
+          <div class="plan-detail-row">
+            <span class="plan-detail-label" data-en="Price" data-ar="السعر">Price</span>
+            <span class="plan-price pdc-price"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="form-section" hidden>
+        <div class="section-hdr">
+          <div class="section-title"><i class="ti ti-gift"></i> Referral (optional)</div>
+        </div>
+        <div class="mdl-form-group">
+          <label class="mdl-label">Referral code</label>
+          <input type="text" class="mdl-input" id="assignReferralCode" placeholder="RXXXXXXX" style="text-transform:uppercase" maxlength="20">
+        </div>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="form-section">
+        <div class="section-hdr">
+          <div class="section-title"><i class="ti ti-wallet"></i> <span data-en="Payment Method" data-ar="طريقة الدفع">Payment Method</span></div>
+        </div>
+
+        <div class="payment-radios">
+          <label class="pay-radio">
+            <input type="radio" name="assignPayment" value="cash">
+            <div class="pay-radio-label">
+              <i class="ti ti-cash pay-radio-icon"></i>
+              <span class="pay-radio-name" data-en="Cash" data-ar="نقدًا">Cash</span>
+            </div>
+          </label>
+          <label class="pay-radio">
+            <input type="radio" name="assignPayment" value="card_pos">
+            <div class="pay-radio-label">
+              <i class="ti ti-credit-card pay-radio-icon"></i>
+              <span class="pay-radio-name" data-en="Card / POS" data-ar="كارت / نقاط بيع">Card / POS</span>
+            </div>
+          </label>
+          <label class="pay-radio">
+            <input type="radio" name="assignPayment" value="account_credit">
+            <div class="pay-radio-label">
+              <i class="ti ti-wallet pay-radio-icon"></i>
+              <span class="pay-radio-name" data-en="Account Credit" data-ar="رصيد الحساب">Account Credit</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="mdl-form-group" id="assignAmountWrap" hidden>
+          <label class="mdl-label"><span data-en="Amount paid (EGP)" data-ar="المدفوع (جنيه)">Amount paid (EGP)</span></label>
+          <input type="number" class="mdl-input" id="assignAmountPaid" min="0" step="0.01">
+          <div class="assign-due-hint" id="assignDueHint"></div>
+        </div>
+
+        <div class="payment-note" id="assignPaymentNote"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mdl-footer">
+      <button class="mdl-btn ghost" onclick="closeOverlay('modalAssign')"><span data-en="Cancel" data-ar="إلغاء">Cancel</span></button>
+      <button class="mdl-btn primary" id="btnAssignMembership" disabled>
+        <span class="btn-spinner"></span>
+        <span class="btn-label"><i class="ti ti-plus"></i> <span data-en="Assign Plan" data-ar="إضافة العضوية">Assign Plan</span></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Notify Modal -->
+<div class="modal-overlay" id="modalNotify">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title"><i class="ti ti-bell" style="color:var(--l500)"></i> Send Notification</div>
+      <button class="modal-close"><i class="ti ti-x"></i></button>
+    </div>
+    <p style="font-size:12px;color:var(--ltt);margin-bottom:16px">To: <strong id="notifMemberName">—</strong></p>
+    <div class="form-group">
+      <label class="form-label">Title *</label>
+      <input type="text" class="form-input" id="notifTitle" placeholder="Membership Reminder" data-en-placeholder="Membership Reminder" data-ar-placeholder="تذكير بالعضوية">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message *</label>
+      <textarea class="form-input" id="notifBody" rows="3" placeholder="Your membership expires soon..." data-en-placeholder="Your membership expires soon..." data-ar-placeholder="عضويتك تنتهي قريباً..."></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modalNotify')">Cancel</button>
+      <button class="btn-confirm primary" id="btnSendNotif"><i class="ti ti-send"></i> Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Collect Payment — POST /api/sales/{id}/payments against one outstanding sale -->
+<div class="modal-overlay drawer-overlay" id="collectPaymentDrawer">
+  <div class="drawer-panel">
+    <div class="mdl-hdr">
+      <div class="mdl-title-wrap">
+        <div class="mdl-title"><i class="ti ti-cash" style="color:var(--l500)"></i> Collect Payment</div>
+        <div class="mdl-subtitle">تحصيل دفعة</div>
+      </div>
+      <button type="button" class="mdl-close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="mdl-body">
+      <div class="mdl-error-banner" id="collectErrorBanner">
+        <i class="ti ti-alert-circle"></i><span class="error-text"></span>
+      </div>
+      <div class="mdl-form-group">
+        <label class="mdl-label" data-en="Outstanding sale" data-ar="البيع المستحق">Outstanding sale</label>
+        <div class="collect-hint" id="collectSaleHint" style="margin-bottom:8px">Select one sale. Pay the rest on the next collect.</div>
+        <div id="collectSaleChoices"></div>
+      </div>
+      <div class="mdl-form-group">
+        <label class="mdl-label" data-en="Amount due (EGP)" data-ar="المبلغ المستحق">Amount due (EGP)</label>
+        <input type="number" class="mdl-input" id="collectAmount" min="0.01" step="0.01">
+        <div class="collect-hint" id="collectAmountHint"></div>
+      </div>
+      <div class="mdl-form-group">
+        <label class="mdl-label" data-en="Method" data-ar="طريقة الدفع">Method</label>
+        <select class="mdl-input" id="collectMethod">
+          <option value="cash">Cash</option>
+          <option value="card_pos">Card / POS</option>
+          <option value="account_credit">Account credit / رصيد الحساب</option>
+        </select>
+        <div class="collect-hint" id="collectMethodHint">Cash requires an open shift.</div>
+      </div>
+    </div>
+    <div class="mdl-footer">
+      <button type="button" class="mdl-btn ghost" onclick="closeOverlay('collectPaymentDrawer')">Cancel</button>
+      <button type="button" class="mdl-btn primary" id="btnTakePayment">
+        <i class="ti ti-check"></i>
+        <span data-en="Take payment" data-ar="تسجيل الدفعة">Take payment</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Member Drawer (right-slide, 400px) -->
+<div class="modal-overlay drawer-overlay" id="editMemberDrawer">
+  <div class="drawer-panel">
+    <div class="mdl-hdr">
+      <div class="mdl-title-wrap">
+        <div class="mdl-title"><i class="ti ti-edit" style="color:var(--l500)"></i> Edit Member</div>
+        <div class="mdl-subtitle">تعديل بيانات العضو</div>
+        <div class="mdl-timestamp" id="editTimestamp" style="display:none"><i class="ti ti-clock"></i> <span></span></div>
+      </div>
+      <button class="mdl-close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="mdl-body">
+      <div class="mdl-error-banner" id="editErrorBanner">
+        <i class="ti ti-alert-circle"></i>
+        <div><div class="error-text"></div><div class="error-text-ar" style="display:none"></div></div>
+      </div>
+      <div class="form-section">
+        <div class="section-hdr"><div class="section-title"><i class="ti ti-user"></i> Personal Information</div></div>
+        <div class="mdl-form-group">
+          <label class="mdl-label">Full Name (English) <span class="req">*</span></label>
+          <input type="text" class="mdl-input" id="editNameEn" placeholder="e.g. Ahmed Ali" data-en-placeholder="e.g. Ahmed Ali" data-ar-placeholder="مثال: Ahmed Ali">
+        </div>
+        <div class="mdl-form-group">
+          <label class="mdl-label">Full Name (Arabic) <span class="req">*</span></label>
+          <input type="text" class="mdl-input rtl" id="editNameAr" placeholder="مثال: أحمد علي">
+        </div>
+        <div class="mdl-form-group">
+          <label class="mdl-label">Phone Number <span class="req">*</span></label>
+          <div class="phone-input-wrap" id="editPhoneWrap">
+            <div class="phone-prefix"><span class="flag">🇪🇬</span> +20</div>
+            <input type="tel" class="phone-input" id="editPhone" placeholder="010 1234 5678" maxlength="15">
+          </div>
+          <div class="field-error" id="editPhoneError"><i class="ti ti-alert-circle"></i><span class="field-error-text">Invalid Egyptian phone format</span></div>
+        </div>
+        <div class="mdl-form-group">
+          <label class="mdl-label">Date of Birth <span class="req">*</span></label>
+          <input type="date" class="mdl-input" id="editDob">
+          <div class="field-error" id="editDobError"><i class="ti ti-alert-circle"></i><span class="field-error-text">Member must be at least 10 years old</span></div>
+        </div>
+        <div class="mdl-form-group">
+          <label class="mdl-label">Email</label>
+          <input type="email" class="mdl-input" id="editEmail" placeholder="member@email.com">
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="section-hdr">
+          <div class="section-title"><i class="ti ti-info-circle"></i> Additional Info</div>
+          <button class="section-toggle" id="editSectionToggle" title="Toggle"><i class="ti ti-chevron-up"></i></button>
+        </div>
+        <div class="section-body" id="editSectionBody">
+          <div class="mdl-form-group">
+            <label class="mdl-label">National ID</label>
+            <input type="text" class="mdl-input" id="editNationalId" placeholder="29901011234567" maxlength="14">
+          </div>
+          <div class="mdl-form-group">
+            <label class="mdl-label">Emergency Contact</label>
+            <div class="phone-input-wrap">
+              <div class="phone-prefix"><span class="flag">🇪🇬</span> +20</div>
+              <input type="tel" class="phone-input" id="editEmergency" placeholder="010 9876 5432" maxlength="15">
+            </div>
+          </div>
+          <div class="mdl-form-group">
+            <label class="mdl-label">Notes</label>
+            <textarea class="mdl-input" id="editNotes" rows="3" placeholder="Notes..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mdl-footer">
+      <button class="mdl-btn ghost" onclick="closeOverlay('editMemberDrawer')">Cancel</button>
+      <button class="mdl-btn primary" id="btnSaveEdit" disabled>
+        <span class="btn-spinner"></span>
+        <span class="btn-label"><i class="ti ti-device-floppy"></i> Save Changes</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Access card print overlay -->
+<div class="pos-print-overlay" id="accessPrintOverlay" hidden>
+  <div class="pos-print-panel">
+    <div class="pos-print-hdr">
+      <strong id="accessPrintTitle" data-en="Barcode card" data-ar="كارنيه الباركود">Barcode card</strong>
+      <button type="button" class="mdl-btn ghost" id="btnAccessPrintClose"><i class="ti ti-x"></i></button>
+    </div>
+    <iframe id="accessPrintFrame" title="Member barcode card"></iframe>
+    <div class="pos-print-actions">
+      <button type="button" class="mdl-btn ghost" id="btnAccessPrintClose2" data-en="Close" data-ar="إغلاق">Close</button>
+      <button type="button" class="mdl-btn primary" id="btnAccessPrintDo"><i class="ti ti-printer"></i> <span data-en="Print" data-ar="طباعة">Print</span></button>
+    </div>
+  </div>
+</div>
+<style>
+.pos-print-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;display:flex;align-items:center;justify-content:center;padding:16px}
+.pos-print-overlay[hidden]{display:none!important}
+.pos-print-panel{background:var(--ls1,#fff);border-radius:16px;width:min(560px,100%);padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.pos-print-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-family:var(--fd)}
+#accessPrintFrame{width:100%;min-height:360px;border:1px solid var(--ls3,#E8E8E8);border-radius:10px;background:#F6F7F9}
+.pos-print-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+</style>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="/shared/gfp-deployment.js"></script>
+<script src="/shared/refund-action.js?v=5"></script>
+<script src="/shared/vendor/jsbarcode/JsBarcode.all.min.js"></script>
+<script src="member-detail.js?v=assign-card1"></script>
+<script src="../member-modals.js?v=assign-card1"></script>
+</body>
+</html>

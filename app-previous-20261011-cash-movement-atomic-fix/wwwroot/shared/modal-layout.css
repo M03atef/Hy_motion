@@ -1,0 +1,176 @@
+/**
+ * HyMotion — responsive modals, drawers, and popovers (Task 7).
+ * Injected after form-layout.css. Visual chrome stays in page CSS.
+ * Layout only: fit the viewport, scroll inside, keep actions on screen.
+ */
+
+.modal-overlay,
+.modal-ov,
+.drawer-overlay,
+.drawer-ov,
+.gfp-refund-overlay,
+.pos-print-overlay {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.modal,
+.modal-panel,
+.modal-box,
+.modal-form,
+.book-modal,
+.confirm-dialog,
+.delete-dialog,
+.diff-box,
+.gfp-refund-box,
+.pos-print-sheet,
+.drawer,
+.drawer-panel {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+}
+
+.modal,
+.modal-panel,
+.modal-box,
+.book-modal,
+.confirm-dialog,
+.delete-dialog,
+.diff-box,
+.gfp-refund-box,
+.pos-print-sheet {
+  max-height: min(90vh, 90dvh, calc(100dvh - 24px));
+}
+
+/* Split chrome + body only when a scroll region exists.
+   Do not overflow:hidden a dialog that has a header but no .modal-body. */
+.modal:has(> .modal-body),
+.modal:has(> .modal-form),
+.modal:has(> .mdl-body),
+.modal-panel,
+.modal-form,
+.pos-print-sheet,
+.drawer:has(> .drawer-body),
+.drawer-panel:has(> .drawer-body) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal:not(:has(.modal-body)):not(:has(.modal-form)):not(:has(.mdl-body)),
+.modal-box,
+.confirm-dialog,
+.delete-dialog,
+.diff-box,
+.gfp-refund-box {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-hdr,
+.modal-header,
+.mdl-hdr,
+.drawer-hdr,
+.gfp-refund-hdr,
+.pos-print-actions {
+  flex-shrink: 0;
+}
+
+.modal-body,
+.mdl-body,
+.drawer-body {
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.modal-footer,
+.modal-actions,
+.modal-ft,
+.mdl-footer,
+.drawer-footer,
+.drawer-ft,
+.book-footer,
+.gfp-refund-actions {
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.drawer,
+.drawer-panel {
+  max-width: 100%;
+  max-height: 100vh;
+  max-height: 100dvh;
+}
+
+/* Viewport ceiling only — never max-width: 100%, which shrinks
+   absolutely positioned menus to their trigger width. */
+.dropdown,
+.qa-menu,
+.cs-pop,
+.popover {
+  max-width: calc(100vw - 24px);
+  box-sizing: border-box;
+}
+
+dialog:not(.fixed) {
+  max-width: min(100%, calc(100vw - 24px));
+  max-height: min(90vh, 90dvh, calc(100dvh - 24px));
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+/* Tablet: keep authored widths; still cannot outgrow the viewport. */
+@media (max-width: 1023px) {
+  .modal-overlay:not(.drawer-overlay),
+  .modal-ov,
+  .gfp-refund-overlay,
+  .pos-print-overlay {
+    overscroll-behavior: contain;
+  }
+}
+
+/* Mobile: full-width with side margins; overlays inset for safe area. */
+@media (max-width: 767.98px) {
+  .modal-overlay:not(.drawer-overlay),
+  .modal-ov,
+  .gfp-refund-overlay,
+  .pos-print-overlay {
+    padding: max(12px, env(safe-area-inset-top, 0px))
+      max(12px, env(safe-area-inset-right, 0px))
+      max(12px, env(safe-area-inset-bottom, 0px))
+      max(12px, env(safe-area-inset-left, 0px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    box-sizing: border-box;
+  }
+
+  .modal,
+  .modal-panel,
+  .modal-box,
+  .book-modal,
+  .confirm-dialog,
+  .delete-dialog,
+  .diff-box,
+  .gfp-refund-box,
+  .pos-print-sheet {
+    width: 100%;
+    max-width: 100%;
+    max-height: min(90dvh, calc(100dvh - 24px));
+  }
+
+  .receipt-frame-wrap {
+    height: min(420px, 45dvh);
+    max-height: 45dvh;
+  }
+
+  .print-box.is-a4 #receiptFrame {
+    min-height: 0;
+  }
+}

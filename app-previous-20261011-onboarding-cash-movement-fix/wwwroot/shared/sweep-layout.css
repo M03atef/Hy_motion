@@ -1,0 +1,301 @@
+/**
+ * HyMotion — full-app responsive sweep (Task 8–9).
+ * Final shared layout layer after modal-layout.css.
+ * Overflow, wrap, and shrink only — no visual redesign.
+ */
+
+/* ── Toasts / inline alerts ── */
+.toast {
+  max-width: min(420px, calc(100vw - 32px));
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+
+.banner,
+.alert,
+.inline-alert {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+/* ── Status / KPI strips ── */
+.status-pills,
+.status-strip,
+.st-pill-wrap,
+.stat-pills,
+.stats-bar,
+.role-stats,
+.q-stats,
+.kpi-row,
+.kpi-strip,
+.pulse-grid,
+.action-grid,
+.z-kpis,
+.cs-kpis,
+.stat-bar,
+.stats-bar {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.status-pills,
+.status-strip,
+.stat-pills,
+.stats-bar,
+.role-stats {
+  flex-wrap: wrap;
+}
+
+/* ── Tab rails (settings, hubs) ── */
+.tab-nav,
+.hub-tabs,
+.nav-tabs {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.tab-nav {
+  flex-wrap: nowrap;
+}
+
+.tab-btn {
+  flex: 1 1 auto;
+  min-width: min(100%, 7rem);
+}
+
+/* ── Card chrome ── */
+.card-header,
+.card-h,
+.card-footer {
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.card-header h2,
+.card-h h2 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.card,
+.panel,
+.tbl-card,
+.table-card,
+.queue,
+.notif-card {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Action rows ── */
+.actions,
+.act-group,
+.act-row,
+.hdr-actions,
+.empty-actions,
+.footer-actions,
+.btn-row,
+.inline-actions,
+.card-footer .btn,
+.dash-exp-actions {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ── Split / grid layouts ── */
+.split-layout,
+.layout-split,
+.grid-2,
+.grid-main,
+.panels,
+.detail-layout,
+.detail-grid,
+.info-grid,
+.member-grid,
+.pg-hdr,
+.controls {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── POS / payment rows ── */
+.pay-leg {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+}
+
+.mode-tabs,
+.seg,
+.dash-seg {
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+/* ── Empty / loading / error ── */
+.empty,
+.empty-state,
+.loading-state,
+.error-state,
+.offers-empty,
+.mo-empty,
+.mo-error,
+.mo-loading,
+.rpt-empty,
+.no-data,
+.booking-empty,
+.empty-msg,
+.loading-cell,
+.empty-cell {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.empty-actions,
+.empty-cta {
+  flex-wrap: wrap;
+}
+
+/* ── Pagination ── */
+.pager,
+.pagi,
+.pagination {
+  gap: 8px;
+}
+
+.pager button,
+.pagi button,
+.pagination button,
+.pager .btn,
+.pagi .btn {
+  flex-shrink: 0;
+}
+
+/* ── Charts (non-dashboard pages) ── */
+.chart-box,
+.rpt-chart,
+.z-chart-wrap,
+.occ-panel {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ── Popover anchors ── */
+.pick,
+.cs-filter-wrap,
+.range-wrap,
+.inv-toolbar,
+.offers-toolbar {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ── Branding / preview cards ── */
+.cr80,
+.brand-live,
+.poster-preview {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Headings / titles (Task 9) ── */
+.page-title,
+.page-header h1,
+.pg-title h1,
+.pg-title,
+.card-header h2,
+.dash-widget-title {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* ── Card grids ── */
+.plans-grid,
+.activities-grid,
+.activity-grid,
+.offers-grid,
+.pulse-grid {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Heatmaps / receipt frames ── */
+.heatmap-wrap,
+.att-table-wrap,
+.receipt-frame-wrap {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* ── Sidebar overlay ── */
+.gfp-sb-overlay {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Phone: safe-area toasts, scrollable tabs, tighter POS ── */
+@media (max-width: 767.98px) {
+  .toast {
+    bottom: max(16px, env(safe-area-inset-bottom, 0px));
+    right: max(16px, env(safe-area-inset-right, 0px));
+    left: auto;
+    min-width: 0;
+  }
+
+  html[dir='rtl'] .toast {
+    right: auto;
+    left: max(16px, env(safe-area-inset-left, 0px));
+  }
+
+  .tab-btn {
+    flex: 0 0 auto;
+    min-width: 5.5rem;
+    padding-inline: 10px;
+    font-size: 12px;
+  }
+
+  .mode-tab {
+    flex: 1 1 auto;
+    min-width: min(100%, 8rem);
+  }
+
+  .pay-leg {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .pg-hdr {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .controls {
+    width: 100%;
+  }
+}
+
+/* ── Ultra-narrow phones ── */
+@media (max-width: 359.98px) {
+  .content,
+  .page {
+    padding-inline: 12px;
+  }
+
+  .chip,
+  .st-pill,
+  .stat-pill {
+    min-width: 0;
+  }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Activities</title>
+<meta name="description" content="Manage gym activities, classes, and facilities.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="activities.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Catalog" data-ar="الكتالوج">Catalog</span><span class="sep">/</span><span class="current" data-en="Activities" data-ar="الأنشطة">Activities</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div><div class="gym-name-ar" id="gymNameAr" hidden></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div class="ph-left">
+      <h1 class="page-title" data-en="Activities" data-ar="الأنشطة">Activities</h1>
+      <p class="page-subtitle" data-en="Classes and facilities offered by your gym" data-ar="الحصص والمرافق اللي النادي بيقدمها">Classes and facilities offered by your gym</p>
+    </div>
+    <div class="ph-right"><button class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New Activity" data-ar="نشاط جديد">New Activity</span></button></div>
+  </div>
+  <div class="kind-tabs" id="kindTabs">
+    <button type="button" class="kind-tab act" data-kind="all"><i class="ti ti-layout-grid"></i> <span data-en="All" data-ar="الكل">All</span></button>
+    <button type="button" class="kind-tab" data-kind="class"><i class="ti ti-run"></i> <span data-en="Classes" data-ar="الحصص">Classes</span></button>
+    <button type="button" class="kind-tab" data-kind="facility"><i class="ti ti-pool"></i> <span data-en="Facilities" data-ar="المرافق">Facilities</span></button>
+  </div>
+  <div class="stats-bar">
+    <div class="stat-pill"><i class="ti ti-list"></i><span id="statTotal">0</span> <span data-en="Total" data-ar="الإجمالي">Total</span></div>
+    <div class="stat-pill active"><i class="ti ti-check"></i><span id="statActive">0</span> <span data-en="Active" data-ar="نشط">Active</span></div>
+    <div class="stat-pill inactive"><i class="ti ti-x"></i><span id="statInactive">0</span> <span data-en="Inactive" data-ar="غير نشط">Inactive</span></div>
+  </div>
+  <div class="act-grid" id="actGrid"></div>
+</div>
+</div>
+</div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalContent"></div></div>
+<div class="modal-overlay" id="deleteOverlay"><div class="delete-dialog" id="deleteDialog"></div></div>
+<div class="modal-overlay" id="scheduleOverlay"><div class="modal modal-wide" id="scheduleContent"></div></div>
+<div class="toast" id="toast"></div>
+<script src="activities-app.js?v=facquota1"></script>
+</body>
+</html>

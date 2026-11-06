@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Leaves</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="leaves.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Leaves" data-ar="الإجازات">Leaves</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Leave management is not available for your role." data-ar="إدارة الإجازات غير متاحة لدورك.">Leave management is not available for your role.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Leaves" data-ar="الإجازات">Leaves</h1>
+        <p class="page-subtitle" data-en="Requests, approvals, and balances." data-ar="الطلبات والاعتمادات والأرصدة.">Requests, approvals, and balances.</p>
+      </div>
+      <div id="manageActions" hidden>
+        <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New leave request" data-ar="طلب إجازة جديد">New leave request</span></button>
+      </div>
+    </div>
+
+    <div class="tabs" id="viewTabs">
+      <button type="button" class="tab-btn act" data-view="requests" data-en="Requests" data-ar="الطلبات">Requests</button>
+      <button type="button" class="tab-btn" data-view="balances" data-en="Balances" data-ar="الأرصدة">Balances</button>
+    </div>
+
+    <div id="requestsView">
+      <div class="toolbar">
+        <select id="filterEmployee" aria-label="Employee"><option value="" data-en="All employees" data-ar="كل الموظفين">All employees</option></select>
+        <select id="filterStatus" aria-label="Status">
+          <option value="" data-en="All statuses" data-ar="كل الحالات">All statuses</option>
+          <option value="Pending" data-en="Pending" data-ar="معلق">Pending</option>
+          <option value="Approved" data-en="Approved" data-ar="معتمد">Approved</option>
+          <option value="Rejected" data-en="Rejected" data-ar="مرفوض">Rejected</option>
+          <option value="Cancelled" data-en="Cancelled" data-ar="ملغي">Cancelled</option>
+        </select>
+        <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+      </div>
+      <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+    </div>
+
+    <div id="balancesView" hidden>
+      <div class="toolbar">
+        <select id="balanceEmployee" aria-label="Employee"><option value="" data-en="Select an employee…" data-ar="اختر موظفاً…">Select an employee…</option></select>
+        <input type="number" id="balanceYear" class="date-input" style="width:100px">
+      </div>
+      <div class="table-wrap" id="balanceHost"><div class="empty-state"><p data-en="Select an employee to view their leave balance." data-ar="اختر موظفاً لعرض رصيد إجازاته.">Select an employee to view their leave balance.</p></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="requestModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="New leave request" data-ar="طلب إجازة جديد">New leave request</h2>
+      <button type="button" class="modal-close" data-close="requestModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="requestForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Employee *" data-ar="الموظف *">Employee *</span><select id="rEmployee" required></select></label>
+        <label class="fg"><span data-en="Leave type *" data-ar="نوع الإجازة *">Leave type *</span>
+          <select id="rType">
+            <option value="Annual" data-en="Annual" data-ar="سنوية">Annual</option>
+            <option value="Sick" data-en="Sick" data-ar="مرضية">Sick</option>
+            <option value="Emergency" data-en="Emergency" data-ar="طارئة">Emergency</option>
+            <option value="Unpaid" data-en="Unpaid" data-ar="بدون أجر">Unpaid</option>
+            <option value="Permission" data-en="Permission (part of a day)" data-ar="إذن (جزء من يوم)">Permission (part of a day)</option>
+          </select>
+        </label>
+        <label class="fg"><span data-en="Start date *" data-ar="تاريخ البدء *">Start date *</span><input id="rStart" type="date" required></label>
+        <label class="fg" id="rEndRow"><span data-en="End date *" data-ar="تاريخ الانتهاء *">End date *</span><input id="rEnd" type="date" required></label>
+        <label class="fg" id="rDurationRow" hidden><span data-en="Duration (day fraction, e.g. 0.5)" data-ar="المدة (جزء من اليوم، مثال 0.5)">Duration (day fraction, e.g. 0.5)</span><input id="rDuration" type="number" min="0.1" max="1" step="0.05" value="0.25"></label>
+      </div>
+      <label class="fg"><span data-en="Reason" data-ar="السبب">Reason</span><textarea id="rReason" rows="2" maxlength="500"></textarea></label>
+      <p class="form-hint" id="requestHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="requestModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveRequest" data-en="Submit" data-ar="إرسال">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="reviewModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="reviewModalTitle" data-en="Review leave request" data-ar="مراجعة طلب الإجازة">Review leave request</h2>
+      <button type="button" class="modal-close" data-close="reviewModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="reviewForm" class="modal-body">
+      <label class="fg"><span data-en="Notes" data-ar="ملاحظات">Notes</span><textarea id="reviewNotes" rows="2" maxlength="500"></textarea></label>
+      <p class="form-hint" id="reviewHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="reviewModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveReview" data-en="Confirm" data-ar="تأكيد">Confirm</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="leaves-app.js?v=1"></script>
+</body>
+</html>

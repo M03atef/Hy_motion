@@ -1,0 +1,465 @@
+/**
+ * HyMotion — global Light / Dark theme.
+ * Injected last in <head> so html[data-theme="dark"] remaps page :root tokens.
+ * Light appearance is unchanged (pages keep their own :root hex).
+ * Print always forces a light paper palette.
+ */
+
+:root {
+  --gfp-bg-app: var(--lbg, #F3F5F2);
+  --gfp-surface: var(--ls1, #FFFEFB);
+  --gfp-surface-2: var(--ls2, #F4F6F3);
+  --gfp-elev: var(--ls1, #fff);
+  --gfp-overlay: rgba(20, 28, 20, 0.48);
+  --gfp-text: var(--ltp, #1F2420);
+  --gfp-text-2: var(--lts, #4A524C);
+  --gfp-text-muted: var(--ltt, #7A847C);
+  --gfp-border: var(--ls3, #E4E8E2);
+  --gfp-hover: rgba(20, 30, 20, 0.05);
+  --gfp-selected: rgba(122, 204, 0, 0.14);
+  --gfp-focus: var(--l600, #5EAF00);
+  --gfp-focus-ring: rgba(94, 175, 0, 0.38);
+  --gfp-suc: #166534;
+  --gfp-suc-bg: var(--suc100, #DCFCE7);
+  --gfp-wrn: var(--wrnTxt, #92400E);
+  --gfp-wrn-bg: var(--wrn100, #FEF3C7);
+  --gfp-dng: #991B1B;
+  --gfp-dng-bg: var(--dng100, #FEE2E2);
+  --gfp-inf: #1E40AF;
+  --gfp-inf-bg: var(--inf100, #DBEAFE);
+  --gfp-neu: #3F463F;
+  --gfp-neu-bg: var(--ls2, #E8EBE6);
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --lbg: #151716;
+  --ls1: #1C201D;
+  --ls2: #222722;
+  --ls3: #2E342F;
+  --ls4: #3A423A;
+  --ltp: #E8EBE6;
+  --lts: #B5BBB4;
+  --ltt: #8C948A;
+  --lbd: #3A423A;
+  --c50: #2A2F2B;
+  --c100: #343A35;
+  --c200: #6A7268;
+  --dtp: #E8EBE6;
+  --dts: #B5BBB4;
+  --dtt: #8C948A;
+  --dbd: #3A423A;
+  --sh1: 0 1px 2px rgba(0, 0, 0, 0.28), 0 10px 28px rgba(0, 0, 0, 0.28);
+  --sh2: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --sh3: 0 12px 40px rgba(0, 0, 0, 0.4);
+  --lglow: rgba(160, 224, 64, 0.28);
+  --l100: color-mix(in srgb, var(--l500, #7ACC00) 18%, #1C201D);
+  --suc100: #16351F;
+  --suc500: #4ADE80;
+  --suctxt: #86EFAC;
+  --wrn100: #3A2E12;
+  --wrnTxt: #FCD34D;
+  --wrn500: #FBBF24;
+  --wrn700: #FCD34D;
+  --dng100: #3A1C1C;
+  --dng500: #F87171;
+  --inf100: #1A2A44;
+  --inf500: #60A5FA;
+  /* "Frozen" status family (membership freeze badges) — declared ad-hoc per-page in light mode
+     (memberships.css / members.css / member-detail.css each redeclare --frz100/--frz500 in
+     their own :root); overridden here the same way suc/wrn/dng/inf are, since theme.css loads
+     last and this custom property wins over those page-local :root declarations. */
+  --frz100: #123A42;
+  --frz500: #22D3EE;
+  --frztxt: #67E8F9;
+  /* "Pending" reuses the warning family's light hue (--pnd100 == --wrn100 in every page that
+     declares it) — keep it in the same family for dark mode too. */
+  --pnd100: #3A2E12;
+  --gfp-bg-app: #151716;
+  --gfp-surface: #1C201D;
+  --gfp-surface-2: #222722;
+  --gfp-elev: #2A2F2B;
+  --gfp-overlay: rgba(0, 0, 0, 0.62);
+  --gfp-text: #E8EBE6;
+  --gfp-text-2: #B5BBB4;
+  --gfp-text-muted: #8C948A;
+  --gfp-border: #2E342F;
+  --gfp-hover: rgba(255, 255, 255, 0.045);
+  --gfp-selected: rgba(122, 204, 0, 0.16);
+  --gfp-focus: #A0E040;
+  --gfp-focus-ring: rgba(160, 224, 64, 0.42);
+  --gfp-suc: #86EFAC;
+  --gfp-suc-bg: #16351F;
+  --gfp-wrn: #FCD34D;
+  --gfp-wrn-bg: #3A2E12;
+  --gfp-dng: #FCA5A5;
+  --gfp-dng-bg: #3A1C1C;
+  --gfp-inf: #93C5FD;
+  --gfp-inf-bg: #1A2A44;
+  --gfp-neu: #C5CBC2;
+  --gfp-neu-bg: #2A2F2B;
+}
+
+html[data-theme="dark"],
+html[data-theme="dark"] body {
+  background-color: var(--lbg);
+  background-image: none;
+  color: var(--ltp);
+}
+
+html[data-theme="dark"] ::placeholder {
+  color: var(--ltt);
+  opacity: 1;
+}
+
+html[data-theme="dark"] ::selection {
+  background: color-mix(in srgb, var(--l500, #7ACC00) 35%, transparent);
+  color: var(--ltp);
+}
+
+html[data-theme="dark"] :focus-visible {
+  outline: 2px solid var(--gfp-focus);
+  outline-offset: 2px;
+}
+
+/* ── Shell ── */
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] header.topbar {
+  background: color-mix(in srgb, var(--ls1) 92%, transparent);
+  border-bottom-color: var(--ls3);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .main,
+html[data-theme="dark"] .content,
+html[data-theme="dark"] .page {
+  background-color: transparent;
+  color: var(--ltp);
+}
+
+/* ── Surfaces (beats hardcoded #fff in page CSS) ── */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .dash-widget,
+html[data-theme="dark"] .dash-kpi,
+html[data-theme="dark"] .kpi,
+html[data-theme="dark"] .sales-kpi,
+html[data-theme="dark"] .z-kpi,
+html[data-theme="dark"] .table-wrap,
+html[data-theme="dark"] .ac-table-wrap,
+html[data-theme="dark"] .ac-stat,
+html[data-theme="dark"] .ac-search,
+html[data-theme="dark"] .queue,
+html[data-theme="dark"] .empty,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .sales-panel,
+html[data-theme="dark"] .hub-card,
+html[data-theme="dark"] .status-strip,
+html[data-theme="dark"] .filter-pop,
+html[data-theme="dark"] .popover,
+html[data-theme="dark"] .dropdown,
+html[data-theme="dark"] .pick-results,
+html[data-theme="dark"] .inv-results,
+html[data-theme="dark"] .search-list,
+html[data-theme="dark"] .qa-menu,
+html[data-theme="dark"] .gfp-refund-box,
+html[data-theme="dark"] .modal,
+html[data-theme="dark"] .modal-box,
+html[data-theme="dark"] .drawer,
+html[data-theme="dark"] .drawer-panel,
+html[data-theme="dark"] .ent-card,
+html[data-theme="dark"] .plan-card {
+  background: var(--ls1);
+  background-color: var(--ls1);
+  border-color: var(--ls3);
+  color: var(--ltp);
+  box-shadow: var(--sh1);
+}
+
+html[data-theme="dark"] .modal,
+html[data-theme="dark"] .modal-box,
+html[data-theme="dark"] .drawer,
+html[data-theme="dark"] .gfp-refund-box,
+html[data-theme="dark"] .pick-results,
+html[data-theme="dark"] .filter-pop,
+html[data-theme="dark"] .popover {
+  background: var(--gfp-elev);
+  background-color: var(--gfp-elev);
+}
+
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .card-h,
+html[data-theme="dark"] .card-footer,
+html[data-theme="dark"] .drawer-hdr,
+html[data-theme="dark"] .drawer-ft,
+html[data-theme="dark"] .modal-hdr,
+html[data-theme="dark"] .modal-footer {
+  border-color: var(--ls3);
+  color: var(--ltp);
+}
+
+html[data-theme="dark"] .card-footer {
+  background: var(--ls2);
+}
+
+/* ── Buttons / chips / inputs (not primary lime CTAs) ── */
+html[data-theme="dark"] .btn:not(.primary):not(.ghost):not(.danger):not(.btn-save),
+html[data-theme="dark"] .btn.secondary,
+html[data-theme="dark"] .btn.outline,
+html[data-theme="dark"] .btn-ms,
+html[data-theme="dark"] .dash-btn.secondary,
+html[data-theme="dark"] .hub-tab,
+html[data-theme="dark"] .chip,
+html[data-theme="dark"] .seg-btn,
+html[data-theme="dark"] .mode-tab,
+html[data-theme="dark"] .filter-btn,
+html[data-theme="dark"] .cs-chip,
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .cs-search,
+html[data-theme="dark"] .inv-search {
+  background: var(--ls1);
+  background-color: var(--ls1);
+  color: var(--ltp);
+  border-color: var(--ls3);
+}
+
+html[data-theme="dark"] .btn.primary,
+html[data-theme="dark"] .btn-save,
+html[data-theme="dark"] button.primary,
+html[data-theme="dark"] .dash-btn.primary {
+  color: #0D0D0D;
+}
+
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] textarea:focus {
+  border-color: var(--gfp-focus);
+  box-shadow: 0 0 0 3px var(--gfp-focus-ring);
+}
+
+/* ── Tables ── */
+html[data-theme="dark"] table thead th,
+html[data-theme="dark"] .rpt-table thead th,
+html[data-theme="dark"] .m-tbl thead th {
+  background: var(--ls2);
+  color: var(--ltt);
+  border-color: var(--ls3);
+}
+
+html[data-theme="dark"] table tbody td,
+html[data-theme="dark"] .rpt-table td {
+  border-color: var(--ls3);
+  color: var(--ltp);
+}
+
+html[data-theme="dark"] table tbody tr:hover td,
+html[data-theme="dark"] .rpt-table tbody tr:hover td {
+  background: var(--gfp-hover);
+}
+
+html[data-theme="dark"] .row-expiring,
+html[data-theme="dark"] .row-pending {
+  background: var(--wrn100);
+}
+
+html[data-theme="dark"] .row-suspended {
+  background: color-mix(in srgb, var(--wrn500) 16%, var(--ls1));
+}
+
+/* ── Status (color + meaning; brand must not override) ── */
+html[data-theme="dark"] .status-chip.is-ok,
+html[data-theme="dark"] .badge.success,
+html[data-theme="dark"] .st-active,
+html[data-theme="dark"] .pill-success {
+  background: var(--gfp-suc-bg);
+  color: var(--gfp-suc);
+}
+
+html[data-theme="dark"] .status-chip.is-bad,
+html[data-theme="dark"] .badge.danger,
+html[data-theme="dark"] .pill-danger {
+  background: var(--gfp-dng-bg);
+  color: var(--gfp-dng);
+}
+
+html[data-theme="dark"] .alert,
+html[data-theme="dark"] .alert-warning,
+html[data-theme="dark"] .ac-low {
+  background: var(--gfp-wrn-bg);
+  color: var(--gfp-wrn);
+  border-color: color-mix(in srgb, var(--wrn500) 28%, transparent);
+}
+
+html[data-theme="dark"] .ent-card.is-on {
+  background: var(--l100);
+  background-color: var(--l100);
+  border-color: color-mix(in srgb, var(--l500, #7ACC00) 45%, var(--ls3));
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .ac-table th,
+html[data-theme="dark"] .ac-table td {
+  border-color: var(--ls3);
+  color: var(--ltp);
+}
+
+html[data-theme="dark"] .ac-table th {
+  background: var(--ls2);
+  color: var(--ltt);
+}
+
+html[data-theme="dark"] .ac-pill {
+  background: var(--gfp-suc-bg);
+  color: var(--gfp-suc);
+}
+
+html[data-theme="dark"] .ac-pill.Available {
+  background: var(--gfp-inf-bg);
+  color: var(--gfp-inf);
+}
+
+html[data-theme="dark"] .ac-pill.Lost,
+html[data-theme="dark"] .ac-pill.Damaged,
+html[data-theme="dark"] .ac-pill.Blocked {
+  background: var(--gfp-dng-bg);
+  color: var(--gfp-dng);
+}
+
+/* ── POS cream rgba leftovers ── */
+html[data-theme="dark"] .status-chip {
+  background: var(--ls2);
+  color: var(--lts);
+}
+
+html[data-theme="dark"] .quick-tile {
+  background: var(--ls1);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .quick-tile:hover,
+html[data-theme="dark"] .quick-tile:focus-visible {
+  background: var(--ls2);
+}
+
+html[data-theme="dark"] .qty-stepper,
+html[data-theme="dark"] .retail-quick-pay .btn {
+  background: var(--ls1);
+  border-color: var(--ls3);
+  color: var(--ltp);
+}
+
+/* Photo / logo / paper stay light even in Dark Mode */
+html[data-theme="dark"] .quick-tile-photo,
+html[data-theme="dark"] .gfp-brand-logo,
+html[data-theme="dark"] .logo-preview,
+html[data-theme="dark"] .cr80,
+html[data-theme="dark"] .cr80-logo,
+html[data-theme="dark"] .access-barcode-wrap,
+html[data-theme="dark"] .pos-print-sheet,
+html[data-theme="dark"] #posPrintFrame,
+html[data-theme="dark"] #receiptFrame,
+html[data-theme="dark"] .print-paper {
+  background: #fff !important;
+  color: #1A1A1A;
+}
+
+html[data-theme="dark"] .toggle-knob,
+html[data-theme="dark"] .toggle-slider::before {
+  background: #fff;
+}
+
+/* ── Appearance picker (Settings) ── */
+.gfp-appear {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 800px) {
+  .gfp-appear { grid-template-columns: 1fr; }
+}
+.gfp-appear-opt {
+  border: 2px solid var(--ls3);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--ls1);
+  text-align: start;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+.gfp-appear-opt.act {
+  border-color: var(--l500);
+  box-shadow: 0 0 0 3px var(--gfp-focus-ring);
+}
+.gfp-appear-mini {
+  height: 88px;
+  display: flex;
+}
+.gfp-appear-mini .rail { width: 28px; flex-shrink: 0; }
+.gfp-appear-mini .pane { flex: 1; padding: 10px; }
+.gfp-appear-mini .bar {
+  height: 8px;
+  border-radius: 4px;
+  width: 70%;
+  margin-bottom: 6px;
+}
+.gfp-appear-mini .ln {
+  height: 6px;
+  border-radius: 3px;
+  width: 88%;
+  margin-bottom: 4px;
+}
+.gfp-appear-lab {
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.gfp-appear-lab span {
+  display: block;
+  font-weight: 500;
+  color: var(--ltt);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* ── Print: Dark Mode is UI-only ── */
+@media print {
+  html,
+  html[data-theme="dark"] {
+    color-scheme: light !important;
+    --lbg: #fff;
+    --ls1: #fff;
+    --ls2: #f5f5f5;
+    --ls3: #ccc;
+    --ltp: #1a1a1a;
+    --lts: #333;
+    --ltt: #555;
+    --gfp-elev: #fff;
+    background: #fff !important;
+    color: #1a1a1a !important;
+  }
+  html[data-theme="dark"] body,
+  html[data-theme="dark"] .card,
+  html[data-theme="dark"] .table-wrap,
+  html[data-theme="dark"] .kpi,
+  html[data-theme="dark"] .z-kpi,
+  html[data-theme="dark"] .sales-panel {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Local-Edition-only nav items (Backup & Recovery today - see local-nav-gate.js). Attribute-driven
+   rather than a one-time DOM removal so it survives shell.js re-rendering the nav (locale switch,
+   sidebar collapse/expand). No default-hidden state: on Local this is visible from first paint
+   (correct); on SaaS there's a brief flash until local-nav-gate.js's one API call resolves, which
+   is an acceptable trade-off for one nav link (unlike the RTL/locale flash, not worth an
+   early-injected synchronous check). */
+html[data-gfp-edition="saas"] [data-nav-key="backup"] {
+  display: none !important;
+}

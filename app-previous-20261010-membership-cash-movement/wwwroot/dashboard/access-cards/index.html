@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Batch cards</title>
+<meta name="description" content="Physical PVC access card inventory — browse batches, scan codes, flip the branded card.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="access-cards.css?v=bc2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Members" data-ar="الأعضاء">Members</span><span class="sep">/</span><span class="current" data-en="Access cards" data-ar="كارنيهات الدخول">Access cards</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div class="bc-hero">
+    <div class="bc-kicker"><span id="bcGym">GYM</span><span class="bc-kicker-sep">·</span><span data-en="CARD MANAGEMENT" data-ar="إدارة الكارنيهات">CARD MANAGEMENT</span></div>
+    <h1 class="bc-title" data-en="Batch Cards" data-ar="كارنيهات الدخول">Batch Cards</h1>
+    <div class="bc-kpis">
+      <div class="bc-kpi"><b id="kpiTotal">—</b><span data-en="TOTAL" data-ar="الإجمالي">TOTAL</span></div>
+      <div class="bc-kpi kpi-lime"><b id="kpiAvailable">—</b><span data-en="AVAILABLE" data-ar="متاح">AVAILABLE</span></div>
+      <div class="bc-kpi kpi-dim"><b id="kpiAssigned">—</b><span data-en="ASSIGNED" data-ar="معيَّن">ASSIGNED</span></div>
+    </div>
+    <div class="bc-actions">
+      <button type="button" class="btn secondary" id="btnRefresh"><i class="ti ti-refresh"></i> <span data-en="Refresh" data-ar="تحديث">Refresh</span></button>
+      <button type="button" class="btn secondary" id="btnPrintBatch"><i class="ti ti-printer"></i> <span data-en="Print / preview batch" data-ar="طباعة / معاينة الدفعة">Print / preview batch</span></button>
+      <button type="button" class="btn primary" id="btnBulkCreate" hidden><i class="ti ti-plus"></i> <span data-en="Add batch" data-ar="إضافة دفعة">Add batch</span></button>
+    </div>
+  </div>
+
+  <div class="bc-work">
+    <section class="bc-panel bc-left">
+      <div class="bc-search"><i class="ti ti-search"></i><input id="searchQ" type="search" placeholder="Search card number…" data-en-placeholder="Search card number…" data-ar-placeholder="ابحث برقم الكارت…" autocomplete="off"></div>
+      <div class="bc-seg" role="tablist">
+        <button type="button" class="bc-seg-btn on" data-filter="" data-en="ALL" data-ar="الكل">ALL</button>
+        <button type="button" class="bc-seg-btn" data-filter="Available" data-en="UNASSIGNED" data-ar="غير معيَّن">UNASSIGNED</button>
+        <button type="button" class="bc-seg-btn" data-filter="Assigned" data-en="ASSIGNED" data-ar="معيَّن">ASSIGNED</button>
+      </div>
+      <div class="bc-batches" id="bcBatches"></div>
+      <div class="bc-grid" id="bcGrid">
+        <div class="bc-empty" data-en="Loading…" data-ar="جاري التحميل…">Loading…</div>
+      </div>
+      <button type="button" class="bc-more" id="btnMore" hidden data-en="Load more" data-ar="تحميل المزيد">Load more</button>
+    </section>
+
+    <section class="bc-panel bc-right" id="bcDetail">
+      <div class="bc-detail-empty">
+        <i class="ti ti-id"></i>
+        <p data-en="Select a card from the grid" data-ar="اختار كارت من الشبكة">Select a card from the grid</p>
+      </div>
+    </section>
+  </div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="bulkModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-hdr">
+      <h2 data-en="Add card batch" data-ar="إضافة دفعة كارنيهات">Add card batch</h2>
+      <button type="button" class="modal-close" id="btnBulkClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <label><span data-en="Prefix" data-ar="البادئة">Prefix</span>
+        <input id="bulkPrefix" type="text" value="CARD" maxlength="12">
+      </label>
+      <label><span data-en="Start number" data-ar="رقم البداية">Start number</span>
+        <input id="bulkStart" type="number" min="1" value="1">
+      </label>
+      <label><span data-en="Quantity" data-ar="الكمية">Quantity</span>
+        <input id="bulkQty" type="number" min="1" max="500" value="25">
+      </label>
+      <p class="modal-hint" data-en="Codes become PREFIX-0001 … Avoid GYM- (MemberNumber)." data-ar="الأكواد PREFIX-0001 … تجنب GYM- (رقم العضو).">Codes become PREFIX-0001 … Avoid GYM- (MemberNumber).</p>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="btnBulkCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="btn primary" id="btnBulkSave" data-en="Create" data-ar="إنشاء">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="printModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" style="width:min(440px,92vw)">
+    <div class="modal-hdr">
+      <h2 data-en="Print blank stock" data-ar="طباعة مخزون الكارنيهات">Print blank stock</h2>
+      <button type="button" class="modal-close" id="btnPrintClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint" data-en="Blank PVC stock branded as your gym (logo, names, card color from Settings → Gym Identity). Barcode = AccessCard.Code only — no member PII. CR80 86×54 mm." data-ar="مخزون فارغ بهوية صالتك (الشعار والأسماء واللون من الإعدادات). الباركود = كود الكارنيه فقط — بدون بيانات عضو. 86×54 مم.">Blank PVC stock branded as your gym (logo, names, card color from Settings → Gym Identity). Barcode = AccessCard.Code only — no member PII. CR80 86×54 mm.</p>
+      <label><span data-en="Batch id (optional)" data-ar="معرّف الدفعة (اختياري)">Batch id (optional)</span>
+        <input id="printBatchId" type="text" placeholder="Leave empty = all matching" data-en-placeholder="Leave empty = all matching" data-ar-placeholder="فارغ = كل المطابق">
+      </label>
+      <label><span data-en="Status" data-ar="الحالة">Status</span>
+        <select id="printStatus">
+          <option value="Available" selected>Available</option>
+          <option value="Assigned">Assigned</option>
+          <option value="">All</option>
+        </select>
+      </label>
+      <label><span data-en="Max cards" data-ar="أقصى عدد">Max cards</span>
+        <input id="printLimit" type="number" min="1" max="500" value="100">
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="btnPrintCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="btn primary" id="btnPrintOpen" data-en="Open preview" data-ar="فتح المعاينة">Open preview</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/shared/api-config.js"></script>
+<script src="/shared/api-client.js"></script>
+<script src="/shared/i18n-catalog.js"></script>
+<script src="/shared/shell.js"></script>
+<script src="access-cards-app.js?v=bc2"></script>
+</body>
+</html>

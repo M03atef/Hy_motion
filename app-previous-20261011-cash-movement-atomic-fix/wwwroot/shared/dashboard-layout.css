@@ -1,0 +1,169 @@
+/**
+ * HyMotion — dashboard cards / widgets / charts (Task 4).
+ * Injected after shell-header.css. Visual chrome stays in page CSS.
+ * Layout only: columns, shrink, wrap, chart boxes.
+ */
+
+.widget-grid,
+.dash-widget,
+.dash-widget-body,
+.dash-kpi-row,
+.dash-kpi,
+.dash-quick,
+.dash-chart-wrap,
+.dash-section-label,
+.dash-intro,
+.kpi-grid,
+.kpi-tile {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.widget-grid {
+  width: 100%;
+}
+
+.dash-widget-hdr {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.dash-widget-hdr > div {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.dash-widget-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dash-widget-title i {
+  flex-shrink: 0;
+}
+
+.dash-intro-meta {
+  white-space: normal;
+}
+
+.dash-kpi-row {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+}
+
+.dash-kpi-row.compact {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 110px), 1fr));
+}
+
+.dash-kpi .lbl,
+.dash-kpi strong,
+.dash-kpi .sub {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.dash-quick {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+}
+
+.dash-breakdown {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+}
+
+.dash-attention-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+}
+
+.dash-exp-main {
+  min-width: 0;
+  flex: 1 1 10rem;
+}
+
+.dash-exp-actions {
+  flex-wrap: wrap;
+}
+
+.dash-chart-hdr {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.dash-seg {
+  max-width: 100%;
+  flex-shrink: 1;
+}
+
+.dash-chart-wrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+.dash-chart-wrap canvas {
+  display: block;
+  width: 100% !important;
+  max-width: 100%;
+  height: 100% !important;
+}
+
+.dash-custom-range input {
+  max-width: 100%;
+  min-width: 0;
+  flex: 1 1 8rem;
+}
+
+.kpi-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+}
+
+/* ── Tablet: keep two-up widgets; page CSS stacked everything at 900px ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .widget-grid {
+    gap: 12px;
+  }
+
+  .widget-grid .dash-widget {
+    grid-column: span 6 !important;
+  }
+
+  .widget-grid .dash-widget.span-12,
+  .widget-grid .dash-widget[data-widget='statusbar'],
+  .widget-grid .dash-widget[data-widget='kpis'],
+  .widget-grid .dash-widget[data-widget='quick-actions'],
+  .widget-grid .dash-widget[data-widget='operations'],
+  .widget-grid .dash-widget[data-widget='finance'],
+  .widget-grid .dash-widget[data-widget='feed'] {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+/* ── Phone: one column ── */
+@media (max-width: 767.98px) {
+  .widget-grid {
+    gap: 12px;
+  }
+
+  .widget-grid .dash-widget,
+  .widget-grid .dash-widget.span-6,
+  .widget-grid .dash-widget.span-12 {
+    grid-column: 1 / -1 !important;
+  }
+
+  .dash-quick {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .dash-chart-hdr .dash-seg {
+    width: 100%;
+    margin-inline-start: 0;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 359.98px) {
+  .dash-quick {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

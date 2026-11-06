@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Inventory reports</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="reports.css?v=theme1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Inventory" data-ar="المخزون">Inventory</span><span class="sep">/</span><span class="current" data-en="Insights" data-ar="رؤى">Insights</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Insights" data-ar="رؤى المخزون">Insights</h1>
+      <p class="page-subtitle" data-en="Pulse, top sellers, idle stock, and ledger history. Dates use Cairo business days." data-ar="نبض المخزون، الأكثر مبيعاً، الراكد، وحركة الدفتر. التواريخ بأيام عمل القاهرة.">Pulse, top sellers, idle stock, and ledger history. Dates use Cairo business days.</p>
+    </div>
+    <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i> <span data-en="Refresh" data-ar="تحديث">Refresh</span></button>
+  </div>
+
+  <div class="report-tabs" role="tablist">
+    <button type="button" class="rtab act" data-tab="summary" data-en="Summary" data-ar="ملخص">Summary</button>
+    <button type="button" class="rtab" data-tab="performance" data-en="Top sellers" data-ar="الأكثر مبيعاً">Top sellers</button>
+    <button type="button" class="rtab" data-tab="dead" data-en="Dead stock" data-ar="راكد">Dead stock</button>
+    <button type="button" class="rtab" data-tab="movements" data-en="Movements" data-ar="الحركات">Movements</button>
+  </div>
+
+  <section id="panel-summary" class="rtab-panel" data-panel="summary">
+    <div class="cards" id="summaryCards"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </section>
+
+  <section id="panel-performance" class="rtab-panel" data-panel="performance" hidden>
+    <div class="filters">
+      <div class="preset-chips" id="perfPresets">
+        <button type="button" class="chip act" data-days="7" data-en="7d" data-ar="٧ي">7d</button>
+        <button type="button" class="chip" data-days="30" data-en="30d" data-ar="٣٠ي">30d</button>
+        <button type="button" class="chip" data-days="90" data-en="90d" data-ar="٩٠ي">90d</button>
+      </div>
+      <label><span data-en="From (Cairo)" data-ar="من (القاهرة)">From (Cairo)</span><input type="date" id="perfFrom"></label>
+      <label><span data-en="To (Cairo)" data-ar="إلى (القاهرة)">To (Cairo)</span><input type="date" id="perfTo"></label>
+      <button type="button" class="btn-create" id="btnLoadPerf" data-en="Load" data-ar="تحميل">Load</button>
+    </div>
+    <p class="form-hint" id="perfHint"></p>
+    <p class="muted" data-en="Revenue from retail sales in range. Margin needs financial permission." data-ar="الإيراد من مبيعات التجزئة في الفترة. الهامش يحتاج صلاحية مالية.">Revenue from retail sales in range. Margin needs financial permission.</p>
+    <div class="table-wrap" id="perfHost"><div class="muted pad">—</div></div>
+  </section>
+
+  <section id="panel-dead" class="rtab-panel" data-panel="dead" hidden>
+    <div class="filters">
+      <label><span data-en="Idle at least (days)" data-ar="راكد منذ (يوم)">Idle at least (days)</span>
+        <select id="deadDays">
+          <option value="14">14</option>
+          <option value="30" selected>30</option>
+          <option value="60">60</option>
+          <option value="90">90</option>
+        </select>
+      </label>
+      <button type="button" class="btn-create" id="btnLoadDead" data-en="Load" data-ar="تحميل">Load</button>
+    </div>
+    <p class="form-hint" id="deadHint"></p>
+    <p class="muted" data-en="Products with on-hand qty and no retail sale in the idle window (or never sold)." data-ar="أصناف لها رصيد ولم تُبع في الفترة (أو لم تُبع أبداً).">Products with on-hand qty and no retail sale in the idle window (or never sold).</p>
+    <div class="table-wrap" id="deadHost"><div class="muted pad">—</div></div>
+  </section>
+
+  <section id="panel-movements" class="rtab-panel" data-panel="movements" hidden>
+    <div class="filters">
+      <div class="preset-chips" id="movPresets">
+        <button type="button" class="chip" data-days="7" data-en="7d" data-ar="٧ي">7d</button>
+        <button type="button" class="chip act" data-days="30" data-en="30d" data-ar="٣٠ي">30d</button>
+        <button type="button" class="chip" data-days="90" data-en="90d" data-ar="٩٠ي">90d</button>
+      </div>
+      <label><span data-en="From (Cairo)" data-ar="من (القاهرة)">From (Cairo)</span><input type="date" id="fromDate"></label>
+      <label><span data-en="To (Cairo)" data-ar="إلى (القاهرة)">To (Cairo)</span><input type="date" id="toDate"></label>
+      <label><span data-en="Warehouse" data-ar="المستودع">Warehouse</span>
+        <select id="fWarehouse"><option value="">…</option></select>
+      </label>
+      <label><span data-en="Reason" data-ar="السبب">Reason</span>
+        <select id="fReason">
+          <option value="" data-en="All" data-ar="الكل">All</option>
+          <option value="opening">opening</option>
+          <option value="purchase_receipt">purchase_receipt</option>
+          <option value="purchase_return">purchase_return</option>
+          <option value="sale">sale</option>
+          <option value="sale_refund">sale_refund</option>
+          <option value="adjustment">adjustment</option>
+          <option value="transfer_out">transfer_out</option>
+          <option value="transfer_in">transfer_in</option>
+          <option value="count">count</option>
+        </select>
+      </label>
+      <button type="button" class="btn-create" id="btnLoadMov" data-en="Load" data-ar="تحميل">Load</button>
+    </div>
+    <p class="form-hint" id="movHint"></p>
+    <div class="table-wrap" id="movHost"><div class="muted pad" data-en="Choose a Cairo date range (max 366 days) and Load." data-ar="اختر فترة بالقاهرة (حتى ٣٦٦ يوماً) ثم حمّل.">Choose a Cairo date range (max 366 days) and Load.</div></div>
+  </section>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="reports-app.js"></script>
+</body>
+</html>

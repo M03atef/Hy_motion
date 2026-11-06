@@ -1,0 +1,311 @@
+/**
+ * HyMotion — global typography scale & readability.
+ * Injected late (end of <head>) so it soft-overrides page-local px sizes
+ * without changing colors, fonts, or layout structure.
+ *
+ * Tokens are the source of truth. Prefer var(--gfp-fs-*) in new CSS.
+ */
+
+:root {
+  /* Type scale — modest step-up from legacy 11/12/13/22/26 */
+  --gfp-fs-xs: 12px;
+  --gfp-fs-sm: 13px;
+  --gfp-fs-md: 14px;
+  --gfp-fs-base: 14px;
+  --gfp-fs-lg: 15px;
+  --gfp-fs-xl: 17px;
+  --gfp-fs-2xl: 20px;
+  --gfp-fs-3xl: 26px;
+  --gfp-fs-4xl: 30px;
+
+  --gfp-lh-tight: 1.25;
+  --gfp-lh-snug: 1.4;
+  --gfp-lh-body: 1.6;
+  --gfp-lh-ar: 1.7;
+
+  --gfp-fw-normal: 400;
+  --gfp-fw-medium: 500;
+  --gfp-fw-semibold: 600;
+  --gfp-fw-bold: 700;
+}
+
+/* ── Base body ── */
+body {
+  font-size: var(--gfp-fs-base);
+  line-height: var(--gfp-lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html[dir='rtl'] body {
+  line-height: var(--gfp-lh-ar);
+}
+
+/* ── Page titles ── */
+.page-title,
+.pg-title h1,
+h1.page-title,
+.content > h1,
+.pg-hdr h1 {
+  font-size: var(--gfp-fs-4xl) !important;
+  font-weight: var(--gfp-fw-bold);
+  line-height: var(--gfp-lh-tight);
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle,
+.pg-subtitle,
+.page-header .page-subtitle {
+  font-size: var(--gfp-fs-md) !important;
+  line-height: var(--gfp-lh-snug);
+}
+
+.pg-title h1 span {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+/* ── Section / card titles ── */
+.dash-widget-title,
+.card-h h2,
+.card-hdr h2,
+.card-header h2,
+.sec-title,
+.panel-title,
+.chart-title,
+.section-title,
+.dash-widget-hdr h2,
+.mo-detail .card-h h2 {
+  font-size: var(--gfp-fs-xl) !important;
+  font-weight: var(--gfp-fw-bold);
+  line-height: var(--gfp-lh-tight);
+}
+
+.dash-widget-sub,
+.card-sub,
+.section-sub {
+  font-size: var(--gfp-fs-sm) !important;
+  line-height: var(--gfp-lh-snug);
+}
+
+/* ── Primary numeric values (KPI / money / counts) ── */
+.dash-kpi strong,
+.kpi-val,
+.ov-kpi .val,
+.stat-val,
+.metric-val,
+.sc-val,
+.rem-days,
+.money-lg,
+#dTotal {
+  font-size: var(--gfp-fs-3xl) !important;
+  font-weight: var(--gfp-fw-bold);
+  line-height: var(--gfp-lh-tight);
+  letter-spacing: -0.02em;
+}
+
+.dash-kpi-row.compact .dash-kpi strong {
+  font-size: var(--gfp-fs-2xl) !important;
+}
+
+.dash-kpi .lbl,
+.kpi-lbl,
+.ov-kpi .lbl,
+.stat-lbl,
+.sc-lbl,
+.metric-lbl {
+  font-size: var(--gfp-fs-xs) !important;
+  font-weight: var(--gfp-fw-semibold);
+  letter-spacing: 0.03em;
+}
+
+.dash-kpi .sub,
+.kpi-sub {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+/* ── Sidebar / shell nav ── */
+.sb-item,
+.gfp-nav-item {
+  font-size: var(--gfp-fs-md) !important;
+  font-weight: var(--gfp-fw-semibold);
+}
+
+.sb-item i,
+.gfp-nav-item i {
+  font-size: 19px !important;
+}
+
+.gfp-nav-cat-hdr {
+  font-size: var(--gfp-fs-xs) !important;
+}
+
+.sb-hdr span {
+  font-size: var(--gfp-fs-lg) !important;
+}
+
+.sb-ft-name {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+.sb-ft-role {
+  font-size: var(--gfp-fs-xs) !important;
+}
+
+.tb-breadcrumb,
+.tb-gym-name,
+.gym-name {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+.tb-gym-name-ar,
+.gym-name-ar {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+.gfp-lang-toggle {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+/* ── Buttons ── */
+.btn,
+.dash-btn,
+.btn-primary,
+.btn-secondary,
+.btn-create,
+.mdl-btn,
+button.btn,
+a.btn {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+.dash-quick-item {
+  font-size: var(--gfp-fs-lg) !important;
+}
+
+.dash-quick-item i {
+  font-size: 30px !important;
+}
+
+/* ── Tables ── */
+table td,
+.m-tbl td,
+.att-table td,
+.att-tbl td,
+table.inv td,
+.mo table td,
+.tbl td,
+.reorder-table td {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+table th,
+.m-tbl th,
+.att-table th,
+.att-tbl th,
+table.inv th,
+.mo table th,
+.tbl th,
+.reorder-table th {
+  font-size: var(--gfp-fs-xs) !important;
+}
+
+.m-name,
+.product-name,
+.member-name {
+  font-size: var(--gfp-fs-md) !important;
+  font-weight: var(--gfp-fw-semibold);
+}
+
+.m-name-ar,
+.m-num,
+.plan-sub,
+.rem-sub {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+/* ── Forms ── */
+label,
+.mdl-label,
+.inp-lbl,
+.field-label,
+.form-label,
+.chk {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']),
+select,
+textarea,
+.mdl-input,
+.phone-input,
+.search-box input,
+.search-wrap input {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-size: var(--gfp-fs-md);
+}
+
+.form-hint,
+.field-hint,
+.dash-muted,
+.muted,
+.help-text,
+.empty p,
+.no-data p {
+  font-size: var(--gfp-fs-sm) !important;
+  line-height: var(--gfp-lh-snug);
+}
+
+/* ── Modals ── */
+.mdl-title,
+.modal-hdr h2,
+.modal h2,
+.drawer-title {
+  font-size: var(--gfp-fs-xl) !important;
+  font-weight: var(--gfp-fw-bold);
+  line-height: var(--gfp-lh-tight);
+}
+
+/* ── Lists / secondary rows ── */
+.dash-list li,
+.dash-list-main {
+  font-size: var(--gfp-fs-md) !important;
+}
+
+.dash-list-meta {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+.dash-link {
+  font-size: var(--gfp-fs-sm) !important;
+}
+
+/* ── Badges stay compact but readable ── */
+.st-badge,
+.badge,
+.mo-status,
+.status-chip {
+  font-size: var(--gfp-fs-xs) !important;
+}
+
+/* ── Mobile: keep hierarchy, avoid wrapping blow-ups ── */
+@media (max-width: 768px) {
+  .page-title,
+  .pg-title h1,
+  h1.page-title {
+    font-size: 26px !important;
+  }
+
+  .dash-kpi strong,
+  .kpi-val {
+    font-size: 22px !important;
+  }
+
+  .dash-quick-item {
+    font-size: var(--gfp-fs-md) !important;
+    min-height: 96px;
+  }
+}

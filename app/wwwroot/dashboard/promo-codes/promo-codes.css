@@ -1,0 +1,9 @@
+.promo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.promo-grid .span2{grid-column:1/-1}
+@media(max-width:700px){.promo-grid{grid-template-columns:1fr}}
+.table-wrap{overflow:auto;border:1px solid var(--ls3);border-radius:var(--rmd)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 12px;background:var(--ls2);font-size:11px;text-transform:uppercase;color:var(--ltt)}
+td{padding:10px 12px;border-top:1px solid var(--ls3)}
+.filters{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.status-on{color:var(--l600);font-weight:700}.status-off{color:var(--ltt)}

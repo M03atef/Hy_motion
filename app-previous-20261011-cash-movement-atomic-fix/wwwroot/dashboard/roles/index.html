@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Roles</title>
+<meta name="description" content="Choose what each gym job can do. People are assigned a job in Staff.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../staff/staff.css?v=4">
+<link rel="stylesheet" href="roles.css?v=theme1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">AO</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">Ahmed Owner</div><div class="sb-ft-role" id="userRole">Owner</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Administration" data-ar="الإدارة">Administration</span><span class="sep">/</span><span class="current" data-en="Roles" data-ar="الأدوار">Roles</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Fitness Hub</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+
+<div class="content">
+  <div class="owner-guard" id="ownerGuard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد" data-i18n-text>Access Restricted</h2>
+    <p data-en="Roles are available to gym owners only." data-ar="الأدوار متاحة لمالك الصالة فقط.">Roles are available to gym owners only.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+
+  <div id="rolesContent">
+    <div class="page-header">
+      <div class="ph-left">
+        <h1 class="page-title"><i class="ti ti-shield-lock"></i> <span data-en="Roles" data-ar="الأدوار" data-i18n-text>Roles</span></h1>
+        <p class="page-subtitle" data-en="Tick the tasks for Manager, Receptionist, and Trainer in this gym. Assign people those jobs in Staff. Owner is locked." data-ar="حدد المهام الخاصة بالمدير وموظف الاستقبال والمدرب في هذه الصالة. عيّن الموظفين لهذه الأدوار من صفحة الموظفين. دور المالك ثابت ولا يمكن تعديله.">Tick the tasks for Manager, Receptionist, and Trainer in this gym. Assign people those jobs in Staff. Owner is locked.</p>
+      </div>
+      <div class="ph-right">
+        <a class="roles-staff-link" href="/dashboard/staff/"><i class="ti ti-user-shield"></i> <span data-en="Manage staff" data-ar="إدارة الموظفين">Manage staff</span></a>
+      </div>
+    </div>
+
+    <div class="roles-readonly-note" role="note">
+      <i class="ti ti-lock" aria-hidden="true"></i>
+      <span data-en="Owner is locked · other jobs can be changed for this gym" data-ar="دور المالك ثابت · باقي الأدوار يمكن تعديلها في هذه الصالة">Owner is locked · other jobs can be changed for this gym</span>
+    </div>
+
+    <div class="table-card roles-table-card">
+      <table class="staff-table roles-table" aria-label="System roles">
+        <thead>
+          <tr>
+            <th data-en="Role" data-ar="الدور">Role</th>
+            <th data-en="Description" data-ar="الوصف">Description</th>
+            <th data-en="Permissions" data-ar="الصلاحيات">Permissions</th>
+            <th data-en="Type" data-ar="النوع">Type</th>
+            <th data-en="Action" data-ar="الإجراء">Action</th>
+          </tr>
+        </thead>
+        <tbody id="rolesBody">
+          <tr><td colspan="5" class="loading-cell"><div class="loader"></div><span data-en="Loading roles…" data-ar="جارٍ تحميل الأدوار…">Loading roles…</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay">
+  <div class="drawer drawer-360" id="drawerContent" role="dialog" aria-modal="true" aria-labelledby="drawerTitle"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+const API_BASE=window.API_BASE||window.GFP_DEFAULT_API_BASE||'/api';
+function getH(){const t=localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');const h={'Content-Type':'application/json','ngrok-skip-browser-warning':'true'};if(t)h['Authorization']='Bearer '+t;return h;}
+async function apiGet(p){const r=await fetch(API_BASE+p,{headers:getH()});if(r.status===401){window.location.href='/auth/login/';return null;}if(!r.ok)return null;return r.json();}
+async function apiPut(p,b){const r=await fetch(API_BASE+p,{method:'PUT',headers:getH(),body:JSON.stringify(b)});const d=await r.json().catch(()=>null);return{ok:r.ok,status:r.status,data:d};}
+async function apiPost(p,b){const r=await fetch(API_BASE+p,{method:'POST',headers:getH(),body:b?JSON.stringify(b):undefined});const d=await r.json().catch(()=>null);return{ok:r.ok,status:r.status,data:d};}
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();if(!user){window.location.href='/auth/login/';}
+const ini=(user.fullName||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+document.getElementById('userAvatar').textContent=ini;
+document.getElementById('userName').textContent=user.fullName||'User';
+document.getElementById('userRole').textContent=user.role||'Staff';
+document.getElementById('btnLogout').addEventListener('click',function(){['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});window.location.href='/auth/login/';});
+(async()=>{const s=await apiGet('/settings');if(s){document.getElementById('gymName').textContent=s.gymName||'';document.getElementById('gymNameAr').textContent=s.gymNameAr||'';}})();
+</script>
+<script src="../staff/staff-rules.js?v=5"></script>
+<script src="roles-app.js?v=3"></script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+/**
+ * HyMotion — global responsive foundation.
+ * Injected last in <head> (after page CSS, typography, theme) so layout
+ * constraints apply without restyling colors, type, or component chrome.
+ *
+ * Breakpoints (also in design-tokens.json). CSS cannot read custom
+ * properties inside @media — use these literals when a query is required:
+ *   sm  640px   compact forms
+ *   md  768px   phone → tablet
+ *   lg  1024px  tablet → desktop
+ *   xl  1280px  wide desktop
+ *
+ * Prefer fluid values (clamp / minmax / min-width: 0) over extra queries.
+ * Sidebar ↔ main layout lives in shell-layout.css + shell.js (data-gfp-sb).
+ * Header / topbar arrangement lives in shell-header.css.
+ * Dashboard cards / charts live in dashboard-layout.css.
+ * Tables scroll inside their container — see table-layout.css.
+ * Forms / filters / search live in form-layout.css.
+ * Modals / drawers / popovers live in modal-layout.css.
+ * Final overflow / wrap sweep lives in sweep-layout.css.
+ */
+
+:root {
+  --gfp-bp-sm: 640px;
+  --gfp-bp-md: 768px;
+  --gfp-bp-lg: 1024px;
+  --gfp-bp-xl: 1280px;
+  --gfp-pad-x: 32px;
+  --gfp-pad-y: 24px;
+}
+
+/* ── Page never horizontally scrolls from layout ── */
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* ── Shell: shrink correctly beside the fixed 220px rail ── */
+.app {
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.content,
+.page {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Topbar / headers stay on one row when they can; wrap instead of overflowing */
+.topbar,
+header.topbar {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tb-left,
+.tb-right {
+  min-width: 0;
+}
+
+.tb-left {
+  flex: 1 1 auto;
+}
+
+.tb-breadcrumb,
+.tb-gym-name,
+.gym-name,
+.tb-gym-name-ar,
+.gym-name-ar {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Media / embeds cannot blow out a column ── */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+canvas,
+iframe,
+embed,
+object {
+  max-width: 100%;
+}
+
+.dash-chart-wrap,
+.chart-wrap,
+.occ-gauge,
+.heatmap-wrap {
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* ── Text wraps; long tokens don't force page width ── */
+.main,
+.content,
+.card,
+.dash-widget,
+.panel,
+.modal,
+.modal-box,
+.modal-panel,
+.drawer,
+.drawer-panel {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+pre,
+code,
+.json-pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* ── Flex/grid children must be allowed to shrink ── */
+.page-header,
+.pg-hdr,
+.pg-title,
+.toolbar,
+.controls,
+.hdr-actions,
+.filters,
+.filter-bar,
+.filter-chips,
+.staff-toolbar,
+.cs-toolbar,
+.action-bar,
+.status-strip,
+.kpi-strip,
+.kpi-row,
+.widget-grid,
+.content-grid,
+.split-layout,
+.panels,
+.grid-main,
+.grid-2,
+.dash-kpi-row,
+.dash-quick,
+.dash-intro,
+.pager,
+.pagi,
+.pagination {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.page-header,
+.pg-hdr,
+.toolbar,
+.controls,
+.hdr-actions,
+.filters,
+.staff-toolbar,
+.cs-toolbar,
+.action-bar,
+.pager,
+.pagi,
+.pagination {
+  flex-wrap: wrap;
+}
+
+/* Search fields used min-width: 200–260px; let them shrink with the row */
+.search-box,
+.staff-search,
+.cs-search,
+.inv-search,
+.search-wrap {
+  min-width: 0;
+  max-width: 100%;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']),
+select,
+textarea {
+  max-width: 100%;
+}
+
+/* ── Tables: overflow-x + wraps live in table-layout.css ── */
+/* ── Forms / filters / search live in form-layout.css ── */
+/* ── Modals / drawers / popovers live in modal-layout.css ── */
+/* ── Final sweep lives in sweep-layout.css ── */
+
+/* ── Drawers: keep authored width on desktop, never exceed the viewport ── */
+.drawer,
+.drawer-panel {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Below desktop: tighten inset padding only (desktop page CSS stays) ── */
+@media (max-width: 1023px) {
+  :root {
+    --gfp-pad-x: clamp(16px, 3vw, 24px);
+    --gfp-pad-y: clamp(16px, 2.4vw, 20px);
+  }
+
+  .content,
+  .page {
+    padding-inline: var(--gfp-pad-x);
+    padding-block: var(--gfp-pad-y);
+  }
+}
+
+/* Print: don't clip paper layouts */
+@media print {
+  html,
+  body,
+  .app,
+  .main,
+  .content {
+    overflow: visible !important;
+    max-width: none;
+  }
+}

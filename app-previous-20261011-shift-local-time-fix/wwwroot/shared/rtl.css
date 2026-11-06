@@ -1,0 +1,296 @@
+/**
+ * HyMotion — full-page RTL (Arabic).
+ * Source of truth: html[dir="rtl"] set by shared/i18n.js.
+ * Do NOT rely on sidebar-only flips — main content must mirror too.
+ */
+html[dir='rtl'] {
+  --gfp-sidebar-side: right;
+}
+
+/* ── Base typography / alignment ── */
+html[dir='rtl'] body {
+  font-family: var(--fa, 'Cairo'), 'Cairo', sans-serif;
+  text-align: start;
+  line-height: var(--gfp-lh-ar, 1.7);
+}
+
+html[dir='rtl'] [dir='ltr'] {
+  /* Nested LTR islands (phones in EN form, code, charts) stay LTR */
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Charts / gauges / heatmaps keep drawing LTR */
+html[dir='rtl'] canvas,
+html[dir='rtl'] .chart-wrap,
+html[dir='rtl'] .chart-card canvas,
+html[dir='rtl'] .heatmap,
+html[dir='rtl'] .gauge,
+html[dir='rtl'] .gauge-wrap,
+html[dir='rtl'] .progress-bar,
+html[dir='rtl'] .hm-grid,
+html[dir='rtl'] svg.ltr-keep {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ── App shell: sidebar + main ── */
+html[dir='rtl'] .sidebar,
+html[dir='rtl'] #sidebar {
+  left: auto !important;
+  right: 0 !important;
+}
+
+html[dir='rtl'] .main {
+  margin-left: 0 !important;
+  margin-right: var(--sidebar-w, 220px) !important;
+}
+
+html[dir='rtl'] .sb-item,
+html[dir='rtl'] .gfp-nav-item {
+  border-left: none !important;
+  border-inline-start: 3px solid transparent;
+}
+
+html[dir='rtl'] .sb-item.act,
+html[dir='rtl'] .gfp-nav-item.act {
+  border-left-color: transparent !important;
+  border-inline-start-color: var(--l500, #7acc00);
+}
+
+html[dir='rtl'] .sb-item .nav-badge {
+  margin-left: 0;
+  margin-inline-start: auto;
+}
+
+/* Drawer / collapsed — physical translateX so RTL rails hide off the inline-start edge.
+   Persistent expanded width is --sidebar-w (0 in drawer/collapsed). */
+html[dir='rtl'][data-gfp-sb='collapsed'] .sidebar,
+html[dir='rtl'][data-gfp-sb='collapsed'] #sidebar,
+html[dir='rtl'][data-gfp-sb='drawer'] .sidebar,
+html[dir='rtl'][data-gfp-sb='drawer'] #sidebar {
+  transform: translateX(100%) !important;
+}
+
+html[dir='rtl'][data-gfp-sb='drawer'][data-gfp-sb-open] .sidebar,
+html[dir='rtl'][data-gfp-sb='drawer'][data-gfp-sb-open] #sidebar,
+html[dir='rtl'][data-gfp-sb='drawer'] .sidebar.open,
+html[dir='rtl'][data-gfp-sb='drawer'] #sidebar.open,
+html[dir='rtl'][data-gfp-sb='expanded'] .sidebar,
+html[dir='rtl'][data-gfp-sb='expanded'] #sidebar {
+  transform: translateX(0) !important;
+}
+
+html[dir='rtl'][data-gfp-sb='collapsed'] .main,
+html[dir='rtl'][data-gfp-sb='drawer'] .main {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
+
+/* Before shell.js sets data-gfp-sb: keep RTL mobile from reserving 220px */
+@media (max-width: 767.98px) {
+  html[dir='rtl']:not([data-gfp-sb]) .sidebar,
+  html[dir='rtl']:not([data-gfp-sb]) #sidebar {
+    transform: translateX(100%) !important;
+  }
+  html[dir='rtl']:not([data-gfp-sb]) .sidebar.open,
+  html[dir='rtl']:not([data-gfp-sb]) #sidebar.open {
+    transform: translateX(0) !important;
+  }
+  html[dir='rtl']:not([data-gfp-sb]) .main {
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* ── Topbar / breadcrumbs / actions ── */
+html[dir='rtl'] .topbar,
+html[dir='rtl'] .tb-left,
+html[dir='rtl'] .tb-right,
+html[dir='rtl'] .action-bar,
+html[dir='rtl'] .action-bar-left,
+html[dir='rtl'] .action-bar-right,
+html[dir='rtl'] .pg-hdr,
+html[dir='rtl'] .controls,
+html[dir='rtl'] .card-hdr,
+html[dir='rtl'] .filter-bar,
+html[dir='rtl'] .kpi-strip,
+html[dir='rtl'] .ms-actions,
+html[dir='rtl'] .action-row,
+html[dir='rtl'] .btn-row,
+html[dir='rtl'] .mdl-ft,
+html[dir='rtl'] .modal-ft,
+html[dir='rtl'] .search-wrap {
+  direction: rtl;
+}
+
+html[dir='rtl'] .tb-breadcrumb,
+html[dir='rtl'] .back-btn,
+html[dir='rtl'] .mdl-title,
+html[dir='rtl'] .panel-title,
+html[dir='rtl'] .chart-title,
+html[dir='rtl'] .sec-title,
+html[dir='rtl'] h1,
+html[dir='rtl'] h2,
+html[dir='rtl'] h3,
+html[dir='rtl'] label,
+html[dir='rtl'] .mdl-label,
+html[dir='rtl'] .inp-lbl,
+html[dir='rtl'] .kpi-lbl,
+html[dir='rtl'] .sc-lbl {
+  text-align: start;
+}
+
+/* ── Forms / inputs ── */
+html[dir='rtl'] input,
+html[dir='rtl'] textarea,
+html[dir='rtl'] select,
+html[dir='rtl'] .mdl-input,
+html[dir='rtl'] .inp,
+html[dir='rtl'] .form-input,
+html[dir='rtl'] .phone-input {
+  text-align: start;
+}
+
+html[dir='rtl'] .phone-input-wrap,
+html[dir='rtl'] .search-wrap {
+  flex-direction: row-reverse;
+}
+
+html[dir='rtl'] .phone-prefix {
+  border-right: none;
+  border-left: 1px solid var(--ls3, #ebebeb);
+  border-inline-end: 1px solid var(--ls3, #ebebeb);
+}
+
+/* Drawers: open from the inline-end edge (right in LTR, left in RTL) */
+html[dir='rtl'] .modal-overlay.drawer-overlay,
+html[dir='rtl'] .drawer-overlay {
+  justify-content: flex-start !important;
+}
+html[dir='rtl'] .drawer-panel {
+  transform: translateX(-100%) !important;
+}
+html[dir='rtl'] .modal-overlay.open .drawer-panel,
+html[dir='rtl'] .drawer-overlay.open .drawer-panel {
+  transform: translateX(0) !important;
+}
+
+/* ── Tables / lists ── */
+html[dir='rtl'] table,
+html[dir='rtl'] .tbl,
+html[dir='rtl'] .att-table,
+html[dir='rtl'] .data-table {
+  direction: rtl;
+}
+
+html[dir='rtl'] th,
+html[dir='rtl'] td {
+  text-align: start;
+}
+
+html[dir='rtl'] .att-item,
+html[dir='rtl'] .dash-list li,
+html[dir='rtl'] .m-cell,
+html[dir='rtl'] .mc,
+html[dir='rtl'] .toast,
+html[dir='rtl'] .badge-row,
+html[dir='rtl'] .filter-tabs,
+html[dir='rtl'] .ftab,
+html[dir='rtl'] .tabs,
+html[dir='rtl'] .tab-bar {
+  direction: rtl;
+}
+
+/* ── Modals / dialogs ── */
+html[dir='rtl'] .modal-panel,
+html[dir='rtl'] .mdl-hdr,
+html[dir='rtl'] .mdl-body,
+html[dir='rtl'] .modal-body,
+html[dir='rtl'] .modal-hdr {
+  direction: rtl;
+  text-align: start;
+}
+
+html[dir='rtl'] .mdl-close,
+html[dir='rtl'] .modal-close {
+  margin-inline-start: auto;
+  margin-inline-end: 0;
+}
+
+/* ── Cards / KPI / content grids ── */
+html[dir='rtl'] .content,
+html[dir='rtl'] .content-grid,
+html[dir='rtl'] .detail-layout,
+html[dir='rtl'] .widget-grid,
+html[dir='rtl'] .kpi-grid,
+html[dir='rtl'] .cards-grid,
+html[dir='rtl'] .bottom-row,
+html[dir='rtl'] .charts-row,
+html[dir='rtl'] .panels {
+  direction: rtl;
+}
+
+html[dir='rtl'] .kpi,
+html[dir='rtl'] .kpi-card,
+html[dir='rtl'] .dash-widget,
+html[dir='rtl'] .panel,
+html[dir='rtl'] .card,
+html[dir='rtl'] .profile-card,
+html[dir='rtl'] .chart-card {
+  text-align: start;
+}
+
+/* Accents that used physical “left” bars */
+html[dir='rtl'] .kpi-acc,
+html[dir='rtl'] .msc-acc,
+html[dir='rtl'] [class*='accent-bar'] {
+  left: auto;
+  right: 0;
+}
+
+html[dir='rtl'] .note,
+html[dir='rtl'] .info-banner,
+html[dir='rtl'] .field-error,
+html[dir='rtl'] .mdl-error-banner {
+  border-left: none;
+  border-inline-start: 3px solid var(--l500, #7acc00);
+}
+
+html[dir='rtl'] .info-banner[style*='border'],
+html[dir='rtl'] .freeze-banner {
+  direction: rtl;
+  text-align: start;
+}
+
+/* Pagination / chips */
+html[dir='rtl'] .pagi,
+html[dir='rtl'] .pagination,
+html[dir='rtl'] .pay-chip,
+html[dir='rtl'] .status-pill,
+html[dir='rtl'] .ms-status-row {
+  direction: rtl;
+}
+
+/* Auth login */
+html[dir='rtl'] .login-page,
+html[dir='rtl'] .auth-card,
+html[dir='rtl'] .login-form {
+  direction: rtl;
+  text-align: start;
+}
+
+/* Dropdown menus anchored to actions */
+html[dir='rtl'] .dropdown {
+  left: auto;
+  right: 0;
+  text-align: start;
+}
+
+/* Utility: keep specific blocks LTR when marked */
+html[dir='rtl'] .keep-ltr,
+html[dir='rtl'] [data-keep-ltr] {
+  direction: ltr !important;
+  unicode-bidi: isolate;
+  text-align: left;
+}

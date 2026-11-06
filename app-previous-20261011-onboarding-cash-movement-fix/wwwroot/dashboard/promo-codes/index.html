@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Promo Codes</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css">
+<link rel="stylesheet" href="promo-codes.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current">Promo codes</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ti ti-discount-2"></i> Promo codes</h1>
+      <p class="page-subtitle">Legacy desk — prefer <a href="/dashboard/offers/">Offers &amp; Promotions</a>. List needs <code>sales.sell</code>. Create/update/deactivate needs <code>plans.manage</code>.</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn secondary" href="/dashboard/offers/">Offers &amp; Promotions</a>
+      <button type="button" class="btn primary" id="btnNew">New promo</button>
+    </div>
+  </div>
+
+  <section class="card" style="margin-bottom:12px;padding:12px 14px;border:1px solid rgba(122,204,0,.35);background:rgba(237,252,216,.55)">
+    <strong>Promo codes are now a redemption method on an Offer.</strong>
+    Use <a href="/dashboard/offers/">Offers &amp; Promotions</a> for the full membership + product experience. This page remains for direct code CRUD until the Offers API ships.
+  </section>
+
+  <section class="card">
+    <div class="filters">
+      <label class="check-row"><input type="checkbox" id="activeOnly" checked> Active only</label>
+      <label class="check-row"><input type="checkbox" id="validToday"> Valid today</label>
+      <button type="button" class="btn secondary" id="btnReload">Reload</button>
+    </div>
+    <div class="table-wrap" style="margin-top:12px">
+      <table>
+        <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Valid</th><th>Uses</th><th>Active</th><th></th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pager" id="pager" style="margin-top:12px;display:flex;gap:8px;justify-content:flex-end"></div>
+  </section>
+
+  <section class="card" id="formCard" style="display:none">
+    <div class="card-h"><h2 id="formTitle">Create promo</h2></div>
+    <form id="promoForm" class="promo-grid">
+      <input type="hidden" id="editId">
+      <label>Code<input id="fCode" required style="text-transform:uppercase"></label>
+      <label>Type
+        <select id="fType"><option value="percent">percent</option><option value="fixed">fixed</option></select>
+      </label>
+      <label>Value<input type="number" id="fValue" step="0.01" min="0" required></label>
+      <label>Valid from<input type="date" id="fFrom" required></label>
+      <label>Valid to<input type="date" id="fTo" required></label>
+      <label>Max uses<input type="number" id="fMaxUses" min="1" placeholder="optional"></label>
+      <label>Max per member<input type="number" id="fMaxMember" min="1" placeholder="optional"></label>
+      <label>Min price<input type="number" id="fMinPrice" step="0.01" placeholder="optional"></label>
+      <label class="span2">Applies to plan IDs (comma-separated, empty = all)
+        <input id="fApplies" placeholder="guid,guid">
+      </label>
+      <div class="span2" style="display:flex;gap:8px">
+        <button type="submit" class="btn primary">Save</button>
+        <button type="button" class="btn secondary" id="btnCancel">Cancel</button>
+      </div>
+    </form>
+  </section>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const API_BASE=window.API_BASE||window.GFP_DEFAULT_API_BASE||'/api';
+function getToken(){return localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');}
+function getH(){const t=getToken();const h={'Content-Type':'application/json'};if(t)h['Authorization']='Bearer '+t;return h;}
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();
+if(!user||!getToken()) location.href='/auth/login/';
+document.getElementById('userAvatar').textContent=(user.fullName||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('userName').textContent=user.fullName||'User';
+document.getElementById('userRole').textContent=user.role||'Staff';
+if(/^Owner$/i.test(user.role||'')){var ns=document.getElementById('navStaff');if(ns) ns.style.display='';}
+document.getElementById('btnLogout').onclick=function(){['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});location.href='/auth/login/';};
+(async()=>{const r=await fetch(API_BASE+'/settings',{headers:getH()});if(r.ok){const s=await r.json();document.getElementById('gymName').textContent=s.gymName||'';}})();
+</script>
+<script src="promo-codes-app.js"></script>
+</body>
+</html>

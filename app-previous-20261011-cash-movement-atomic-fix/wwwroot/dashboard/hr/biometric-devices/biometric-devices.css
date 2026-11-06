@@ -1,0 +1,12 @@
+.notice-banner{margin-bottom:14px;padding:10px 14px;border-radius:var(--rmd);background:var(--inf100);color:var(--inf500);font-size:13px;font-weight:600;border:1px solid var(--blue-border,rgba(59,130,246,.2))}
+.hdr-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn-secondary-link{height:44px;padding:0 16px;border:1px solid var(--ls3);border-radius:var(--rlg);background:var(--ls1);color:var(--lts);text-decoration:none;display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+.key-box{display:block;padding:12px;background:var(--c900);color:#d4d4d4;border-radius:var(--rmd);word-break:break-all;font-size:12px;margin:10px 0}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.modal-lg{max-width:720px}
+.map-form{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.map-form select,.map-form input{height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit;min-width:160px}
+.health-awaiting{background:var(--inf100);color:var(--inf500)}
+.health-receiving{background:var(--suc100);color:var(--suc500)}
+.health-disabled{background:var(--ls2);color:var(--ltt)}
+.health-error{background:var(--dng100);color:var(--dng500)}

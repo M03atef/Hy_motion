@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Classes</title>
+<meta name="description" content="Front-desk class sessions and bookings.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="classes.css?v=facquota1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Front desk" data-ar="الاستقبال">Front desk</span><span class="sep">/</span><span class="current" data-en="Classes" data-ar="الحصص">Classes</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div><div class="gym-name-ar" id="gymNameAr" hidden></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div class="ph-left">
+      <h1 class="page-title" data-en="Classes" data-ar="الحصص">Classes</h1>
+      <p class="page-subtitle" data-en="What classes are happening — activity, time, coach, and capacity" data-ar="الحصص النهاردة — النشاط والوقت والمدرب والسعة">What classes are happening — activity, time, coach, and capacity</p>
+    </div>
+    <div class="ph-right day-controls">
+      <div class="day-chips" role="group" aria-label="Quick dates">
+        <button type="button" class="day-chip is-active" id="chipToday" data-range="today" data-en="Today" data-ar="النهاردة">Today</button>
+        <button type="button" class="day-chip" id="chipTomorrow" data-range="tomorrow" data-en="Tomorrow" data-ar="بكرة">Tomorrow</button>
+        <button type="button" class="day-chip" id="chipWeek" data-range="week" data-en="This week" data-ar="الأسبوع ده">This week</button>
+      </div>
+      <div class="date-nav" role="group" aria-label="Date navigation">
+        <button type="button" class="date-btn" id="btnPrev" aria-label="Previous day"><i class="ti ti-chevron-left"></i></button>
+        <button type="button" class="date-display" id="dateDisplay" aria-live="polite"></button>
+        <input type="date" id="datePick" class="date-pick" aria-label="Pick date">
+        <button type="button" class="date-btn" id="btnNext" aria-label="Next day"><i class="ti ti-chevron-right"></i></button>
+        <button type="button" class="btn-today" id="btnToday" data-en="Today" data-ar="النهاردة">Today</button>
+        <button type="button" class="btn-refresh" id="btnRefresh" aria-label="Refresh"><i class="ti ti-refresh"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <label class="filter-field">
+      <span class="filter-label" data-en="Activity" data-ar="النشاط">Activity</span>
+      <select id="activityFilter" class="filter-select" aria-label="Filter by activity">
+        <option value="" data-en="All Activities" data-ar="كل الأنشطة">All Activities</option>
+      </select>
+    </label>
+    <div class="stats-bar" aria-live="polite">
+      <div class="stat-pill"><i class="ti ti-calendar-event"></i><span id="statSessions">0</span> <span data-en="Sessions" data-ar="حصص">Sessions</span></div>
+      <div class="stat-pill"><i class="ti ti-users"></i><span id="statBooked">0</span> <span data-en="Booked" data-ar="محجوز">Booked</span></div>
+      <div class="stat-pill active"><i class="ti ti-check"></i><span id="statCheckedIn">0</span> <span data-en="Checked in" data-ar="حضروا">Checked in</span></div>
+    </div>
+  </div>
+
+  <div class="sessions-list" id="sessionsList"></div>
+  <div id="facilitiesSection" hidden></div>
+</div>
+</div>
+</div>
+<div class="modal-overlay drawer-overlay" id="drawerOverlay"><div class="drawer" id="drawerContent"></div></div>
+<div class="modal-overlay" id="bookOverlay"><div class="modal book-modal" id="bookContent"></div></div>
+<div class="modal-overlay" id="classPrintOverlay">
+  <div class="class-print-box" role="dialog" aria-modal="true" aria-labelledby="classPrintTitle">
+    <div class="class-print-hdr">
+      <h3 id="classPrintTitle">Invoice</h3>
+      <button type="button" class="drawer-close" id="classPrintClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <iframe id="classPrintFrame" title="Class booking invoice"></iframe>
+    <div class="class-print-actions">
+      <button type="button" class="btn-book" id="classPrintDo"><i class="ti ti-printer"></i> <span data-en="Print" data-ar="طباعة">Print</span></button>
+      <button type="button" class="btn-cancel" id="classPrintDismiss" data-en="Close" data-ar="إغلاق">Close</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/shared/gfp-deployment.js"></script>
+<script src="classes-app.js?v=facquota1"></script>
+</body>
+</html>

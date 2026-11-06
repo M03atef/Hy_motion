@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyMotion — Staff Login</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  HyMotion Staff Login Page                                     ║
+  ║  File: apps/web/src/app/auth/login/page.tsx (Next.js route)     ║
+  ║                                                                  ║
+  ║  Architecture Mapping (from FOLDER_STRUCTURE.md):                ║
+  ║  ─────────────────────────────────────────────────────────────── ║
+  ║  Types:    types/auth.ts → LoginRequest, LoginResponse, UserInfo ║
+  ║  Hook:     hooks/use-auth.ts → Auth state + JWT refresh         ║
+  ║  Provider: providers/auth-provider.tsx → JWT + refresh flow     ║
+  ║  API:      lib/api-client.ts → Axios with interceptors          ║
+  ║  Validn:   lib/utils/validation.ts → Zod schemas                ║
+  ║  Consts:   lib/constants/roles.ts → Role enum                   ║
+  ║  i18n:     lib/i18n/en.json + ar.json → Bilingual strings       ║
+  ║  Tokens:   packages/design-tokens/ → Source of truth            ║
+  ║  UI:       components/ui/ → Button, Input, Form, Tooltip        ║
+  ║  Layout:   components/layout/ → Sidebar, Topbar, LangSwitcher   ║
+  ║                                                                  ║
+  ║  API Endpoint: POST /api/auth/login                              ║
+  ║  Request:  { email: string, password: string, gymCode: string } ║
+  ║  Response: { accessToken, refreshToken, user: UserInfo }        ║
+  ║                                                                  ║
+  ║  Token Behavior:                                                 ║
+  ║  • Access token:  15 min expiry                                 ║
+  ║  • Refresh token: 30 days expiry                                ║
+  ║  • Auto-refresh on 401 via auth_interceptor.dart                ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   Design Tokens — packages/design-tokens/src/tokens/tokens.json
+   ═══════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Charcoal — Primary */
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c600:#3A3A3A;
+  --c500:#4A4A4A;--c400:#6B6B6B;--c300:#8C8C8C;--c200:#B0B0B0;
+  --c100:#D4D4D4;--c50:#F0F0F0;
+  /* Lime — Accent */
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;
+  --l200:#D8F5A6;--l100:#EDFCD8;--lglow:rgba(160,224,64,0.25);
+  /* Teal — Secondary */
+  --t700:#0A4D4D;--t600:#0D6B6B;--t500:#148F8F;--t400:#3DB5B5;
+  --t300:#70CECE;--t200:#A8E4E4;--t100:#D9F2F2;
+  /* Semantic */
+  --suc500:#22C55E;--suc100:#DCFCE7;--suctxt:#166534;
+  --wrn500:#F59E0B;--wrn100:#FEF3C7;--wrntxt:#92400E;
+  --dng600:#DC2626;--dng500:#EF4444;--dng100:#FEE2E2;--dngtxt:#991B1B;
+  --inf500:#3B82F6;--inf100:#DBEAFE;--inftxt:#1E40AF;
+  /* Surfaces — Light */
+  --lbg:#FAFAFA;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#EBEBEB;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;--lbd:#D4D4D4;
+  /* Surfaces — Dark */
+  --dbg:#0D0D0D;--ds1:#1A1A1A;--ds2:#2A2A2A;--ds3:#3A3A3A;
+  --dtp:#F0F0F0;--dts:#B0B0B0;--dtt:#6B6B6B;--dbd:#4A4A4A;
+  /* Typography — packages/design-tokens/src/scss/_typography.scss */
+  --fd:'Cairo',sans-serif;
+  --fb:'Cairo',sans-serif;
+  --fa:'Cairo',sans-serif;
+  /* Radius — packages/design-tokens/src/scss/_radius.scss */
+  --rsm:6px;--rmd:10px;--rlg:16px;--rxl:24px;--rpl:9999px;
+  /* Shadows — packages/design-tokens/src/scss/_shadows.scss */
+  --sh1:0 1px 2px rgba(0,0,0,.06);--sh2:0 2px 8px rgba(0,0,0,.08);
+  --sh3:0 4px 16px rgba(0,0,0,.12);--sh4:0 8px 32px rgba(0,0,0,.18);
+  --shg:0 0 20px var(--lglow);
+  /* Transitions — packages/design-tokens/src/scss/_transitions.scss */
+  --tf:150ms ease;--tb:250ms ease;--ts:400ms ease;
+}
+html,body{height:100%}
+body{font-family:var(--fb);background:var(--ls1);color:var(--ltp);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* ── RTL Support — lib/i18n + providers/locale-provider.tsx ── */
+[dir="rtl"] body{font-family:var(--fa)}
+[dir="rtl"] .brand-panel{direction:ltr}
+[dir="rtl"] .login-panel{direction:rtl}
+[dir="rtl"] .form-input{text-align:right}
+[dir="rtl"] .pw-wrap .form-input{padding-right:16px;padding-left:44px}
+[dir="rtl"] .pw-toggle{right:auto;left:2px;border-radius:var(--rmd) 0 0 var(--rmd)}
+[dir="rtl"] .tooltip-content{text-align:right}
+[dir="rtl"] .feat{flex-direction:row-reverse;text-align:right}
+[dir="rtl"] .alert-err{flex-direction:row-reverse;text-align:right}
+
+/* ═══════════════════════════════════════════════════════════════
+   Split Layout — components/layout/
+   ═══════════════════════════════════════════════════════════════ */
+.split{display:flex;height:100vh;overflow:hidden}
+
+/* ── LEFT: Brand Panel (40%) ── */
+.brand-panel{
+  width:40%;background:var(--c900);color:var(--dtp);
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:48px 40px;position:relative;overflow:hidden;
+}
+
+/* CSS Geometric Gym Pattern — assets/illustrations/ (no images) */
+.brand-panel::before{
+  content:'';position:absolute;inset:0;opacity:.6;pointer-events:none;
+  background:
+    /* Dumbbell silhouette — repeating horizontal bars + circles */
+    radial-gradient(circle 18px at 12% 20%,rgba(160,224,64,.07) 70%,transparent 71%),
+    radial-gradient(circle 18px at 20% 20%,rgba(160,224,64,.07) 70%,transparent 71%),
+    linear-gradient(0deg,transparent 19.5%,rgba(160,224,64,.04) 19.5%,rgba(160,224,64,.04) 20.5%,transparent 20.5%),
+    radial-gradient(circle 18px at 80% 75%,rgba(160,224,64,.05) 70%,transparent 71%),
+    radial-gradient(circle 18px at 88% 75%,rgba(160,224,64,.05) 70%,transparent 71%),
+    linear-gradient(0deg,transparent 74.5%,rgba(160,224,64,.03) 74.5%,rgba(160,224,64,.03) 75.5%,transparent 75.5%),
+    /* Floor grid */
+    repeating-linear-gradient(45deg,transparent,transparent 60px,rgba(160,224,64,.025) 60px,rgba(160,224,64,.025) 61px),
+    repeating-linear-gradient(-45deg,transparent,transparent 60px,rgba(160,224,64,.025) 60px,rgba(160,224,64,.025) 61px),
+    repeating-linear-gradient(0deg,transparent,transparent 80px,rgba(160,224,64,.015) 80px,rgba(160,224,64,.015) 81px),
+    repeating-linear-gradient(90deg,transparent,transparent 80px,rgba(160,224,64,.015) 80px,rgba(160,224,64,.015) 81px);
+}
+/* Ambient glow orbs */
+.brand-panel::after{
+  content:'';position:absolute;pointer-events:none;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(160,224,64,.06) 0%,transparent 70%);
+  bottom:-100px;left:-100px;
+}
+.glow-orb{
+  position:absolute;pointer-events:none;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(20,143,143,.05) 0%,transparent 70%);
+  top:-60px;right:-80px;
+}
+
+.brand-content{position:relative;z-index:1;max-width:380px;width:100%}
+
+/* Logo — assets/icons/brand/ */
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:48px}
+.logo-row img{width:52px;height:52px;flex-shrink:0;filter:drop-shadow(0 0 12px var(--lglow))}
+.logo-row span{font-family:var(--fd);font-size:30px;font-weight:700;letter-spacing:-.5px;color:var(--l400)}
+
+/* Tagline — lib/i18n/en.json + ar.json */
+.tagline{font-family:var(--fd);font-size:24px;font-weight:700;line-height:1.25;color:var(--dtp);margin-bottom:12px}
+.tagline-sub{font-size:15px;color:var(--c400);margin-bottom:36px;line-height:1.5}
+
+/* Feature Bullets — components/composite/ */
+.features{display:flex;flex-direction:column;gap:22px}
+.feat{display:flex;align-items:flex-start;gap:14px}
+.feat-icon{
+  width:42px;height:42px;border-radius:var(--rmd);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;
+}
+.feat-icon.lime{background:rgba(160,224,64,.1);color:var(--l400)}
+.feat-icon.teal{background:rgba(20,143,143,.1);color:var(--t400)}
+.feat-icon.amber{background:rgba(251,191,36,.1);color:#FBBF24}
+.feat-text h4{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--dtp);margin-bottom:2px}
+.feat-text p{font-size:13px;color:var(--c400);line-height:1.45}
+
+/* Bottom accent bar */
+.deco-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--l500),var(--t500),var(--l500));background-size:200% 100%;animation:barShift 6s ease infinite}
+@keyframes barShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+
+/* ── RIGHT: Login Panel (60%) ── */
+.login-panel{
+  width:60%;background:var(--ls1);
+  display:flex;align-items:center;justify-content:center;
+  padding:48px 64px;position:relative;
+  background-image:radial-gradient(circle at 100% 0%,rgba(160,224,64,.03) 0%,transparent 40%);
+}
+
+/* Language Toggle — components/layout/lang-switcher/LangSwitcher.tsx */
+.lang-toggle{
+  position:absolute;top:24px;right:24px;
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--fd);font-size:12px;font-weight:600;
+  color:var(--ltt);cursor:pointer;user-select:none;
+  padding:6px 12px;border-radius:var(--rpl);
+  border:1px solid var(--ls3);background:var(--ls2);
+  transition:all var(--tf);
+}
+.lang-toggle:hover{border-color:var(--l500);color:var(--l600)}
+.lang-toggle .lang-dot{width:6px;height:6px;border-radius:50%;background:var(--l500)}
+[dir="rtl"] .lang-toggle{right:auto;left:24px}
+
+.login-card{width:100%;max-width:440px}
+.login-card h1{font-family:var(--fd);font-size:30px;font-weight:700;color:var(--ltp);margin-bottom:2px;letter-spacing:-.3px}
+.login-card .sub-label{font-size:15px;color:var(--ltt);margin-bottom:32px}
+
+/* ═══════════════════════════════════════════════════════════════
+   Form — components/ui/form/ + components/ui/input/ + components/ui/button/
+   Validation — lib/utils/validation.ts (Zod schemas)
+   ═══════════════════════════════════════════════════════════════ */
+.form-group{margin-bottom:20px;position:relative}
+.form-group label{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:600;color:var(--lts);margin-bottom:6px}
+.form-group label .req{color:var(--dng500);font-size:14px}
+.form-input{
+  width:100%;font-family:var(--fb);font-size:14px;
+  padding:10px 16px;border-radius:var(--rmd);border:2px solid var(--lbd);
+  background:var(--ls1);color:var(--ltp);outline:none;
+  transition:border-color var(--tf),box-shadow var(--tf);height:46px;
+}
+.form-input:focus{border-color:var(--l500);box-shadow:0 0 0 3px var(--lglow)}
+.form-input.err{border-color:var(--dng500);box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+.form-input:disabled{background:var(--ls2);color:var(--ltt);cursor:not-allowed}
+.form-input::placeholder{color:var(--ltt)}
+.form-hint{font-size:11px;color:var(--ltt);margin-top:5px}
+.form-err-text{font-size:12px;color:var(--dng600);margin-top:4px;display:none}
+.form-err-text.show{display:block}
+
+/* Password toggle — components/ui/input/ */
+.pw-wrap{position:relative}
+.pw-wrap .form-input{padding-right:46px}
+.pw-toggle{
+  position:absolute;right:3px;top:3px;bottom:3px;width:42px;
+  display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;color:var(--c400);
+  border-radius:0 var(--rmd) var(--rmd) 0;transition:color var(--tf);
+}
+.pw-toggle:hover{color:var(--l600)}
+.pw-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Gym Code tooltip — components/ui/tooltip/ */
+.tooltip-wrap{position:relative;display:inline-flex;align-items:center;margin-left:2px}
+.tooltip-trigger{
+  width:16px;height:16px;border-radius:50%;background:var(--ls3);color:var(--ltt);
+  font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;
+  cursor:help;border:none;line-height:1;
+}
+.tooltip-content{
+  position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);
+  background:var(--c800);color:var(--dtp);font-size:12px;line-height:1.5;
+  padding:12px 16px;border-radius:var(--rmd);width:260px;
+  opacity:0;visibility:hidden;transition:opacity var(--tb),visibility var(--tb);
+  pointer-events:none;z-index:10;box-shadow:var(--sh3);
+}
+.tooltip-content::after{
+  content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-top-color:var(--c800);
+}
+.tooltip-trigger:hover+.tooltip-content,.tooltip-content:hover{opacity:1;visibility:visible;pointer-events:auto}
+[dir="rtl"] .tooltip-content{transform:translateX(50%)}
+[dir="rtl"] .tooltip-trigger:hover+.tooltip-content,.tooltip-content:hover{transform:translateX(50%)}
+
+/* Remember me */
+.check-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+.check-label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--lts);cursor:pointer}
+.check-label input[type="checkbox"]{width:16px;height:16px;accent-color:var(--l600);cursor:pointer;border-radius:3px}
+.forgot-link{
+  display:none;background:none;border:none;padding:0;font:inherit;font-size:13px;font-weight:600;
+  color:var(--l600);cursor:pointer;text-decoration:none;
+}
+.forgot-link.show{display:inline}
+.forgot-link:hover{text-decoration:underline}
+
+.recovery-panel{display:none;text-align:start}
+.recovery-panel.show{display:block}
+.recovery-panel p{font-size:13px;color:var(--lts);margin:0 0 12px;line-height:1.55}
+.recovery-panel .ref{
+  font-family:var(--fd);font-size:22px;font-weight:700;letter-spacing:.08em;margin:8px 0 16px;
+}
+.recovery-panel textarea,.recovery-panel .form-input{width:100%}
+.recovery-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.btn-secondary{
+  height:44px;padding:0 18px;font-family:var(--fb);font-size:14px;font-weight:600;
+  border:1px solid var(--lbd);background:var(--ls1);color:var(--ltp);border-radius:var(--rpl);cursor:pointer;
+}
+.btn-secondary:hover{border-color:var(--l500)}
+.challenge-box{
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.45;
+  background:var(--ls2);border:1px solid var(--lbd);border-radius:var(--rmd);padding:10px;
+  word-break:break-all;max-height:96px;overflow:auto;margin-bottom:12px;
+}
+.alert-ok{
+  display:none;align-items:flex-start;gap:10px;padding:14px 16px;border-radius:var(--rmd);
+  background:var(--suc100);border:1px solid rgba(34,197,94,.3);color:var(--suctxt);
+  font-size:13px;margin-bottom:16px;line-height:1.5;
+}
+.alert-ok.show{display:flex}
+
+/* Login Button — components/ui/button/Button.tsx */
+.btn-login{
+  width:100%;height:48px;font-family:var(--fb);font-size:15px;font-weight:600;
+  border:2px solid var(--l500);background:var(--l500);color:var(--c900);
+  border-radius:var(--rpl);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all var(--tf);position:relative;letter-spacing:.2px;
+}
+.btn-login:hover{background:var(--l400);border-color:var(--l400);box-shadow:var(--shg)}
+.btn-login:active{transform:scale(.98)}
+.btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-login.loading .btn-text{opacity:0}
+.btn-login.loading .spinner{display:flex}
+.spinner{display:none;position:absolute;inset:0;align-items:center;justify-content:center}
+.spinner-circle{width:22px;height:22px;border:3px solid rgba(13,13,13,.15);border-top-color:var(--c900);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Error Alert — components/ui/ */
+.alert-err{
+  display:none;align-items:flex-start;gap:10px;
+  padding:14px 16px;border-radius:var(--rmd);
+  background:var(--dng100);border:1px solid rgba(239,68,68,.3);color:var(--dngtxt);
+  font-size:13px;margin-bottom:20px;line-height:1.5;
+}
+.alert-err.show{display:flex}
+.alert-err svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;color:var(--dng500)}
+html[data-theme="dark"] .alert-err{color:var(--gfp-dng)}
+
+/* First-run setup link — Local Edition only (hidden until the /local-setup/status probe below
+   confirms this isn't SaaS, where the endpoint 404s and the link would be meaningless). Harmless
+   to click even on an already-set-up install: /auth/local-setup/ checks status itself and opens the setup chooser
+   straight back here (isCompleted === true) rather than letting a second gym be created. */
+.setup-link{display:none;margin-top:24px;text-align:center;font-size:13px;color:var(--ltt)}
+.setup-link.show{display:block}
+.setup-link a{color:var(--l600);font-weight:600;text-decoration:none}
+.setup-link a:hover{text-decoration:underline}
+.setup-link .hint{display:block;margin-bottom:6px;font-size:12px;color:var(--ltt)}
+
+.gym-identity{display:none;text-align:center;margin:0 0 22px}
+.gym-identity.show{display:block}
+.gym-identity img{width:56px;height:56px;border-radius:12px;object-fit:contain;background:#fff;display:block;margin:0 auto 10px;border:1px solid var(--lbd)}
+.gym-identity .bound-name{font-family:var(--fd);font-size:20px;font-weight:700;line-height:1.3}
+.gym-identity .bound-code{font-size:13px;color:var(--ltt);letter-spacing:.04em;margin-top:2px}
+.form-group.gym-code-field.bound{display:none}
+
+/* ═══════════════════════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════════════════════ */
+@media(max-width:1024px){
+  .brand-panel{width:38%;padding:40px 28px}
+  .login-panel{width:62%;padding:40px 48px}
+}
+@media(max-width:900px){
+  .split{flex-direction:column}
+  .brand-panel{width:100%;padding:36px 24px;min-height:auto}
+  .login-panel{width:100%;padding:36px 24px}
+  .brand-content{max-width:100%}
+  .login-card{max-width:100%}
+  .features{flex-direction:row;gap:16px;flex-wrap:wrap}
+  .feat{flex:1;min-width:160px}
+  .lang-toggle{top:16px;right:16px}
+}
+@media(max-width:480px){
+  .login-panel{padding:28px 16px}
+  .brand-panel{padding:28px 16px}
+}
+</style>
+</head>
+<body>
+<div class="split">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LEFT: Brand Panel — 40%
+       Reflects: components/layout/ + assets/illustrations/
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="brand-panel">
+    <div class="glow-orb"></div>
+    <div class="brand-content">
+
+      <!-- Logo -->
+      <div class="logo-row">
+        <img src="/shared/hymotion-mark.png" alt="HyMotion" width="52" height="52">
+        <span>HyMotion</span>
+      </div>
+
+      <!-- Tagline — one locale at a time (no dual EN+AR paint) -->
+      <div class="tagline" data-login-i18n="tagline">Manage your gym<br>with clarity</div>
+      <div class="tagline-sub" data-login-i18n="taglineSub">The operations platform built for fitness businesses across the region.</div>
+
+      <!-- Feature Bullets — components/composite/ -->
+      <div class="features">
+        <div class="feat">
+          <div class="feat-icon lime">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 4-6"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4 data-login-i18n="feat1Title">Real-time Dashboard</h4>
+            <p data-login-i18n="feat1Desc">Live attendance, revenue, and member metrics at a glance.</p>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon teal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4 data-login-i18n="feat2Title">Member Management</h4>
+            <p data-login-i18n="feat2Desc">Track memberships, freeze accounts, and manage renewals.</p>
+          </div>
+        </div>
+        <div class="feat">
+          <div class="feat-icon amber">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div class="feat-text">
+            <h4 data-login-i18n="feat3Title">Role-based Access</h4>
+            <p data-login-i18n="feat3Desc">Owner, Manager, and Trainer roles with scoped permissions.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="deco-bar"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       RIGHT: Login Panel — 60%
+       Reflects: components/ui/ + hooks/use-auth.ts + providers/auth-provider.tsx
+       Types: types/auth.ts → LoginRequest { email, password, gymCode }
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="login-panel">
+
+    <!-- Language Toggle — shows CURRENT locale -->
+    <button class="lang-toggle" id="langToggle" type="button">
+      <span class="lang-dot"></span>
+      <span id="langLabel">EN English</span>
+    </button>
+
+    <div class="login-card">
+
+      <div class="gym-identity" id="gymIdentity">
+        <img id="gymLogo" src="/shared/hymotion-mark.png" alt="">
+        <div class="bound-name" id="boundGymName"></div>
+        <div class="bound-code" id="boundGymCode"></div>
+      </div>
+
+      <!-- Heading — one locale at a time -->
+      <h1 data-login-i18n="welcomeBack">Welcome back</h1>
+      <p class="sub-label" data-login-i18n="staffPortal">Staff Portal</p>
+
+      <!-- Error Alert — State: Error -->
+      <div class="alert-err" id="alertErr">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-.75-11.25a.75.75 0 011.5 0v4.5a.75.75 0 01-1.5 0v-4.5zM10 14a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/></svg>
+        <span data-login-i18n="errInvalid">Invalid credentials or gym code. Please check and try again.</span>
+      </div>
+
+      <!--
+        Form — POST /api/auth/login
+        Request body: LoginRequest { email: string, password: string, gymCode: string }
+        Response: LoginResponse { accessToken, refreshToken, user: UserInfo }
+        Hook: hooks/use-auth.ts
+        Provider: providers/auth-provider.tsx
+      -->
+      <form id="loginForm" novalidate>
+
+        <!-- Email — components/ui/input/ -->
+        <div class="form-group">
+          <label for="email" data-login-i18n="emailLabel">Email <span class="req">*</span></label>
+          <input class="form-input" type="email" id="email" name="email"
+                 placeholder="you@gym.com" autocomplete="email" required
+                 data-login-i18n-placeholder="emailPh">
+          <div class="form-err-text" id="emailErr" data-login-i18n="emailErr">Please enter a valid email address</div>
+        </div>
+
+        <!-- Password — components/ui/input/ + show/hide toggle -->
+        <div class="form-group">
+          <label for="password" data-login-i18n="pwLabel">Password <span class="req">*</span></label>
+          <div class="pw-wrap">
+            <input class="form-input" type="password" id="password" name="password"
+                   placeholder="Enter your password" autocomplete="current-password" required
+                   data-login-i18n-placeholder="pwPh">
+            <button type="button" class="pw-toggle" id="pwToggle" aria-label="Toggle password visibility">
+              <svg id="eyeOpen" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <div class="form-err-text" id="pwErr" data-login-i18n="pwErr">Password is required</div>
+        </div>
+
+        <!-- Gym Code — hidden once this PC is already bound to a gym -->
+        <div class="form-group gym-code-field" id="gymCodeField">
+          <label for="gymCode">
+            <span data-login-i18n="gymCodeLabel">Gym Code</span> <span class="req">*</span>
+            <span class="tooltip-wrap">
+              <button type="button" class="tooltip-trigger" aria-label="What is a gym code?">?</button>
+              <span class="tooltip-content" data-login-i18n="gymCodeTooltip">The code for your gym. Ask your gym owner or manager if you do not have it.</span>
+            </span>
+          </label>
+          <input class="form-input" type="text" id="gymCode" name="gymCode"
+                 placeholder="Your gym code" autocomplete="organization" required
+                 data-login-i18n-placeholder="gymCodePh">
+          <div class="form-hint" data-login-i18n="gymCodeHint">Ask your gym owner if you do not know this code</div>
+          <div class="form-err-text" id="gymCodeErr" data-login-i18n="gymCodeErr">Gym code is required</div>
+        </div>
+
+        <!-- Keep me signed in + owner recovery (Local only; never enumerates accounts) -->
+        <div class="check-row">
+          <label class="check-label">
+            <input type="checkbox" name="remember" id="remember">
+            <span data-login-i18n="rememberMe">Keep me signed in on this device</span>
+          </label>
+          <button type="button" class="forgot-link" id="forgotPasswordBtn" data-login-i18n="forgotPassword">Forgot password?</button>
+        </div>
+
+        <button type="submit" class="btn-login" id="btnLogin">
+          <span class="btn-text" data-login-i18n="signIn">Sign In</span>
+          <span class="spinner"><span class="spinner-circle"></span></span>
+        </button>
+      </form>
+
+      <div class="recovery-panel" id="recoveryPanel" hidden>
+        <div class="alert-ok" id="recoveryOk"><span id="recoveryOkText"></span></div>
+        <div class="alert-err" id="recoveryErr"><span id="recoveryErrText"></span></div>
+        <p id="recoveryCopy" data-login-i18n="recoveryIntro">Request help to set a new owner password. HyMotion never sees your current password.</p>
+        <div class="bound-code" id="recoveryGym"></div>
+        <div class="ref" id="recoveryRef" hidden></div>
+        <div class="challenge-box" id="recoveryChallenge" hidden></div>
+        <div class="form-group" id="recoveryCodeGroup" hidden>
+          <label for="recoveryCode" data-login-i18n="recoveryCodeLabel">Recovery code from support</label>
+          <input class="form-input" type="text" id="recoveryCode" autocomplete="off">
+        </div>
+        <div class="form-group" id="recoveryPasswordGroup" hidden>
+          <label for="recoveryPassword" data-login-i18n="recoveryPwLabel">New owner password</label>
+          <input class="form-input" type="password" id="recoveryPassword" autocomplete="new-password">
+          <label for="recoveryPassword2" data-login-i18n="recoveryPw2Label">Confirm password</label>
+          <input class="form-input" type="password" id="recoveryPassword2" autocomplete="new-password">
+        </div>
+        <div class="recovery-actions">
+          <button type="button" class="btn-login" id="recoveryPrimary" data-login-i18n="recoveryRequest">Request recovery</button>
+          <button type="button" class="btn-secondary" id="recoverySecondary" hidden></button>
+          <button type="button" class="btn-secondary" id="recoveryBack" data-login-i18n="recoveryBack">Back to sign in</button>
+        </div>
+      </div>
+
+      <p class="setup-link" id="setupLink">
+        <span data-login-i18n="setupPrompt">First time setting up this gym?</span>
+        <a href="/auth/local-setup/?v=setup6" data-login-i18n="setupCta">Set up now</a>
+      </p>
+      <p class="setup-link" id="changeGymLink">
+        <span class="hint" data-login-i18n="changeGymHint">Changing gym is not the same as signing out. This PC will stay bound to this gym until you reconnect it on purpose.</span>
+        <a href="/auth/local-setup/?v=setup6" data-login-i18n="changeGymCta">Change / reconnect gym</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     Script — hooks/use-auth.ts + providers/auth-provider.tsx + lib/i18n/
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  var boundGym = null;
+
+  function cachedIdentity() {
+    try {
+      if (window.GfpApi && window.GfpApi.gymIdentity) return window.GfpApi.gymIdentity.get();
+      return JSON.parse(localStorage.getItem('gfp_gym_identity') || 'null');
+    } catch (e) { return null; }
+  }
+
+  function paintBoundGym(identity) {
+    if (!identity || !identity.gymCode) return;
+    boundGym = identity;
+    var wrap = document.getElementById('gymIdentity');
+    var nameEl = document.getElementById('boundGymName');
+    var codeEl = document.getElementById('boundGymCode');
+    var logoEl = document.getElementById('gymLogo');
+    var field = document.getElementById('gymCodeField');
+    var input = document.getElementById('gymCode');
+    if (nameEl) nameEl.textContent = identity.gymName || identity.gymCode;
+    if (codeEl) codeEl.textContent = identity.gymCode;
+    if (logoEl && identity.logoUrl) logoEl.src = identity.logoUrl;
+    if (wrap) wrap.classList.add('show');
+    if (field) field.classList.add('bound');
+    if (input) {
+      input.value = identity.gymCode;
+      input.required = false;
+      input.removeAttribute('required');
+    }
+    var change = document.getElementById('changeGymLink');
+    if (change) change.classList.add('show');
+    var setup = document.getElementById('setupLink');
+    if (setup) setup.classList.remove('show');
+  }
+
+  async function goLanding() {
+    var land = '/dashboard/';
+    try {
+      if (window.GfpShell && window.GfpShell.resolveLandingPath) {
+        land = await window.GfpShell.resolveLandingPath();
+      }
+    } catch (e) {}
+    window.location.href = land;
+  }
+
+  (async function bootLocalIdentityAndSession() {
+    var Gfp = window.GfpApi;
+    if (!Gfp) return;
+
+    var statusOk = false;
+    var status = null;
+    var saas = false;
+    try {
+      var r = await Gfp.get('/local-setup/status', { auth: false });
+      if (r.ok && r.data) {
+        statusOk = true;
+        status = r.data;
+        if (typeof Gfp.setLocalEdition === 'function') Gfp.setLocalEdition(true);
+        var forgot = document.getElementById('forgotPasswordBtn');
+        if (forgot) forgot.classList.add('show');
+      } else if (r.status === 404) {
+        saas = true;
+      }
+    } catch (e) { /* stay on login */ }
+
+    if (statusOk && status) {
+      var gymCode = status.gymCode || status.GymCode;
+      var gymName = status.gymName || status.GymName;
+      var installId = status.license && (status.license.installationId || status.license.InstallationId);
+      if (gymCode) {
+        var cached = cachedIdentity() || {};
+        paintBoundGym({
+          gymCode: gymCode,
+          gymName: gymName || cached.gymName || '',
+          installationId: installId || cached.installationId || '',
+          logoUrl: cached.logoUrl || ''
+        });
+        Gfp.gymIdentity.remember({
+          gymCode: gymCode,
+          gymName: gymName || cached.gymName || '',
+          installationId: installId || cached.installationId || '',
+          logoUrl: cached.logoUrl || ''
+        });
+        if (status.ownerMissing === true) {
+          window.location.href = '/auth/local-setup/?v=setup6';
+          return;
+        }
+      } else if (status.isCompleted === false) {
+        window.location.href = '/auth/local-setup/?v=setup6';
+        return;
+      }
+    } else if (!saas) {
+      var fallback = cachedIdentity();
+      if (fallback && fallback.gymCode) paintBoundGym(fallback);
+    }
+
+    var token = Gfp.tokens.getAccess();
+    var expires = Gfp.tokens.getExpiresAt();
+    if (token && expires && new Date(expires) > new Date()) {
+      await goLanding();
+      return;
+    }
+    var keep = false;
+    try { keep = localStorage.getItem('gfp_persist') === '1'; } catch (e2) {}
+    if (keep) {
+      var restored = await Gfp.auth.refresh({ quiet: true });
+      if (restored) await goLanding();
+    }
+  })();
+
+  // ── i18n — lib/i18n/en.json + ar.json ──
+  const translations = {
+    en: {
+      tagline: 'Manage your gym<br>with clarity',
+      taglineSub: 'The operations platform built for fitness businesses across the region.',
+      feat1Title: 'Real-time Dashboard',
+      feat1Desc: 'Live attendance, revenue, and member metrics at a glance.',
+      feat2Title: 'Member Management',
+      feat2Desc: 'Track memberships, freeze accounts, and manage renewals.',
+      feat3Title: 'Role-based Access',
+      feat3Desc: 'Owner, Manager, Trainer, and Receptionist roles with scoped permissions.',
+      welcomeBack: 'Welcome back',
+      staffPortal: 'Staff Portal',
+      emailLabel: 'Email <span class="req">*</span>',
+      emailPh: 'you@gym.com',
+      emailErr: 'Please enter a valid email address',
+      pwLabel: 'Password <span class="req">*</span>',
+      pwPh: 'Enter your password',
+      pwErr: 'Password is required',
+      gymCodeLabel: 'Gym Code',
+      gymCodePh: 'Your gym code',
+      gymCodeHint: 'Ask your gym owner if you do not know this code',
+      gymCodeErr: 'Gym code is required',
+      gymCodeTooltip: 'The code for your gym. Ask your gym owner or manager if you do not have it.',
+      rememberMe: 'Keep me signed in on this device',
+      forgotPassword: 'Forgot password?',
+      recoveryIntro: 'Request help to set a new owner password. HyMotion never sees your current password.',
+      recoveryRequest: 'Request recovery',
+      recoveryBack: 'Back to sign in',
+      recoveryPending: 'HyMotion support will verify it is you, then approve recovery. Share this reference if you call support.',
+      recoveryOffline: 'If this PC has no internet, copy the request below and send it to HyMotion support.',
+      recoveryCopy: 'Copy request',
+      recoveryCodeLabel: 'Recovery code from support',
+      recoveryEnterCode: 'I have a recovery code',
+      recoverySubmitCode: 'Continue',
+      recoveryReady: 'Set a new owner password on this gym. Then sign in.',
+      recoveryPwLabel: 'New owner password',
+      recoveryPw2Label: 'Confirm password',
+      recoverySetPassword: 'Set new password',
+      recoveryDone: 'Owner password updated. Sign in with the new password.',
+      recoveryRejected: 'This recovery request was not approved. Contact HyMotion support.',
+      recoveryExpired: 'This recovery request expired. You can start a new one.',
+      recoveryWait: 'Approved. Waiting to finish on this gym PC.',
+      recoveryCheck: 'Check status',
+      recoveryNeedGym: 'This PC must be set up as a gym before owner recovery can start.',
+      recoveryUnavailable: 'Owner recovery is not available on this gym PC yet. Restart HyMotion and try again.',
+      signIn: 'Sign In',
+      errInvalid: 'Invalid credentials or gym code. Please check and try again.',
+      errHostUnreachable: 'Cannot connect to the HyMotion Host. Check: 1) the Host PC is on and HyMotion is running, 2) both PCs are on the same network, 3) the address in the browser is correct.',
+      setupPrompt: 'First time setting up this gym?',
+      setupCta: 'Set up now',
+      changeGymHint: 'Changing gym is not the same as signing out. This PC will stay bound to this gym until you reconnect it on purpose.',
+      changeGymCta: 'Change / reconnect gym'
+    },
+    ar: {
+      tagline: 'أدّر ناديك<br>بوضوح',
+      taglineSub: 'منصة العمليات المصممة لأعمال اللياقة في المنطقة.',
+      feat1Title: 'لوحة تحكم فورية',
+      feat1Desc: 'الحضور والإيرادات وإحصائيات الأعضاء في لمحة.',
+      feat2Title: 'إدارة الأعضاء',
+      feat2Desc: 'تتبع الاشتراكات، وجّم الحسابات، وأدِر التجديدات.',
+      feat3Title: 'صلاحيات حسب الدور',
+      feat3Desc: 'أدوار المالك والمدير والمدرب والاستقبال مع صلاحيات محددة.',
+      welcomeBack: 'مرحباً بعودتك',
+      staffPortal: 'بوابة الموظفين',
+      emailLabel: 'البريد الإلكتروني <span class="req">*</span>',
+      emailPh: 'you@gym.com',
+      emailErr: 'يرجى إدخال بريد إلكتروني صالح',
+      pwLabel: 'كلمة المرور <span class="req">*</span>',
+      pwPh: 'أدخل كلمة المرور',
+      pwErr: 'كلمة المرور مطلوبة',
+      gymCodeLabel: 'رمز النادي',
+      gymCodePh: 'رمز ناديك',
+      gymCodeHint: 'اسأل مالك النادي إذا لم تعرف هذا الرمز',
+      gymCodeErr: 'رمز النادي مطلوب',
+      gymCodeTooltip: 'رمز ناديك. اسأل مالك النادي أو المدير إذا لم يكن لديك.',
+      rememberMe: 'أبقني مسجّلاً على هذا الجهاز',
+      forgotPassword: 'نسيت كلمة المرور؟',
+      recoveryIntro: 'اطلب المساعدة لتعيين كلمة مرور مالك جديدة. HyMotion لا يرى كلمة المرور الحالية.',
+      recoveryRequest: 'طلب الاسترداد',
+      recoveryBack: 'العودة لتسجيل الدخول',
+      recoveryPending: 'سيتحقق دعم HyMotion من هويتك ثم يوافق على الاسترداد. شارك هذا المرجع عند التواصل.',
+      recoveryOffline: 'إذا لم يكن لهذا الجهاز إنترنت، انسخ الطلب أدناه وأرسله لدعم HyMotion.',
+      recoveryCopy: 'نسخ الطلب',
+      recoveryCodeLabel: 'رمز الاسترداد من الدعم',
+      recoveryEnterCode: 'لدي رمز استرداد',
+      recoverySubmitCode: 'متابعة',
+      recoveryReady: 'عيّن كلمة مرور مالك جديدة على هذه الصالة ثم سجّل الدخول.',
+      recoveryPwLabel: 'كلمة مرور المالك الجديدة',
+      recoveryPw2Label: 'تأكيد كلمة المرور',
+      recoverySetPassword: 'تعيين كلمة المرور',
+      recoveryDone: 'تم تحديث كلمة مرور المالك. سجّل الدخول بالكلمة الجديدة.',
+      recoveryRejected: 'لم يُوافق على طلب الاسترداد. تواصل مع دعم HyMotion.',
+      recoveryExpired: 'انتهت صلاحية الطلب. يمكنك بدء طلب جديد.',
+      recoveryWait: 'تمت الموافقة. بانتظار الإكمال على جهاز الصالة.',
+      recoveryCheck: 'تحقق من الحالة',
+      recoveryNeedGym: 'يجب إعداد هذا الجهاز كنادٍ قبل استرداد المالك.',
+      recoveryUnavailable: 'استرداد المالك غير متاح على هذا الجهاز بعد. أعد تشغيل HyMotion ثم حاول مرة أخرى.',
+      signIn: 'تسجيل الدخول',
+      errInvalid: 'بيانات اعتماد أو رمز نادي غير صالح. يرجى التحقق والمحاولة مرة أخرى.',
+      errHostUnreachable: 'تعذر الاتصال بخادم HyMotion. تحقق من: 1) تشغيل جهاز الخادم وبرنامج HyMotion، 2) اتصال الجهازين بنفس الشبكة، 3) صحة العنوان في المتصفح.',
+      setupPrompt: 'هل هذه أول مرة تُعِدّ فيها هذا النادي؟',
+      setupCta: 'الإعداد الآن',
+      changeGymHint: 'تغيير النادي ليس تسجيل خروج. سيبقى هذا الجهاز تابعاً لهذا النادي حتى تعيد ربطه عمداً.',
+      changeGymCta: 'تغيير / إعادة ربط النادي'
+    }
+  };
+
+  let currentLang = 'en';
+
+  function applyTranslations(lang) {
+    currentLang = lang === 'ar' ? 'ar' : 'en';
+    const t = translations[currentLang];
+    document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = currentLang;
+
+    document.querySelectorAll('[data-login-i18n]').forEach(function(el) {
+      const key = el.getAttribute('data-login-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+    document.querySelectorAll('[data-login-i18n-placeholder]').forEach(function(el) {
+      const key = el.getAttribute('data-login-i18n-placeholder');
+      if (t[key] !== undefined) el.placeholder = t[key];
+    });
+
+    document.getElementById('langLabel').textContent = currentLang === 'en' ? 'EN English' : 'AR عربي';
+
+    try {
+      if (window.GfpI18n && typeof window.GfpI18n.setLocale === 'function') {
+        // Persist for desk pages; avoid infinite loop if setLocale re-enters.
+        if (window.GfpI18n.getLocale() !== currentLang) {
+          window.GfpI18n.setLocale(currentLang);
+        }
+      } else {
+        localStorage.setItem('gfp_locale', currentLang);
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  // Boot from shared locale — never leave raw keys on screen.
+  try {
+    currentLang = (window.GfpI18n && window.GfpI18n.getLocale)
+      ? window.GfpI18n.getLocale()
+      : (localStorage.getItem('gfp_locale') || 'en');
+  } catch (e) { currentLang = 'en'; }
+  applyTranslations(currentLang === 'ar' ? 'ar' : 'en');
+
+  // ── Language Toggle — components/layout/lang-switcher/LangSwitcher.tsx ──
+  document.getElementById('langToggle').addEventListener('click', function() {
+    applyTranslations(currentLang === 'en' ? 'ar' : 'en');
+  });
+  window.addEventListener('gfp:locale', function() {
+    var loc = 'en';
+    try {
+      loc = (window.GfpI18n && window.GfpI18n.getLocale)
+        ? window.GfpI18n.getLocale()
+        : (localStorage.getItem('gfp_locale') || 'en');
+    } catch (e) {}
+    if (loc !== currentLang) applyTranslations(loc === 'ar' ? 'ar' : 'en');
+  });
+
+  // ── Password Toggle — components/ui/input/ ──
+  const pwToggle = document.getElementById('pwToggle');
+  const pwInput = document.getElementById('password');
+  const eyeOpen = document.getElementById('eyeOpen');
+  const eyeClosed = document.getElementById('eyeClosed');
+
+  pwToggle.addEventListener('click', function() {
+    const showing = pwInput.type === 'text';
+    pwInput.type = showing ? 'password' : 'text';
+    eyeOpen.style.display = showing ? 'block' : 'none';
+    eyeClosed.style.display = showing ? 'none' : 'block';
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  //  API Client — /shared/api-client.js (GfpApi)
+  //  Bearer + Token-Expired silent refresh + dual-shape errors
+  // ═══════════════════════════════════════════════════════════════
+  function getGfp() {
+    return window.GfpApi || null;
+  }
+
+  // ── Form — hooks/use-auth.ts → POST /api/auth/login ──
+  const form = document.getElementById('loginForm');
+  const btn = document.getElementById('btnLogin');
+  const alertErr = document.getElementById('alertErr');
+  const alertErrText = alertErr.querySelector('span');
+  const emailErr = document.getElementById('emailErr');
+  const pwErr = document.getElementById('pwErr');
+  const gymCodeErr = document.getElementById('gymCodeErr');
+
+  function clearErrors() {
+    alertErr.classList.remove('show');
+    emailErr.classList.remove('show');
+    pwErr.classList.remove('show');
+    gymCodeErr.classList.remove('show');
+    form.querySelectorAll('.form-input').forEach(function(i){ i.classList.remove('err'); });
+  }
+
+  function showError(msgKey) {
+    const msg = translations[currentLang][msgKey] || translations[currentLang].errInvalid;
+    alertErrText.innerHTML = msg;
+    alertErr.classList.add('show');
+    form.querySelectorAll('.form-input').forEach(function(i){ i.classList.add('err'); });
+  }
+
+  function showSuccess(user) {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    btn.querySelector('.btn-text').textContent = '✓';
+    btn.style.background = 'var(--suc500)';
+    btn.style.borderColor = 'var(--suc500)';
+    btn.querySelector('.btn-text').dataset.i18n = '';
+    setTimeout(async function() {
+      var land = '/dashboard/';
+      try {
+        if (window.GfpShell && window.GfpShell.resolveLandingPath) {
+          land = await window.GfpShell.resolveLandingPath();
+        } else if (window.GfpNav && window.GfpNav.getDefaultLandingPath) {
+          var reg = {};
+          if (window.GfpFeatures) {
+            (window.GfpFeatures.FEATURE_MODULES || []).forEach(function(k){ reg[k]=true; });
+          }
+          land = window.GfpNav.getDefaultLandingPath(
+            window.GfpNav.useVisibleNav(reg)
+          ) || land;
+        }
+      } catch (e) { /* keep /dashboard/ */ }
+      window.location.href = land;
+    }, 600);
+  }
+
+  // ── Owner recovery (Local Edition). Never enumerates emails/usernames. ──
+  var recoveryState = null;
+  var loginFormEl = document.getElementById('loginForm');
+  var recoveryPanel = document.getElementById('recoveryPanel');
+  var recoveryPrimary = document.getElementById('recoveryPrimary');
+  var recoverySecondary = document.getElementById('recoverySecondary');
+  var recoveryBack = document.getElementById('recoveryBack');
+  var forgotBtn = document.getElementById('forgotPasswordBtn');
+
+  function tLogin(key) {
+    return (translations[currentLang] && translations[currentLang][key]) || key;
+  }
+
+  function showRecoveryError(msg) {
+    var box = document.getElementById('recoveryErr');
+    var text = document.getElementById('recoveryErrText');
+    if (text) text.textContent = msg || tLogin('errInvalid');
+    if (box) box.classList.add('show');
+    document.getElementById('recoveryOk').classList.remove('show');
+  }
+
+  function recoveryFailureMessage(result) {
+    var status = result && result.status;
+    if (!result || status === 0 || status === 404 || status === 405) return tLogin('recoveryUnavailable');
+    var data = result.data || {};
+    var msg = data.message || data.error;
+    if (typeof msg === 'string' && msg.trim()) return msg;
+    return tLogin('errInvalid');
+  }
+
+  function showRecoveryOk(msg) {
+    var box = document.getElementById('recoveryOk');
+    var text = document.getElementById('recoveryOkText');
+    if (text) text.textContent = msg || '';
+    if (box) box.classList.toggle('show', !!msg);
+    document.getElementById('recoveryErr').classList.remove('show');
+  }
+
+  function paintRecovery(status) {
+    recoveryState = status || recoveryState;
+    var gym = document.getElementById('recoveryGym');
+    var ref = document.getElementById('recoveryRef');
+    var challenge = document.getElementById('recoveryChallenge');
+    var codeGroup = document.getElementById('recoveryCodeGroup');
+    var pwGroup = document.getElementById('recoveryPasswordGroup');
+    var copy = document.getElementById('recoveryCopy');
+    var st = (recoveryState && recoveryState.status) || 'none';
+    var gymLabel = (recoveryState && (recoveryState.gymName || recoveryState.gymCode))
+      || (boundGym && (boundGym.gymName || boundGym.gymCode)) || '';
+    if (gym) gym.textContent = gymLabel;
+    if (ref) {
+      if (recoveryState && recoveryState.reference) {
+        ref.hidden = false;
+        ref.textContent = recoveryState.reference;
+      } else {
+        ref.hidden = true;
+      }
+    }
+    if (challenge) {
+      if (recoveryState && recoveryState.challengeText && (st === 'pending' || st === 'approved')) {
+        challenge.hidden = false;
+        challenge.textContent = recoveryState.challengeText;
+      } else {
+        challenge.hidden = true;
+      }
+    }
+    codeGroup.hidden = st !== 'pending';
+    pwGroup.hidden = st !== 'approved';
+    recoverySecondary.hidden = true;
+    if (st === 'none' || st === 'cancelled') {
+      copy.setAttribute('data-login-i18n', 'recoveryIntro');
+      copy.innerHTML = tLogin('recoveryIntro');
+      recoveryPrimary.textContent = tLogin('recoveryRequest');
+      recoveryPrimary.dataset.mode = 'request';
+    } else if (st === 'pending') {
+      copy.innerHTML = tLogin('recoveryPending') + ' ' + tLogin('recoveryOffline');
+      recoveryPrimary.textContent = tLogin('recoveryCheck');
+      recoveryPrimary.dataset.mode = 'poll';
+      recoverySecondary.hidden = false;
+      recoverySecondary.textContent = tLogin('recoverySubmitCode');
+      recoverySecondary.dataset.mode = 'code';
+    } else if (st === 'approved') {
+      copy.innerHTML = tLogin('recoveryReady');
+      recoveryPrimary.textContent = tLogin('recoverySetPassword');
+      recoveryPrimary.dataset.mode = 'complete';
+    } else if (st === 'completed') {
+      copy.innerHTML = tLogin('recoveryDone');
+      recoveryPrimary.textContent = tLogin('signIn');
+      recoveryPrimary.dataset.mode = 'back';
+      showRecoveryOk(tLogin('recoveryDone'));
+    } else if (st === 'rejected' || st === 'revoked') {
+      copy.innerHTML = tLogin('recoveryRejected');
+      recoveryPrimary.textContent = tLogin('recoveryRequest');
+      recoveryPrimary.dataset.mode = 'request';
+    } else if (st === 'expired') {
+      copy.innerHTML = tLogin('recoveryExpired');
+      recoveryPrimary.textContent = tLogin('recoveryRequest');
+      recoveryPrimary.dataset.mode = 'request';
+    }
+  }
+
+  function openRecovery() {
+    if (loginFormEl) loginFormEl.style.display = 'none';
+    if (recoveryPanel) {
+      recoveryPanel.hidden = false;
+      recoveryPanel.classList.add('show');
+    }
+    var change = document.getElementById('changeGymLink');
+    if (change) change.classList.remove('show');
+    var setup = document.getElementById('setupLink');
+    if (setup) setup.classList.remove('show');
+    showRecoveryOk('');
+    document.getElementById('recoveryErr').classList.remove('show');
+    paintRecovery(recoveryState);
+  }
+
+  function closeRecovery() {
+    if (loginFormEl) loginFormEl.style.display = '';
+    if (recoveryPanel) {
+      recoveryPanel.hidden = true;
+      recoveryPanel.classList.remove('show');
+    }
+    var change = document.getElementById('changeGymLink');
+    if (change && boundGym && boundGym.gymCode) change.classList.add('show');
+  }
+
+  async function recoveryApi(method, path, body) {
+    var Gfp = getGfp();
+    if (!Gfp) throw new Error('offline');
+    if (method === 'GET') return Gfp.get(path, { auth: false });
+    return Gfp.post(path, body || {}, { auth: false });
+  }
+
+  if (forgotBtn) {
+    forgotBtn.addEventListener('click', async function() {
+      openRecovery();
+      try {
+        var ctx = await recoveryApi('GET', '/auth/owner-recovery/context');
+        if (ctx.ok && ctx.data && ctx.data.gymCode) {
+          paintRecovery(Object.assign({}, recoveryState || { status: 'none' }, {
+            gymCode: ctx.data.gymCode,
+            gymName: ctx.data.gymName
+          }));
+        }
+        var st = await recoveryApi('GET', '/auth/owner-recovery/status');
+        if (st.ok && st.data && st.data.status && st.data.status !== 'none') paintRecovery(st.data);
+      } catch (e) {}
+    });
+  }
+  if (recoveryBack) recoveryBack.addEventListener('click', closeRecovery);
+  if (recoverySecondary) {
+    recoverySecondary.addEventListener('click', async function() {
+      var code = (document.getElementById('recoveryCode').value || '').trim();
+      if (!code) { showRecoveryError(tLogin('recoveryCodeLabel')); return; }
+      try {
+        var r = await recoveryApi('POST', '/auth/owner-recovery/submit-code', { recoveryCode: code });
+        if (!r.ok) { showRecoveryError(recoveryFailureMessage(r)); return; }
+        showRecoveryOk('');
+        paintRecovery(r.data);
+      } catch (e) { showRecoveryError(tLogin('errInvalid')); }
+    });
+  }
+  if (recoveryPrimary) {
+    recoveryPrimary.addEventListener('click', async function() {
+      var mode = recoveryPrimary.dataset.mode || 'request';
+      if (mode === 'back') { closeRecovery(); return; }
+      try {
+        if (mode === 'request') {
+          var started = await recoveryApi('POST', '/auth/owner-recovery/request');
+          if (!started.ok) {
+            showRecoveryError(recoveryFailureMessage(started));
+            return;
+          }
+          showRecoveryOk('');
+          paintRecovery(started.data);
+          return;
+        }
+        if (mode === 'poll') {
+          var polled = await recoveryApi('GET', '/auth/owner-recovery/status');
+          if (polled.ok) paintRecovery(polled.data);
+          return;
+        }
+        if (mode === 'complete') {
+          var pw = document.getElementById('recoveryPassword').value;
+          var pw2 = document.getElementById('recoveryPassword2').value;
+          var done = await recoveryApi('POST', '/auth/owner-recovery/complete', { newPassword: pw, confirmPassword: pw2 });
+          if (!done.ok) {
+            showRecoveryError(recoveryFailureMessage(done));
+            return;
+          }
+          paintRecovery(done.data);
+        }
+      } catch (e) { showRecoveryError(tLogin('errInvalid')); }
+    });
+  }
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearErrors();
+
+    const email = form.email.value.trim();
+    const password = form.password.value;
+    const gymCode = (boundGym && boundGym.gymCode)
+      ? boundGym.gymCode
+      : form.gymCode.value.trim();
+    let hasError = false;
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      form.email.classList.add('err'); emailErr.classList.add('show'); hasError = true;
+    }
+    if (!password) {
+      form.password.classList.add('err'); pwErr.classList.add('show'); hasError = true;
+    }
+    if (!gymCode) {
+      form.gymCode.classList.add('err'); gymCodeErr.classList.add('show'); hasError = true;
+    }
+    if (hasError) return;
+
+    var Gfp = getGfp();
+    if (!Gfp) {
+      alertErrText.textContent = 'API client failed to load. Hard-refresh (Ctrl+Shift+R) or restart apps/web.';
+      alertErr.classList.add('show');
+      return;
+    }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    try {
+      const r = await Gfp.auth.login(
+        { email: email, password: password, gymCode: gymCode },
+        {
+          remember: !!form.remember.checked,
+          gymIdentity: {
+            gymCode: gymCode,
+            gymName: boundGym && boundGym.gymName,
+            installationId: boundGym && boundGym.installationId,
+            logoUrl: boundGym && boundGym.logoUrl
+          }
+        }
+      );
+
+      if (r.ok && r.data && r.data.accessToken) {
+        try {
+          if (window.GfpAnalytics && typeof window.GfpAnalytics.track === 'function') {
+            window.GfpAnalytics.track('login_success', { status: 200 });
+          }
+        } catch (e) { /* ignore */ }
+        showSuccess(r.data.user);
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        var err = r.error || Gfp.parseError(r.status, r.data);
+        if (r.status === 401) {
+          try {
+            if (window.GfpAnalytics && typeof window.GfpAnalytics.track === 'function') {
+              window.GfpAnalytics.track('login_failed', { reason: 'invalid_credentials' });
+            }
+          } catch (e2) { /* ignore */ }
+          showError('errInvalid');
+        } else if (r.status === 0) {
+          // Host unreachable (Host PC off, HyMotion stopped, wrong address, or firewall) —
+          // GfpApi already surfaced the bottom banner via GfpNetwork; this is the inline copy.
+          alertErrText.textContent = translations[currentLang].errHostUnreachable;
+          alertErr.classList.add('show');
+        } else if (r.status === 429) {
+          try {
+            if (window.GfpAnalytics && typeof window.GfpAnalytics.track === 'function') {
+              window.GfpAnalytics.track('login_failed', { reason: 'rate_limited' });
+            }
+          } catch (e3) { /* ignore */ }
+          alertErrText.textContent = currentLang === 'ar'
+            ? 'طلبات كثيرة. يرجى المحاولة لاحقاً.'
+            : 'Too many attempts. Please try again later.';
+          alertErr.classList.add('show');
+        } else {
+          try {
+            if (window.GfpAnalytics && typeof window.GfpAnalytics.track === 'function') {
+              window.GfpAnalytics.track('login_failed', { reason: 'server_error', status: r.status });
+            }
+          } catch (e4) { /* ignore */ }
+          alertErrText.textContent = err.message || translations[currentLang].errInvalid;
+          alertErr.classList.add('show');
+          form.querySelectorAll('.form-input').forEach(function(i){ i.classList.add('err'); });
+        }
+      }
+    } catch(err) {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      try {
+        if (window.GfpAnalytics && typeof window.GfpAnalytics.track === 'function') {
+          window.GfpAnalytics.track('login_failed', { reason: 'network_error' });
+        }
+      } catch (e) { /* ignore */ }
+      alertErrText.textContent = translations[currentLang].errHostUnreachable;
+      alertErr.classList.add('show');
+    }
+  });
+
+  // Clear field errors on focus
+  form.querySelectorAll('.form-input').forEach(function(input) {
+    input.addEventListener('focus', function() {
+      this.classList.remove('err');
+      alertErr.classList.remove('show');
+      const errEl = this.closest('.form-group').querySelector('.form-err-text');
+      if (errEl) errEl.classList.remove('show');
+    });
+  });
+})();
+</script>
+</body>
+</html>

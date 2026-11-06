@@ -1,0 +1,424 @@
+/**
+ * HyMotion — sidebar ↔ main layout (Task 2).
+ * Injected after responsive.css. Visual chrome (colors, type, nav) stays in page CSS.
+ * Behavior is driven by html[data-gfp-sb] set by shared/shell.js.
+ *
+ *   expanded  — persistent rail; --sidebar-w is the live width
+ *   collapsed — rail hidden; main uses the full viewport
+ *   drawer    — off-canvas overlay; --sidebar-w is 0 (mobile / too-narrow tablet)
+ */
+
+:root {
+  --gfp-sb-min: 180px;
+  --gfp-sb-max: 360px;
+  --gfp-sb-drawer-w: 220px;
+}
+
+html.stock-embed,
+html.hr-embed {
+  --sidebar-w: 0px;
+}
+
+/* ── Persistent expanded: main tracks the live rail width ── */
+html[data-gfp-sb='expanded'] .sidebar,
+html[data-gfp-sb='expanded'] #sidebar {
+  width: var(--sidebar-w, 220px) !important;
+  transform: none !important;
+  visibility: visible;
+  pointer-events: auto;
+  transition: width 0.2s ease, transform 0.25s ease;
+}
+
+html[data-gfp-sb='expanded'] .main {
+  margin-left: var(--sidebar-w, 220px) !important;
+  margin-right: 0 !important;
+}
+
+html[dir='rtl'][data-gfp-sb='expanded'] .main {
+  margin-left: 0 !important;
+  margin-right: var(--sidebar-w, 220px) !important;
+}
+
+/* ── Collapsed (desktop/tablet): hide rail, main expands ── */
+html[data-gfp-sb='collapsed'] .sidebar,
+html[data-gfp-sb='collapsed'] #sidebar {
+  width: var(--gfp-sb-rail-w, 220px) !important;
+  transform: translateX(-100%) !important;
+  pointer-events: none;
+  transition: transform 0.25s ease;
+}
+
+html[dir='rtl'][data-gfp-sb='collapsed'] .sidebar,
+html[dir='rtl'][data-gfp-sb='collapsed'] #sidebar {
+  transform: translateX(100%) !important;
+}
+
+html[data-gfp-sb='collapsed'] .main,
+html[data-gfp-sb='drawer'] .main {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* ── Drawer (mobile): overlay, does not consume main width ── */
+html[data-gfp-sb='drawer'] .sidebar,
+html[data-gfp-sb='drawer'] #sidebar {
+  width: min(var(--gfp-sb-drawer-w, 220px), 86vw) !important;
+  transform: translateX(-100%) !important;
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform 0.25s ease;
+  box-shadow: none;
+  z-index: 100;
+}
+
+html[dir='rtl'][data-gfp-sb='drawer'] .sidebar,
+html[dir='rtl'][data-gfp-sb='drawer'] #sidebar {
+  transform: translateX(100%) !important;
+}
+
+html[data-gfp-sb='drawer'][data-gfp-sb-open] .sidebar,
+html[data-gfp-sb='drawer'][data-gfp-sb-open] #sidebar,
+html[data-gfp-sb='drawer'] .sidebar.gfp-open,
+html[data-gfp-sb='drawer'] .sidebar.open {
+  transform: translateX(0) !important;
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.28);
+}
+
+html[dir='rtl'][data-gfp-sb='drawer'][data-gfp-sb-open] .sidebar,
+html[dir='rtl'][data-gfp-sb='drawer'][data-gfp-sb-open] #sidebar {
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.28);
+}
+
+html[data-gfp-sb-open] body {
+  overflow: hidden;
+}
+
+/* ── Overlay ── */
+.gfp-sb-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(13, 13, 13, 0.45);
+  cursor: pointer;
+}
+
+html[data-gfp-sb='drawer'][data-gfp-sb-open] .gfp-sb-overlay {
+  display: block;
+}
+
+/* ── Topbar menu (reopen / open drawer) ── */
+.gfp-sb-toggle,
+#mobToggle.gfp-sb-toggle {
+  display: none;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  background: var(--ls2, #f5f5f5);
+  border-radius: var(--rmd, 10px);
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--lts, #4a4a4a);
+}
+
+.gfp-sb-toggle:hover,
+#mobToggle.gfp-sb-toggle:hover {
+  background: var(--ls3, #ebebeb);
+}
+
+.gfp-sb-toggle:focus-visible,
+#mobToggle.gfp-sb-toggle:focus-visible {
+  outline: 2px solid var(--l400, #a0e040);
+  outline-offset: 1px;
+}
+
+html[data-gfp-sb='collapsed'] .gfp-sb-toggle,
+html[data-gfp-sb='collapsed'] #mobToggle,
+html[data-gfp-sb='drawer'] .gfp-sb-toggle,
+html[data-gfp-sb='drawer'] #mobToggle {
+  display: inline-flex !important;
+}
+
+html[data-gfp-sb] .tb-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+html[data-gfp-sb='expanded'] .gfp-sb-toggle,
+html[data-gfp-sb='expanded'] #mobToggle {
+  display: none !important;
+}
+
+/* ── Close / collapse control inside the rail ── */
+.gfp-sb-close {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--c300, #8c8c8c);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.gfp-sb-close:hover {
+  color: #fff;
+  background: var(--c700, #2a2a2a);
+}
+
+.gfp-sb-close:focus-visible {
+  outline: 2px solid var(--l400, #a0e040);
+  outline-offset: 1px;
+}
+
+.gfp-sb-close .gfp-sb-close-x,
+.gfp-sb-close .gfp-sb-close-collapse {
+  display: none;
+}
+
+html[data-gfp-sb='drawer'] .gfp-sb-close .gfp-sb-close-x,
+html[data-gfp-sb='expanded'] .gfp-sb-close .gfp-sb-close-collapse {
+  display: inline-flex;
+}
+
+html[dir='rtl'] .gfp-sb-close-collapse {
+  transform: scaleX(-1);
+}
+
+html[data-gfp-sb] .sb-hdr span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Drag handle (persistent expanded only) ──
+   Must NOT steal clicks from the footer logout control (inline-end of .sb-ft). */
+.gfp-sb-resizer {
+  display: none;
+  position: absolute;
+  inset-block-start: 0;
+  /* Leave the footer strip free — logout lives on the inline-end edge */
+  inset-block-end: var(--gfp-sb-ft-h, 72px);
+  inset-inline-end: 0;
+  width: 6px;
+  z-index: 120;
+  cursor: col-resize;
+  touch-action: none;
+  background: transparent;
+}
+
+html[data-gfp-sb='expanded'] .gfp-sb-resizer:not([hidden]) {
+  display: block;
+}
+
+.gfp-sb-resizer[hidden] {
+  display: none !important;
+}
+
+.gfp-sb-resizer:hover,
+html.gfp-sb-dragging .gfp-sb-resizer {
+  background: color-mix(in srgb, var(--l500, #7acc00) 55%, transparent);
+}
+
+/* Footer + logout above the resizer; keep footer pinned while nav scrolls */
+html[data-gfp-sb] .sidebar,
+html[data-gfp-sb] #sidebar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+html[data-gfp-sb] .sb-nav,
+html[data-gfp-sb] .gfp-sb-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* User footer: identity + logout must stay on one clear row (no wrap / no overflow overlap). */
+html[data-gfp-sb] .sb-ft {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 130;
+  isolation: isolate;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 12px 14px;
+  box-sizing: border-box;
+  min-height: var(--gfp-sb-ft-h, 72px);
+  overflow: hidden;
+}
+
+html[data-gfp-sb] .sb-ft .av-sm,
+html[data-gfp-sb] .sb-ft #userAvatar {
+  flex: 0 0 auto;
+}
+
+html[data-gfp-sb] .sb-ft-info {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+html[data-gfp-sb] .sb-ft-name,
+html[data-gfp-sb] .sb-ft #userName {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-gfp-sb] .sb-ft-role,
+html[data-gfp-sb] .sb-ft #userRole {
+  font-size: 11px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-gfp-sb] .sb-switch-acc,
+html[data-gfp-sb] #btnSwitchAccount {
+  display: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--c400, #8C8C8C);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: start;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+html[data-gfp-edition='local'][data-gfp-sb] .sb-switch-acc,
+html[data-gfp-edition='local'][data-gfp-sb] #btnSwitchAccount {
+  display: inline;
+}
+
+html[data-gfp-edition='local'][data-gfp-sb] .sb-switch-acc:hover,
+html[data-gfp-edition='local'][data-gfp-sb] #btnSwitchAccount:hover {
+  color: var(--dtp, #F0F0F0);
+  text-decoration: underline;
+}
+
+html[data-gfp-sb] .sb-logout,
+html[data-gfp-sb] #btnLogout {
+  position: relative;
+  z-index: 131;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+html[data-gfp-sb] .sb-logout:hover,
+html[data-gfp-sb] #btnLogout:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: var(--dng500, #ef4444);
+}
+
+html[data-gfp-sb] .sb-logout:focus-visible,
+html[data-gfp-sb] #btnLogout:focus-visible {
+  outline: 2px solid var(--l400, #a0e040);
+  outline-offset: 2px;
+}
+
+/* Narrow rail: drop name/role — avatar + logout only (titles carry identity). */
+html[data-gfp-sb-compact-ft] .sb-ft {
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: 10px;
+}
+
+html[data-gfp-sb-compact-ft] .sb-ft-info {
+  display: none;
+}
+
+html.gfp-sb-dragging,
+html.gfp-sb-dragging * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
+html.gfp-sb-dragging .sidebar,
+html.gfp-sb-dragging .main {
+  transition: none !important;
+}
+
+html.stock-embed .gfp-sb-toggle,
+html.stock-embed .gfp-sb-overlay,
+html.stock-embed .gfp-sb-resizer,
+html.stock-embed .gfp-sb-close,
+html.hr-embed .gfp-sb-toggle,
+html.hr-embed .gfp-sb-overlay,
+html.hr-embed .gfp-sb-resizer,
+html.hr-embed .gfp-sb-close {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-gfp-sb='expanded'] .sidebar,
+  html[data-gfp-sb='collapsed'] .sidebar,
+  html[data-gfp-sb='drawer'] .sidebar,
+  html[data-gfp-sb='expanded'] .main {
+    transition: none !important;
+  }
+}
+
+@media print {
+  .gfp-sb-overlay,
+  .gfp-sb-resizer,
+  .gfp-sb-toggle,
+  .gfp-sb-close,
+  #mobToggle {
+    display: none !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  html:not([data-gfp-sb]) .main {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}

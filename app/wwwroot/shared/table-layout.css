@@ -1,0 +1,105 @@
+/**
+ * HyMotion — responsive tables (Task 5).
+ * Injected after dashboard-layout.css. Visual chrome stays in page CSS.
+ * Layout only: the table's container scrolls horizontally; the page does not.
+ */
+
+.table-wrap,
+.tbl-card,
+.table-card,
+.roles-table-card,
+.att-table-wrap,
+.offers-table-wrap,
+.gfp-table-scroll,
+#tblWrap {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.table-wrap > table,
+.tbl-card > table,
+.table-card > table,
+.roles-table-card > table,
+.att-table-wrap > table,
+.offers-table-wrap > table,
+.gfp-table-scroll > table,
+#tblWrap > table {
+  min-width: 100%;
+}
+
+.table-wrap th,
+.tbl-card th,
+.table-card th,
+.roles-table-card th,
+.att-table-wrap th,
+.offers-table-wrap th,
+.gfp-table-scroll th,
+#tblWrap th {
+  white-space: nowrap;
+}
+
+.table-wrap td .btn,
+.tbl-card td .btn,
+.table-card td .btn,
+.roles-table-card td .btn,
+.att-table-wrap td .btn,
+.offers-table-wrap td .btn,
+.gfp-table-scroll td .btn,
+#tblWrap td .btn,
+.table-wrap td button,
+.tbl-card td button,
+.table-card td button,
+.roles-table-card td button,
+.att-table-wrap td button,
+.offers-table-wrap td button,
+.gfp-table-scroll td button,
+#tblWrap td button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.table-wrap td .act-group,
+.tbl-card td .act-group,
+.table-card td .act-group,
+.roles-table-card td .act-group,
+.att-table-wrap td .act-group,
+.offers-table-wrap td .act-group,
+.gfp-table-scroll td .act-group,
+#tblWrap td .act-group {
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .table-wrap,
+  .tbl-card,
+  .table-card,
+  .roles-table-card,
+  .att-table-wrap,
+  .offers-table-wrap,
+  .gfp-table-scroll,
+  #tblWrap {
+    max-width: 100%;
+  }
+}
+
+@media print {
+  .table-wrap,
+  .tbl-card,
+  .table-card,
+  .roles-table-card,
+  .att-table-wrap,
+  .offers-table-wrap,
+  .gfp-table-scroll,
+  #tblWrap {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    max-height: none;
+  }
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Membership Plans</title>
+<meta name="description" content="Manage membership plans, pricing, and plan types for your gym.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="plans.css?v=theme2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">SM</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">Sara Manager</div><div class="sb-ft-role" id="userRole">Manager</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-breadcrumb"><span data-en="Catalog" data-ar="الكتالوج">Catalog</span><span class="sep">/</span><span class="current" data-en="Membership Plans" data-ar="باقات العضوية">Membership Plans</span></div>
+  </div>
+  <div class="tb-right">
+    <div class="gym-name" id="gymName">Fitness Hub</div>
+    <div class="gym-name-ar" id="gymNameAr" hidden></div>
+  </div>
+</header>
+
+<div class="content">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="ph-left">
+      <h1 class="page-title" data-en="Membership Plans" data-ar="باقات العضوية">Membership Plans</h1>
+      <p class="page-subtitle" data-en="Manage your gym's pricing plans and packages" data-ar="إدارة باقات وأسعار النادي">Manage your gym's pricing plans and packages</p>
+    </div>
+    <div class="ph-right">
+      <button class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="Create Plan" data-ar="إنشاء باقة">Create Plan</span></button>
+    </div>
+  </div>
+
+  <div id="planTemplateBanner" hidden></div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-pill"><i class="ti ti-package"></i><span id="statTotal">0</span> <span data-en="Plans" data-ar="باقات">Plans</span></div>
+    <div class="stat-pill active"><i class="ti ti-check"></i><span id="statActive">0</span> <span data-en="Active" data-ar="نشط">Active</span></div>
+    <div class="stat-pill inactive"><i class="ti ti-x"></i><span id="statInactive">0</span> <span data-en="Inactive" data-ar="غير نشط">Inactive</span></div>
+  </div>
+
+  <!-- Plans Grid -->
+  <div class="plans-grid" id="plansGrid">
+    <div class="loading-state"><div class="loader"></div><p>Loading plans...</p></div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Create/Edit Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- Delete Confirm Dialog -->
+<div class="modal-overlay" id="deleteOverlay">
+  <div class="delete-dialog" id="deleteDialog"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Auth, GfpApi, plans.manage gate, and page logic live in plans-app.js (§3) -->
+<script src="plans-app.js?v=prepare1"></script>
+</body>
+</html>

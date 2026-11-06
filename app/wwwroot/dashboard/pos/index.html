@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Sale</title>
+<meta name="description" content="Front desk sale for retail products — cart, payment, and receipt.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="pos.css?v=theme3">
+<link rel="stylesheet" href="/shared/refund-action.css?v=5">
+<script>
+/* Sale is retail-only — membership onboarding lives in Members */
+(function () {
+  try { document.documentElement.classList.add('pos-retail'); document.body.classList.add('pos-retail'); } catch (e) { /* ignore */ }
+})();
+</script>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+      <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current" id="posBreadcrumb">Sale</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+
+<div class="content">
+  <div id="shiftGate" class="banner danger is-off" hidden>
+    <i class="ti ti-lock"></i>
+    <div>
+      <strong data-en="Open a cash shift first" data-ar="افتح وردية الكاش أولاً">Open a cash shift first</strong>
+      <p data-en="Cash payments need an open drawer. Terminal-attested card payments can still be recorded." data-ar="مدفوعات الكاش تحتاج درج مفتوح. مدفوعات الكارت المؤكدة على الماكينة ممكن تتسجل.">Cash payments need an open drawer. Terminal-attested card payments can still be recorded. <a href="/dashboard/shifts/" data-en="Open shift" data-ar="افتح وردية">Open shift</a></p>
+    </div>
+  </div>
+  <div id="featureDisabled" class="banner warn is-off" hidden>
+    <i class="ti ti-flag-off"></i>
+    <div>
+      <strong data-en="Sales are turned off for this gym" data-ar="المبيعات مقفولة لهذا النادي">Sales are turned off for this gym</strong>
+      <p data-en="Ask the owner to enable Sales on the subscription. You cannot complete POS sales until then." data-ar="اطلب من المالك تفعيل المبيعات على الاشتراك. مش هتقدر تتم البيع لحد ما تتفعل.">Ask the owner to enable Sales on the subscription. You cannot complete POS sales until then.</p>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ti ti-shopping-cart"></i> <span id="pageTitleText" data-en="Sale" data-ar="البيع">Sale</span></h1>
+      <p class="page-subtitle" id="pageSubtitle" data-en="Scan or tap, take cash or card, print. Memberships stay in Members." data-ar="امسح أو اضغط، خد كاش أو كارت، اطبع. الاشتراكات من الأعضاء.">Scan or tap, take cash or card, print. Memberships stay in Members.</p>
+    </div>
+    <div class="hdr-actions">
+      <a class="btn secondary" id="btnPromoCodes" href="/dashboard/offers/" style="display:none"><i class="ti ti-discount-2"></i> <span data-en="Offers" data-ar="العروض">Offers</span></a>
+      <button type="button" class="btn secondary" id="btnReset"><i class="ti ti-refresh"></i> <span data-en="New sale" data-ar="بيع جديد">New sale</span></button>
+    </div>
+  </div>
+
+  <div class="status-strip" id="posStatusStrip" aria-live="polite">
+    <span class="status-chip" id="statusShiftChip"><i class="ti ti-cash"></i> <span id="statusShiftText">Checking shift…</span></span>
+    <span class="status-chip" id="statusWhChip" hidden><i class="ti ti-building-warehouse"></i> <span id="statusWhText">—</span></span>
+  </div>
+  <div id="inventoryOffHint" class="banner warn is-off" hidden style="display:none" role="status">
+    <i class="ti ti-package-off" aria-hidden="true"></i>
+    <div>
+      <strong data-en="Inventory is off for this gym" data-ar="المخزون مقفول لهذا النادي">Inventory is off for this gym</strong>
+      <p data-en="Retail stock sales need the inventory feature. Memberships are managed in Members." data-ar="بيع المنتجات يحتاج تفعيل المخزون. الاشتراكات من شاشة الأعضاء.">Retail stock sales need the inventory feature. Memberships are managed in Members.</p>
+    </div>
+  </div>
+
+  <!-- Hidden stubs for leftover JS IDs (not shown) -->
+  <div id="membershipPanel" hidden aria-hidden="true" style="display:none!important">
+    <select id="planSelect" class="visually-hidden" aria-hidden="true"><option value="">Select plan…</option></select>
+    <div id="planTiles" hidden></div>
+    <div id="planPrice" hidden></div>
+    <div id="plansHint" hidden></div>
+    <input id="promoCode" type="hidden">
+    <input id="saleReferralCode" type="hidden">
+    <input id="discAmount" type="hidden" value="0">
+    <input id="discReason" type="hidden">
+    <div id="promoStatus" hidden></div>
+  </div>
+
+  <div id="posWorkspace" class="pos-retail cart-empty">
+    <div class="grid-main">
+      <div id="retailPanel">
+      <div id="stockBlockPanel" class="banner stock-block danger" style="display:none" role="alert">
+        <i class="ti ti-package-off" aria-hidden="true"></i>
+        <div>
+          <strong id="stockBlockTitle">Out of stock</strong>
+          <p id="stockBlockBody"></p>
+          <p class="stock-block-hint" id="stockBlockHint"></p>
+        </div>
+      </div>
+      <div class="retail-desk">
+        <section class="card retail-card retail-catalog">
+          <div class="card-h retail-catalog-h">
+            <h2 data-en="Products" data-ar="المنتجات">Products</h2>
+            <span class="quiet" data-en="Tap to add" data-ar="اضغط عشان تضيف">Tap to add</span>
+            <label class="wh-inline"><span data-en="Warehouse" data-ar="المستودع">Warehouse</span>
+              <select id="warehouseSelect" class="retail-select"><option value="">Loading…</option></select>
+            </label>
+          </div>
+          <label class="sale-scan">
+            <i class="ti ti-barcode"></i>
+            <input id="barcodeInput" class="retail-barcode" data-en-placeholder="Scan or type a name…" data-ar-placeholder="امسح أو اكتب الاسم…" placeholder="Scan or type a name…" autocomplete="off">
+          </label>
+          <button type="button" class="btn secondary retail-tap visually-hidden" id="btnBarcode"><i class="ti ti-barcode"></i> <span data-en="Add" data-ar="أضف">Add</span></button>
+          <input type="search" id="productSearch" class="visually-hidden" tabindex="-1" aria-hidden="true" autocomplete="off">
+          <div class="search-list product-results" id="productResults"></div>
+          <div class="chips" id="catChips"></div>
+          <div class="quick-add-grid" id="quickAddGrid">
+            <div class="muted" data-en="Loading products…" data-ar="جاري تحميل المنتجات…">Loading products…</div>
+          </div>
+        </section>
+
+        <aside class="retail-rail retail-rail-cart ticket">
+          <section class="card retail-card retail-cart-card">
+            <div class="cart-hdr">
+              <span data-en="Ticket" data-ar="التذكرة">Ticket</span>
+              <span class="cart-count" id="cartCount">0</span>
+            </div>
+            <div id="retailCart" class="retail-cart"><div class="empty-cart"><i class="ti ti-shopping-cart"></i><strong data-en="Waiting for the first item" data-ar="مستني أول صنف">Waiting for the first item</strong><span data-en="Scan or tap a product. Pay appears after that." data-ar="امسح أو اضغط منتج. الدفع بيظهر بعد كده.">Scan or tap a product. Pay appears after that.</span></div></div>
+          </section>
+          <div id="retailPayMount"></div>
+        </aside>
+      </div>
+      </div><!-- /retailPanel -->
+
+      <section class="card" id="paymentsCard">
+        <div class="card-h"><h2 data-en="Pay" data-ar="الدفع">Pay</h2></div>
+        <div class="retail-quick-pay" id="retailQuickPay">
+          <button type="button" class="btn qp-cash retail-tap act" id="btnPayCash" disabled>
+            <i class="ti ti-cash"></i> <span data-en="Cash" data-ar="كاش">Cash</span>
+          </button>
+          <button type="button" class="btn qp-card retail-tap" id="btnPayCardPos" disabled>
+            <i class="ti ti-credit-card"></i> <span data-en="Card — POS machine" data-ar="كارت — ماكينة">Card — POS machine</span>
+          </button>
+        </div>
+        <div class="cardpos-box" id="cardPosBox" hidden>
+          <label class="cardpos-attest">
+            <input type="checkbox" id="cardPosAttested">
+            <span data-en="I confirm the invoice amount was received on the POS machine — card money settles to the bank, it never enters the cash drawer." data-ar="أتأكدت إن قيمة الفاتورة استلمت فعلاً على الماكينة — فلوس الكارت بتتحول للبنك ومش هتدخل درج الكاش.">I confirm the invoice amount was received on the POS machine — card money settles to the bank, it never enters the cash drawer.</span>
+          </label>
+        </div>
+        <details class="pay-more" id="payMoreDetails">
+          <summary id="payMoreSummary" data-en="Member phone / split pay" data-ar="رقم عضو / تقسيم الدفع">Member phone / split pay</summary>
+          <div class="pay-more-body">
+            <div id="payLegs"></div>
+            <button type="button" class="btn secondary" id="btnAddLeg"><i class="ti ti-plus"></i> <span id="btnAddLegLabel" data-en="Add another payment" data-ar="أضف دفعة تانية">Add another payment</span></button>
+            <div class="pay-sum" id="paySumLine"><span data-en="Paid now" data-ar="المدفوع الآن">Paid now</span>: <strong id="paidSum">0</strong> · <span data-en="Total" data-ar="الإجمالي">Total</span>: <strong id="estTotal">—</strong></div>
+            <label class="check-row"><input type="checkbox" id="partialOpt"> <span data-en="Customer pays part now (leave balance due)" data-ar="العميل يدفع جزء دلوقتي (باقي مديونية)">Customer pays part now (leave balance due)</span></label>
+            <label id="dueDateWrap" style="display:none"><span data-en="Due date" data-ar="تاريخ الاستحقاق">Due date</span><input type="date" id="dueDate"></label>
+            <p class="hint" id="payHint" data-en="If they pay less than the total, turn on partial payment above." data-ar="لو دفع أقل من الإجمالي، فعّل الدفع الجزئي فوق.">If they pay less than the total, turn on partial payment above.</p>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <aside class="card sticky-side" id="submitCard">
+      <div class="kv">
+        <div class="kv-row desk-tech" id="idemKeyRow" hidden>
+          <span>Idempotency</span><code id="idemKey" class="tiny">—</code>
+        </div>
+        <div class="kv-row desk-tech" hidden>
+          <span data-en="Shift" data-ar="الوردية">Shift</span><strong id="shiftLabel">Checking…</strong>
+        </div>
+        <div class="ticket-hero" id="finishTotalRow" hidden>
+          <div class="ticket-hero-k" data-en="To collect" data-ar="المطلوب">To collect</div>
+          <div class="ticket-hero-v" id="finishTotal">—</div>
+        </div>
+      </div>
+      <button type="button" class="btn primary full take-btn" id="btnSell" disabled><i class="ti ti-cash"></i> <span id="btnSellLabel" data-en="Take money" data-ar="خد الفلوس">Take money</span></button>
+      <p class="hint retail-only-hint" id="retailSubmitHint" hidden></p>
+      <div id="saleResult" class="result" style="display:none"></div>
+    </aside>
+  </div>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="pos-print-overlay" id="posPrintOverlay" hidden>
+  <div class="pos-print-sheet" role="dialog" aria-modal="true" aria-labelledby="posPrintTitle">
+    <div class="pos-print-actions">
+      <button type="button" class="btn primary" id="btnPosPrintDo"><i class="ti ti-printer"></i> <span data-en="Print" data-ar="طباعة">Print</span></button>
+      <button type="button" class="btn secondary" id="btnPosPrintClose"><i class="ti ti-x"></i> <span data-en="Close" data-ar="إغلاق">Close</span></button>
+    </div>
+    <p class="pos-print-caption" id="posPrintTitle" data-en="Receipt" data-ar="إيصال">Receipt</p>
+    <iframe id="posPrintFrame" title="Receipt print"></iframe>
+  </div>
+</div>
+<script>
+const API_BASE=window.API_BASE||window.GFP_DEFAULT_API_BASE||'';/*REM-F3*/
+function getToken(){return localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');}
+function getH(){const t=getToken();const h={'Content-Type':'application/json','ngrok-skip-browser-warning':'true'};if(t)h['Authorization']='Bearer '+t;return h;}
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();
+if(!user||!getToken()) location.href='/auth/login/';
+document.getElementById('userAvatar').textContent=(user.fullName||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('userName').textContent=user.fullName||'User';
+document.getElementById('userRole').textContent=user.role||'Staff';
+if(/^Owner$/i.test(user.role||'')){var ns=document.getElementById('navStaff');if(ns) ns.style.display='';}
+document.getElementById('btnLogout').onclick=function(){['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});location.href='/auth/login/';};
+(async()=>{const r=await fetch(API_BASE+'/settings',{headers:getH()});if(r.ok){const s=await r.json();document.getElementById('gymName').textContent=s.gymName||'';document.getElementById('gymNameAr').textContent=s.gymNameAr||'';}})();
+</script>
+<script src="/shared/gfp-deployment.js"></script>
+<script src="/shared/refund-action.js?v=5"></script>
+<script src="pos-app.js?v=desk22"></script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Suppliers</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="suppliers.css?v=5">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Catalog" data-ar="الكتالوج">Catalog</span><span class="sep">/</span><span class="current" data-en="Suppliers" data-ar="الموردون">Suppliers</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Suppliers" data-ar="الموردون">Suppliers</h1>
+      <p class="page-subtitle" data-en="Contact details, purchases, payments, and balances with suppliers." data-ar="بيانات التواصل، المشتريات، المدفوعات، والأرصدة مع الموردين.">Contact details, purchases, payments, and balances with suppliers.</p>
+    </div>
+    <div id="manageActions" hidden>
+      <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New supplier" data-ar="مورد جديد" data-i18n-text>New supplier</span></button>
+    </div>
+  </div>
+  <div id="kpiHost" class="kpi-row" hidden></div>
+  <div class="toolbar">
+    <label class="sup-search"><i class="ti ti-search"></i><input type="text" id="supSearch" placeholder="Search name or phone…" data-en-placeholder="Search name or phone…" data-ar-placeholder="ابحث بالاسم أو الهاتف…" autocomplete="off"></label>
+    <label class="chk"><input type="checkbox" id="filterInactive"> <span data-en="Include inactive" data-ar="إظهار غير النشط">Include inactive</span></label>
+    <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+  </div>
+  <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="supModal" hidden>
+  <div class="modal wide">
+    <div class="modal-hdr">
+      <h2 id="supModalTitle" data-en="New supplier" data-ar="مورد جديد">New supplier</h2>
+      <button type="button" class="modal-close" data-close="supModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="supForm" class="modal-body" autocomplete="off">
+      <div class="sup-sect">
+        <div class="sup-sect-t"><i class="ti ti-id-badge"></i><span data-en="Basics" data-ar="البيانات الأساسية">Basics</span></div>
+        <div class="form-grid">
+          <label><span data-en="Name *" data-ar="الاسم *">Name *</span><input id="sName" required maxlength="200" autocomplete="off" spellcheck="false"></label>
+          <label><span data-en="Name (AR)" data-ar="الاسم (عربي)">Name (AR)</span><input id="sNameAr" maxlength="200" dir="rtl" autocomplete="off"></label>
+        </div>
+      </div>
+      <div class="sup-sect">
+        <div class="sup-sect-t"><i class="ti ti-phone-call"></i><span data-en="Contact" data-ar="بيانات التواصل">Contact</span></div>
+        <div class="form-grid">
+          <label><span data-en="Phone / WhatsApp" data-ar="الهاتف / الواتساب">Phone / WhatsApp</span><input id="sPhone" maxlength="40" dir="ltr" type="tel" inputmode="tel" autocomplete="off"></label>
+          <label><span data-en="Email" data-ar="البريد">Email</span><input id="sEmail" type="email" maxlength="120" dir="ltr" autocomplete="off"></label>
+        </div>
+      </div>
+      <div class="sup-sect">
+        <div class="sup-sect-t"><i class="ti ti-handshake"></i><span data-en="Terms" data-ar="شروط التعامل">Terms</span></div>
+        <div class="form-grid">
+          <label><span data-en="Payment terms" data-ar="شروط الدفع">Payment terms</span><input id="sTerms" maxlength="120" autocomplete="off"></label>
+          <label><span data-en="Address" data-ar="العنوان">Address</span><input id="sAddress" maxlength="500" autocomplete="off"></label>
+        </div>
+        <label><span data-en="Notes" data-ar="ملاحظات">Notes</span><textarea id="sNotes" rows="2" maxlength="500"></textarea></label>
+      </div>
+      <div class="sup-sect" id="openingBlock" hidden>
+        <div class="sup-sect-t"><i class="ti ti-scale"></i><span data-en="Opening balance (optional)" data-ar="رصيد افتتاحي (اختياري)">Opening balance (optional)</span></div>
+        <div class="form-grid">
+          <label><span data-en="Amount (EGP)" data-ar="المبلغ (EGP)">Amount (EGP)</span><input id="sOpeningAmt" type="number" min="0" step="0.01" value="0" inputmode="decimal" dir="ltr" class="amt-egp"></label>
+          <div class="opening-radios">
+            <label class="ob-radio sel"><input type="radio" name="obSign" id="obSignOwed" value="1" checked>
+              <div><strong data-en="We owe them" data-ar="له — إحنا اللي مديونين له">We owe them</strong><small data-en="This balance is money we owe the supplier" data-ar="المبلغ ده مديونية علينا ليهم">This balance is money we owe the supplier</small></div>
+            </label>
+            <label class="ob-radio"><input type="radio" name="obSign" id="obSignOwes" value="0">
+              <div><strong data-en="They owe us" data-ar="عليه — هو اللي مديون لنا">They owe us</strong><small data-en="This balance is money the supplier owes us" data-ar="المبلغ ده مديونية ليهم علينا">This balance is money the supplier owes us</small></div>
+            </label>
+          </div>
+        </div>
+        <p class="ob-preview muted" id="obPreview"></p>
+      </div>
+      <label class="chk"><input type="checkbox" id="sActive" checked> <span data-en="Active" data-ar="نشط">Active</span></label>
+      <p class="form-hint" id="supHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" data-close="supModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-create" id="btnSaveSup" data-en="Save" data-ar="حفظ">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="payModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="settlementTitle" data-en="Record payment" data-ar="تسجيل دفعة">Record payment</h2>
+      <button type="button" class="modal-close" data-close="payModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="payForm" class="modal-body">
+      <p class="muted" id="paySupplierName"></p>
+      <p class="muted" id="settlementDescription"></p>
+      <label><span data-en="Amount (EGP) *" data-ar="المبلغ (جنيه) *">Amount (EGP) *</span><input id="payAmt" type="number" min="0.01" step="0.01" required></label>
+      <label><span id="settlementMethodLabel" data-en="Method" data-ar="طريقة الدفع">Method</span>
+        <select id="payMethod">
+          <option value="cash" data-en="Cash" data-ar="نقدي">Cash</option>
+          <option value="card" data-en="Card" data-ar="بطاقة">Card</option>
+          <option value="transfer" data-en="Transfer" data-ar="تحويل">Transfer</option>
+          <option value="other" data-en="Other" data-ar="أخرى">Other</option>
+        </select>
+      </label>
+      <label><span data-en="Note" data-ar="ملاحظة">Note</span><input id="payNote" maxlength="200"></label>
+      <p class="form-hint" id="payHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" data-close="payModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-create" id="settlementSubmit" data-en="Post payment" data-ar="تسجيل الدفعة">Post payment</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="stmtModal" hidden>
+  <div class="modal wide">
+    <div class="modal-hdr">
+      <h2 data-en="Account statement" data-ar="كشف الحساب">Account statement</h2>
+      <button type="button" class="modal-close" data-close="stmtModal"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="stmtListPane">
+        <p class="muted" id="stmtSupplierName"></p>
+        <div id="stmtBal" class="stmt-bal muted"></div>
+        <p class="muted stmt-hint" data-en="Click a row to see what was bought or paid." data-ar="اضغط الصف لعرض تفاصيل الشراء أو الدفعة.">Click a row to see what was bought or paid.</p>
+        <div class="table-wrap" id="stmtHost"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-close="stmtModal" data-en="Close" data-ar="إغلاق">Close</button>
+        </div>
+      </div>
+      <div id="stmtDetailPane" hidden>
+        <button type="button" class="btn-link stmt-back" id="btnStmtBack"><i class="ti ti-arrow-left"></i> <span data-en="Back to statement" data-ar="رجوع للكشف">Back to statement</span></button>
+        <h3 class="stmt-detail-title" id="stmtDetailTitle">Details</h3>
+        <div id="stmtDetailHost"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="suppliers-app.js?v=5"></script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Z-Report</title>
+<meta name="description" content="Shift closing Z-Report: sales, payments, and cash reconciliation.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css">
+<link rel="stylesheet" href="z-report.css?v=zr2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 148 167" fill="none"><path fill="#7ACC00" d="M38 0H0V139L79 58H38Z"/>
+          <path fill="#7ACC00" d="M148 23L68 105H112V167H148Z"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb" id="crumb"><span>Shifts</span><span class="sep">/</span><span class="current">Z-Reports</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div class="page-header">
+    <div class="z-head-id">
+      <div class="z-avatar" id="pageAvatar" hidden></div>
+      <div>
+        <a class="z-back" id="btnBack" href="/dashboard/shifts/"><i class="ti ti-arrow-left"></i> <span data-en="Shifts" data-ar="الورديات">Shifts</span></a>
+        <h1 class="page-title"><span id="pageTitle" data-en="Z-Reports" data-ar="تقارير Z">Z-Reports</span> <span class="z-stchip" id="pageStatus" hidden></span></h1>
+        <p class="page-subtitle" id="pageSub" data-en="What happened during each shift, and can the cash be reconciled?" data-ar="إيه اللي حصل خلال كل وردية، وهل النقدية اتسوّت؟">What happened during each shift, and can the cash be reconciled?</p>
+        <p class="z-staff" id="pageStaff" hidden></p>
+        <p class="z-window" id="pageWindow" hidden></p>
+      </div>
+    </div>
+    <div class="hdr-actions" id="hdrActions">
+      <div class="range-wrap" id="listFilters">
+        <button type="button" class="btn secondary" id="btnRange" aria-expanded="false" aria-haspopup="dialog">
+          <i class="ti ti-calendar"></i>
+          <span id="rangeLabel" data-en="Date" data-ar="التاريخ">Date</span>
+          <i class="ti ti-chevron-down"></i>
+        </button>
+        <div class="range-pop" id="rangePop" hidden role="dialog" aria-label="Date range">
+          <button type="button" class="range-opt" data-preset="last7" data-en="Last 7 days" data-ar="آخر 7 أيام">Last 7 days</button>
+          <button type="button" class="range-opt" data-preset="last30" data-en="Last 30 days" data-ar="آخر 30 يومًا">Last 30 days</button>
+          <button type="button" class="range-opt" data-preset="thisMonth" data-en="This month" data-ar="هذا الشهر">This month</button>
+          <div class="range-custom">
+            <label class="flt"><span data-en="From" data-ar="من">From</span><input type="date" id="dateFrom"></label>
+            <label class="flt"><span data-en="To" data-ar="إلى">To</span><input type="date" id="dateTo"></label>
+            <button type="button" class="btn secondary" id="btnApply" data-en="Apply" data-ar="تطبيق">Apply</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn secondary" id="btnExport" hidden><i class="ti ti-download"></i> <span data-en="Export" data-ar="تصدير">Export</span></button>
+      <button type="button" class="btn secondary" id="btnPrint" hidden><i class="ti ti-printer"></i> <span data-en="Print" data-ar="طباعة">Print</span></button>
+      <button type="button" class="btn secondary" id="btnPdf" hidden disabled><i class="ti ti-file-type-pdf"></i> <span data-en="Export PDF" data-ar="تصدير PDF">Export PDF</span></button>
+    </div>
+  </div>
+
+  <div id="viewList">
+    <div class="rpt-empty" id="listEmpty" hidden>
+      <div class="empty-icon"><i class="ti ti-clock-off"></i></div>
+      <h2 data-en="No closed shifts" data-ar="لا توجد ورديات مغلقة">No closed shifts</h2>
+      <p data-en="No shifts opened in this period. Close a drawer on Current Shift to create a Z-Report." data-ar="لا توجد ورديات في هذه الفترة. أغلق درج النقدية من الوردية الحالية عشان تتعمل تقرير Z.">No shifts opened in this period. Close a drawer on Current Shift to create a Z-Report.</p>
+      <div class="empty-actions">
+        <button type="button" class="btn secondary" id="btnChangeDate" data-en="Change Date" data-ar="تغيير التاريخ">Change Date</button>
+        <a class="btn" href="/dashboard/shifts/" data-en="Current Shift" data-ar="الوردية الحالية">Current Shift</a>
+      </div>
+    </div>
+    <div class="rpt-empty" id="listError" hidden>
+      <div class="empty-icon"><i class="ti ti-alert-circle"></i></div>
+      <h2 data-en="We couldn't load this report." data-ar="تعذّر تحميل هذا التقرير.">We couldn't load this report.</h2>
+      <p data-en="Try again in a moment." data-ar="حاول مرة أخرى بعد لحظات.">Try again in a moment.</p>
+      <button type="button" class="btn secondary" id="btnRetryList" data-en="Try again" data-ar="إعادة المحاولة">Try again</button>
+    </div>
+    <div class="table-wrap" id="listWrap">
+      <table class="rpt-table">
+        <thead>
+          <tr>
+            <th data-en="Staff" data-ar="الموظف">Staff</th>
+            <th data-en="Opened" data-ar="الافتتاح">Opened</th>
+            <th data-en="Closed" data-ar="الإغلاق">Closed</th>
+            <th class="amt" data-en="Sales" data-ar="المبيعات">Sales</th>
+            <th class="amt" data-en="Refunds" data-ar="المرتجعات">Refunds</th>
+            <th class="amt" data-en="Difference" data-ar="الفرق">Difference</th>
+            <th data-en="Status" data-ar="الحالة">Status</th>
+          </tr>
+        </thead>
+        <tbody id="listBody"><tr><td colspan="7" class="muted" data-en="Loading…" data-ar="جارٍ التحميل…">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pager" id="listPager" hidden></div>
+  </div>
+
+  <div id="viewDetail" hidden>
+    <div class="rpt-empty" id="detailError" hidden>
+      <div class="empty-icon"><i class="ti ti-alert-circle"></i></div>
+      <h2 data-en="We couldn't load this report." data-ar="تعذّر تحميل هذا التقرير.">We couldn't load this report.</h2>
+      <p data-en="Try again in a moment." data-ar="حاول مرة أخرى بعد لحظات.">Try again in a moment.</p>
+      <button type="button" class="btn secondary" id="btnRetryDetail" data-en="Try again" data-ar="إعادة المحاولة">Try again</button>
+    </div>
+    <div class="z-doc" id="zDoc">
+      <div class="z-note" id="closedBanner" hidden>
+        <i class="ti ti-lock"></i>
+        <span><b data-en="Final report" data-ar="تقرير نهائي">تقرير نهائي</b> — <span data-en="recorded at drawer close and cannot be edited · closed" data-ar="اتسجّل وقت إغلاق الدرج ومش قابل للتعديل · اتقفل">اتسجّل وقت إغلاق الدرج ومش قابل للتعديل · اتقفل</span> <span id="closedWhen"></span></span>
+      </div>
+      <div class="z-note warn" id="openNote" hidden data-en="This shift is still open. Cash expected and counted stay hidden until the drawer is closed on Current Shift." data-ar="الوردية دي لسه مفتوحة. النقدية المتوقعة والمعدودة تفضل مخفية لحد ما يتقفل الدرج من الوردية الحالية.">
+        This shift is still open. Cash expected and counted stay hidden until the drawer is closed on Current Shift.
+      </div>
+
+      <section class="z-kpis" id="salesKpis" aria-label="ملخص المبيعات"></section>
+
+      <section class="z-cash" aria-label="تسوية النقدية">
+        <div class="z-cash-head">
+          <div>
+            <h2 data-en="Cash reconciliation" data-ar="تسوية النقدية">تسوية النقدية</h2>
+            <span class="z-cash-hint" data-en="How expected cash was reached, and what was actually counted in the drawer" data-ar="إزاي وصلنا للنقدية المتوقعة، وإيه اللي اتعدّد في الدرج فعليًا">إزاي وصلنا للنقدية المتوقعة، وإيه اللي اتعدّد في الدرج فعليًا</span>
+          </div>
+          <span class="z-verdict-chip" id="cashVerdictChip" hidden></span>
+        </div>
+        <div class="z-cash-body">
+          <div class="z-ledger" id="cashLedger"></div>
+          <div class="z-verdict" id="cashVerdict" hidden></div>
+        </div>
+      </section>
+
+      <div class="z-duo">
+        <section class="z-card" aria-label="تفصيل طرق الدفع">
+          <div class="z-card-head">
+            <h2 data-en="Payment breakdown" data-ar="تفصيل طرق الدفع">تفصيل طرق الدفع</h2>
+            <span class="z-count-chip" id="methodCount" hidden></span>
+            <div class="z-total-end"><span data-en="Total" data-ar="الإجمالي">الإجمالي</span> <b id="methodTotal"></b></div>
+          </div>
+          <div class="table-wrap">
+            <table class="rpt-table">
+              <thead><tr><th data-en="Method" data-ar="الطريقة">الطريقة</th><th data-en="Count" data-ar="العدد">العدد</th><th data-en="Share" data-ar="النسبة">النسبة</th><th class="amt" data-en="Total" data-ar="الإجمالي">الإجمالي</th></tr></thead>
+              <tbody id="methodBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="z-card" aria-label="تفصيل المبيعات">
+          <div class="z-card-head">
+            <h2 data-en="Sales breakdown" data-ar="تفصيل المبيعات">تفصيل المبيعات</h2>
+            <span class="z-count-chip" id="breakCount" hidden></span>
+            <div class="z-total-end"><span data-en="Total" data-ar="الإجمالي">الإجمالي</span> <b id="breakTotal"></b></div>
+          </div>
+          <div class="table-wrap">
+            <table class="rpt-table">
+              <thead><tr><th data-en="Category" data-ar="الفئة">الفئة</th><th data-en="Count" data-ar="العدد">العدد</th><th data-en="Share" data-ar="النسبة">النسبة</th><th class="amt" data-en="Amount" data-ar="المبلغ">المبلغ</th></tr></thead>
+              <tbody id="breakBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/shared/api-config.js"></script>
+<script src="/shared/cairo-dates.js"></script>
+<script src="z-report-app.js?v=zr2"></script>
+</body>
+</html>

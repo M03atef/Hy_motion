@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Member OTP (stub)</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<style>
+:root{--c900:#0D0D0D;--l500:#7ACC00;--ls1:#fff;--ls2:#F5F5F5;--ls3:#E8E8E8;--ltp:#1A1A1A;--ltt:#8C8C8C;--dng:#EF4444;--fd:'Cairo',sans-serif;--fb:'Cairo',sans-serif;--rmd:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--ls2);color:var(--ltp);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:var(--ls1);border:1px solid var(--ls3);border-radius:16px;padding:28px;width:100%;max-width:420px;box-shadow:0 8px 30px rgba(0,0,0,.08)}
+h1{font-family:var(--fd);font-size:22px;margin-bottom:4px}
+.sub{font-size:13px;color:var(--ltt);margin-bottom:20px;line-height:1.45}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--wrn100,#FEF3C7);color:#92400E;margin-bottom:12px}
+html[data-theme="dark"] .badge{color:var(--gfp-wrn,#FCD34D)}
+label{display:block;font-size:12px;font-weight:600;margin:12px 0 6px}
+input{width:100%;height:44px;padding:0 12px;border:1px solid var(--ls3);border-radius:var(--rmd);font:inherit}
+.row{display:flex;gap:8px;margin-top:16px}
+button{flex:1;height:44px;border:none;border-radius:var(--rmd);font-weight:700;cursor:pointer;font-family:var(--fd)}
+.primary{background:var(--l500);color:var(--c900)}
+.ghost{background:var(--ls2);color:var(--ltp);border:1px solid var(--ls3)}
+.msg{margin-top:14px;font-size:13px;min-height:1.2em}
+.msg.err{color:var(--dng)}
+.msg.ok{color:#166534}
+html[data-theme="dark"] .msg.ok{color:var(--gfp-suc,#86EFAC)}
+a{color:#148F8F;font-size:13px}
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="badge">Prompt 1 stub · full flow in Prompt 17</span>
+  <h1>Member phone OTP</h1>
+  <p class="sub">Calls <code>POST /api/auth/member-otp</code> then <code>/api/auth/member-verify</code> via <code>GfpApi</code>. Not the staff portal.</p>
+
+  <label for="gymCode">Gym code</label>
+  <input id="gymCode" placeholder="GYM-TEST-01" autocomplete="organization">
+
+  <label for="phone">Phone (E.164)</label>
+  <input id="phone" placeholder="+201234567890" autocomplete="tel">
+
+  <label for="otp">OTP (after send)</label>
+  <input id="otp" placeholder="6-digit code" inputmode="numeric" maxlength="6">
+
+  <div class="row">
+    <button type="button" class="ghost" id="btnSend">Send OTP</button>
+    <button type="button" class="primary" id="btnVerify">Verify</button>
+  </div>
+  <p class="msg" id="msg"></p>
+  <p style="margin-top:16px"><a href="/auth/login/">← Staff login</a></p>
+</div>
+<script>
+(function () {
+  var Gfp = window.GfpApi;
+  var msg = document.getElementById('msg');
+  function setMsg(text, ok) {
+    msg.textContent = text || '';
+    msg.className = 'msg ' + (ok ? 'ok' : (text ? 'err' : ''));
+  }
+  document.getElementById('btnSend').onclick = async function () {
+    if (!Gfp) { setMsg('GfpApi not loaded'); return; }
+    var body = {
+      phoneNumber: document.getElementById('phone').value.trim(),
+      gymCode: document.getElementById('gymCode').value.trim()
+    };
+    setMsg('Sending…', true);
+    var r = await Gfp.auth.requestMemberOtp(body);
+    if (r.ok) setMsg('OTP sent (check SMS / server logs).', true);
+    else setMsg((r.error && r.error.message) || 'Send failed');
+  };
+  document.getElementById('btnVerify').onclick = async function () {
+    if (!Gfp) { setMsg('GfpApi not loaded'); return; }
+    var body = {
+      phoneNumber: document.getElementById('phone').value.trim(),
+      gymCode: document.getElementById('gymCode').value.trim(),
+      otp: document.getElementById('otp').value.trim()
+    };
+    setMsg('Verifying…', true);
+    var r = await Gfp.auth.verifyMemberOtp(body, { remember: true });
+    if (r.ok && r.data && r.data.accessToken) {
+      setMsg('Verified — tokens stored. Member app shell comes in Prompt 17.', true);
+    } else {
+      setMsg((r.error && r.error.message) || 'Verify failed');
+    }
+  };
+})();
+</script>
+</body>
+</html>
