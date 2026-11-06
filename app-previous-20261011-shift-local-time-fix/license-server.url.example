@@ -1,0 +1,6 @@
+# HyMotion Local — public license-server origin (no secrets).
+# Rename this file to license-server.url next to GMS.Api.exe, or set
+# HYMOTION_LICENSE_SERVER_URL, or LicenseServer:BaseUrl in
+# %ProgramData%\HyMotion\config\appsettings.json.
+# Do not use the Platform Console / Vite port. Use the Platform API origin.
+# Example: https://license.example.com

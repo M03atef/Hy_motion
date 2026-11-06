@@ -1,0 +1,18 @@
+# Demo login for the local filming install. Not part of the product.
+demo-credentials.txt
+
+# Local runtime log from this PC.
+app/logs/
+
+# Shortcut to a drive on this PC.
+*.lnk
+
+# This folder is a full copy of the kit already at the root.
+/HyMotion-Desktop-Release/
+
+# The SQL setup exe is the installer. This is the same package unpacked.
+/01-sql-express/SQLEXPR_x64_ENU/
+
+# Downloaded packages and render cache, not the promo project.
+/promo-video/node_modules/
+/promo-video/out/

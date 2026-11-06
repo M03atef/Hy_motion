@@ -1,0 +1,3528 @@
+{
+  "Product": "HyMotion Local Edition",
+  "BuiltAtUtc": "2026-10-09T13:44:21.4606791Z",
+  "Status": "Sealed",
+  "Feature": "Refunds: product-return-only flow, no extra amount, cash default, and corrected product-row layout.",
+  "Files": [
+    {
+      "Path": "appsettings.json",
+      "Sha256": "7CAFD3CB29A8E3D2E7D937D6BBEFD1707FB0BCC4CD01637811B2563309BE95AB",
+      "Bytes": 3299
+    },
+    {
+      "Path": "appsettings.Local.json",
+      "Sha256": "DD4CF78AC1CB7BA14BEFC928919F472C40936B4DFD20C02E94697DA6C113DBCA",
+      "Bytes": 2647
+    },
+    {
+      "Path": "aspnetcorev2_inprocess.dll",
+      "Sha256": "CBBD975FC25A09CA353C394A5399DDB2A58BBE02D1896203C621351E41F69F1C",
+      "Bytes": 383800
+    },
+    {
+      "Path": "Azure.Core.dll",
+      "Sha256": "6D5AA935649E46D76E5DCDD778A1338437F47B9C2D5D05C02135C58382CB9BE4",
+      "Bytes": 321424
+    },
+    {
+      "Path": "Azure.Identity.dll",
+      "Sha256": "666973AF908CF82A495530B2EA23074004DEAD445E1BB46EF75A5E3C879A6321",
+      "Bytes": 306064
+    },
+    {
+      "Path": "BouncyCastle.Cryptography.dll",
+      "Sha256": "E5EEAF6D263C493619982FD3638E6135077311D08C961E1FE128F9107D29EBC6",
+      "Bytes": 4924576
+    },
+    {
+      "Path": "ClosedXML.dll",
+      "Sha256": "AB2C0487BA2F199986E6E47A295DB1ECCD2C9B78A55C8FC808C58B85FA59A8FD",
+      "Bytes": 1691136
+    },
+    {
+      "Path": "ClosedXML.Parser.dll",
+      "Sha256": "8D36E75B9B238E57DDD4122D0E2F6105ACDC873BCE2F297277AE0A25DDF610EB",
+      "Bytes": 192000
+    },
+    {
+      "Path": "clretwrc.dll",
+      "Sha256": "BC233572D7702EC8D8763C143EC62687C38ABC3AAD26336FB45C26657BF3A5E7",
+      "Bytes": 310568
+    },
+    {
+      "Path": "clrgc.dll",
+      "Sha256": "B09898E142791EA3B96FD1B432D0E5C8AD51C81CD99B608ACCD2981E78A93CDF",
+      "Bytes": 667944
+    },
+    {
+      "Path": "clrjit.dll",
+      "Sha256": "697C09AC310B8FB8118863971955DA135AEE348116816E3B511BF5957DC6253A",
+      "Bytes": 1777960
+    },
+    {
+      "Path": "coreclr.dll",
+      "Sha256": "BBBCAEDB369617695280CAAA60CDA1ABA4FA3C5B557532A89D9F4A9174A5B692",
+      "Bytes": 4995880
+    },
+    {
+      "Path": "createdump.exe",
+      "Sha256": "BEBA75FFCD188A0CE594C304C737CAF16681E1AF19BDD7BB47B3F0EB8636C320",
+      "Bytes": 71512
+    },
+    {
+      "Path": "CsvHelper.dll",
+      "Sha256": "8964322C777EB7491A0EB218C770C04CDC33914D3439AE0FBED1ADF4678C304B",
+      "Bytes": 226816
+    },
+    {
+      "Path": "DocumentFormat.OpenXml.dll",
+      "Sha256": "5A0C237A7467DDE85BCE402D124B7A07777531607837EB59EE62A9A79905FF43",
+      "Bytes": 6349424
+    },
+    {
+      "Path": "DocumentFormat.OpenXml.Framework.dll",
+      "Sha256": "DDAE1F34E78971A731193E459C3AED54314F93A54D51C2457E12CCC169BF5663",
+      "Bytes": 471152
+    },
+    {
+      "Path": "dotnet-tools.json",
+      "Sha256": "6CF22AE44D4569B60B45186BE8C6F627424281E18E06A3A11A146C3CCA6CDDDD",
+      "Bytes": 194
+    },
+    {
+      "Path": "ExcelNumberFormat.dll",
+      "Sha256": "D7C45B8E4E1027831E2FC8CDF941FAF51D28A66FEACFCAAA737DA73262E7B507",
+      "Bytes": 30720
+    },
+    {
+      "Path": "FluentValidation.AspNetCore.dll",
+      "Sha256": "299143108EDBFEF06A089198CC98B051A86044BBB3877CBA5E4D6D0AAC43E8BD",
+      "Bytes": 67584
+    },
+    {
+      "Path": "FluentValidation.DependencyInjectionExtensions.dll",
+      "Sha256": "50373C54E3AEC66D824B7E037CFC06E9801F88CA83EAAB67E415161129821D9A",
+      "Bytes": 17408
+    },
+    {
+      "Path": "FluentValidation.dll",
+      "Sha256": "736B60AFDAE2155694FB75B79E7B1095A30DFC10DDDF1CF3FC4DEFA2F24C9B6A",
+      "Bytes": 492032
+    },
+    {
+      "Path": "GMS.Api.deps.json",
+      "Sha256": "D4BF78B1D33E1C352DC38754FA3E3EACE440DAAFF233DD71C90F2EC1033FBDBF",
+      "Bytes": 101313
+    },
+    {
+      "Path": "GMS.Api.dll",
+      "Sha256": "55B2DF0D49E29A06AEA1B2D28376743CEF0A074BF15387B376B94BD47FF648EC",
+      "Bytes": 870912
+    },
+    {
+      "Path": "GMS.Api.exe",
+      "Sha256": "8BCE13DDD2B3222B22C07246D9D246D6F60BE14187281EC591A78340555F1031",
+      "Bytes": 256512
+    },
+    {
+      "Path": "GMS.Api.runtimeconfig.json",
+      "Sha256": "18A4E7275F23B3F17C97B3D3446E4657BF5F3E05A3C5DC7BF6066C20A130C6F2",
+      "Bytes": 567
+    },
+    {
+      "Path": "GMS.Api.staticwebassets.endpoints.json",
+      "Sha256": "20106467B754D2F0178AF67453492ADE08EE0E9D97CC828B1F6D6A8E4C26EF45",
+      "Bytes": 302574
+    },
+    {
+      "Path": "GMS.Application.dll",
+      "Sha256": "32EC7FA6A9001D1EC92F3E12ED38BCD16ECD03F672CABA8CEC4AFF763FD82749",
+      "Bytes": 3152384
+    },
+    {
+      "Path": "GMS.Core.dll",
+      "Sha256": "CAF91AAE07095A0EA6E3F7CCDF668C3AD7B1532C1FD03C46C435B38F2978AE20",
+      "Bytes": 286720
+    },
+    {
+      "Path": "GMS.Infrastructure.dll",
+      "Sha256": "15B8A55B1B7DED7BEF6EB6C4C3C33A1795669200F4380BCB45AE8E8D295FD7DE",
+      "Bytes": 5642240
+    },
+    {
+      "Path": "GMS.Platform.dll",
+      "Sha256": "FD97C6E3A1981715D20975A4453E06CFDF8058C48DE4E00FFA4C12F9E4F6A5F1",
+      "Bytes": 1429504
+    },
+    {
+      "Path": "Hangfire.AspNetCore.dll",
+      "Sha256": "84F2BD51BD1DDA20A201CB14486B9E6DCF5556CAA9C014752B039F9F5673604E",
+      "Bytes": 42192
+    },
+    {
+      "Path": "Hangfire.Core.dll",
+      "Sha256": "A65DE824DC686217326599C9B0C5E7B0F470BD4425AC0B891D6CDC2351DF7522",
+      "Bytes": 1435832
+    },
+    {
+      "Path": "Hangfire.NetCore.dll",
+      "Sha256": "865B38A150ED0C297CA61FE2345CACEEAF54AA6EFAE0C20EBDD554964FD789A9",
+      "Bytes": 38056
+    },
+    {
+      "Path": "Hangfire.SqlServer.dll",
+      "Sha256": "F914352394DFB0EA66FEFEB5CB23A21FD7FABB6706E9567C7A3F29907ABD4C58",
+      "Bytes": 431304
+    },
+    {
+      "Path": "hostfxr.dll",
+      "Sha256": "4F5A0500CD2A2439B0D5EDBF242950233AEC4539EC9A5E7BA9B8A9B0079F63AF",
+      "Bytes": 366376
+    },
+    {
+      "Path": "hostpolicy.dll",
+      "Sha256": "24F18CCB306D5E614932478471AD276E2B041A723A45E571073DB383B37C5120",
+      "Bytes": 406824
+    },
+    {
+      "Path": "HyMotionBackup.exe",
+      "Sha256": "42163E1C7CE287488F1EE4577C98969940A18E09AD5EF8D4BBC85D06C42B2AD1",
+      "Bytes": 72001950
+    },
+    {
+      "Path": "HyMotionLauncher.exe",
+      "Sha256": "3CDCA76835073A6CDB40CBF12EE5B2DBF29933B94343D53A7FBBFED69E1B635A",
+      "Bytes": 71990698
+    },
+    {
+      "Path": "HyMotionSetup.exe",
+      "Sha256": "F50343DD24F54ABC9DE5F264D152A624983B79F3D3906A7493BDF8C6802C8763",
+      "Bytes": 72005528
+    },
+    {
+      "Path": "license-server.url.example",
+      "Sha256": "7BBCFD970792766C3F749A17789C5DC01D497569D95F978ED47A04551315F4F0",
+      "Bytes": 363
+    },
+    {
+      "Path": "MailKit.dll",
+      "Sha256": "641B0C5E78326EBA4F5897B8C72EF86C5B54A305CA1D1C32F577390D9F3DC950",
+      "Bytes": 948736
+    },
+    {
+      "Path": "MessagePack.Annotations.dll",
+      "Sha256": "3C11D559B96554FF3389725412531CAE07FF9C8FCB39BF4C400A1695FFA53DB9",
+      "Bytes": 11776
+    },
+    {
+      "Path": "MessagePack.dll",
+      "Sha256": "9E8FB6AB0A656079D9E597D4C668BA76CD5799C5458EA50E628CFE8B5BF8628F",
+      "Bytes": 326144
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Antiforgery.dll",
+      "Sha256": "CC66CBC2FBBB919739C45B1656355E613125ADC4C1CF2C60BA50C886666C5EA5",
+      "Bytes": 120656
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.Abstractions.dll",
+      "Sha256": "DDCF97EB80A32D2C43C7736217D9A332CD9F301F4BF225CF5EF528B6BF6778F4",
+      "Bytes": 67368
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.BearerToken.dll",
+      "Sha256": "77BB7706BD8E9B965C241B6575099A303252286AB48EF1973BEB7220A7F672E9",
+      "Bytes": 71464
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.Cookies.dll",
+      "Sha256": "E4ECC81DFB516CA51EA6031632915EE6DF4365C8BAB6B2FB8592534B3951D826",
+      "Bytes": 116520
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.Core.dll",
+      "Sha256": "65A37F70B79A7A42D7F46CB56ED4E5361D5C5ACAAAABE45E05F76E659A0BDF25",
+      "Bytes": 91944
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.dll",
+      "Sha256": "422BE40DB462E4D257A845550C47E3726E00380BA9BF69CFE09C418C255AC500",
+      "Bytes": 157520
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.JwtBearer.dll",
+      "Sha256": "D5A32622B0B62E0B766B27484E464889009E836BB02B917BBC3ECEBFDB2F9EE4",
+      "Bytes": 51992
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authentication.OAuth.dll",
+      "Sha256": "E952A3A010ECB3086F6FB41387EB2E98FE3C496B511EA4297DD805A6A738BA30",
+      "Bytes": 100136
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authorization.dll",
+      "Sha256": "A6FCF6B8F9A98046E7FBE8C0A2B12AACC9344CF6F2874C95922900EA75A84A60",
+      "Bytes": 108328
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Authorization.Policy.dll",
+      "Sha256": "AA12235DC4FA148CEE39DD5615936BDA90F19BB9BA7E0AB0EF200C9FB06F91A2",
+      "Bytes": 79656
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Components.Authorization.dll",
+      "Sha256": "F9B26E0E3B7670776C16F77BEA1190C3882EF6ABFEABF8B01EEFDBBA9F5F5920",
+      "Bytes": 55080
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Components.dll",
+      "Sha256": "4028026DA175831955C629A7876B9979DF07849758A8B0B4A8393A794D792928",
+      "Bytes": 825168
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Components.Endpoints.dll",
+      "Sha256": "FBE4731193B451CF16A314EDF8B439B5128F1A13586D1EB5E03116A668DF3927",
+      "Bytes": 722768
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Components.Forms.dll",
+      "Sha256": "BE5D21B5A98EAA471F95FF4EDB49E5697B6CAA3EE29BDB319A0DA473A11BAFF5",
+      "Bytes": 96080
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Components.Server.dll",
+      "Sha256": "E02D3F347844ED59CE56A6C88208DC113254394015898D23C5539B2F8E528879",
+      "Bytes": 870184
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Components.Web.dll",
+      "Sha256": "C1589C3B46E44EF09EB4DC2878AB95DB2BA29630325035FD9F089F65FE5F2D24",
+      "Bytes": 390952
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Connections.Abstractions.dll",
+      "Sha256": "85C1561F3E808BF6DF1406EABB0B7E0A3A9A5370E7FEEDD6FB26C0740ADE52BA",
+      "Bytes": 67368
+    },
+    {
+      "Path": "Microsoft.AspNetCore.CookiePolicy.dll",
+      "Sha256": "25CCF696BBB0821C68A10068F0D3C65591C5382D241B906D783C13ED22DCC1DE",
+      "Bytes": 55080
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Cors.dll",
+      "Sha256": "46E19FFE136A2FEEE2F327C25A44DBD339ECE2A1BB7E739CC26824E3C45C443C",
+      "Bytes": 91944
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Cryptography.Internal.dll",
+      "Sha256": "474D4943103DC45423ED1C2478B324E3A0600F6B5A040F5EE94E88DEDCA028D4",
+      "Bytes": 108368
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Cryptography.KeyDerivation.dll",
+      "Sha256": "E885AC6A69A92667F2FAA72696065BC8F26102F122FC6C177463EE2390DC829F",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.AspNetCore.DataProtection.Abstractions.dll",
+      "Sha256": "F1DA05BA75BC467A3B4BB3A418B7BF7BA48971D39B7BF3AB71E9E130BFE3D2AD",
+      "Bytes": 51024
+    },
+    {
+      "Path": "Microsoft.AspNetCore.DataProtection.dll",
+      "Sha256": "B629120483FA56A5DA96F97DA54B1531B5344AA99FA8D14E17695F45CC8FFF55",
+      "Bytes": 431952
+    },
+    {
+      "Path": "Microsoft.AspNetCore.DataProtection.Extensions.dll",
+      "Sha256": "CCEEE1C2843D9F615C3DEFFF72D3BD8BBCCEB5C802324D30E9846BA467ED3EEF",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Diagnostics.Abstractions.dll",
+      "Sha256": "D85C12AFC53DEA7CD10EE25CEF0EF274FB1AB46BDE23B93D77EEA9BF1A81033B",
+      "Bytes": 34640
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Diagnostics.dll",
+      "Sha256": "193348A84A7F76393F4928CEC34F0ED7B74D00CA9A07761A2FC6CD04CB94E956",
+      "Bytes": 452392
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Diagnostics.HealthChecks.dll",
+      "Sha256": "4478A9D03834216DC3260A6B5E9BBB4759215F43C03CD53D400EA47AD2A0D72C",
+      "Bytes": 50984
+    },
+    {
+      "Path": "Microsoft.AspNetCore.dll",
+      "Sha256": "8AB5501C2A235BD8A85AAFFD93030FBFDB91A90F0CA0FA9A32DAE7ACD3462123",
+      "Bytes": 112424
+    },
+    {
+      "Path": "Microsoft.AspNetCore.HostFiltering.dll",
+      "Sha256": "B1F124CC925F1E1661BA3DFDE398BEC666EF0521902C2CB4E02843B2B6870215",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Hosting.Abstractions.dll",
+      "Sha256": "BBB6F265564C83D2BAF7B3C5E3194E89BE5C28180A56948DAA944273940FA198",
+      "Bytes": 42792
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Hosting.dll",
+      "Sha256": "DE86E54A38E0D35ED91082AEED34AE5512043D1F99DF595B7EB49188FD04E4B2",
+      "Bytes": 460584
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Hosting.Server.Abstractions.dll",
+      "Sha256": "DE2A9DC0DCD39A7085CA80DF85541BA6E0DCFC479E1A3C61EFF37246652F2E31",
+      "Bytes": 30504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Html.Abstractions.dll",
+      "Sha256": "CAC6C6AEC81BD324189CECFDEF4766F936533B2AD5905C9B969DF1A4AF2A6A8D",
+      "Bytes": 42792
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.Abstractions.dll",
+      "Sha256": "535BC26DC3F53D419B0E29F8ABE9687A09F9733E3171654F7ED934F0B175CE7F",
+      "Bytes": 321320
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.Connections.Common.dll",
+      "Sha256": "56DDC938BB0647B1F2BD9C90E848B2295EC2AD716951B21374282C79C7D6A760",
+      "Bytes": 55120
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.Connections.dll",
+      "Sha256": "D49181A0F75B04ED29728DEC190DB897744E754FFFD840179EE0F30BBC1A5D91",
+      "Bytes": 325416
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.dll",
+      "Sha256": "4291F4C130F6EF9CE77B8F21A4622C24CC521DB4784854A1B832D02BB7DF900B",
+      "Bytes": 300880
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.Extensions.dll",
+      "Sha256": "017017C2AAAA1AAF5590C812DDFC103F0A435DBEDD09CF5CD0BF8CE67B18CE52",
+      "Bytes": 698152
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.Features.dll",
+      "Sha256": "E6252CD63BFC5CAB54757F78BF4A76B9073FA4F6CB93E2DDBC2EF275EC864B67",
+      "Bytes": 71504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Http.Results.dll",
+      "Sha256": "2BEE64690A283BB229CD4F76DE152A0C209F70D00CFBA71D214E00970F15728C",
+      "Bytes": 247592
+    },
+    {
+      "Path": "Microsoft.AspNetCore.HttpLogging.dll",
+      "Sha256": "F70E1178F2ADF44E0704AC000B18883F1DD43A398B3C8BD5183585BB7B4F8185",
+      "Bytes": 198480
+    },
+    {
+      "Path": "Microsoft.AspNetCore.HttpOverrides.dll",
+      "Sha256": "4CBDD6FAF3C5D7C14DBA59E6FAFE136A0524D6CB1B4F9CD79C733C157DEE3A5D",
+      "Bytes": 79656
+    },
+    {
+      "Path": "Microsoft.AspNetCore.HttpsPolicy.dll",
+      "Sha256": "555F94D88AEA153524F72151550D08BC07AB9A85FD7EEC45E67CCBC684A7D0E9",
+      "Bytes": 50984
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Identity.dll",
+      "Sha256": "1048F30ECD5F7B987BD480D49E5669BA268AAA0052238E9181AF86CF5DDB18A8",
+      "Bytes": 546600
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
+      "Sha256": "5FFBFB1C6178A707C3ABA7DEC0E1B0B5C4EA55FF2681EEAC4CD05EB6BD153610",
+      "Bytes": 108704
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Localization.dll",
+      "Sha256": "141D799A12194B15CB87986DEE5EC9FEC2C80F1CDCC0497EA7A3B223FB479F55",
+      "Bytes": 67368
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Localization.Routing.dll",
+      "Sha256": "89726646D7FFAC16D962F70761353B3AB55976461CA0733BE95E3390BEE3DF79",
+      "Bytes": 30504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Metadata.dll",
+      "Sha256": "D3FE18E9DC2E9504C269A1C94A737BDB4A39BD414B1685FA4BBE04BC9FA36F18",
+      "Bytes": 30504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Abstractions.dll",
+      "Sha256": "D453A52D3665DD742BB7C9C047598F3B2D987E20087576F7EC262A557BF72182",
+      "Bytes": 263976
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.ApiExplorer.dll",
+      "Sha256": "B3AAA7F5C6CE5615595E06CC1FEB733BEC99BC4F4C25A6B70FBD386B8508FA90",
+      "Bytes": 132904
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Core.dll",
+      "Sha256": "DFE2F59B2E2871E791F211E574E8CC29EB20426158F2FD8B0D654A884F52CC46",
+      "Bytes": 1959720
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Cors.dll",
+      "Sha256": "7E8002D9261E368169188DDED19D97A7F37913C21A211686278E1FB48EC7299F",
+      "Bytes": 51024
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.DataAnnotations.dll",
+      "Sha256": "10B788EF416239D9EE7CB05179DF8761981A93A8DC27337447155372ACDACEE3",
+      "Bytes": 104232
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.dll",
+      "Sha256": "CE81388B0F152A43221D1E73C69176949D46B07E5150D12220C811F3F431F488",
+      "Bytes": 42792
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Formatters.Json.dll",
+      "Sha256": "6220A8548209B1D069C8FA4D17BD27796F8230CE63166B80A170FAFB3660F714",
+      "Bytes": 30504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Formatters.Xml.dll",
+      "Sha256": "C3F487AD91CFF289D622DE5BB649EDC5C29F2ECF9C5C7883DF0C8CA41374EC84",
+      "Bytes": 120656
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Localization.dll",
+      "Sha256": "2E42D948739F9C9FC25CDC3775D4A71FE55ABEB7C31B6655F47E9AD8E3F11FD3",
+      "Bytes": 50984
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.Razor.dll",
+      "Sha256": "16033529455E803514FC3383BA9AEF5092E3A64516C0457FE4FEA656409C9698",
+      "Bytes": 243536
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.RazorPages.dll",
+      "Sha256": "27BF126372D5664670F4D63EA4D3BAA0A73BEB0A8A52DDC33A0386B329A092AE",
+      "Bytes": 452392
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.TagHelpers.dll",
+      "Sha256": "DA93EA7D5B8EF89C1F3EF41EB1834470292EAEC35665A5DF7EAF1347828BAFD3",
+      "Bytes": 280400
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Mvc.ViewFeatures.dll",
+      "Sha256": "C8A88BDA63B22468EA811883B6769066238E4EB5036DFFBA0F74D4A4691CCE8B",
+      "Bytes": 722728
+    },
+    {
+      "Path": "Microsoft.AspNetCore.OutputCaching.dll",
+      "Sha256": "BBAB5C11D1E5238E0181B7C79459F429AD81334B3A90B3A638C0E2A7FE81978E",
+      "Bytes": 259880
+    },
+    {
+      "Path": "Microsoft.AspNetCore.RateLimiting.dll",
+      "Sha256": "AC2FEED5BBE85CA93C80632355E7D09B86A59E6F58CB36E020630E84634528B7",
+      "Bytes": 96040
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Razor.dll",
+      "Sha256": "DF4A8A7CAA3CD79F2F4D1226AFE300CA2429BF3FED6B7C35DFD7C0FBFAFF3F04",
+      "Bytes": 67408
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Razor.Runtime.dll",
+      "Sha256": "584CDC90F3D1CC4B74269C5C9B0F601837610DFA64725F3401F208C56CA5D89D",
+      "Bytes": 71504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.RequestDecompression.dll",
+      "Sha256": "00BA4307C4833B17E2408A789910435556166A6CE43BD2518BFD3E56A2959E49",
+      "Bytes": 50984
+    },
+    {
+      "Path": "Microsoft.AspNetCore.ResponseCaching.Abstractions.dll",
+      "Sha256": "55B8F75244922C964197CC76FE2FFA6FB1F68AAC437C287BADA5EFD86DEAD08B",
+      "Bytes": 30504
+    },
+    {
+      "Path": "Microsoft.AspNetCore.ResponseCaching.dll",
+      "Sha256": "89BA46B8143CBEA459E1D0AEEEA1B879AB810795522F873E61F660550BF9D746",
+      "Bytes": 153384
+    },
+    {
+      "Path": "Microsoft.AspNetCore.ResponseCompression.dll",
+      "Sha256": "6E7EC6285FFB04485C01587CB4C4CAB362FD6483338517487438DBDF56EBFE3A",
+      "Bytes": 83752
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Rewrite.dll",
+      "Sha256": "5FDC0332E75C500E5505469E36CB2AA6CDC73EBB821FEBC27E62287C2E5C3AE3",
+      "Bytes": 218920
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Routing.Abstractions.dll",
+      "Sha256": "62E0945B2408DF0CD14A86B5035866F4B2950941946BE0EE7E9C10BB534C66D6",
+      "Bytes": 59176
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Routing.dll",
+      "Sha256": "5AF5F239608D945E55FD8796F058AE535E942D4D809CD94813DF2635A861F722",
+      "Bytes": 825128
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.HttpSys.dll",
+      "Sha256": "41D68517C4EA1CCE483E862085F7EB8C726D9D3550D348F4B6DDD508EA4EDE91",
+      "Bytes": 644904
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.IIS.dll",
+      "Sha256": "6B6F1A9F70171CEEBDC96E5B2EA6CC5898084DBA1ACE805367DEA09DE79AE0CA",
+      "Bytes": 677712
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.IISIntegration.dll",
+      "Sha256": "FD630B94527DC155AFDEE998CD17234D946E5CB607EBE69D7673447193D27735",
+      "Bytes": 51024
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.Kestrel.Core.dll",
+      "Sha256": "2FD1D8004E57E26FF3BBE940764DC9EF55FBC39850E253DAC77F8CFEAA2C7FCB",
+      "Bytes": 2316112
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.Kestrel.dll",
+      "Sha256": "3006FF0268744F97FBFF0C603CE2E381D12F96052DF79FE6F36037055106F2B0",
+      "Bytes": 34600
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.Kestrel.Transport.NamedPipes.dll",
+      "Sha256": "3FF3D68BCEF87C3F8B5E84C52FCF51D2A099F88C9E7AC2C933D09ED5621F3CC0",
+      "Bytes": 141096
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.Kestrel.Transport.Quic.dll",
+      "Sha256": "801D8F2196FE8D88D3324FF9AE0F740D6EA547C8EB963B43B2F0F1FCB047696C",
+      "Bytes": 239400
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Server.Kestrel.Transport.Sockets.dll",
+      "Sha256": "D9124D9B75D27E63CE781612C36FB7D050102875A3F245E5029C3E23B2300C5F",
+      "Bytes": 165712
+    },
+    {
+      "Path": "Microsoft.AspNetCore.Session.dll",
+      "Sha256": "1BB52DF703DD9AA35D0D54296BC426882A583E7453F5370B7F71E7F2DBC27F60",
+      "Bytes": 91984
+    },
+    {
+      "Path": "Microsoft.AspNetCore.SignalR.Common.dll",
+      "Sha256": "6E3C86462D01F4B4E3C1E3FE52C569A27E78948BBB08B4C7374539847A0C529D",
+      "Bytes": 87848
+    },
+    {
+      "Path": "Microsoft.AspNetCore.SignalR.Core.dll",
+      "Sha256": "74CFA1D72FADC8901B97401CB61ECF2722C3F651CBF999002FBA194D66A09940",
+      "Bytes": 505680
+    },
+    {
+      "Path": "Microsoft.AspNetCore.SignalR.dll",
+      "Sha256": "AB339FAD0506F4A5991BBD15077E94BE15892ABEF24584F7C8A48C505F7D23C5",
+      "Bytes": 38696
+    },
+    {
+      "Path": "Microsoft.AspNetCore.SignalR.Protocols.Json.dll",
+      "Sha256": "D9BE9C1FB87B8E2B7C1948BB52CCB72BCED605F64A44B78FEF0DE28D050F246A",
+      "Bytes": 83752
+    },
+    {
+      "Path": "Microsoft.AspNetCore.SignalR.StackExchangeRedis.dll",
+      "Sha256": "71BD2D580A957EE61610775218215CF4C28C7124495ED588058ECB56B02A7525",
+      "Bytes": 82080
+    },
+    {
+      "Path": "Microsoft.AspNetCore.StaticFiles.dll",
+      "Sha256": "85297BCFC32527760992EE78081980E89775602D318F5FB67E9AFD41ED513E72",
+      "Bytes": 165672
+    },
+    {
+      "Path": "Microsoft.AspNetCore.WebSockets.dll",
+      "Sha256": "B5E3871F0B965FBF50731824329D892FD12F8D8A6859E4506144E3973EC43259",
+      "Bytes": 75560
+    },
+    {
+      "Path": "Microsoft.AspNetCore.WebUtilities.dll",
+      "Sha256": "07044D39B33D23C9384F599BD336293ACACD85B0C981233C84903E084DF9973C",
+      "Bytes": 255784
+    },
+    {
+      "Path": "Microsoft.Bcl.AsyncInterfaces.dll",
+      "Sha256": "5705D245072D3EB78400547B32147DBB6E2C8B02BA8BDA76729798F5EFDEAECB",
+      "Bytes": 16000
+    },
+    {
+      "Path": "Microsoft.CSharp.dll",
+      "Sha256": "30704C86C4C052AC630E5B5BF9E04AEB1EB0677FE3C5CF8A7DF36C8AB78D0B56",
+      "Bytes": 1005392
+    },
+    {
+      "Path": "Microsoft.Data.SqlClient.dll",
+      "Sha256": "093C85FF561A5FEEFD0B8B68ADF1A060BBA98FAE37ABC25844543F4D81EABE07",
+      "Bytes": 1631712
+    },
+    {
+      "Path": "Microsoft.Data.SqlClient.SNI.dll",
+      "Sha256": "A3C9BBCA9707D5D1D454139BB140D0A7CD6745C2AA3FB95112F22548E56648F6",
+      "Bytes": 506272
+    },
+    {
+      "Path": "Microsoft.DiaSymReader.Native.amd64.dll",
+      "Sha256": "70E4B89978CE57EF87B28F4921F3140C383B04AA96E7F3BDB3C4EBB898FD8A72",
+      "Bytes": 2377016
+    },
+    {
+      "Path": "Microsoft.EntityFrameworkCore.Abstractions.dll",
+      "Sha256": "A7C7FBB109543C21FADD00D6601DA01872BA289896CD6816242C2D8D3066C628",
+      "Bytes": 34864
+    },
+    {
+      "Path": "Microsoft.EntityFrameworkCore.dll",
+      "Sha256": "3FFD949ED8F4B6F0800E988ACD98BB2D9DCEF0A2C2423F4523FA12D392979AFF",
+      "Bytes": 2533920
+    },
+    {
+      "Path": "Microsoft.EntityFrameworkCore.Relational.dll",
+      "Sha256": "EA4AE35BA8BF99362FAFF556CDE2EB7A5638E8551C6A396BD87E5037132E93C1",
+      "Bytes": 1992264
+    },
+    {
+      "Path": "Microsoft.EntityFrameworkCore.SqlServer.dll",
+      "Sha256": "44235FA84A55C05F54914D70738730838D658816C9E5D5C9F23A2F784150B64E",
+      "Bytes": 543264
+    },
+    {
+      "Path": "Microsoft.Extensions.Caching.Abstractions.dll",
+      "Sha256": "A1967C3971B2C2EEC6664A25DE27A107E234E85A87CC1676D71D9C7023234925",
+      "Bytes": 59216
+    },
+    {
+      "Path": "Microsoft.Extensions.Caching.Memory.dll",
+      "Sha256": "1EC10543AEF40F22ADD6133364DFEA43C4682A40EED3E138B439F32DF19B83E6",
+      "Bytes": 96080
+    },
+    {
+      "Path": "Microsoft.Extensions.Caching.StackExchangeRedis.dll",
+      "Sha256": "C82EBAF36E10647451CE4256C5C663C3C604809009F171140BA9819F565BDBB3",
+      "Bytes": 40096
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.Abstractions.dll",
+      "Sha256": "C7ECBCB3CCAF67688FFD5DA539E6EA95DDECDDAA93073EB243F44DEA07C45A95",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.Binder.dll",
+      "Sha256": "D72285C768FBBCB3E4254C7F4BE01D971023172E2191AA334BDDAAC0C364F447",
+      "Bytes": 87848
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.CommandLine.dll",
+      "Sha256": "82D6A5A16021056F5A5E552BDFC6B092F7111BA97D9037353DB659A05D0E7356",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.dll",
+      "Sha256": "15341108380747DDE6E3638C76A55B774C85CE4B060E625CF897C8EBCC4459CE",
+      "Bytes": 91944
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+      "Sha256": "B6F375CCDEC5EBDA5C9736424DD04DE98A818BD806B69F8C69E2388A1C2FB9AD",
+      "Bytes": 38696
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.FileExtensions.dll",
+      "Sha256": "3306552E319C444240999F631BF1D280361FFD58CC2DC89571F4DB35E98FEE07",
+      "Bytes": 51024
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.Ini.dll",
+      "Sha256": "0E622C1942324AAF6715DF6262E0EC4C8FBAD27B5F8DC71DE31288B3ABC927F5",
+      "Bytes": 46928
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.Json.dll",
+      "Sha256": "F08FFD23DED23EAD994CCB45AC120D508706E7AC54C09348670B61C4887FF51C",
+      "Bytes": 50984
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.KeyPerFile.dll",
+      "Sha256": "1019B76C8A02C5BFB49074A38924A57654D388130B597535BE4DFFAF6A42B4A8",
+      "Bytes": 42792
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.UserSecrets.dll",
+      "Sha256": "97570DFE58A6063C4E3929949A78EC80D92E1CC6434AE5F96EAF3EE5B42E8A45",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.Extensions.Configuration.Xml.dll",
+      "Sha256": "2BE37EFF445AD6035F01D02C47F2E534074590960EEA79279EFE3CD58AF05CCF",
+      "Bytes": 63272
+    },
+    {
+      "Path": "Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+      "Sha256": "F8C7A30BD2F8C33D7E901CE86DEB80EDB2FC045EC2B11CE77531586ED5618779",
+      "Bytes": 141096
+    },
+    {
+      "Path": "Microsoft.Extensions.DependencyInjection.dll",
+      "Sha256": "24069032C05A11AD525EA406D3FE34EC5CCB38541E8061423DB8560E995638D6",
+      "Bytes": 218960
+    },
+    {
+      "Path": "Microsoft.Extensions.Diagnostics.Abstractions.dll",
+      "Sha256": "2227235CB89189640A47F655D6FC6BF3BCBA73B96D0710A87D02D5CF40B2B61C",
+      "Bytes": 46928
+    },
+    {
+      "Path": "Microsoft.Extensions.Diagnostics.dll",
+      "Sha256": "BFAB3D6ADCBA10580C6D4B9F6152AEF1940C242B87CF5C1EB94E21EE828050A6",
+      "Bytes": 71504
+    },
+    {
+      "Path": "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions.dll",
+      "Sha256": "344128D28190CCFCBC6FEC2204D185555012156A36A56D2FAA2BC714BC64F88E",
+      "Bytes": 42792
+    },
+    {
+      "Path": "Microsoft.Extensions.Diagnostics.HealthChecks.dll",
+      "Sha256": "5FF5550C7C5F95C87C9C00D091DBF6B69BA8315C3DF1CE3A92300DFC073822B9",
+      "Bytes": 112424
+    },
+    {
+      "Path": "Microsoft.Extensions.Features.dll",
+      "Sha256": "549ED93617FC98D474797A1F78856DB19DF40725D7208C7E055C00EBC5795D59",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.Extensions.FileProviders.Abstractions.dll",
+      "Sha256": "9E4D72A5D419AC2574D9017CD975B788F194202C52281FC5952CADB2C4E8EB64",
+      "Bytes": 38696
+    },
+    {
+      "Path": "Microsoft.Extensions.FileProviders.Composite.dll",
+      "Sha256": "D348184AE50E0627B59722F70361DB4D09260305F1890B0E3AFC230ECB2E56BD",
+      "Bytes": 34600
+    },
+    {
+      "Path": "Microsoft.Extensions.FileProviders.Embedded.dll",
+      "Sha256": "40B41BD6EC34599DAFA109BCAFD1CC3D676E4DF1781DB079D0D0694A7DDFC965",
+      "Bytes": 75560
+    },
+    {
+      "Path": "Microsoft.Extensions.FileProviders.Physical.dll",
+      "Sha256": "B97E8D7EA37AD0B69B977A461DE31E1A38CC0F558CED33E1F96E5B563DC627DF",
+      "Bytes": 91944
+    },
+    {
+      "Path": "Microsoft.Extensions.FileSystemGlobbing.dll",
+      "Sha256": "E0A6F6BF47F9A3EAE143B32774731884D4C3E5E8856059754B55A3A9A3241C61",
+      "Bytes": 100136
+    },
+    {
+      "Path": "Microsoft.Extensions.Hosting.Abstractions.dll",
+      "Sha256": "A2502C960647D72C7A71B519967A7485E9438A67EF65721CAC260B9E20AD2D8A",
+      "Bytes": 79656
+    },
+    {
+      "Path": "Microsoft.Extensions.Hosting.dll",
+      "Sha256": "63B7CAA51C65DC06343C7DEF23EE6F9C0AE239168071D3A6DAD222F2D4807639",
+      "Bytes": 153384
+    },
+    {
+      "Path": "Microsoft.Extensions.Hosting.WindowsServices.dll",
+      "Sha256": "1DA1EA43A9AAA98657649306CB319A1568CAD0FDDBFBF62F70870DDA712CC043",
+      "Bytes": 29968
+    },
+    {
+      "Path": "Microsoft.Extensions.Http.dll",
+      "Sha256": "6A75F5401D97266D19ECC3F1D18557BA1E5CD764651197B5DFFC41A63049103D",
+      "Bytes": 190288
+    },
+    {
+      "Path": "Microsoft.Extensions.Http.Polly.dll",
+      "Sha256": "B16816A2A73299669A8143410FF5C9835CFDF24CF1A25A645907FA99F313DBCF",
+      "Bytes": 32536
+    },
+    {
+      "Path": "Microsoft.Extensions.Identity.Core.dll",
+      "Sha256": "D3BF856585DCDF94437E180A6EA04DC72BDDC5EAE6CDE7EFB5C17130AD11AF35",
+      "Bytes": 448296
+    },
+    {
+      "Path": "Microsoft.Extensions.Identity.Stores.dll",
+      "Sha256": "3DE0D940E80281071CCDC2AE2E83F419E1A323141176162EE78D4FE152112543",
+      "Bytes": 87888
+    },
+    {
+      "Path": "Microsoft.Extensions.Localization.Abstractions.dll",
+      "Sha256": "CB774A300D374E2CED3A3E2B362BD2F749DA331BF03C9D267E1F7F38D42407C7",
+      "Bytes": 34640
+    },
+    {
+      "Path": "Microsoft.Extensions.Localization.dll",
+      "Sha256": "EBFD586FBEC34B06D6EC82F383ED7951F9613C9DA79C62B0690333155F947EE2",
+      "Bytes": 59176
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.Abstractions.dll",
+      "Sha256": "0BEF43F25606BC2F53F0CDA9BE82572137FDAA31B4EAF08D2539E2F18FE9D8B7",
+      "Bytes": 149288
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.Configuration.dll",
+      "Sha256": "8E6202EB47FD94D17DE44A9D0837B24D5E8F16DD063BA8759BA67B34C4AF5E68",
+      "Bytes": 46888
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.Console.dll",
+      "Sha256": "24A8967499161BF0AD2B5940AE8308E71012BA4E96AD89658D3652F38CA2A149",
+      "Bytes": 157480
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.Debug.dll",
+      "Sha256": "C3C8D33108292F663170D6C8BA68EB8B6CD324AE9E670005BD287319C1DC2B82",
+      "Bytes": 34640
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.dll",
+      "Sha256": "C7786C17055D5D831FD2CDE5215358198B0115B4077BCF16B3C7AA703621257D",
+      "Bytes": 100136
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.EventLog.dll",
+      "Sha256": "4789515FB20932C10B7DB8B5BFE3B1156D8337784ECCD96D9D1E7C1E31A9BB7C",
+      "Bytes": 46928
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.EventSource.dll",
+      "Sha256": "C9255EB506DCA500CDBA933BCFD3F273EC8A716E46E9F630B728C55B76F4CC08",
+      "Bytes": 63272
+    },
+    {
+      "Path": "Microsoft.Extensions.Logging.TraceSource.dll",
+      "Sha256": "6F6A184683AFEDFEABDDEEE743680E0D7941FB3D569C339B9C2136A3468095EB",
+      "Bytes": 38696
+    },
+    {
+      "Path": "Microsoft.Extensions.ObjectPool.dll",
+      "Sha256": "588FF555062959836DF7904365FC000FAD067E2CFD459453E467AD47E516AE53",
+      "Bytes": 42792
+    },
+    {
+      "Path": "Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+      "Sha256": "0588830F6D3D344B133526D75563B9F050F4A0FFEA77A3DC4F05EED5934EF0CB",
+      "Bytes": 38696
+    },
+    {
+      "Path": "Microsoft.Extensions.Options.DataAnnotations.dll",
+      "Sha256": "91B91D18092079BD3DC4336620D5D7F65923EADB7B15D8721FEA86017CF7DDDB",
+      "Bytes": 38696
+    },
+    {
+      "Path": "Microsoft.Extensions.Options.dll",
+      "Sha256": "ED485C618AF4A6A688A46022013DD947441A36215171AAB70493CE5F721A628D",
+      "Bytes": 141096
+    },
+    {
+      "Path": "Microsoft.Extensions.Primitives.dll",
+      "Sha256": "B2D20AC90F3AC5A2E4B7B9CA9D22E5467F2EBA29CBE92B460A80B0F73E289D24",
+      "Bytes": 83752
+    },
+    {
+      "Path": "Microsoft.Extensions.WebEncoders.dll",
+      "Sha256": "055EDFDEE701687428E682DE7B058CB0606E4424837B81D7F36D3170B4A871C6",
+      "Bytes": 38736
+    },
+    {
+      "Path": "Microsoft.Identity.Client.dll",
+      "Sha256": "AD18F5EE9EE5112014734FBA8BBA982666EF0E1437112725ABDED05D838B0441",
+      "Bytes": 1455576
+    },
+    {
+      "Path": "Microsoft.Identity.Client.Extensions.Msal.dll",
+      "Sha256": "98BC634E2D70FC2494963DA2C75326B0D41050B7087B323FC402AB2C27C6E66C",
+      "Bytes": 62984
+    },
+    {
+      "Path": "Microsoft.IdentityModel.Abstractions.dll",
+      "Sha256": "C35C05E2279DF0FAB0B9B554BE07A5DD052588D3E4F10FAFE13A2BE749B0FDC5",
+      "Bytes": 19384
+    },
+    {
+      "Path": "Microsoft.IdentityModel.JsonWebTokens.dll",
+      "Sha256": "67D4AEC167453B38E8F612BADEF0F65388A14E13FE4734D786B1E39874B8C2E0",
+      "Bytes": 143904
+    },
+    {
+      "Path": "Microsoft.IdentityModel.Logging.dll",
+      "Sha256": "BA8C8F9B627E99098B530343ABE186AD43ED84A16532307194504A98CC8980FF",
+      "Bytes": 36896
+    },
+    {
+      "Path": "Microsoft.IdentityModel.Protocols.dll",
+      "Sha256": "0B3D96839CCF4C8FA3F21309D3FE87C5CC5842EB760FDA836EA8659BAB616629",
+      "Bytes": 40488
+    },
+    {
+      "Path": "Microsoft.IdentityModel.Protocols.OpenIdConnect.dll",
+      "Sha256": "6C38D17D8BA2347FE30FC93C4A04E214BC45DE15456A5901C1109ED5C55BD693",
+      "Bytes": 119840
+    },
+    {
+      "Path": "Microsoft.IdentityModel.Tokens.dll",
+      "Sha256": "48B2BE0476D092E852D65AD6332F373ECA139D792A36A8D3D96B42D26BA003EE",
+      "Bytes": 329144
+    },
+    {
+      "Path": "Microsoft.JSInterop.dll",
+      "Sha256": "87640DC2594912A299DE2CAE7945CED354E729F99599DD78D3D69BF316D887B8",
+      "Bytes": 145232
+    },
+    {
+      "Path": "Microsoft.Net.Http.Headers.dll",
+      "Sha256": "C2A8B4B6BAB99B9E6892A1CF2218ADEF4C820F12CEA4194973DA7028D05F68BE",
+      "Bytes": 223016
+    },
+    {
+      "Path": "Microsoft.NET.StringTools.dll",
+      "Sha256": "39174330C919A00746E4FC0180F9C973C824CF7CDC2B1AD3E4DF9E73709A02A2",
+      "Bytes": 30352
+    },
+    {
+      "Path": "Microsoft.OpenApi.dll",
+      "Sha256": "AEECFA60DB32DBCFAC06BCEB835745951C88FCAC194A84B2D0FE61893D1B7C07",
+      "Bytes": 233408
+    },
+    {
+      "Path": "Microsoft.SqlServer.Server.dll",
+      "Sha256": "A9DCA1B42BC875F966B78B2C0880E62B838F0ED6567166D7F1F07AE4B76EC4BF",
+      "Bytes": 23976
+    },
+    {
+      "Path": "Microsoft.VisualBasic.Core.dll",
+      "Sha256": "BDCDD4BD2B6E2C0EEC9A93187CD57CE9437C9A2324A6C6C20C55A2D1A27823BE",
+      "Bytes": 1247056
+    },
+    {
+      "Path": "Microsoft.VisualBasic.dll",
+      "Sha256": "A172FAD5B53A27D32B21BA3B18E27046C1DAF7451C46BEA4F57F515D0EEF756A",
+      "Bytes": 17192
+    },
+    {
+      "Path": "Microsoft.Win32.Primitives.dll",
+      "Sha256": "596160C8491D2110A36CE4CB93C736905B2C83B9B50496369F32E32AD28D2A20",
+      "Bytes": 15184
+    },
+    {
+      "Path": "Microsoft.Win32.Registry.dll",
+      "Sha256": "A8CC5503BBBA36472D1DD3A8EEBC3A8B26F0B2882E770851AAB486690B23EAD9",
+      "Bytes": 120656
+    },
+    {
+      "Path": "Microsoft.Win32.SystemEvents.dll",
+      "Sha256": "142CCE4ED8AC9DA22D69C38A6F22738ABFB22090DC9313E8B58E6F91978E89AF",
+      "Bytes": 53352
+    },
+    {
+      "Path": "MimeKit.dll",
+      "Sha256": "34ECBAE9877337E3BCD67038EF22C1548594239475A974F424CE1EDAF6046916",
+      "Bytes": 1200640
+    },
+    {
+      "Path": "mscordaccore_amd64_amd64_8.0.3126.42015.dll",
+      "Sha256": "A277F63F5722E1ED59A791FC5D30C53ED263ABEF4ADF12D0BF494897D796C3E0",
+      "Bytes": 1348960
+    },
+    {
+      "Path": "mscordaccore.dll",
+      "Sha256": "A277F63F5722E1ED59A791FC5D30C53ED263ABEF4ADF12D0BF494897D796C3E0",
+      "Bytes": 1348960
+    },
+    {
+      "Path": "mscordbi.dll",
+      "Sha256": "20140E71ED6DD59E6736E455B7BE2784D7AC0B3F43839148A134AEC3E7622DE0",
+      "Bytes": 1233800
+    },
+    {
+      "Path": "mscorlib.dll",
+      "Sha256": "EE4983E136AB524F29D2F43D01D1DEB978F4948EB5CA05B5D6E40BE37EC43023",
+      "Bytes": 59216
+    },
+    {
+      "Path": "mscorrc.dll",
+      "Sha256": "C0FC4C625CE2C62887A86A5E1D93895836E7C998A3C95169505F8515266160FC",
+      "Bytes": 136488
+    },
+    {
+      "Path": "msquic.dll",
+      "Sha256": "B7158D427B01C70483BB3D80C5211E387DD98E9471C8A70E4484D449DE9157E8",
+      "Bytes": 536344
+    },
+    {
+      "Path": "netstandard.dll",
+      "Sha256": "53D854D33C3F0E1BBCCFF4B5C4B89420DAA66FA5F6603F6E5DF20D6BBB7E00F4",
+      "Bytes": 100648
+    },
+    {
+      "Path": "Newtonsoft.Json.dll",
+      "Sha256": "6A8DF611F76A00E8D1AB98C1DF6B9136CE43C95AC74ADBD0FC581ECA08560080",
+      "Bytes": 658432
+    },
+    {
+      "Path": "Otp.NET.dll",
+      "Sha256": "3EAD7572047FC51B51DE2A4577B1D18ED8FAC4EBCAB733651D0B75912D28A4C1",
+      "Bytes": 17920
+    },
+    {
+      "Path": "Pipelines.Sockets.Unofficial.dll",
+      "Sha256": "FA2CDB1D5FFBB2B06512C92CE8BD18918A1A996171D0A72DFC73035BC586A711",
+      "Bytes": 167424
+    },
+    {
+      "Path": "Polly.dll",
+      "Sha256": "4FB8FF4F77B031F4ED51AADB0E494EF62C9F4F0A8382B972D34A9999707073DC",
+      "Bytes": 287984
+    },
+    {
+      "Path": "Polly.Extensions.Http.dll",
+      "Sha256": "D85928ECBAE1A7BA8EF218BCBC38E731DAA531456B5D18E160F49A5E3844025C",
+      "Bytes": 6144
+    },
+    {
+      "Path": "QRCoder.dll",
+      "Sha256": "3C5674F67A97FD9ED38DD537D892EE9EFD328AFAD4D6C1D67F99FDE2C108DD57",
+      "Bytes": 144384
+    },
+    {
+      "Path": "QuestPDF.dll",
+      "Sha256": "07146218E035FEC03C89EAD05CF7C37085C91A37D15B3079716B28230443CF63",
+      "Bytes": 358400
+    },
+    {
+      "Path": "QuestPdfSkia.dll",
+      "Sha256": "41528B884F3F8958A064E13D333C0E9CB0EBF1F35C38425853BF3616808143C0",
+      "Bytes": 6224896
+    },
+    {
+      "Path": "RBush.dll",
+      "Sha256": "047E48AB058A783A1D0021EDE9AC238E158ED43FA2368A15FD4CCD8F920AB6A1",
+      "Bytes": 34816
+    },
+    {
+      "Path": "Serilog.dll",
+      "Sha256": "6B67FB3F104513036A7446CE4DA3B49449EC9CEA00437C38333910E47BFA41CB",
+      "Bytes": 140800
+    },
+    {
+      "Path": "Serilog.Extensions.Hosting.dll",
+      "Sha256": "9797812419B0506569DE5BFD5A86B506BBAF7A0D2F2493DB0494D6E6EEE1AF0E",
+      "Bytes": 29696
+    },
+    {
+      "Path": "Serilog.Extensions.Logging.dll",
+      "Sha256": "A0B6C860FA5BDB3F0EBE5C7AF709FC686A9AA575B616B706BD65A5D0C1FD4226",
+      "Bytes": 29696
+    },
+    {
+      "Path": "Serilog.Sinks.File.dll",
+      "Sha256": "192A97F6A2E408C36D9EC8A0EEE6BBA33A516DDEDF3662C031D88E744629F991",
+      "Bytes": 31232
+    },
+    {
+      "Path": "SixLabors.Fonts.dll",
+      "Sha256": "E1E2F107E7C78FB859F1B23383107A125ACD8B3A7470140850DAA6F6F6C45D9F",
+      "Bytes": 1135616
+    },
+    {
+      "Path": "StackExchange.Redis.dll",
+      "Sha256": "FA63737C339218A828AF0F4200AD73C10BA5D7E09590221AF650644B606F43D9",
+      "Bytes": 819200
+    },
+    {
+      "Path": "Swashbuckle.AspNetCore.Swagger.dll",
+      "Sha256": "5C5F8B453B40C37A13656FC7EA0641553B9FA72E80FC07046BD012C0334350AC",
+      "Bytes": 17408
+    },
+    {
+      "Path": "Swashbuckle.AspNetCore.SwaggerGen.dll",
+      "Sha256": "B3DD86D15E24F75B5246F69CF8CFFF5038352EDEDD178979C7FCD7519CC201CC",
+      "Bytes": 118784
+    },
+    {
+      "Path": "Swashbuckle.AspNetCore.SwaggerUI.dll",
+      "Sha256": "D83F7E15A8C6C34E7BC4319E1B81E69F3856E692A076894A6E0EFD7F27F34D1F",
+      "Bytes": 2270720
+    },
+    {
+      "Path": "System.AppContext.dll",
+      "Sha256": "C3D2CB89EC473B55FCBF6F0ED601139E46159E0D2834D9D92ED74ED89E2A2879",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Buffers.dll",
+      "Sha256": "8CADBC77368593547381F18EAFA12DD58216D7B35A60B487B66CA51A2EE3C406",
+      "Bytes": 15184
+    },
+    {
+      "Path": "System.Collections.Concurrent.dll",
+      "Sha256": "ED653CCB5DC40D0BB4EA3429165A0825705F2935A65C584CA67CBA45671884C1",
+      "Bytes": 276264
+    },
+    {
+      "Path": "System.Collections.dll",
+      "Sha256": "C6BB79B8FB32504B6327B516E6FF32017A073669AB749D3C86ED49CD5F2F0C45",
+      "Bytes": 259880
+    },
+    {
+      "Path": "System.Collections.Immutable.dll",
+      "Sha256": "6E41C8BA23968F6A9B910E3C33F66761A588F24084C4E3599214805716D6D259",
+      "Bytes": 837456
+    },
+    {
+      "Path": "System.Collections.NonGeneric.dll",
+      "Sha256": "B40CDF234652B31B443164350F73E25F98C5EDECFD30698789D6DBF9CA456E44",
+      "Bytes": 104232
+    },
+    {
+      "Path": "System.Collections.Specialized.dll",
+      "Sha256": "24022887037BFAAD8C89C26642712C920DCC0ABABD3396D80D8B2BE16637673B",
+      "Bytes": 104272
+    },
+    {
+      "Path": "System.ComponentModel.Annotations.dll",
+      "Sha256": "97060D253527BDDE94022AC6D22AE4C0474CF67F40BFE8342E9420B7888B3AFF",
+      "Bytes": 198480
+    },
+    {
+      "Path": "System.ComponentModel.DataAnnotations.dll",
+      "Sha256": "E5B872CF98BF9F3F565877B21FDEE61B569ECC586E6DC48C9199AE5E0CD100B3",
+      "Bytes": 16720
+    },
+    {
+      "Path": "System.ComponentModel.dll",
+      "Sha256": "4D9E2E21ED5C16C100221433D1AAB01409EC199C9F617E48B9FE1617989BBAA6",
+      "Bytes": 30504
+    },
+    {
+      "Path": "System.ComponentModel.EventBasedAsync.dll",
+      "Sha256": "CE813A7CDE09EBA1BDD7D6661FA39C09057BEDDC78F554C5476C43766D763ED0",
+      "Bytes": 46928
+    },
+    {
+      "Path": "System.ComponentModel.Primitives.dll",
+      "Sha256": "D981AF410D4ED7939FDEE47A1EE58E3DB472C05F17C2B0D48E4B1EBFB2FEA0E5",
+      "Bytes": 79696
+    },
+    {
+      "Path": "System.ComponentModel.TypeConverter.dll",
+      "Sha256": "DB04940603C749719E133BB567D142D46AF3A6F2F37597DB398955A3896B84C2",
+      "Bytes": 747304
+    },
+    {
+      "Path": "System.Configuration.ConfigurationManager.dll",
+      "Sha256": "D274BDD71F75F5005FCAEC028921F71D89CB6D622022D74D2E07897A3A1D141A",
+      "Bytes": 396424
+    },
+    {
+      "Path": "System.Configuration.dll",
+      "Sha256": "39ECA0E98D4B206CBFF6243A04494F79EC8B19903D3427B44D64D88097D77F65",
+      "Bytes": 19240
+    },
+    {
+      "Path": "System.Console.dll",
+      "Sha256": "D38105C5C790FC76AC6E4D99FE9B6C2672E4E250E191BD43593E55AE7D3B2AFE",
+      "Bytes": 173864
+    },
+    {
+      "Path": "System.Core.dll",
+      "Sha256": "F7414ECFD958FDFB2B4BCDD2F7778A7B26968EB453CA2C03FDF53BA4BB21674F",
+      "Bytes": 23336
+    },
+    {
+      "Path": "System.Data.Common.dll",
+      "Sha256": "089A74A39DCEB113BEA92522B227E24C881A618C5EB1E2ABB166A6E8C12BE0CB",
+      "Bytes": 2860840
+    },
+    {
+      "Path": "System.Data.DataSetExtensions.dll",
+      "Sha256": "D425011A475BB44E6B9ACD4C48E8F3B428312A05CA3A649ABBCD871F7102DECF",
+      "Bytes": 15696
+    },
+    {
+      "Path": "System.Data.dll",
+      "Sha256": "1EFE79C9F164CE5DA6542DE89DC7F10D1FEB1F38216B68F9A6B6A8CA5E3D2AC3",
+      "Bytes": 24912
+    },
+    {
+      "Path": "System.Diagnostics.Contracts.dll",
+      "Sha256": "A670F39C589BD9D4A994E75ABC2385839649ED91A831A4CA7D9FE4F87834B492",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.Diagnostics.Debug.dll",
+      "Sha256": "E122BD1046864476252765E356C54D2454E72A6E11BF546907DE1468CA0B0CB5",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Diagnostics.DiagnosticSource.dll",
+      "Sha256": "25C3BF229337A485CEACB82C00F47F2E98DE68A279EB5A450550526F9CBF0448",
+      "Bytes": 415568
+    },
+    {
+      "Path": "System.Diagnostics.EventLog.dll",
+      "Sha256": "09B2DDA785C154D6748E420F30C9361FAB21F3706EFD1F28E9B76B0392876A10",
+      "Bytes": 386896
+    },
+    {
+      "Path": "System.Diagnostics.EventLog.Messages.dll",
+      "Sha256": "7562084DB5C3C103A0F3D4B82AE4E742B60B9FAC2FD6A32CCB1B829C10A88151",
+      "Bytes": 812840
+    },
+    {
+      "Path": "System.Diagnostics.FileVersionInfo.dll",
+      "Sha256": "24B0E8ED2EA93B84FF2A26CB1F69F7D6E331F6162EAE4FAE4446A5556B8A8EEE",
+      "Bytes": 46888
+    },
+    {
+      "Path": "System.Diagnostics.Process.dll",
+      "Sha256": "7083C7046AC4CBED1068B6AE7A777D421EEAF180E5697283FC1C6AF731C32A3D",
+      "Bytes": 337744
+    },
+    {
+      "Path": "System.Diagnostics.StackTrace.dll",
+      "Sha256": "7B26B1C48D500576994B3153B88FEFD1E516680AE4B52CDE608B8E869544B37D",
+      "Bytes": 46888
+    },
+    {
+      "Path": "System.Diagnostics.TextWriterTraceListener.dll",
+      "Sha256": "0279BBA2AB8C1E023D043D802B0B3BBBF8483DD082E305391C6229382452B1C2",
+      "Bytes": 67368
+    },
+    {
+      "Path": "System.Diagnostics.Tools.dll",
+      "Sha256": "CA4CC511A2204AF2A5652C7CF870A6A5EFF109F98ACC72A8E2A0498F72665507",
+      "Bytes": 15184
+    },
+    {
+      "Path": "System.Diagnostics.TraceSource.dll",
+      "Sha256": "2B5489BC5A6D65E109DBED6557DC2AF3BA9DFB549EFD18A64F37FD64255CB756",
+      "Bytes": 145232
+    },
+    {
+      "Path": "System.Diagnostics.Tracing.dll",
+      "Sha256": "6857ED7CA2C17D38F74639BACC59942599935593F9A0B33B246161C57DB27EB3",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.dll",
+      "Sha256": "173DD55A6D19794FB6EB8C4E4E73510EBF3A7928AFFE43C21E721861A4250E51",
+      "Bytes": 49960
+    },
+    {
+      "Path": "System.Drawing.Common.dll",
+      "Sha256": "4D3001697DF50CCA54F32ED2DBBD1F3F415B48D5D756B1BF9500A43AE9B68DA0",
+      "Bytes": 454248
+    },
+    {
+      "Path": "System.Drawing.dll",
+      "Sha256": "97562444D2DAF928CD78404156665DDE55AA5EC71C6FCAD705284338E4A36EBE",
+      "Bytes": 20304
+    },
+    {
+      "Path": "System.Drawing.Primitives.dll",
+      "Sha256": "02BD1F5644DD73789B82C3A52C8F86EF726BAA1D4CCE2A0C64D9DC1C29B9CB02",
+      "Bytes": 132944
+    },
+    {
+      "Path": "System.Dynamic.Runtime.dll",
+      "Sha256": "F6A93AD11464C19F720D34B92043DCC289885BF959B32549EE3CA24537E8B65A",
+      "Bytes": 16208
+    },
+    {
+      "Path": "System.Formats.Asn1.dll",
+      "Sha256": "61F505F140E2C6417640A5AA47A86D148D4F6DC5317A66A7BFA2266A3AC975BF",
+      "Bytes": 243496
+    },
+    {
+      "Path": "System.Formats.Tar.dll",
+      "Sha256": "EE3132A84CF9FD170F3AE0899A996ADC120A899C51DBC5534B22E8870B5AA137",
+      "Bytes": 276304
+    },
+    {
+      "Path": "System.Globalization.Calendars.dll",
+      "Sha256": "E0974066E338D22097F5C77E47D086BD9C5826C256034A31F21B34C4392FBB7B",
+      "Bytes": 15696
+    },
+    {
+      "Path": "System.Globalization.dll",
+      "Sha256": "88A4C4517972878AEBD264AC5150A3822D14AB3F5B9577C8372E1724B0CA8D88",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Globalization.Extensions.dll",
+      "Sha256": "9D57E781AFD06F3C6D0A54842467B29079BA2932827A76D9047A327490F1F836",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.IdentityModel.Tokens.Jwt.dll",
+      "Sha256": "5BB4CB58E7FA30611E49DC8DE0974A9AD8433F1E33D707F29E3F677D9F7F9E71",
+      "Bytes": 90032
+    },
+    {
+      "Path": "System.IO.Compression.Brotli.dll",
+      "Sha256": "46D228E5EA0E3D25B15E95D6A97A3B80E86DDE2660589462F30853EB5A0C40B5",
+      "Bytes": 83752
+    },
+    {
+      "Path": "System.IO.Compression.dll",
+      "Sha256": "1F7E0CE87B7859C81D793750EA8FC58DB6D1FA1B81D3CEA1E73C614F66439C3C",
+      "Bytes": 263976
+    },
+    {
+      "Path": "System.IO.Compression.FileSystem.dll",
+      "Sha256": "75972527F5C874893F0515FBE6F8D1D484354AC421CCF31AF346738AA74CBC07",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.IO.Compression.Native.dll",
+      "Sha256": "4F892A1F3BDF970E662435BB044B5C5E4D8F7241BCE981237F57165AE12CB171",
+      "Bytes": 828240
+    },
+    {
+      "Path": "System.IO.Compression.ZipFile.dll",
+      "Sha256": "A8624A7C7359C1EB6767C50513A33EB9F09125089044EF0CAF9D4D225B33A230",
+      "Bytes": 55080
+    },
+    {
+      "Path": "System.IO.dll",
+      "Sha256": "1EE3349F15C3A20A7394341D8D4EDE2AC3D7DDBE4462F43DAE828F407F84FF1D",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.IO.FileSystem.AccessControl.dll",
+      "Sha256": "6C384EE8C0613A469F9894209F39F154D2E6E8796F9B9C02E3686A42E15D94A6",
+      "Bytes": 104232
+    },
+    {
+      "Path": "System.IO.FileSystem.dll",
+      "Sha256": "6005E3AC5CBEE19D172CC29E48CA84DB8E62DFF34CFF95E56C3600A0A95CB170",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.IO.FileSystem.DriveInfo.dll",
+      "Sha256": "3EEA221AAA9E6066BFFB63218EE292FE499BBB5DB434A57225AAC1B8531C0B90",
+      "Bytes": 55080
+    },
+    {
+      "Path": "System.IO.FileSystem.Primitives.dll",
+      "Sha256": "FB2F15CF3356987E0120D265B7B4FBCCC11DCCFBAE08B334A17B4E830EDDC54E",
+      "Bytes": 15184
+    },
+    {
+      "Path": "System.IO.FileSystem.Watcher.dll",
+      "Sha256": "21C97F58651EA238A7018ECFA4BB4B3B6B4E682F97163AE14F8D4D145547F3F0",
+      "Bytes": 87888
+    },
+    {
+      "Path": "System.IO.IsolatedStorage.dll",
+      "Sha256": "AF7C75423C9EFDF88850A7197C57E19D588A326678BBE07AA7F0B5DDB3049F59",
+      "Bytes": 91984
+    },
+    {
+      "Path": "System.IO.MemoryMappedFiles.dll",
+      "Sha256": "E3136D19090F173D2AB75C392486A1427060BD149D966CFD58F3DF3308546DFD",
+      "Bytes": 83752
+    },
+    {
+      "Path": "System.IO.Packaging.dll",
+      "Sha256": "12DDC8BFF279FAD856551A74894DC52B80FA437D5D2B32722E70AE6899217B7C",
+      "Bytes": 142136
+    },
+    {
+      "Path": "System.IO.Pipelines.dll",
+      "Sha256": "D27F65CC379EF234488EA3068ADAD64598693D75D2202116A3AFF0629FE6A2CE",
+      "Bytes": 194384
+    },
+    {
+      "Path": "System.IO.Pipes.AccessControl.dll",
+      "Sha256": "FB206A579C16F5750CE10026913A7F16AD686FB37AF1FC9BC997F611362B2F2E",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.IO.Pipes.dll",
+      "Sha256": "35030C28374B6FFA6393C2AB8AE80CF712A2F88E92A16DBBDBF6AE03F0E0D452",
+      "Bytes": 165672
+    },
+    {
+      "Path": "System.IO.UnmanagedMemoryStream.dll",
+      "Sha256": "9442D9391FF037CF388A9E15C171845E5436B093E3C928C60350957555393FD0",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Linq.dll",
+      "Sha256": "2B375E90FC687967BD95A0F47DBCBA44D396923F3C98B7FE5754E34C8E4BEFAA",
+      "Bytes": 542504
+    },
+    {
+      "Path": "System.Linq.Expressions.dll",
+      "Sha256": "0F99977BEDDC9272D56A2E16B2581CDE37F2AFD43E77C8209827197C098DEDEB",
+      "Bytes": 3675984
+    },
+    {
+      "Path": "System.Linq.Parallel.dll",
+      "Sha256": "4BA87321EA950874380628879C3C25332281F7F9A920A090DE930570AE8AF0EA",
+      "Bytes": 804648
+    },
+    {
+      "Path": "System.Linq.Queryable.dll",
+      "Sha256": "5E14D4AB3BB2711B0CC4B197F973E9C74955A1E4C77041D5CAD65E759C304232",
+      "Bytes": 173864
+    },
+    {
+      "Path": "System.Memory.Data.dll",
+      "Sha256": "293CA5D86358FB2CE00DA02C63EEFCB344689FC0C636B61C97C3F1B15A80AA51",
+      "Bytes": 21368
+    },
+    {
+      "Path": "System.Memory.dll",
+      "Sha256": "84242CCE5EACC6963A77163986066BD0A1C2EB698B5F26DBDD5E6706E002FBC7",
+      "Bytes": 157480
+    },
+    {
+      "Path": "System.Net.dll",
+      "Sha256": "C2DDCDFF66BBB2595E5BCACA342D600A81C9A2E618AC9B9B1C6977FC4E1D17FC",
+      "Bytes": 17232
+    },
+    {
+      "Path": "System.Net.Http.dll",
+      "Sha256": "5102639C2037D77949340D94761C9A4C5053B940B8AE4BA2FBBE3507B8A5EC43",
+      "Bytes": 1734440
+    },
+    {
+      "Path": "System.Net.Http.Json.dll",
+      "Sha256": "7C4B39865655DD3B695A305527B8D11092C5DCF1B786D747CD45E6C00CCE5249",
+      "Bytes": 128808
+    },
+    {
+      "Path": "System.Net.HttpListener.dll",
+      "Sha256": "AD612AE83E313EB7FC2AFA59B829533C8E8F36FB76D1D398262A610E85AF1CCC",
+      "Bytes": 550696
+    },
+    {
+      "Path": "System.Net.Mail.dll",
+      "Sha256": "8830477BB6B18B181A2495C77038AB8A7C941897C9E46FEB06F61B2013ED1C8E",
+      "Bytes": 431952
+    },
+    {
+      "Path": "System.Net.NameResolution.dll",
+      "Sha256": "E8CC6C2F0D59FB018FDC4A66057E3A56A3AA5ED82FEDE17B2398CDA88DA407CD",
+      "Bytes": 112424
+    },
+    {
+      "Path": "System.Net.NetworkInformation.dll",
+      "Sha256": "DB21F0C5659D925741F7A08B0B50FC297248B0155F375F0FD7F970DD2E4CD3F0",
+      "Bytes": 157480
+    },
+    {
+      "Path": "System.Net.Ping.dll",
+      "Sha256": "3A9AAB851FFF6116DEE3524177859E051512FADF7E209372E2D2342B51845474",
+      "Bytes": 96040
+    },
+    {
+      "Path": "System.Net.Primitives.dll",
+      "Sha256": "0F929E8581F09FE85275DF7B38549BC51415CD110AADFD89EADE53943174511A",
+      "Bytes": 231248
+    },
+    {
+      "Path": "System.Net.Quic.dll",
+      "Sha256": "58F5E4C6F2BBD5320C9797FBEAD001A99E4D334FA936D5469DF82262AC8069DA",
+      "Bytes": 284456
+    },
+    {
+      "Path": "System.Net.Requests.dll",
+      "Sha256": "60B7C1595CECC53767C3EFCDAE74DDD37350AC51F377CAC8D7E95428B1F231AF",
+      "Bytes": 345896
+    },
+    {
+      "Path": "System.Net.Security.dll",
+      "Sha256": "C957641BE9192E7812F209E2120E56A71DA0D99B1A8443CA5F7947F38EA4376D",
+      "Bytes": 669520
+    },
+    {
+      "Path": "System.Net.ServicePoint.dll",
+      "Sha256": "8969D0EA32B01B7198030AFE6258D85A3021655B4F7E2291CB5521BBA1F7E29F",
+      "Bytes": 46888
+    },
+    {
+      "Path": "System.Net.Sockets.dll",
+      "Sha256": "49E95C5A59172D80941992016EB35C965D8FB4BC05B745F85E793B6C010BDC6B",
+      "Bytes": 546600
+    },
+    {
+      "Path": "System.Net.WebClient.dll",
+      "Sha256": "2C8AD06A15AEE44E700CBFF2BDF1DA0000FCAA4E8BA5524E9DB1B07C3ADD099E",
+      "Bytes": 169768
+    },
+    {
+      "Path": "System.Net.WebHeaderCollection.dll",
+      "Sha256": "8DB64DD40A80422673F81EC67EE9DF921795B0579E5BA6CEF09BFFCE7FEF1294",
+      "Bytes": 67368
+    },
+    {
+      "Path": "System.Net.WebProxy.dll",
+      "Sha256": "CFD65E84A782DB8180C9BB3BF6EB739F250901E1006D941D66F08D6B6EDB0B0E",
+      "Bytes": 42792
+    },
+    {
+      "Path": "System.Net.WebSockets.Client.dll",
+      "Sha256": "41836162542928AD88AC7A0176CBDC753F63DA986D668688F7FB049B2EF0AEE9",
+      "Bytes": 100136
+    },
+    {
+      "Path": "System.Net.WebSockets.dll",
+      "Sha256": "1250D5F182A8C3655A81B1E11955D904FD147D7F770191DE4004619247178629",
+      "Bytes": 190288
+    },
+    {
+      "Path": "System.Numerics.dll",
+      "Sha256": "ADB2DDA9BBFC24D694B77E1700F2DF0706FF077DE8F40DD09ABABC92459F2E2B",
+      "Bytes": 15184
+    },
+    {
+      "Path": "System.Numerics.Vectors.dll",
+      "Sha256": "6E45388834E11D4A8E460F97DA371D6889CDF98D7B65B300079C2F2B69EA3FAF",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.ObjectModel.dll",
+      "Sha256": "35187A8D7F9DC8896894D1A0A496FBABCD567F2AC0F047632F7178C308FF72F5",
+      "Bytes": 79656
+    },
+    {
+      "Path": "System.Private.CoreLib.dll",
+      "Sha256": "99B168B84597A4F31FDA8281EFCE7D42A14E2DF0F4694194735E049DBC0F6418",
+      "Bytes": 13174608
+    },
+    {
+      "Path": "System.Private.DataContractSerialization.dll",
+      "Sha256": "F3D2ACD4D5ADEABB40991CD1C757D05640B64CDD89F59874CFFE7BBD6ED38B97",
+      "Bytes": 2082600
+    },
+    {
+      "Path": "System.Private.Uri.dll",
+      "Sha256": "F2A695DCD4073EABA43B4EE26F006C0174BFF42673E17B38914450CA7D2547F5",
+      "Bytes": 259920
+    },
+    {
+      "Path": "System.Private.Xml.dll",
+      "Sha256": "F7285C6A22E221784F1D81F884283E9DCD02AA7BFD17C428943D29E00170D749",
+      "Bytes": 7997264
+    },
+    {
+      "Path": "System.Private.Xml.Linq.dll",
+      "Sha256": "5DE081135173DD027BDC3F6285BEAA31D184CFF8D217D681D405E038D1819721",
+      "Bytes": 403240
+    },
+    {
+      "Path": "System.Reflection.DispatchProxy.dll",
+      "Sha256": "2F926A9F911D11B98C71E67B7E91F883C58B3B095794A8AC69A5CDBFD37C60C4",
+      "Bytes": 75560
+    },
+    {
+      "Path": "System.Reflection.dll",
+      "Sha256": "558837B6BCAF55FDBB3E7D8F565F0C04D9B415823D0ABE382AC31643DB3639DE",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.Reflection.Emit.dll",
+      "Sha256": "51742F48054D452DE444DA58D4AC69B879A23BBC8841B4B08FC337745D50CB07",
+      "Bytes": 128808
+    },
+    {
+      "Path": "System.Reflection.Emit.ILGeneration.dll",
+      "Sha256": "ED892838C6ED6649AB57A436128845EC195329CDF568C99D9CB8E6F4B92C7A01",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Reflection.Emit.Lightweight.dll",
+      "Sha256": "39CF409E3B41B813C9E715EC4F38BC02748499D62E89F71FD8F4DAD6EBBA80BB",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Reflection.Extensions.dll",
+      "Sha256": "3ADAAF6F0DCD0208AB0282A774801486444AF53118015AC12E0C6F8623D3F3CE",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Reflection.Metadata.dll",
+      "Sha256": "1795022B24DDF1E4DB47F63035B685F2A9F3E4468FB277158BB909D3B6EC00A0",
+      "Bytes": 1115944
+    },
+    {
+      "Path": "System.Reflection.Primitives.dll",
+      "Sha256": "B15B177125F391D1CAEE193167CAFFBEC4AC2586447F822AC655ACE9A6BDFF41",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Reflection.TypeExtensions.dll",
+      "Sha256": "191C401D245FBBE8D6E0105A53DB610122871168E21AC849BE6FBC86BB786048",
+      "Bytes": 42792
+    },
+    {
+      "Path": "System.Resources.Reader.dll",
+      "Sha256": "34B31E5093FF2564FCCDE4B43C31330BC4CBC6CF24C38CB929D34F1FFB46D0FB",
+      "Bytes": 15184
+    },
+    {
+      "Path": "System.Resources.ResourceManager.dll",
+      "Sha256": "D0DB07A7E954EDBEF7D586907574068EA2764E28ACB7F5A64FD6006EE8889D93",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Resources.Writer.dll",
+      "Sha256": "A09C234E643B0391367F975241592002270EB9BD5516F0D75B31F82BE6426DD6",
+      "Bytes": 50984
+    },
+    {
+      "Path": "System.Runtime.Caching.dll",
+      "Sha256": "2CA88A05EA536C3B9507F52378AAA69B2E67DD3C4DAD2FA36426245818F6CC77",
+      "Bytes": 91240
+    },
+    {
+      "Path": "System.Runtime.CompilerServices.Unsafe.dll",
+      "Sha256": "69EDF8CB4BFE291FF998F2AB0CEA2F3B7F32664C53E9B9171A35F0664FC047CF",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Runtime.CompilerServices.VisualC.dll",
+      "Sha256": "B0216C72F28E06BF4EE3C7561B5C483224847E5F40DF6D939D2AFBE731E2CFD2",
+      "Bytes": 30544
+    },
+    {
+      "Path": "System.Runtime.dll",
+      "Sha256": "E8FB5B78DC75B0650520042936FCA2165A060CB4AFA4B8CCE90524C9C9FC3563",
+      "Bytes": 43304
+    },
+    {
+      "Path": "System.Runtime.Extensions.dll",
+      "Sha256": "7E7A6460090CF9170B336CA12511EA8D793C281A79CCFF9F96DB88DB74B97FF6",
+      "Bytes": 17704
+    },
+    {
+      "Path": "System.Runtime.Handles.dll",
+      "Sha256": "9B193371A3E739F81E601E343C60D6214E0B3966833F4EAEBDCFB49F8217E97F",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Runtime.InteropServices.dll",
+      "Sha256": "1930AEA4D91654A4DAF13BF95B2DAFF023D3104A9B3794059EA139E550BCFB5F",
+      "Bytes": 96080
+    },
+    {
+      "Path": "System.Runtime.InteropServices.JavaScript.dll",
+      "Sha256": "7CEFE89E6502602A7E0256960F5F587046016CDB9B822A104E0BF961178DCF2A",
+      "Bytes": 50984
+    },
+    {
+      "Path": "System.Runtime.InteropServices.RuntimeInformation.dll",
+      "Sha256": "C7FDCD989C4732AF5D8C5C00A5CE68D48FA6F500DEE37AA3FD716FB260B01338",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Runtime.Intrinsics.dll",
+      "Sha256": "8679A62575619CAA282D3FB1A1EAD4680417B0384FFED8B73A2C4F7DC102C32B",
+      "Bytes": 16720
+    },
+    {
+      "Path": "System.Runtime.Loader.dll",
+      "Sha256": "64AC3644E7FD9279B5410E9C8D31DF01F763B4A362E626E6DD96416A9F6755B3",
+      "Bytes": 15696
+    },
+    {
+      "Path": "System.Runtime.Numerics.dll",
+      "Sha256": "D845C2A3D8EDC282D5C32FD8020C2233FBEED3EB02B5064AB8637506049CFB70",
+      "Bytes": 329552
+    },
+    {
+      "Path": "System.Runtime.Serialization.dll",
+      "Sha256": "A4A2CD5A396A851E444C5E6AB82C6353A1D83906B65968A15CD8D57540B4F9C3",
+      "Bytes": 16680
+    },
+    {
+      "Path": "System.Runtime.Serialization.Formatters.dll",
+      "Sha256": "10C352DBA07E5DE49FE362EDD9D8A44CFC60CD0136A48EB1A5104DA30D2333E5",
+      "Bytes": 309032
+    },
+    {
+      "Path": "System.Runtime.Serialization.Json.dll",
+      "Sha256": "70D7013DCD8AA116954F6EFB1643C4DB01927F75E362C5807F795E443D1EAA9A",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Runtime.Serialization.Primitives.dll",
+      "Sha256": "65B4FDCA2B36D551FA88C1CB8D7646EF9F29097B96487AB08FCF31F5DC9AFE86",
+      "Bytes": 38736
+    },
+    {
+      "Path": "System.Runtime.Serialization.Xml.dll",
+      "Sha256": "875EF1FE60647F5BB00A756AD9E7BB0C4A579D35ACEAD8386F27F8C7479AE5E0",
+      "Bytes": 16680
+    },
+    {
+      "Path": "System.Security.AccessControl.dll",
+      "Sha256": "149888FD2B8F15B37BA115E2BB3C0577C8DB9AED6F91221902AD6C9A61A69A49",
+      "Bytes": 231248
+    },
+    {
+      "Path": "System.Security.Claims.dll",
+      "Sha256": "45171F0AD174047CBF511E7761D7ABB2D44988E899F690C36FF3C5BCFBCB2467",
+      "Bytes": 100176
+    },
+    {
+      "Path": "System.Security.Cryptography.Algorithms.dll",
+      "Sha256": "E1BDF2D837D0C8C582B1F98992511421C3E5130B42603F868EF0B5C8C2609F92",
+      "Bytes": 17192
+    },
+    {
+      "Path": "System.Security.Cryptography.Cng.dll",
+      "Sha256": "7B6DEB57BD6A2F0123527F04BE5CCCA9A8B30F4F09A97E6F32519B651496A7F6",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.Security.Cryptography.Csp.dll",
+      "Sha256": "8689E9D5EA215C4E92D8229DA7DBC3FABEE8997083876FED1927C4D643AEF3F9",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Security.Cryptography.dll",
+      "Sha256": "1E4C4CE04A46E2A2DA8221BF583EBD4F6B5149D4B32792CACC5C33978D0BB121",
+      "Bytes": 2049872
+    },
+    {
+      "Path": "System.Security.Cryptography.Encoding.dll",
+      "Sha256": "BAD69FAE75CC6EA5C8CF0A953489B323857A3C8CBA80418F09E98535380A6B8D",
+      "Bytes": 15696
+    },
+    {
+      "Path": "System.Security.Cryptography.OpenSsl.dll",
+      "Sha256": "5D580C0CAFC4492DAC0C4FA11AE46DD1309835AB12671B326F0B74428539D4B5",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Security.Cryptography.Pkcs.dll",
+      "Sha256": "ECE5DF5267640F3A5CF3521F219F43B7EE13FFBF9FD48279D67207ADADA9E741",
+      "Bytes": 771880
+    },
+    {
+      "Path": "System.Security.Cryptography.Primitives.dll",
+      "Sha256": "A214418A0B70A48772E274CCDA284D3CFC2392ABF4ABA55718C70324FB78A239",
+      "Bytes": 15696
+    },
+    {
+      "Path": "System.Security.Cryptography.ProtectedData.dll",
+      "Sha256": "5E04D6CFF3B6FE9706908970CD594861F0C08B3824F7827B2331B5F4FCEE1BD1",
+      "Bytes": 36616
+    },
+    {
+      "Path": "System.Security.Cryptography.X509Certificates.dll",
+      "Sha256": "07643C4B239DD2A9326C0A62491995BE666A47D2C85D0455CA7379A1692FA284",
+      "Bytes": 16680
+    },
+    {
+      "Path": "System.Security.Cryptography.Xml.dll",
+      "Sha256": "98DBBC1CDE6E3996AADC4E691EE4F191287E2D52661D7C803CA58C82A8DAA003",
+      "Bytes": 464680
+    },
+    {
+      "Path": "System.Security.dll",
+      "Sha256": "EDE7D28DE4BFEC4192915FB98B35F8979ED1E4A20A7333A7D2AEA45E733A9495",
+      "Bytes": 18256
+    },
+    {
+      "Path": "System.Security.Permissions.dll",
+      "Sha256": "62068C0F6BFFB0EB4EC1C6A45A16784CAEE7565F6C5404D8342089F4FF4B3712",
+      "Bytes": 104048
+    },
+    {
+      "Path": "System.Security.Principal.dll",
+      "Sha256": "AEE0A10EDCF634876126B0DE882D01F432DE3EB7CBFCA0565E330EFE336D6DC0",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Security.Principal.Windows.dll",
+      "Sha256": "AACE487981F8C9077620ABF9C9D236CE5EF98241CF4222FBB49C717286F2CD0F",
+      "Bytes": 186152
+    },
+    {
+      "Path": "System.Security.SecureString.dll",
+      "Sha256": "A8C666CCE29278836FEE40D1058EBB55B56631056A26117176FCE6ADB793187F",
+      "Bytes": 15184
+    },
+    {
+      "Path": "System.ServiceModel.Web.dll",
+      "Sha256": "059D12D427D2CF95F90F5CA817C30D12D504DB13A031CF5DCE53BAFCEACD3800",
+      "Bytes": 16720
+    },
+    {
+      "Path": "System.ServiceProcess.dll",
+      "Sha256": "41A80E894C84CC938193A95A0C37FC0D3351D3B090E4FC2FE903CC384D55AF2A",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.ServiceProcess.ServiceController.dll",
+      "Sha256": "087FFD8EA723D88AB278D68A1E20B1CB513FE3C2A53356308E58E3B91601A283",
+      "Bytes": 87728
+    },
+    {
+      "Path": "System.Text.Encoding.CodePages.dll",
+      "Sha256": "A597E456AC579A3814D4C11CD649CB188DF0D4DC27FF9AE59E36664CCA0927A9",
+      "Bytes": 861992
+    },
+    {
+      "Path": "System.Text.Encoding.dll",
+      "Sha256": "C0DDA0DA1AEADBA8A3BAA8D4704C5E4D9DADC715F72FA11C6A25899A5FA6A35B",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Text.Encoding.Extensions.dll",
+      "Sha256": "9AD4679A4005EADC13AF6AE025534F22648DED33AB7C1A796C70C8813EE51977",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Text.Encodings.Web.dll",
+      "Sha256": "94AFAD93DFDD00E132467753615BFB4BC3FA6633701082A9553D6CB4EACCF2AC",
+      "Bytes": 132904
+    },
+    {
+      "Path": "System.Text.Json.dll",
+      "Sha256": "9CF2E2AE44376DBEA191925E571AF703C6D7B53A5C138A0F0F13CD6B8AF2C904",
+      "Bytes": 1501008
+    },
+    {
+      "Path": "System.Text.RegularExpressions.dll",
+      "Sha256": "8B3AF9E3E0215B46C2DCEF1F11C4CDC7AD477140883BCB5C778D04CC051BB0DC",
+      "Bytes": 1021736
+    },
+    {
+      "Path": "System.Threading.Channels.dll",
+      "Sha256": "AB05F710069580165C588789E0623E84D213C35594E3E12AE762A6C8265740B6",
+      "Bytes": 132944
+    },
+    {
+      "Path": "System.Threading.dll",
+      "Sha256": "435C110B598D30F118D0E673068B535B693C5A77FAE17398AD46821CE1261ABA",
+      "Bytes": 83752
+    },
+    {
+      "Path": "System.Threading.Overlapped.dll",
+      "Sha256": "739BFB326810706F497DF3B66901E5657B9835AD945FDC6728A27BF932CBAFAA",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Threading.RateLimiting.dll",
+      "Sha256": "ED07626A0D984469ADF0E67BDBFC89668F96829A78C6CC6805AEA9E1DF0F0C53",
+      "Bytes": 165672
+    },
+    {
+      "Path": "System.Threading.Tasks.Dataflow.dll",
+      "Sha256": "39DEF3E572CF7E4BBF11F6565B0A25DB2540D8041C2950E48029E24C14E06342",
+      "Bytes": 489256
+    },
+    {
+      "Path": "System.Threading.Tasks.dll",
+      "Sha256": "D965E3057DCA46B1E8D56012E623A4772AB5AB009231450FDB0F4D2F3875C374",
+      "Bytes": 16680
+    },
+    {
+      "Path": "System.Threading.Tasks.Extensions.dll",
+      "Sha256": "336E8D8F0E79BFFF0C6C38D4A7677384B7951FF66394664BF4FB866ED0BBA982",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Threading.Tasks.Parallel.dll",
+      "Sha256": "08FFB9101534E1644C203427BD22B3BEECAAB021F4CE40F4B162B898E2FA66F7",
+      "Bytes": 132904
+    },
+    {
+      "Path": "System.Threading.Thread.dll",
+      "Sha256": "34ED4D7D03BF9A5A5DF7ADDC37A5B75759956FC0D949E25DF61D878238BC560A",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Threading.ThreadPool.dll",
+      "Sha256": "5758D73199750AF708EDCA8456EED908B0BFDAACCD7CB2083A6C95DAD4006FDB",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Threading.Timer.dll",
+      "Sha256": "39E1B46A16BA5D4A4D7687DCDA0B8838E45198544417D227C7F174C8E15DF56D",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Transactions.dll",
+      "Sha256": "2203532BF5483E00686B4F26610A6B9070E59DA55F5218D4294C2C069C6FDFB9",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.Transactions.Local.dll",
+      "Sha256": "5428F4BCAE83612694E1BEC71849FFFFE7EF34F62AA46DAF3F01250ADB019BD8",
+      "Bytes": 661328
+    },
+    {
+      "Path": "System.ValueTuple.dll",
+      "Sha256": "2079AD867339BD4E2DC4D0E1C9250D9F78E4016DA472C25FEF3C78756244AC5B",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Web.dll",
+      "Sha256": "FC90F7D949615646B8D5AF798CFB2BD37FBFE21B1C790B6A2E049BEA36758E2D",
+      "Bytes": 15144
+    },
+    {
+      "Path": "System.Web.HttpUtility.dll",
+      "Sha256": "351125823B848B8CD9E2541B1E0F13ADD351B6DD3C34A6ACB8C243565E5C6251",
+      "Bytes": 59216
+    },
+    {
+      "Path": "System.Windows.dll",
+      "Sha256": "113A298C5E1887F9CC2371376E6AEADF631958C1C255EBAC18282DA7829D3C49",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Windows.Extensions.dll",
+      "Sha256": "E72863F75A5ADB5697158F16B00369AD3A95710235647626675A5C070F10ECD9",
+      "Bytes": 43112
+    },
+    {
+      "Path": "System.Xml.dll",
+      "Sha256": "0D13174940CBD34CCDB350B2F33037CFF214420850CBF5755D9C407BA8A42407",
+      "Bytes": 23376
+    },
+    {
+      "Path": "System.Xml.Linq.dll",
+      "Sha256": "64CAB6D274DE20FB8EC0D080B96091E85AF0DDFC9619869169E8C41D5C1B02C0",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Xml.ReaderWriter.dll",
+      "Sha256": "7CBF62BEA50B44B1350FC241281B8C5BF1373CB9AD03304B10F5B0D4805EDB47",
+      "Bytes": 21800
+    },
+    {
+      "Path": "System.Xml.Serialization.dll",
+      "Sha256": "7823BBFDCB819BD585488ADEB6612CAB2357DC2DF5E4A85E0F2A02079C2EC736",
+      "Bytes": 16168
+    },
+    {
+      "Path": "System.Xml.XDocument.dll",
+      "Sha256": "E5A4EF2A7F8C927DC5C587EEB4B5BF1A7264A89825C3D7313082447D3446A11B",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Xml.XmlDocument.dll",
+      "Sha256": "48781BEA76DDCE3732F316BCC01BB375910B18B4D83DE62B6570835E09DAB363",
+      "Bytes": 15656
+    },
+    {
+      "Path": "System.Xml.XmlSerializer.dll",
+      "Sha256": "EA1EB8DA8A46BAFE8EE7A8628900E5C4A3FE23CABC7D63D5BE5EB5EDD3FB76FB",
+      "Bytes": 17744
+    },
+    {
+      "Path": "System.Xml.XPath.dll",
+      "Sha256": "CD0B232B8B161A4167B77387885B13E6BF938DFCE4ADDFD68A646FA2E5471FCF",
+      "Bytes": 15696
+    },
+    {
+      "Path": "System.Xml.XPath.XDocument.dll",
+      "Sha256": "01F4F51C85B1533EEF9EF35FCEC4C281565E661A415F7CB10422C3840C5973F7",
+      "Bytes": 30544
+    },
+    {
+      "Path": "web.config",
+      "Sha256": "83AD3D7149E1EF25019AC2D9E43AA149D6C69026399736838E38240554CF0FEA",
+      "Bytes": 825
+    },
+    {
+      "Path": "WindowsBase.dll",
+      "Sha256": "D2B82FD6347B45B6BC3FF23C60D215A8431906D25B68BF84A2FF6A0B2C46AE9E",
+      "Bytes": 16208
+    },
+    {
+      "Path": "ar\\GMS.Application.resources.dll",
+      "Sha256": "24F324AB0901AFE472E3C262F1AF683183837EC2DAA4A4F22C2FF91FAA4A6569",
+      "Bytes": 4096
+    },
+    {
+      "Path": "en\\GMS.Application.resources.dll",
+      "Sha256": "395AE7FA88374D38ECCD35460413869B71DF4EF15B6027F3D34C7D74715F0AEE",
+      "Bytes": 4096
+    },
+    {
+      "Path": "install-scripts\\Enable-LanAccess.ps1",
+      "Sha256": "58CD0EF4370A152DFE44AF0A74C3E857BF2CAD5439BC32EC38C71F70A211750F",
+      "Bytes": 3824
+    },
+    {
+      "Path": "install-scripts\\install-service.ps1",
+      "Sha256": "A5AEC71C47D3D8FBDAEB1D701002B75D2E29207B7B70B5331D349CDBB48199FF",
+      "Bytes": 7509
+    },
+    {
+      "Path": "install-scripts\\Set-LicenseServerUrl.ps1",
+      "Sha256": "19B66B6C3B57A540426E92B3A54856092500C359E0D04CFEB4A52E0FF70E7978",
+      "Bytes": 2354
+    },
+    {
+      "Path": "install-scripts\\Test-HyMotionClientAccess.ps1",
+      "Sha256": "A82E8793D8104A26346B011016A6F6C7159A4A53DE8172E8B5E0DA0EBF38718D",
+      "Bytes": 1576
+    },
+    {
+      "Path": "install-scripts\\Test-LanReadiness.ps1",
+      "Sha256": "581B91894EB91DF7944CC6456F6E73D5F640BF4326FB34612E33F7AC318CF7DF",
+      "Bytes": 6027
+    },
+    {
+      "Path": "install-scripts\\Test-SqlServerAvailability.ps1",
+      "Sha256": "0A2AF5F27EF084406D1F0EA3B52BECE72799B0D5F2ADCD944629F65C13F9B3CF",
+      "Bytes": 16297
+    },
+    {
+      "Path": "install-scripts\\uninstall-service.ps1",
+      "Sha256": "2D8A3D0906FE05D435CAEC2552595163666353CA2B38ECF36DBB92E01A2B92B2",
+      "Bytes": 4277
+    },
+    {
+      "Path": "install-scripts\\backup\\Backup-HyMotion.ps1",
+      "Sha256": "40F5F2FB6A4441FA33EBC86176F1A9A285161317BF99090B95B5215E0B56332B",
+      "Bytes": 13133
+    },
+    {
+      "Path": "install-scripts\\backup\\BackupCommon.ps1",
+      "Sha256": "194A44FF0CC36D04242678766F59E394A621BB303A2FBF36AE8A111B49024C8E",
+      "Bytes": 17381
+    },
+    {
+      "Path": "install-scripts\\backup\\Register-BackupTask.ps1",
+      "Sha256": "BDB93F9CDE065038BFE7FE7D7CE7FEBEBCF4467FAB040EF4E93D2BD92339E866",
+      "Bytes": 8052
+    },
+    {
+      "Path": "install-scripts\\backup\\Restore-HyMotion.ps1",
+      "Sha256": "5EA973022688DD662859E8060B64745B5A9D72575B2FF0F458F0015993DDCE38",
+      "Bytes": 13551
+    },
+    {
+      "Path": "LatoFont\\Lato-Black.ttf",
+      "Sha256": "808C62839C62DBCE7DE689AF7603666FC7F8B81E0DF537D8A5212C87580D4337",
+      "Bytes": 664748
+    },
+    {
+      "Path": "LatoFont\\Lato-BlackItalic.ttf",
+      "Sha256": "3214F75BF96783A571BD25338C867C669E7C5E7C08A227F18A7B63766D6E6CBE",
+      "Bytes": 698264
+    },
+    {
+      "Path": "LatoFont\\Lato-Bold.ttf",
+      "Sha256": "8A0AACE75D33794EECE4B28187BFC1DF0BBD2888B5D8A56E01788C8D65D16BE1",
+      "Bytes": 656544
+    },
+    {
+      "Path": "LatoFont\\Lato-BoldItalic.ttf",
+      "Sha256": "62C1B7F0D2E74B45960154C3520EFC337B553DB0961BFDC950D5618334596CC8",
+      "Bytes": 698364
+    },
+    {
+      "Path": "LatoFont\\Lato-ExtraBold.ttf",
+      "Sha256": "61018DE62BDAF90D4AC80B1D53C5C130756C8E9219AEA3D2773FC9BD5869AF97",
+      "Bytes": 613920
+    },
+    {
+      "Path": "LatoFont\\Lato-ExtraBoldItalic.ttf",
+      "Sha256": "A42B384B9C37913A61023E3A47C07FEAD26E776127BBC9E6A0C96FE413089374",
+      "Bytes": 671876
+    },
+    {
+      "Path": "LatoFont\\Lato-ExtraLight.ttf",
+      "Sha256": "989989B481DB5DF0827D90C51FD08D024FE7BC4E367046E2584A0D3B0487936D",
+      "Bytes": 626624
+    },
+    {
+      "Path": "LatoFont\\Lato-ExtraLightItalic.ttf",
+      "Sha256": "FC56526250B9B64CE0908C52350B03E91B84AFECB08FD2834A12E57B91ABDB31",
+      "Bytes": 653640
+    },
+    {
+      "Path": "LatoFont\\Lato-Italic.ttf",
+      "Sha256": "E399C44EFE1387100531D26C7E4800C5D12251B890D6654A3098C7C679CB1786",
+      "Bytes": 722900
+    },
+    {
+      "Path": "LatoFont\\Lato-Light.ttf",
+      "Sha256": "CF2A774503BAF418D584F49967BD160E1E03F087C13B25602F28024EC7788F08",
+      "Bytes": 643884
+    },
+    {
+      "Path": "LatoFont\\Lato-LightItalic.ttf",
+      "Sha256": "700E6722FD14A10E7646347A6B14C486D4C364A373BA61C70E0B5CCEE7811635",
+      "Bytes": 657552
+    },
+    {
+      "Path": "LatoFont\\Lato-Medium.ttf",
+      "Sha256": "D3AC182A6833E005745DD75679FBAD081C0B12535DF4E93AD8ED57817A31A338",
+      "Bytes": 636396
+    },
+    {
+      "Path": "LatoFont\\Lato-MediumItalic.ttf",
+      "Sha256": "ECBCE6CFFA42D8A67AFEB27A9D6E85D515E81481D4B2CECE989E833A48048405",
+      "Bytes": 694924
+    },
+    {
+      "Path": "LatoFont\\Lato-Regular.ttf",
+      "Sha256": "D636E4683231F931EDA222D588E944D082BFD3BDBA02F928BEE461C0F185B251",
+      "Bytes": 656568
+    },
+    {
+      "Path": "LatoFont\\Lato-SemiBold.ttf",
+      "Sha256": "71B8B7DECBE75A881ED267BE539D402BD1E9420B799658AADA4E0D1BD5AF803C",
+      "Bytes": 668548
+    },
+    {
+      "Path": "LatoFont\\Lato-SemiBoldItalic.ttf",
+      "Sha256": "5ADEB6B334D8FB99EF053BC052B952773D544315E0E1D668A12C0CE8BD51375C",
+      "Bytes": 697364
+    },
+    {
+      "Path": "LatoFont\\Lato-Thin.ttf",
+      "Sha256": "663C55BFE9A38270FFF44DA273BF4D792EAFC3E7E1201F62C3064CAD80C5D5E7",
+      "Bytes": 584056
+    },
+    {
+      "Path": "LatoFont\\Lato-ThinItalic.ttf",
+      "Sha256": "E5E86E219CE6987B175470D94D57753A387D1860B635DA6327A60E8D19A33BEB",
+      "Bytes": 608716
+    },
+    {
+      "Path": "LatoFont\\OFL.txt",
+      "Sha256": "14B8609FD8281CB961730DE7D3B2964DCC6E0E395E759B1422E52E39A0FDC6B2",
+      "Bytes": 4500
+    },
+    {
+      "Path": "Localization\\AppMessages.ar.json",
+      "Sha256": "45AC1AEBEFA07B1A4821F59A4A70E105C96D3B8F4095891CB6B6721F08084901",
+      "Bytes": 695
+    },
+    {
+      "Path": "Localization\\AppMessages.en.json",
+      "Sha256": "9432177770A2F76E2B4A4BF19F7A36A68405F8847515CFD57E31AD85F8A18AE4",
+      "Bytes": 536
+    },
+    {
+      "Path": "wwwroot\\.gitignore",
+      "Sha256": "AAA8CB8713D4286FC9536F025F117738D3E2FC11C007498EBCC1DED63E3D9BC8",
+      "Bytes": 92
+    },
+    {
+      "Path": "wwwroot\\auth\\local-setup\\index.html",
+      "Sha256": "0F28CFB27687EE43EB4482CAEF6BE3C2E3735B3DDD46F5B2AB0EEAEB7383CE1D",
+      "Bytes": 65737
+    },
+    {
+      "Path": "wwwroot\\auth\\login\\index.html",
+      "Sha256": "9AAF391D5971A16DF03EB9492E541521B6C09C7FCE64FDBFC863E787757CBE1C",
+      "Bytes": 59950
+    },
+    {
+      "Path": "wwwroot\\auth\\member-otp\\index.html",
+      "Sha256": "EB6F7E81253682B3707183171E39368D15909F6C537F74FA9C9440A9E39216D4",
+      "Bytes": 4149
+    },
+    {
+      "Path": "wwwroot\\dashboard\\coming-soon.html",
+      "Sha256": "1BDEAE53AD45A272B2E43950C96CD12D06A081E91D1044C72A31AC82D980C64A",
+      "Bytes": 5649
+    },
+    {
+      "Path": "wwwroot\\dashboard\\dashboard-home.js",
+      "Sha256": "A2507A0D7B12F7379736E0676EA1A446CB0F4B92E5F3C359DA9F31E7D872A569",
+      "Bytes": 160359
+    },
+    {
+      "Path": "wwwroot\\dashboard\\dashboard-home.selftest.js",
+      "Sha256": "94699384C45EF0FF7822D2AF33BB01F4001556D892A8F2CB2B9BA5CBBEB24E86",
+      "Bytes": 5872
+    },
+    {
+      "Path": "wwwroot\\dashboard\\index.html",
+      "Sha256": "93797538EC2B49502DF59C63CD9477639854D6A5A12ECF9805F5FBE157E3E687",
+      "Bytes": 71327
+    },
+    {
+      "Path": "wwwroot\\dashboard\\access-cards\\access-cards-app.js",
+      "Sha256": "93C1B758AD86F9796DCDD99BAF838A14291016F46C1552CF3D13857FCB3910A1",
+      "Bytes": 20429
+    },
+    {
+      "Path": "wwwroot\\dashboard\\access-cards\\access-cards.css",
+      "Sha256": "D4F6E47E17B67F4015CC527EA7A9B479C03412269075C70C914D58C1D0F025A1",
+      "Bytes": 11581
+    },
+    {
+      "Path": "wwwroot\\dashboard\\access-cards\\access-cards.selftest.js",
+      "Sha256": "B55AA1E345BE48721444982311F734A9653416CEF4ED9D9E587B0FE34218776C",
+      "Bytes": 3851
+    },
+    {
+      "Path": "wwwroot\\dashboard\\access-cards\\index.html",
+      "Sha256": "516212E31208E7B7E6B41E03C505A50AEE91C2D5048575D62816F0823EF87742",
+      "Bytes": 8430
+    },
+    {
+      "Path": "wwwroot\\dashboard\\activities\\activities-app.js",
+      "Sha256": "4B621C751BF5034624B2D1A829F70027FE89CF79A890983849449D18B3585346",
+      "Bytes": 31106
+    },
+    {
+      "Path": "wwwroot\\dashboard\\activities\\activities.css",
+      "Sha256": "C92612BB61129B4E5E78C7BF35EFB42E29B993336A0352B46984EE3BEB36153B",
+      "Bytes": 15850
+    },
+    {
+      "Path": "wwwroot\\dashboard\\activities\\index.html",
+      "Sha256": "F1ECA1E0E1715E7BC50F0CEFD5C5B84D9A8AC0287B16BFFE8A8EDA6B38AE7E92",
+      "Bytes": 3710
+    },
+    {
+      "Path": "wwwroot\\dashboard\\attendance\\attendance-app.js",
+      "Sha256": "60ED6E9E49CB7A59F94B99C8C48D2E83812AA1A9315FDEB6CB8C05EA229B7E62",
+      "Bytes": 46680
+    },
+    {
+      "Path": "wwwroot\\dashboard\\attendance\\attendance.css",
+      "Sha256": "BCC17E553A6DA1B2A3BA480A58087015F3B701580BF50F38AF59D8AB8FB71D86",
+      "Bytes": 22905
+    },
+    {
+      "Path": "wwwroot\\dashboard\\attendance\\index.html",
+      "Sha256": "98875CDF16CEC915A23D52BCFDF5ACFC8F21E3F5C5F4AD41243665F7087BF83B",
+      "Bytes": 12252
+    },
+    {
+      "Path": "wwwroot\\dashboard\\audit\\audit-app.js",
+      "Sha256": "10395561E4C44227DE3627B7344221FAA179345732A1DB20573E7A1E5878CF69",
+      "Bytes": 28734
+    },
+    {
+      "Path": "wwwroot\\dashboard\\audit\\audit.css",
+      "Sha256": "D1435A1B57B45D18C549EB0BE3CA2AA64C4EC3D989F34A5648529F6A067FCD30",
+      "Bytes": 2501
+    },
+    {
+      "Path": "wwwroot\\dashboard\\audit\\index.html",
+      "Sha256": "A6B5665D9E227745913D0937B32FDE6C52946A2F8E3E60AA90056B4FBD7B65BE",
+      "Bytes": 7309
+    },
+    {
+      "Path": "wwwroot\\dashboard\\backup\\backup-app.js",
+      "Sha256": "EF9054F1EA1670D789E8CA4BBB081618CEAEEE1E652548AE015B4A99FFF10C6E",
+      "Bytes": 24293
+    },
+    {
+      "Path": "wwwroot\\dashboard\\backup\\backup.css",
+      "Sha256": "E3529B74BCD0B3BECFA973F01B333ED58F98C85BD33BAB610C029B16D0881971",
+      "Bytes": 6670
+    },
+    {
+      "Path": "wwwroot\\dashboard\\backup\\backup.selftest.js",
+      "Sha256": "145D92D5D5287E51EA806C200F99937F454C7936DF3F7FC8BC5A3EBC09881401",
+      "Bytes": 2372
+    },
+    {
+      "Path": "wwwroot\\dashboard\\backup\\index.html",
+      "Sha256": "F851967D36BDD94C6A072A7947ED52D9DC008E504049414C05DD5B6E8556D7E8",
+      "Bytes": 8866
+    },
+    {
+      "Path": "wwwroot\\dashboard\\call-sheet\\call-sheet-app.js",
+      "Sha256": "192EB5E1084FBCF18D2535ADBF038A736CA0A1C98BD0DC7C3C2423BA0477D050",
+      "Bytes": 27634
+    },
+    {
+      "Path": "wwwroot\\dashboard\\call-sheet\\call-sheet.css",
+      "Sha256": "6AE3385B83D12BF15743407456FD3D91A10F6F10E65DA5076848C3CED25EE870",
+      "Bytes": 9002
+    },
+    {
+      "Path": "wwwroot\\dashboard\\call-sheet\\index.html",
+      "Sha256": "AD5AF233933229C115C53A5319A9DCD3C2EA84E60C1F0A99C0E571CB2B164F23",
+      "Bytes": 11180
+    },
+    {
+      "Path": "wwwroot\\dashboard\\classes\\classes-app.js",
+      "Sha256": "26EB5DBAFECD7DBC3AEB446870128097FC4A8E280428D71140E0B5641C32AD67",
+      "Bytes": 67850
+    },
+    {
+      "Path": "wwwroot\\dashboard\\classes\\classes.css",
+      "Sha256": "B80BDE438ED26DFAAABACDB1FAFA532E9B231042CA114C64C922B0C47B156100",
+      "Bytes": 32119
+    },
+    {
+      "Path": "wwwroot\\dashboard\\classes\\classes.selftest.js",
+      "Sha256": "896EE4F2E76E4DB9F94392198AAEE8F80806996A249ACB1AE4E987D71E0BB0A5",
+      "Bytes": 2599
+    },
+    {
+      "Path": "wwwroot\\dashboard\\classes\\index.html",
+      "Sha256": "52D85A3F8E9564D9AB6424D06C3A0C82379FA54AD26B5957B94E13CFAE35A637",
+      "Bytes": 5624
+    },
+    {
+      "Path": "wwwroot\\dashboard\\debtors\\index.html",
+      "Sha256": "38807EF545BE3100F1C115925B101B60DCA0AC853C36B7F3B5570570CBBF6389",
+      "Bytes": 327
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\hr-ops-embed.js",
+      "Sha256": "97A73559B2B8AE76AE9189DBA1F745A16ECC422EB70160F3A1D2EC6D46A4E7FD",
+      "Bytes": 556
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\hr.css",
+      "Sha256": "E0BFD92562723EA22568B15CDAA22D379A83709F68545AAB7DD2B411077C9057",
+      "Bytes": 17267
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\attendance\\attendance-app.js",
+      "Sha256": "D4EB9762650DAF1488B7F8B97B176A0542CBE7A587A44633205E206E67D7C624",
+      "Bytes": 14329
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\attendance\\attendance.css",
+      "Sha256": "7627C20506B033114C72D42B468E1FFBE154C2465FB74D4D937C6D00A47EB776",
+      "Bytes": 636
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\attendance\\index.html",
+      "Sha256": "DF2CAE81F5FB976E2CE4BD1418632EBA8D6A77059927391A37C533085FEB63DF",
+      "Bytes": 6740
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\biometric-devices\\biometric-devices-app.js",
+      "Sha256": "06483CDC139BDDEBE0AEE98A2973E9F3F030D9B557FC5A37DFA48D1976EB0104",
+      "Bytes": 15348
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\biometric-devices\\biometric-devices.css",
+      "Sha256": "F41224C19A58D5256D5DC64DE5913751FBC5363ED90C83785DF8446FF22A969B",
+      "Bytes": 1201
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\biometric-devices\\index.html",
+      "Sha256": "BF0624771E72A1CB666A64CB916A43BA34C1774E6BDD9EC177D3CF716F243D19",
+      "Bytes": 9381
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\biometric-events\\biometric-events-app.js",
+      "Sha256": "7C156F8C2151F81D4E69B0F73896DD192169CC39D762813C5425145617CB8AC8",
+      "Bytes": 7609
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\biometric-events\\index.html",
+      "Sha256": "DFEEECCD7CA634AB43439351AECDE17C06354CDD929FF51164CCBBAD6A2D2AD9",
+      "Bytes": 4814
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\dashboard\\hr-dashboard-app.js",
+      "Sha256": "F90CF844C1FF02B1E50D1DBB78C922BBCCD3942701D3F2D21D3BF1AAE41ADE74",
+      "Bytes": 5708
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\dashboard\\hr-dashboard.css",
+      "Sha256": "24DBCA309642255142ACE2D09911A9E6CE6CD749BF6E5F596C87AE8406B2F7B1",
+      "Bytes": 703
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\dashboard\\index.html",
+      "Sha256": "830E998687F911AC5BCE5347AF56C79DBCA18EE343D6DA24DFC549DC46FB4752",
+      "Bytes": 2809
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\departments\\departments-app.js",
+      "Sha256": "0820E067F9C0ADD3AE0C1CD78542423915C3DD58C103735CA0789A7250A3CB4C",
+      "Bytes": 9696
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\departments\\departments.css",
+      "Sha256": "A839CCF8E0309BF81C5D840911127DB6F00F9C1798BA910E555F2E633C861EB7",
+      "Bytes": 26
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\departments\\index.html",
+      "Sha256": "CB3255647DF8CE2462E30C4F7741943D57F084EF663FDFB984755D47F3D7BC32",
+      "Bytes": 5915
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\documents\\documents-app.js",
+      "Sha256": "37D041125EC194947819F81C6A8D3EC6CB9E1536D52D8760704E636F3C65E75C",
+      "Bytes": 10763
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\documents\\documents.css",
+      "Sha256": "A839CCF8E0309BF81C5D840911127DB6F00F9C1798BA910E555F2E633C861EB7",
+      "Bytes": 26
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\documents\\index.html",
+      "Sha256": "983258AB1656640968AAB9CCE1411915E893E94616EB1A6A77113FC29796BF72",
+      "Bytes": 5967
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\employees\\employees-app.js",
+      "Sha256": "B9506935F46ADF78BD03022621191900F88C1AE94E3245D6FC9ECDACD7B6286D",
+      "Bytes": 102346
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\employees\\employees.css",
+      "Sha256": "8212C4C20B8F0AFF4EEB6DB9DE1CFE7EC3F1A222EE0080F170986D6D2FC1E65B",
+      "Bytes": 10074
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\employees\\index.html",
+      "Sha256": "B17F0BBAE77CD5A7ED31F0F67BEA1EA886FC06915959F6C2C21B399CAB957ACD",
+      "Bytes": 17488
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\leaves\\index.html",
+      "Sha256": "44DF6E31E7AEF1718EE640A68829846E0F5D982AEE3A6F93BDCC97643C77A215",
+      "Bytes": 8079
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\leaves\\leaves-app.js",
+      "Sha256": "8C9017B6FDC94D030E3950A6D5FF52D4F4EF96095A5F6F14D4AB03F3BA4A74BA",
+      "Bytes": 15474
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\leaves\\leaves.css",
+      "Sha256": "817CDB7D3182CE4B1F35E552B539B7952BBD6D074C9B25AAF383425E715052D8",
+      "Bytes": 474
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\payroll\\index.html",
+      "Sha256": "42E3630A74C8CB9D90FDF075EAF481C99E29194DB959D4418073A6386F2DC4E7",
+      "Bytes": 6506
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\payroll\\payroll-app.js",
+      "Sha256": "14CC39C88B96818EC7144A6271169331D386ED596A82F3A7B24DB8FF4D334571",
+      "Bytes": 14356
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\payroll\\payroll.css",
+      "Sha256": "A839CCF8E0309BF81C5D840911127DB6F00F9C1798BA910E555F2E633C861EB7",
+      "Bytes": 26
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\positions\\index.html",
+      "Sha256": "BFC3F299D498C057BDD682A42129A41A4520748B88F2D38F23C4CEBC12025381",
+      "Bytes": 5482
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\positions\\positions-app.js",
+      "Sha256": "D759D1E415D2B8AE95F44918FE296407977BBAE6E36B7D7B846CDAF69FC50FBC",
+      "Bytes": 9112
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\positions\\positions.css",
+      "Sha256": "A839CCF8E0309BF81C5D840911127DB6F00F9C1798BA910E555F2E633C861EB7",
+      "Bytes": 26
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\schedule\\index.html",
+      "Sha256": "E86EE2E9EAA4D10FC0B3A2054D2F46DC2DFA57D75B5E75D807C96836BC2FE3B2",
+      "Bytes": 7633
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\schedule\\schedule-app.js",
+      "Sha256": "A1265CF7BB1896DB22A04F5FB0A58F6AD06DBC646D82A22D28F0A8FB58B6D730",
+      "Bytes": 12037
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\schedule\\schedule.css",
+      "Sha256": "961FEA6EE82C462C817692A4EF4EC20035CC39EA2036F1BC505C1B15DCC8A2C4",
+      "Bytes": 1083
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\settings\\index.html",
+      "Sha256": "351263C80F44259120EA9C00B63E6F10B213588C0E522E92F79D7DF90DC33DBA",
+      "Bytes": 3934
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\settings\\settings-app.js",
+      "Sha256": "C8321B2DE48EE7C3501BF6B73A9B622FA66FA3E196391588893D9BDDCAE99F71",
+      "Bytes": 2225
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\settings\\settings.css",
+      "Sha256": "3AE70D9E699A1111E88EEB052D94E8BEA8BAC25744EDDA442F68EB3FDCD0940C",
+      "Bytes": 803
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\shifts\\index.html",
+      "Sha256": "EBE236AD8AEAE35E4195E1728066136F749C75B9B30A835B1935E180F7E8ECE1",
+      "Bytes": 6145
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\shifts\\shifts-app.js",
+      "Sha256": "CE640FF9359CA99D6BEB5D050808760B0D4FCABB8C2ED3A3F3D1405D337B32E7",
+      "Bytes": 8676
+    },
+    {
+      "Path": "wwwroot\\dashboard\\hr\\shifts\\shifts.css",
+      "Sha256": "A839CCF8E0309BF81C5D840911127DB6F00F9C1798BA910E555F2E633C861EB7",
+      "Bytes": 26
+    },
+    {
+      "Path": "wwwroot\\dashboard\\imports\\imports-app.js",
+      "Sha256": "901CB3C9CFADD1E7AB4DD536D06AB727C479C7EC38CACDEAB2BC2E52AA9FAE4B",
+      "Bytes": 27739
+    },
+    {
+      "Path": "wwwroot\\dashboard\\imports\\imports.css",
+      "Sha256": "3F5239CA4A5709C5EC6FD28377EA5BDD38C53B66C1CF0DFB9372B0040EA03AD7",
+      "Bytes": 2055
+    },
+    {
+      "Path": "wwwroot\\dashboard\\imports\\index.html",
+      "Sha256": "1CB7F9BC1E34F8DC4382B2CDA26A2C8A6929403A2E4A5EF2D084A99EDC24C436",
+      "Bytes": 14682
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\index.html",
+      "Sha256": "0B4E7FEFC23CCC145BEBC025F17E2036A735D17099D059CEEDE19CA6D7A33BCF",
+      "Bytes": 8079
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\inventory-home-app.js",
+      "Sha256": "640BE397E960944FB11D8CAF848A8F495F0D936578127C0C70389397FD1DF115",
+      "Bytes": 18522
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\inventory-home.css",
+      "Sha256": "EEF21165D6D3BFE95A5AAC7AE92B8ACB26A5BF7FC6D03C2549DE01EAF0520528",
+      "Bytes": 9901
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\inventory-stub.css",
+      "Sha256": "E709FF1C09EFD5CD25080554704F6632DACFF4C5FF0D2DF5A85C9A589D71F411",
+      "Bytes": 1168
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\inventory-stub.js",
+      "Sha256": "416BD24CF8709308F01B1BF97C5C0F46F9CF038F798FE0B09A06C6608349E612",
+      "Bytes": 2240
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock-ops-embed.js",
+      "Sha256": "845513D13953680C6AD5CCA77942B31FC52AE746C3EF20C0186E497AC877A655",
+      "Bytes": 1606
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock-ops-shared.css",
+      "Sha256": "E05FB6372CC1FD82D2A36F2C0E1375B1FACCD2ACA9D74074770CF17675582759",
+      "Bytes": 1407
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\adjustments\\adjustments-app.js",
+      "Sha256": "A3F0005C82EBBAD1AAFC9DD690E1CB5719C016180B4C27452CA831BCFFB3B203",
+      "Bytes": 20075
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\adjustments\\adjustments.css",
+      "Sha256": "5F24742CBB721A3120E1893AAFE00FEC837B77AD2EE2EB45EC1A808839CDE1F1",
+      "Bytes": 6079
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\adjustments\\index.html",
+      "Sha256": "A56482CB559A0B0E7AA61866A9F56A7F881751A45CBF5AA509B91CA9CF1EE654",
+      "Bytes": 5622
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\counts\\counts-app.js",
+      "Sha256": "8E901EAD0E26EA2808EF96E7B7D2A85E9650385F1E97D8803807CE4F353D0B55",
+      "Bytes": 14491
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\counts\\counts.css",
+      "Sha256": "7D3C1EFD23B7C109DC61D461DAD8474C832558D18300E3541900C8B62BCAF827",
+      "Bytes": 1564
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\counts\\index.html",
+      "Sha256": "323E6B56AF314450E56A96C9C9335F9E9A419A11B965D3AE4FB288F3A3492528",
+      "Bytes": 5115
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\products\\index.html",
+      "Sha256": "45C9F0416CE0ED3F9FF56C31385C23F2A5A030CC45979C9C15B8EC2AB273237C",
+      "Bytes": 24559
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\products\\products-app.js",
+      "Sha256": "9A43A02EB35A75827BC24992C1D71DADFB0D2D310AEF65B93185B22E35EE2DD3",
+      "Bytes": 88853
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\products\\products.css",
+      "Sha256": "6E296439CF24FA2EAEDABE4F7B80C85E580C0B30D735DCF0B507262317E4F2FC",
+      "Bytes": 25671
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\purchase-orders\\index.html",
+      "Sha256": "8BDC9169CB8F711085D4D2B80729B9FB1BF93F6A805FE579535831EE879DAFFE",
+      "Bytes": 7816
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\purchase-orders\\purchase-orders-app.js",
+      "Sha256": "5A7DBF703F6F16AC414A567BA1B5F6C27907D8024C4BF0756A32D403FE671739",
+      "Bytes": 37975
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\purchase-orders\\purchase-orders.css",
+      "Sha256": "B28EBE865AA3C9DE9BD1D61DF433446BC016D975E9BC72FFA7D0FE0E17CF2B3E",
+      "Bytes": 3001
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\reports\\index.html",
+      "Sha256": "9B67C0214D246A226BCC552684F673814407140D0F594CDEFEC93C63D4486ABA",
+      "Bytes": 7511
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\reports\\reports-app.js",
+      "Sha256": "E898502DD938C09BAF802C46978D15F6DAF541F06D0DEE4369C9A8CA6BBDC8A1",
+      "Bytes": 19793
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\reports\\reports.css",
+      "Sha256": "17D08B34129EC0809CA21D0AED742A58EE6F3912AE3D729C4BF110370997870D",
+      "Bytes": 3384
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock\\index.html",
+      "Sha256": "70E3BD2DA0962541C4AA7816DB316765B9435C702F5958BDE1925533A5CD887B",
+      "Bytes": 5278
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock\\stock-app.js",
+      "Sha256": "5E09FEFAF8CFB6946236B4C5EF0BDA40C9708999750C702BED2A0208448BC40A",
+      "Bytes": 20231
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock\\stock.css",
+      "Sha256": "918E23D304F6AF7ECC2A8B175D272A5454AEF10D94C81405FE9EF662067778D6",
+      "Bytes": 7965
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock-management\\index.html",
+      "Sha256": "A3DE07F6207EC522215A7F0B1B748F90F500D42884F4FC88045559994F6FF083",
+      "Bytes": 3079
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock-management\\stock-management-app.js",
+      "Sha256": "5EB47F720C76AB42943B295FDDF1827601641DD30E1F9BE4C7A51756C5E08D75",
+      "Bytes": 5695
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\stock-management\\stock-management.css",
+      "Sha256": "DB5D16C06270B4F04E4BC985A09A5FF35EA6EA78A24518CD3613DC1A6F220663",
+      "Bytes": 4044
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\suppliers\\index.html",
+      "Sha256": "63B47E5AA55B98F4C1B0A7EDCD23C0EFDA9C8E349CE73949432FD2DF80EBB830",
+      "Bytes": 10319
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\suppliers\\suppliers-app.js",
+      "Sha256": "ADAFE1CCEE837633175A3F7D8D3356D45EC134033A6FBFCA3DA9FC9226D9ACFD",
+      "Bytes": 33777
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\suppliers\\suppliers.css",
+      "Sha256": "9FD8E143896D1A7986F270A61EB1B2572DB05E082CA95794EF58552E1EE9C219",
+      "Bytes": 6489
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\suppliers\\suppliers.selftest.js",
+      "Sha256": "A2380ED7551489E72ACF38EF75AFE0B67C11D4E9EE2F4DE5A6D22A10C7F27D33",
+      "Bytes": 1618
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\transfers\\index.html",
+      "Sha256": "B4CA06C5DF875AC61CC4D3C28D81F0624AAA43518280606DA1973022BBFBE69D",
+      "Bytes": 5374
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\transfers\\transfers-app.js",
+      "Sha256": "DDD70BF8A4F41CF367F42CAB4DB7852D9E969D12E53C0FF1811D4B74A1D9A122",
+      "Bytes": 15639
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\transfers\\transfers.css",
+      "Sha256": "08DCAEA19E8B8AE1740C108785A1E280C1FDACA142D6D7394A1FC895096AD100",
+      "Bytes": 1936
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\warehouses\\index.html",
+      "Sha256": "CCBA7568CFE94C270904C34A4D59C47E5CB1C49C4AAC08F90DAE92C1A06B098D",
+      "Bytes": 4373
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\warehouses\\warehouses-app.js",
+      "Sha256": "981C61B17D0F6791CB54537483B5DC63E62B44C68A924790A7FC96D5A3C7B03C",
+      "Bytes": 9566
+    },
+    {
+      "Path": "wwwroot\\dashboard\\inventory\\warehouses\\warehouses.css",
+      "Sha256": "54FDDDA98898C6420FE73896E3C57F71011FA2B0CC0F868801E08F5DE486607D",
+      "Bytes": 6364
+    },
+    {
+      "Path": "wwwroot\\dashboard\\invitations\\index.html",
+      "Sha256": "DE0039F7568E4B79F545DB3849475E42C38CD346928498FDD0A7F30BE6934A33",
+      "Bytes": 8792
+    },
+    {
+      "Path": "wwwroot\\dashboard\\invitations\\invitations-app.js",
+      "Sha256": "910E69FD4377159481B4D7DAF247A561AB0EDC1D3BAAE70D490BE82F87935024",
+      "Bytes": 15289
+    },
+    {
+      "Path": "wwwroot\\dashboard\\invitations\\invitations.css",
+      "Sha256": "D3774614B6206C049B62016BE9B1F30A4B211830B56BDD2D0CFB4FBD33CFAB67",
+      "Bytes": 3896
+    },
+    {
+      "Path": "wwwroot\\dashboard\\invoices\\index.html",
+      "Sha256": "F79CEC4035DC91750560E47FD92450B139EF2BCEABC92F85FA83107B2D7564B9",
+      "Bytes": 11358
+    },
+    {
+      "Path": "wwwroot\\dashboard\\invoices\\invoices-app.js",
+      "Sha256": "21B2D0EC4956DA781CEF656ADC853A1F7E1D085812C88A38366F326751A93E85",
+      "Bytes": 63561
+    },
+    {
+      "Path": "wwwroot\\dashboard\\invoices\\invoices.css",
+      "Sha256": "72560B945F7A3341C34D8A0966C1B06CC2F98B11C0103B3A4A9C7185F8442C33",
+      "Bytes": 17665
+    },
+    {
+      "Path": "wwwroot\\dashboard\\member-orders\\index.html",
+      "Sha256": "F283A4E6754544080B216860AE4A86200365715E88E44D7952B150F248C3C9D2",
+      "Bytes": 6606
+    },
+    {
+      "Path": "wwwroot\\dashboard\\member-orders\\member-orders-app.js",
+      "Sha256": "D55241C77266F0DEEFC0C03B99D0F25D52B9B26049F4E876BB8E2EF02F150DD3",
+      "Bytes": 28617
+    },
+    {
+      "Path": "wwwroot\\dashboard\\member-orders\\member-orders.css",
+      "Sha256": "671B0A215720D2767FE8CFE15E358E71A7CFBBDFA7122B2F55366F265F100F14",
+      "Bytes": 4696
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\index.html",
+      "Sha256": "A3ED569497B0E8C0DD1798F992E9FA93A9B5DBCCE9189A4FDC837ED5F2B6459C",
+      "Bytes": 44354
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\member-modals.css",
+      "Sha256": "407E84E501B2AD4951B2B79347B913AC3BE0370569BCCC91455C2A72867C708B",
+      "Bytes": 14473
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\member-modals.js",
+      "Sha256": "B2252A45495866962FBEC8F1697B3253C0FB46262FBD2611F7AEED9F255CF1A0",
+      "Bytes": 67424
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\members-app.js",
+      "Sha256": "057439D07027E929FDD6725814A808E30AF4AF1C01EEC0FBE51F4ED114E4391B",
+      "Bytes": 22120
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\members.css",
+      "Sha256": "E3A44363747A970FA6D6BDAA7C3E34A6E0A2AFADAEEA04EA604CCC12075D0067",
+      "Bytes": 11830
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\[id]\\index.html",
+      "Sha256": "FB9DE50CA31E81C7B64A128FA4EC022C5BD0307B70AB3C37C606CE9A5944A3D6",
+      "Bytes": 54979
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\[id]\\member-detail.css",
+      "Sha256": "D2409819265DEA6BECE89422F17CB972F45EB16E4AA5231B8BF57044354E420C",
+      "Bytes": 25062
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\[id]\\member-detail.js",
+      "Sha256": "BEC233879F7FA7424FCB76A484C8BDC09E5B6D7D25C0E47B9C48F4892E1A5F07",
+      "Bytes": 100135
+    },
+    {
+      "Path": "wwwroot\\dashboard\\members\\[id]\\member-detail.selftest.js",
+      "Sha256": "3ECBB80B32D008EDC1DA5128BEE9E3A54BB2C246351EA04C67D2AFB60FBE4C59",
+      "Bytes": 1843
+    },
+    {
+      "Path": "wwwroot\\dashboard\\memberships\\index.html",
+      "Sha256": "1D901523E30CB03C67BF441E2EEF3DB3B962D97DBB623BB5EBA8343CAEA70890",
+      "Bytes": 7656
+    },
+    {
+      "Path": "wwwroot\\dashboard\\memberships\\memberships-app.js",
+      "Sha256": "CB223C9502DC688B32918B8395F1D2E2A86F182F4C7B9A702E170CAB9E2D81DF",
+      "Bytes": 10649
+    },
+    {
+      "Path": "wwwroot\\dashboard\\memberships\\memberships-detail.js",
+      "Sha256": "CF1C6084DD702370E52442270C75B9D3498E051BBF4FD5EC002081E4C324D3F2",
+      "Bytes": 38690
+    },
+    {
+      "Path": "wwwroot\\dashboard\\memberships\\memberships-helpers.js",
+      "Sha256": "2BB90AC732BE325931A6A8B161D9ED769BF4073DD2FB60BB61EA51C7574BB016",
+      "Bytes": 9387
+    },
+    {
+      "Path": "wwwroot\\dashboard\\memberships\\memberships.css",
+      "Sha256": "B4A0B3099316402CEEAC3ED62BE7DEFE2C04EB530E886FAEFB2375C4EC0E8DFD",
+      "Bytes": 17835
+    },
+    {
+      "Path": "wwwroot\\dashboard\\notifications\\index.html",
+      "Sha256": "DB62CDE5F702CC9DB87C762359ABEEC223133122E8FBDAE9A854284D72C1DF7A",
+      "Bytes": 8945
+    },
+    {
+      "Path": "wwwroot\\dashboard\\notifications\\notifications-app.js",
+      "Sha256": "1892DF8B1F9EC383E83D2A5427EB2E32A3E3F17AB00CE3EF8375D16075E107F7",
+      "Bytes": 23217
+    },
+    {
+      "Path": "wwwroot\\dashboard\\notifications\\notifications.css",
+      "Sha256": "CC631869607B0E987BEF16847EC2166D770FCDB409F1F1DC6D2DF420932B8460",
+      "Bytes": 20356
+    },
+    {
+      "Path": "wwwroot\\dashboard\\offers\\index.html",
+      "Sha256": "BC8B04ACC0DCFBDCCCF73B8FF2148598801FFD08F8D227AAAB9053B24344FC2E",
+      "Bytes": 7593
+    },
+    {
+      "Path": "wwwroot\\dashboard\\offers\\offers-app.js",
+      "Sha256": "7BD20AEBD1760347D6E825125800704F5E154466BC7FFD5E190ADCDBC5651567",
+      "Bytes": 47305
+    },
+    {
+      "Path": "wwwroot\\dashboard\\offers\\offers.css",
+      "Sha256": "9E353C3AB29C054050ACEFDAA66926095865D236D5FD809FC778354680AA12A9",
+      "Bytes": 21755
+    },
+    {
+      "Path": "wwwroot\\dashboard\\plans\\index.html",
+      "Sha256": "86EC017B43D578854B1F468E76EC7D71A83B386C956F02E38CCF6D8F34E256A4",
+      "Bytes": 3512
+    },
+    {
+      "Path": "wwwroot\\dashboard\\plans\\plans-app.js",
+      "Sha256": "9BC17983E82BFEAEE57EB721912AC0C0479F968F2085EBC410C810F91151237B",
+      "Bytes": 49592
+    },
+    {
+      "Path": "wwwroot\\dashboard\\plans\\plans.css",
+      "Sha256": "588956AD81CF578F33F118D2637A1D1E2E1DA44E89B65F1F0320355A36D76F89",
+      "Bytes": 18112
+    },
+    {
+      "Path": "wwwroot\\dashboard\\pos\\index.html",
+      "Sha256": "490CC8262A9F2178B3F39391E3FFC4244AA80867C9A323DF490BDA36ACD78683",
+      "Bytes": 14971
+    },
+    {
+      "Path": "wwwroot\\dashboard\\pos\\pos-app.js",
+      "Sha256": "24B494F3295BF2B14C499583BCE60F6694324D9620F40E5C86904EB5F3839E28",
+      "Bytes": 68482
+    },
+    {
+      "Path": "wwwroot\\dashboard\\pos\\pos.css",
+      "Sha256": "AD9C88093C869F3B835444FDD554BE3F437399031393C064ADB3D2F165AB0087",
+      "Bytes": 23715
+    },
+    {
+      "Path": "wwwroot\\dashboard\\pos\\pos.selftest.js",
+      "Sha256": "719BD8A95F1DEB82B33746EB76A5BB7D00B2EDD0BC31F7899A6C86032B4CA31A",
+      "Bytes": 1522
+    },
+    {
+      "Path": "wwwroot\\dashboard\\promo-codes\\index.html",
+      "Sha256": "79C910593FD19CB074DE2CC514147CBC791EF4DCC94C62E478B7ECC97FC9917B",
+      "Bytes": 6088
+    },
+    {
+      "Path": "wwwroot\\dashboard\\promo-codes\\promo-codes-app.js",
+      "Sha256": "BFB1E8A03797A2C85C4319BFFB8AA6588E945378BC85737DBEB19DF351F4E928",
+      "Bytes": 8611
+    },
+    {
+      "Path": "wwwroot\\dashboard\\promo-codes\\promo-codes.css",
+      "Sha256": "DD46386BD64641F1A4AF8B44882A82E310FFA22F68CC91F7884AA5ECD5BA16AC",
+      "Bytes": 621
+    },
+    {
+      "Path": "wwwroot\\dashboard\\refunds\\index.html",
+      "Sha256": "41C66EC306969EF1234E5874B929CA387FBBADFDEDF1E6A648ACFAAAC3FEC9AF",
+      "Bytes": 374
+    },
+    {
+      "Path": "wwwroot\\dashboard\\reports\\index.html",
+      "Sha256": "67C14BC03F1D2DEC273CF6D168272409FE9DD3CD475C155D88B71FEA413D0F93",
+      "Bytes": 22693
+    },
+    {
+      "Path": "wwwroot\\dashboard\\reports\\reports-app.js",
+      "Sha256": "86C729E1FB399BD6EE0B1283B0A776F50A4A7030C185C276119CD748301FE4B2",
+      "Bytes": 146189
+    },
+    {
+      "Path": "wwwroot\\dashboard\\reports\\reports.css",
+      "Sha256": "DE692BFA71FB4B62081C3621F3B01682DA458303207562FED781DC53B36AA835",
+      "Bytes": 28429
+    },
+    {
+      "Path": "wwwroot\\dashboard\\reports\\reports.financial.selftest.js",
+      "Sha256": "893AD6C870AA1DA8F2203B7BB6AF5E21E0391290EC0E5C1D685CFA38A5EEB33F",
+      "Bytes": 3415
+    },
+    {
+      "Path": "wwwroot\\dashboard\\roles\\index.html",
+      "Sha256": "4CD0876FCCEFCBD3956F8912732DFB6B5B411A84A517B7643A950438EC751AF6",
+      "Bytes": 6695
+    },
+    {
+      "Path": "wwwroot\\dashboard\\roles\\roles-app.js",
+      "Sha256": "8F7A597BCF4EF26B062ACA9EE8CC7ED03124F00BEEA07015C31E83433FA2CD97",
+      "Bytes": 17862
+    },
+    {
+      "Path": "wwwroot\\dashboard\\roles\\roles.css",
+      "Sha256": "3D68F082A8FD2A3B9DA84515E2FE90033CD3D267C01368EF94E21679CCF9875A",
+      "Bytes": 3771
+    },
+    {
+      "Path": "wwwroot\\dashboard\\roles\\roles.selftest.js",
+      "Sha256": "5EEFC7CEE96BD6A88700728D280DA94F92A817CBCC6C59D6E7FC37053A0BBD22",
+      "Bytes": 2286
+    },
+    {
+      "Path": "wwwroot\\dashboard\\settings\\index.html",
+      "Sha256": "7996CBF7E1D310E2E907FAD7B6733258F53CB272D47BE332E4D24340D24DCF68",
+      "Bytes": 36948
+    },
+    {
+      "Path": "wwwroot\\dashboard\\settings\\settings-app.js",
+      "Sha256": "5106C6D9E75BF8DE4794A7A4D360A8A695BE61C1B089F4903E773336F1C46987",
+      "Bytes": 39551
+    },
+    {
+      "Path": "wwwroot\\dashboard\\settings\\settings.css",
+      "Sha256": "A706F50C7F7EEA9076D6919095741D1CA91B61E4527A1F3C6BE7261BF1DE34D5",
+      "Bytes": 17574
+    },
+    {
+      "Path": "wwwroot\\dashboard\\shifts\\index.html",
+      "Sha256": "5406F27CF97202B72F17F669EF868C39D70064E81A69F95549833C11D61C60EB",
+      "Bytes": 13772
+    },
+    {
+      "Path": "wwwroot\\dashboard\\shifts\\shifts-app.js",
+      "Sha256": "46730C3AA1BBC2F1DED62B4566E38EA9AD97F9B9C9AC63CACCC456B681E9FB57",
+      "Bytes": 53138
+    },
+    {
+      "Path": "wwwroot\\dashboard\\shifts\\shifts.css",
+      "Sha256": "B3FF358F41669640A101A808263B337CA0FCDDC2CA12C189D797B9BC1A8931B1",
+      "Bytes": 16968
+    },
+    {
+      "Path": "wwwroot\\dashboard\\staff\\index.html",
+      "Sha256": "3187106C72A1EBBC579617DA03EDE31B63A7A2825E90E187FB72478813D84D35",
+      "Bytes": 9250
+    },
+    {
+      "Path": "wwwroot\\dashboard\\staff\\staff-app.js",
+      "Sha256": "BD2BA92E5E2274B69A81122FF404E2381F72023C791390C29A6B56C0E53BEC6A",
+      "Bytes": 48622
+    },
+    {
+      "Path": "wwwroot\\dashboard\\staff\\staff-rules.js",
+      "Sha256": "DC8C4DF46899B22A1EEEF97DCBBC76C54B7DEF2B4956E2C3B7DCA463226E9206",
+      "Bytes": 12392
+    },
+    {
+      "Path": "wwwroot\\dashboard\\staff\\staff.css",
+      "Sha256": "587BF0DAA6CD57D4BC9C6921A7B97664BCEF40E98BBC542D8598DCD4C6719EE6",
+      "Bytes": 20567
+    },
+    {
+      "Path": "wwwroot\\dashboard\\staff\\staff.selftest.js",
+      "Sha256": "D241EA4194E9C227D52A5D31B376BD10FD090FE23975A93218FFCEE0ED1049F1",
+      "Bytes": 8837
+    },
+    {
+      "Path": "wwwroot\\dashboard\\trials\\index.html",
+      "Sha256": "90A16B019BF974B8E51ACE9C41B8E68FAAD785F2B3AB8053A9C478E9FEBE6184",
+      "Bytes": 5085
+    },
+    {
+      "Path": "wwwroot\\dashboard\\trials\\trials-app.js",
+      "Sha256": "A3F62D5D5ABEBB045156042C0FB42BE50E8A84BBEBEABE8F935D554AD4D6A3DE",
+      "Bytes": 7849
+    },
+    {
+      "Path": "wwwroot\\dashboard\\trials\\trials.css",
+      "Sha256": "C359FAB9448A65815EB1BB92C052539CA1496F170CF8F62059F4145CC5658499",
+      "Bytes": 598
+    },
+    {
+      "Path": "wwwroot\\dashboard\\z-report\\index.html",
+      "Sha256": "0C699A1B537EC960894C0C810E8C2529DE68385579189B94A6B57AAC17AEDB00",
+      "Bytes": 11576
+    },
+    {
+      "Path": "wwwroot\\dashboard\\z-report\\z-report-app.js",
+      "Sha256": "EAAD27DCD05D43E03E8DBF952823949FFE998FDBD59967F19E5341B52103B134",
+      "Bytes": 34867
+    },
+    {
+      "Path": "wwwroot\\dashboard\\z-report\\z-report.css",
+      "Sha256": "704C546B03DB3FC4AC099AEFED665D5186D59D457FC1063F3CACC67B8BE0F0FA",
+      "Bytes": 17407
+    },
+    {
+      "Path": "wwwroot\\member\\login\\index.html",
+      "Sha256": "62CBA0A642F8C511EE6AA16FE4AF037604A62799038FBBD0157DECBA1346D2AD",
+      "Bytes": 9204
+    },
+    {
+      "Path": "wwwroot\\shared\\analytics.js",
+      "Sha256": "51BBB8294B5AB4219C7C7EB124FA64874C739F42642140A3AE02A414DC3819E2",
+      "Bytes": 2535
+    },
+    {
+      "Path": "wwwroot\\shared\\analytics.selftest.js",
+      "Sha256": "39CD36A643B4F5012F8BD5E9AF4F50D0DBA6D79CB1AD81727DD4F53A9B004C5D",
+      "Bytes": 2213
+    },
+    {
+      "Path": "wwwroot\\shared\\api-client.js",
+      "Sha256": "D1C9782523C8545BDCECE1B4A386C1AB643BF69D76780B8D22C574467C1CF69C",
+      "Bytes": 20592
+    },
+    {
+      "Path": "wwwroot\\shared\\api-config.js",
+      "Sha256": "A0A0E3E8B973656FC2045EAB5D9924C8FD73B8ACB05C9CCF0BC8AC7E2E677BC1",
+      "Bytes": 2155
+    },
+    {
+      "Path": "wwwroot\\shared\\app-version.js",
+      "Sha256": "2421DD5E886B50C95721C8F467F70C0443F298926D992D848AF210FDDF58125A",
+      "Bytes": 1552
+    },
+    {
+      "Path": "wwwroot\\shared\\authz.js",
+      "Sha256": "224D5995ADFDCF26130982727A46D701FB21638125577DF111A1D0279199722A",
+      "Bytes": 4851
+    },
+    {
+      "Path": "wwwroot\\shared\\cairo-dates.js",
+      "Sha256": "D2A687C7C70ECCDEBA3605C5A38F5BAF6AA722260D4C457E7AB3A3F953C85034",
+      "Bytes": 1724
+    },
+    {
+      "Path": "wwwroot\\shared\\cash-expense-catalog.js",
+      "Sha256": "E6D8B25AF4CDF43555E445B82C79BC50DAD65ABD702A5C63BB6589AA8395D15B",
+      "Bytes": 1235
+    },
+    {
+      "Path": "wwwroot\\shared\\dashboard-layout.css",
+      "Sha256": "54D28A8F4A644ADDDD1C222A168843AB15EDCE28F05A23E9F084E460CD0C714F",
+      "Bytes": 3245
+    },
+    {
+      "Path": "wwwroot\\shared\\error-handler.js",
+      "Sha256": "28A220FDE76FD6EEF4D38D143D030C486F9B2831E85004CE653972F285BCDC43",
+      "Bytes": 3798
+    },
+    {
+      "Path": "wwwroot\\shared\\favicon.ico",
+      "Sha256": "C04EF715FBA3F6D1146A3AFA79A4D9D30550D0F45AB6EBB7C0A489CD4DD63853",
+      "Bytes": 9764
+    },
+    {
+      "Path": "wwwroot\\shared\\features.js",
+      "Sha256": "C62DC365B97E4B200F393D81C14BCF8075A939A980BF45C0094F1594DEFCB729",
+      "Bytes": 6412
+    },
+    {
+      "Path": "wwwroot\\shared\\feedback.css",
+      "Sha256": "3DEF54147AE2B7FC2A0CB552BFD241FC9D88674EDBD797DE34ACE56A0A321F89",
+      "Bytes": 4732
+    },
+    {
+      "Path": "wwwroot\\shared\\feedback.js",
+      "Sha256": "DE10FCA845757C2E8ED0DB983A659B88A41F52FFCE4C846C529352695C4BF445",
+      "Bytes": 11786
+    },
+    {
+      "Path": "wwwroot\\shared\\form-layout.css",
+      "Sha256": "A2BFDBDC71DEB8E0717173E4EF43E25AFB79FF653F1714EBB5FB677EEDC56220",
+      "Bytes": 5118
+    },
+    {
+      "Path": "wwwroot\\shared\\gfp-branding.js",
+      "Sha256": "75A1A8BBBA719C7D3BB76F726F8E9BD93F4EC878528A5AB39C6E0AD349341C5C",
+      "Bytes": 10838
+    },
+    {
+      "Path": "wwwroot\\shared\\gfp-deployment.js",
+      "Sha256": "12B26826312CD7B97729B918BB2D6E56882169128F9B3AC909598E31FA5B32C4",
+      "Bytes": 2998
+    },
+    {
+      "Path": "wwwroot\\shared\\hymotion-logo.png",
+      "Sha256": "76BFF7E023327F4599F2F8A9EDEBB35A340F6D000F21EBCA422F39858F538731",
+      "Bytes": 19647
+    },
+    {
+      "Path": "wwwroot\\shared\\hymotion-mark.png",
+      "Sha256": "956B4D0E8C9871D5CE1EA97D79029D0C22EA402BE68C942DAE4BC57A4BCB2AE4",
+      "Bytes": 3252
+    },
+    {
+      "Path": "wwwroot\\shared\\i18n-catalog.js",
+      "Sha256": "3E6E987A1A73CD4F4C9D48EC130545D0DC1531471C4FC8E8FD38306D1E62AF7C",
+      "Bytes": 106542
+    },
+    {
+      "Path": "wwwroot\\shared\\i18n.js",
+      "Sha256": "80B410D08F0A87A3C00621CBB1049DAE614CAC9E2C0F9EA20A7A8BBF9CB97A19",
+      "Bytes": 13065
+    },
+    {
+      "Path": "wwwroot\\shared\\inventory-api.js",
+      "Sha256": "6E92234C011CF65B8A230E9EFBB53B76FF3C931031C9D7328C5F9A63A3A9FE99",
+      "Bytes": 6893
+    },
+    {
+      "Path": "wwwroot\\shared\\live-refresh.js",
+      "Sha256": "E926BBBA9263148BDC2E5DCD8CB8B29F8A5D5ABA95BBE9EBDC7D40C4EA285839",
+      "Bytes": 7560
+    },
+    {
+      "Path": "wwwroot\\shared\\live-refresh.selftest.js",
+      "Sha256": "CDCBBC776DE27CCB439F15663BAEF6B00EA1621B38322C4E359A5C1C295C13DE",
+      "Bytes": 3142
+    },
+    {
+      "Path": "wwwroot\\shared\\local-nav-gate.js",
+      "Sha256": "152C8865DFD6B5656B47C14E224A74891FC1CBE0D0CAA781AA07006254D10506",
+      "Bytes": 1842
+    },
+    {
+      "Path": "wwwroot\\shared\\member-orders-api.js",
+      "Sha256": "051ADD93A4D94ED6532FE9EDA7E2D9FA4956C77D87C8D9B6223E9D94A97E77E3",
+      "Bytes": 4803
+    },
+    {
+      "Path": "wwwroot\\shared\\modal-layout.css",
+      "Sha256": "10ACBFC2A058F608D4DE46E0B766209EDA034C4735C35B5F376C6536A85740CD",
+      "Bytes": 3649
+    },
+    {
+      "Path": "wwwroot\\shared\\nav.js",
+      "Sha256": "2BFC312D7E717C5EF49EEBFBB32B7FED7626587CEC54D73D65548B661AFF8CC1",
+      "Bytes": 20803
+    },
+    {
+      "Path": "wwwroot\\shared\\nav.selftest.js",
+      "Sha256": "3B57A770F25712D9CC6F9224CE81F4ADACDA890F272E57948C51E445316E6295",
+      "Bytes": 16502
+    },
+    {
+      "Path": "wwwroot\\shared\\network-status.js",
+      "Sha256": "B99B2DE56A3F608818587FD02DB76BC010951BE7F5904E1B117184A2769558B5",
+      "Bytes": 9215
+    },
+    {
+      "Path": "wwwroot\\shared\\network-status.selftest.js",
+      "Sha256": "54800DDA9BB29501E3D421739868F5E21A7CF2D206FB1F0CA14F6274DA8A6DEB",
+      "Bytes": 3036
+    },
+    {
+      "Path": "wwwroot\\shared\\notification-view.js",
+      "Sha256": "2B70F4D819DA53BF354756A5B519B317345CAF36613C30B1B0F31AAC0C034A52",
+      "Bytes": 2632
+    },
+    {
+      "Path": "wwwroot\\shared\\notifications.selftest.js",
+      "Sha256": "401163DD86D6603C8F2371131733EDF6DD7F579D57479EB522C05F1BA33A59F9",
+      "Bytes": 8111
+    },
+    {
+      "Path": "wwwroot\\shared\\prepare-gym.css",
+      "Sha256": "0F876FF864395FE5A5250E05B10D6554F130E8DC881E85A753A74D80664691E8",
+      "Bytes": 4950
+    },
+    {
+      "Path": "wwwroot\\shared\\prepare-gym.js",
+      "Sha256": "67887F6861BA1B425E2D3B49E4E14E0F3F3265830B92FAEE5C26F80A75EBCB55",
+      "Bytes": 22270
+    },
+    {
+      "Path": "wwwroot\\shared\\prepare-gym.selftest.js",
+      "Sha256": "925A9716CB739A34A1BAD131446DEBE27D949A6CC943263B921EF631C7D4053B",
+      "Bytes": 10286
+    },
+    {
+      "Path": "wwwroot\\shared\\quick-actions.js",
+      "Sha256": "5581305B9FD08848374C8EC820119FD2B497ED384C23625EBDC5B4F6C49EE599",
+      "Bytes": 8132
+    },
+    {
+      "Path": "wwwroot\\shared\\refund-action.css",
+      "Sha256": "A0A8AF229704717CD96AE1AAAC2EB4CB37ECF583B5D44926A9F7EEE111011682",
+      "Bytes": 5202
+    },
+    {
+      "Path": "wwwroot\\shared\\refund-action.js",
+      "Sha256": "3CA866E23081F70CB5A722D71DD66D664D3EF317DBE50A4EA96AD8C91BCEE6B6",
+      "Bytes": 29002
+    },
+    {
+      "Path": "wwwroot\\shared\\refund-action.selftest.js",
+      "Sha256": "D173ED48415635D4342B50378655D37B7FB3983440CF7A22F46A86937A952271",
+      "Bytes": 1858
+    },
+    {
+      "Path": "wwwroot\\shared\\responsive.css",
+      "Sha256": "EE042806DA244412D08BC17722E6B85CDD8F4D8EDE06E97B4A808C46D5D206E2",
+      "Bytes": 4613
+    },
+    {
+      "Path": "wwwroot\\shared\\responsive.selftest.js",
+      "Sha256": "227B36327138B3633AEFDF0C1F559551FD0F5B966EA86754752B2465AE598AA9",
+      "Bytes": 2052
+    },
+    {
+      "Path": "wwwroot\\shared\\rtl.css",
+      "Sha256": "6A58D4978F5B938FA85B1966AD37E913C381E706141E1AD430B1C5EE20ACFE39",
+      "Bytes": 7688
+    },
+    {
+      "Path": "wwwroot\\shared\\session-guard.js",
+      "Sha256": "BF2AEFA5F0580B061F05EFC90AA9B3A8BFB838C6103378363586B1FB93B3D639",
+      "Bytes": 2927
+    },
+    {
+      "Path": "wwwroot\\shared\\session-guard.selftest.js",
+      "Sha256": "6D8A00FD182B3E6AD807BA9D7F247405F8917EB1E07C575E87AFE58C3EFBB6AD",
+      "Bytes": 3348
+    },
+    {
+      "Path": "wwwroot\\shared\\shell-header.css",
+      "Sha256": "1653E3C2250BFBD5BF2021636C831B2766115568BC2AFCB28C21836307BBC0A9",
+      "Bytes": 3360
+    },
+    {
+      "Path": "wwwroot\\shared\\shell-layout.css",
+      "Sha256": "9F4378F7D4B8E69C36C8B81925F0C02CE421828979DB6357157D2D6F885EFF64",
+      "Bytes": 9946
+    },
+    {
+      "Path": "wwwroot\\shared\\shell-scroll.selftest.js",
+      "Sha256": "B87E460F7C85035E4EB191BA73882BAE825C6D36C6E8213FFE5AC272DE0CE952",
+      "Bytes": 7725
+    },
+    {
+      "Path": "wwwroot\\shared\\shell.js",
+      "Sha256": "DE6531706A7F7CBEDFD82601B14082A25D0EFAAF57A257B644799D2DE67D2082",
+      "Bytes": 62895
+    },
+    {
+      "Path": "wwwroot\\shared\\shell.selftest.js",
+      "Sha256": "CBA3F18EF85F91ADE8F09D0AA7C251FD9BABA06968049F4E643CE47A25D6F0FE",
+      "Bytes": 22877
+    },
+    {
+      "Path": "wwwroot\\shared\\staff-notifications.js",
+      "Sha256": "F087DEC0798BB66A9FB4E9FE34E986E7CE62D38C3196C95BC91C96D9F44DD0EB",
+      "Bytes": 3982
+    },
+    {
+      "Path": "wwwroot\\shared\\sweep-layout.css",
+      "Sha256": "72BEDD17D1AF0EEC1750E3CFBDD13A27550DAD123709DD5AEE9D587E54C18F63",
+      "Bytes": 4941
+    },
+    {
+      "Path": "wwwroot\\shared\\table-layout.css",
+      "Sha256": "55E64DD52D7E5DBB1C8E37C67C4AB3BF48526D8A12E0761AB68E22AD9EFB82A6",
+      "Bytes": 2190
+    },
+    {
+      "Path": "wwwroot\\shared\\theme.css",
+      "Sha256": "01415EE36F5E8D8DA7614F374C0D0B021896C635D6627D870836623B54FC8CA8",
+      "Bytes": 13487
+    },
+    {
+      "Path": "wwwroot\\shared\\theme.js",
+      "Sha256": "DE8239850F4305A3233DF70140C15CF276B4E5EDA5E5BBF7C93D69E2E85DB652",
+      "Bytes": 2419
+    },
+    {
+      "Path": "wwwroot\\shared\\toast.js",
+      "Sha256": "E1F7449EF83DA93834242DB11B9DB851FD5D4D74BAD7A5DB2D32123695FE60B5",
+      "Bytes": 5499
+    },
+    {
+      "Path": "wwwroot\\shared\\toast.selftest.js",
+      "Sha256": "8CD3F0BC825AC3285C1BF943CF4F9F13CB47F17738E14FA7B1A6A59A521E6A82",
+      "Bytes": 4830
+    },
+    {
+      "Path": "wwwroot\\shared\\typography.css",
+      "Sha256": "31947257884F5B69B59487282969E44B905FF260751AA03CB41166C98B9BBAED",
+      "Bytes": 5838
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\chartjs\\chart.umd.min.js",
+      "Sha256": "B38076762F7363BC9E912B68B8E034826798DB5DF26BB61F000EC2E7A3137BC7",
+      "Bytes": 205749
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\cairo.css",
+      "Sha256": "F029D173BFF37F3D951DA0A34294280094243F5ACAAC0867BF3BEF90AA3615D8",
+      "Bytes": 8345
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter.css",
+      "Sha256": "58A7DB3E743E2D8CCF16F4DA66577430BD992F2DB7348C312A3CDB545478E85F",
+      "Bytes": 9240
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\cairo\\SLXVc1nY6HkvangtZmpQdkhzfH5lkSscQyyS4J0.woff2",
+      "Sha256": "748022F50C427456AD66031E855349BE3448EE1F05A5F1EB59574EBE0C686749",
+      "Bytes": 30896
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\cairo\\SLXVc1nY6HkvangtZmpQdkhzfH5lkSscRiyS.woff2",
+      "Sha256": "82C13CBD1352D76E97C3D335CAA912AE68FECDC3949A43CF8D149EB892384C1B",
+      "Bytes": 33820
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\cairo\\SLXVc1nY6HkvangtZmpQdkhzfH5lkSscSCyS4J0.woff2",
+      "Sha256": "DA6ADA83C3A87C2F0211325DC0A123702E1D4A940958B3E943AC4F37B31D5371",
+      "Bytes": 16648
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2",
+      "Sha256": "71D5EE93CC1E9F1D520A3A8B66456DE18C7879D8DF09D57FCD2EAFF75FEF0075",
+      "Bytes": 18748
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1pL7SUc.woff2",
+      "Sha256": "1BE3448E292FBF05FFE176FE1E43F135013D50B1E7D324AD1A558F623D3BB6F6",
+      "Bytes": 18996
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+      "Sha256": "3100E775E8616CD2611BEECFA23A4263D7037586789B43F035236A2E6FBD4C62",
+      "Bytes": 48256
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa25L7SUc.woff2",
+      "Sha256": "34B9C504CAB7A73E37B746343A449132E56CF7B5481AF2CB81DC74DCFF25C956",
+      "Bytes": 85068
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2JL7SUc.woff2",
+      "Sha256": "CA157063339AC4AD418F214F3ABFED119B0798AB4D377386CE5C9E5A7A435EBD",
+      "Bytes": 25960
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2pL7SUc.woff2",
+      "Sha256": "5C66F9E07E90C6D4AC4922CC68D60DE26C17B1858E677FB5E603FCE3952B3FF2",
+      "Bytes": 10252
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\fonts\\inter\\UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa2ZL7SUc.woff2",
+      "Sha256": "6E9E020A25F9B56D418F2C085B1D3C09725A4DA23FE693A5B463064606732190",
+      "Bytes": 11232
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\jsbarcode\\JsBarcode.all.min.js",
+      "Sha256": "52E032534C3F98976AD95CB8C20BAF80ED0CC83D42590602A8CF1DB16E2E22ED",
+      "Bytes": 60817
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\signalr\\signalr.min.js",
+      "Sha256": "E28A720A359B37CB015758D543F908730ED5BBE478DB09506BB6887F18313538",
+      "Bytes": 47647
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\tabler-icons\\tabler-icons.min.css",
+      "Sha256": "40D8D8FDBD0DC3401CECFC069065E20268A38F58662EF64D648C7905D5033DEB",
+      "Bytes": 211022
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\tabler-icons\\fonts\\tabler-icons.ttf",
+      "Sha256": "9920D9866628DB84AF956877D04FF185EE3472A9716B03A9BB958B529AE1A9DA",
+      "Bytes": 2834800
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\tabler-icons\\fonts\\tabler-icons.woff",
+      "Sha256": "ED0C7BC91DF578809986D98917281921C6C9E64E9A726A46CAACC5B1A0967EB2",
+      "Bytes": 794532
+    },
+    {
+      "Path": "wwwroot\\shared\\vendor\\tabler-icons\\fonts\\tabler-icons.woff2",
+      "Sha256": "C9DF3377CC2F7B2196C57A240FF01BAD34D7039ABBAF7380FCFB21F6D7D8EEE7",
+      "Bytes": 462200
+    }
+  ]
+}
