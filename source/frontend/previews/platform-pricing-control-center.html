@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyMotion Platform Console — Pricing Control Center (Preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sidebar:#0b1220;--sidebar-2:#111827;--sidebar-border:#1f2937;
+  --sidebar-text:#9ca3af;--sidebar-text-h:#f9fafb;
+  --canvas:#f4f6f9;--surface:#fff;--surface-2:#f8fafc;
+  --border:#e5e7eb;--border-soft:#eef1f5;
+  --text:#111827;--text-muted:#6b7280;--text-faint:#9ca3af;
+  --accent:#2563eb;--accent-soft:#eff6ff;--accent-border:#bfdbfe;
+  --success:#16a34a;--warning:#d97706;--danger:#dc2626;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+  --radius:8px;--radius-lg:12px;--shadow-sm:0 1px 2px rgba(15,23,42,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--canvas);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--sidebar);color:var(--sidebar-text);flex-shrink:0;display:flex;flex-direction:column;border-right:1px solid var(--sidebar-border)}
+.sidebar-brand{padding:16px 18px;border-bottom:1px solid var(--sidebar-border)}
+.sidebar-brand strong{display:block;color:var(--sidebar-text-h);font-size:15px;font-weight:700}
+.sidebar-brand span{font-size:11px;color:var(--sidebar-text)}
+.nav{padding:12px 10px;flex:1;overflow:auto}
+.nav-group{margin-bottom:16px}
+.nav-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b7280;padding:0 10px 6px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;font-size:13px;font-weight:500;color:var(--sidebar-text);cursor:pointer;border:none;background:transparent;width:100%;text-align:left}
+.nav-item:hover{background:var(--sidebar-2);color:var(--sidebar-text-h)}
+.nav-item.active{background:#1e3a5f;color:#fff}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.strip{background:#0b1220;color:#e5e7eb;font-size:11px;padding:6px 16px;text-align:center;font-weight:600;letter-spacing:.04em}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.breadcrumb{font-size:13px;color:var(--text-muted)}
+.breadcrumb b{color:var(--text)}
+.preview-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:#fef3c7;color:#92400e;border:1px solid #fcd34d;padding:3px 8px;border-radius:999px}
+.content{padding:24px;flex:1;overflow:auto}
+.page{display:none;max-width:1280px}
+.page.active{display:block}
+h1{font-size:22px;font-weight:700;letter-spacing:-.02em}
+.subtitle{margin-top:4px;color:var(--text-muted);font-size:13.5px;max-width:720px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;box-shadow:var(--shadow-sm)}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted)}
+.kpi-value{font-size:26px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi-hint{font-size:11px;color:var(--text-faint);margin-top:2px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm)}
+.card-h{padding:14px 16px;border-bottom:1px solid var(--border-soft);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.card-h h2{font-size:15px;font-weight:600}
+.card-b{padding:0}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:left;padding:10px 12px;background:var(--surface-2);color:var(--text-muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody td{padding:10px 12px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+tbody tr:hover{background:#f8fafc}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600;border:1px solid transparent}
+.chip-active{background:#dcfce7;color:#166534;border-color:#bbf7d0}
+.chip-inactive{background:#f3f4f6;color:#6b7280;border-color:#e5e7eb}
+.chip-impl{background:#dbeafe;color:#1e40af;border-color:#bfdbfe}
+.chip-ready{background:#e0e7ff;color:#3730a3;border-color:#c7d2fe}
+.chip-proposed{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.chip-required{background:#fee2e2;color:#991b1b;border-color:#fecaca}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:var(--radius);font-size:13px;font-weight:600;border:1px solid transparent;cursor:pointer;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:#1d4ed8}
+.btn-secondary{background:#fff;color:var(--text);border-color:#d1d5db}
+.btn-secondary:hover{background:var(--surface-2)}
+.btn-ghost{background:transparent;color:var(--accent);border-color:transparent;padding:4px 8px;font-size:12px}
+.btn-danger{background:#fff;color:var(--danger);border-color:#fecaca}
+.actions{display:flex;flex-wrap:wrap;gap:6px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+.grid-2{display:grid;grid-template-columns:1fr 360px;gap:16px;align-items:start}
+.grid-editor{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+.section{margin-bottom:16px}
+.section-h{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border-soft)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:var(--radius);font:inherit;background:#fff}
+.field textarea{min-height:72px;resize:vertical}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggle{display:flex;align-items:center;gap:8px}
+.toggle input{width:auto}
+.warn{background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid var(--warning);padding:12px 14px;border-radius:var(--radius);font-size:13px;color:#78350f;margin:12px 0}
+.warn strong{display:block;margin-bottom:4px}
+.impact{background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-lg);padding:16px}
+.impact h3{font-size:14px;font-weight:700;color:#991b1b;margin-bottom:8px}
+.impact-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #fecaca;font-size:13px}
+.impact-row:last-child{border-bottom:none}
+.preview-card{background:linear-gradient(135deg,#eff6ff,#fff);border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:20px}
+.preview-card h3{font-size:20px;font-weight:700}
+.preview-card .price{font-family:var(--mono);font-size:28px;font-weight:700;margin:8px 0}
+.preview-card ul{margin-top:12px;padding-left:18px;font-size:13px;color:var(--text-muted)}
+.preview-card li{margin:4px 0}
+.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.feature-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border-soft);border-radius:var(--radius);background:#fff;font-size:13px}
+.feature-item input{width:auto;margin:0}
+.feature-group{margin-bottom:14px}
+.feature-group-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px}
+.drawer-overlay{position:fixed;inset:0;background:rgba(15,23,42,.4);display:none;z-index:40}
+.drawer-overlay.open{display:block}
+.drawer{position:fixed;top:0;right:0;width:420px;max-width:100%;height:100%;background:var(--surface);border-left:1px solid var(--border);box-shadow:-8px 0 24px rgba(15,23,42,.12);z-index:50;transform:translateX(100%);transition:transform .2s ease;display:flex;flex-direction:column}
+.drawer.open{transform:translateX(0)}
+.drawer-h{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.drawer-b{padding:16px 18px;overflow:auto;flex:1}
+.history-item{padding:12px 0;border-bottom:1px solid var(--border-soft)}
+.history-item:last-child{border-bottom:none}
+.history-meta{font-size:11px;color:var(--text-faint);margin-top:4px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px}
+.note{font-size:12px;color:var(--text-muted);background:var(--surface-2);border:1px dashed var(--border);padding:10px 12px;border-radius:var(--radius);margin-top:12px}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;z-index:60;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);max-width:520px;width:100%;box-shadow:0 16px 48px rgba(15,23,42,.18)}
+.modal-h{padding:16px 18px;border-bottom:1px solid var(--border);font-weight:700;font-size:16px}
+.modal-b{padding:16px 18px}
+.modal-f{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.state-demo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+.state-box{background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center;min-height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.state-box.error{border-color:#fecaca;background:#fef2f2;color:#991b1b}
+.state-box.loading{border-color:#bfdbfe;background:#eff6ff;color:#1e40af}
+.spinner{width:24px;height:24px;border:3px solid #bfdbfe;border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.preview-toggle{display:inline-flex;border:1px solid var(--border);border-radius:999px;overflow:hidden;margin:12px 0}
+.preview-toggle button{padding:6px 14px;border:none;background:#fff;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-muted)}
+.preview-toggle button.active{background:var(--accent);color:#fff}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.pricing-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.pricing-card.default{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-border)}
+.integration-callout{background:#eff6ff;border:1px solid var(--accent-border);border-radius:var(--radius-lg);padding:16px;margin-top:16px;font-size:13px}
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-editor{grid-template-columns:1fr}.pricing-grid,.state-demo{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <strong>HyMotion</strong>
+      <span>Platform Console</span>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-group">
+        <div class="nav-label">Control plane</div>
+        <button class="nav-item" data-page="overview">Dashboard</button>
+        <button class="nav-item" data-page="overview">Tenants</button>
+        <button class="nav-item" data-page="overview">Trials</button>
+        <button class="nav-item" data-page="overview">Subscriptions</button>
+        <button class="nav-item active" data-page="landing">Plans &amp; Pricing</button>
+        <button class="nav-item" data-page="overview">Usage</button>
+        <button class="nav-item" data-page="overview">Risk Queue</button>
+        <button class="nav-item" data-page="overview">Metrics</button>
+        <button class="nav-item" data-page="overview">Audit</button>
+        <button class="nav-item" data-page="overview">Platform Users</button>
+      </div>
+    </nav>
+  </aside>
+  <div class="main">
+    <div class="strip">INTERNAL — PLATFORM CONTROL PLANE · PRICING PREVIEW ONLY · NO PRODUCTION MUTATIONS</div>
+    <header class="topbar">
+      <div class="breadcrumb" id="breadcrumb"><b>Plans &amp; Pricing</b></div>
+      <span class="preview-badge">Interactive preview</span>
+    </header>
+    <div class="content">
+
+      <!-- LANDING -->
+      <section class="page active" id="page-landing">
+        <h1>Plans &amp; Pricing</h1>
+        <p class="subtitle">Manage commercial plans, pricing, limits, and feature entitlements. Data mirrors real backend defaults from <code class="mono">PlatformListPrices</code> and <code class="mono">tier_feature_map</code>.</p>
+        <div class="legend">
+          <span class="chip chip-impl">IMPLEMENTED</span>
+          <span class="chip chip-ready">BACKEND READY</span>
+          <span class="chip chip-proposed">PROPOSED</span>
+          <span class="chip chip-required">BACKEND CHANGE REQUIRED</span>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">Active Plans</div><div class="kpi-value">4</div><div class="kpi-hint"><span class="chip chip-impl">IMPLEMENTED</span> fixed tiers</div></div>
+          <div class="kpi"><div class="kpi-label">Monthly MRR opportunity</div><div class="kpi-value mono">EGP 14,996</div><div class="kpi-hint"><span class="chip chip-proposed">MOCK</span> sum of list prices</div></div>
+          <div class="kpi"><div class="kpi-label">Plans with custom pricing</div><div class="kpi-value">0</div><div class="kpi-hint"><span class="chip chip-ready">BACKEND READY</span> per-tenant coupons only</div></div>
+          <div class="kpi"><div class="kpi-label">Recently changed</div><div class="kpi-value">—</div><div class="kpi-hint"><span class="chip chip-required">BACKEND CHANGE REQUIRED</span> no price history</div></div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" disabled title="Requires dynamic tier catalog">Create Plan</button>
+          <button class="btn btn-primary" onclick="showPage('customer-preview')">Preview Pricing</button>
+          <button class="btn btn-secondary" onclick="openDrawer()">Pricing History</button>
+          <button class="btn btn-secondary" onclick="showPage('edit')">Edit Growth</button>
+          <button class="btn btn-secondary" onclick="showPage('integration')">Create Tenant integration</button>
+          <button class="btn btn-secondary" onclick="showPage('states')">UI states</button>
+          <span class="chip chip-required">Create Plan — BACKEND CHANGE REQUIRED</span>
+        </div>
+        <div class="card">
+          <div class="card-h"><h2>Commercial plans</h2><span class="chip chip-impl">tier_feature_map + PlatformListPrices</span></div>
+          <div class="card-b" style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Plan</th><th>Status</th><th>Monthly</th><th>Annual</th><th>Savings</th>
+                  <th>Members</th><th>Staff</th><th>Branches</th><th>WhatsApp</th><th>Features</th>
+                  <th>Active subs</th><th>New sales</th><th>Default</th><th>Updated</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="plans-table"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="note">Annual list price = monthly × 10 (~2 months free). Source: <code class="mono">PlatformListPrices.ForCycle</code>. Caps from <code class="mono">TierFeatureMapSeed</code>.</p>
+      </section>
+
+      <!-- VIEW / EDIT -->
+      <section class="page" id="page-edit">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>Edit plan — Growth</h1>
+            <p class="subtitle">Multi-section editor preview. Saving would require new Platform Admin APIs.</p>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="showPage('landing')">← Back</button>
+            <button class="btn btn-primary" onclick="showPage('price-change')">Review price change</button>
+          </div>
+        </div>
+        <div class="grid-editor" style="margin-top:16px">
+          <div>
+            <div class="card section">
+              <div class="card-b" style="padding:16px">
+                <div class="section-h">1. Basic information <span class="chip chip-required">BACKEND CHANGE REQUIRED</span></div>
+                <div class="field-row">
+                  <div class="field"><label>Plan key (tier id)</label><input value="growth" disabled><small style="color:var(--text-faint)">PlanTiers constant + DB CHECK</small></div>
+                  <div class="field"><label>Display name</label><input value="Growth" disabled></div>
+                </div>
+                <div class="field"><label>Description</label><textarea disabled>Mid-market gyms with imports and HR.</textarea></div>
+                <div class="field-row">
+                  <div class="field toggle"><label><input type="checkbox" checked disabled> Active</label></div>
+                  <div class="field"><label>Display order</label><input type="number" value="2" disabled></div>
+                </div>
+              </div>
+            </div>
+            <div class="card section">
+              <div class="card-b" style="padding:16px">
+                <div class="section-h">2. Pricing <span class="chip chip-impl">IMPLEMENTED (read-only today)</span></div>
+                <div class="field-row">
+                  <div class="field"><label>Monthly price (EGP)</label><input id="monthly-price" type="number" value="1999" oninput="syncAnnual()"></div>
+                  <div class="field"><label>Annual price (EGP)</label><input id="annual-price" type="number" value="19990" readonly></div>
+                </div>
+                <div class="field"><label>Annual discount</label><input value="~2 months free (monthly × 10)" disabled></div>
+                <div class="warn"><strong>Grandfathering warning</strong>Changing the list price affects new subscriptions and future plan changes. Existing subscriptions keep their frozen <code class="mono">PriceEgp</code> until an explicit Change Plan or scheduled downgrade applies current list price.</div>
+              </div>
+            </div>
+            <div class="card section">
+              <div class="card-b" style="padding:16px">
+                <div class="section-h">3. Usage limits <span class="chip chip-ready">BACKEND READY (DB seed)</span></div>
+                <div class="field-row">
+                  <div class="field"><label>Active members</label><input type="number" value="1000"></div>
+                  <div class="field"><label>Staff seats</label><input type="number" value="10"></div>
+                </div>
+                <div class="field-row">
+                  <div class="field"><label>Branches</label><input type="number" value="3"></div>
+                  <div class="field"><label>WhatsApp messages / mo</label><input type="number" value="2000"></div>
+                </div>
+                <p class="note">Unlimited = null cap (Enterprise). Enforced via <code class="mono">TierEnforcementService</code> reading <code class="mono">tier_feature_map</code>.</p>
+              </div>
+            </div>
+            <div class="card section">
+              <div class="card-b" style="padding:16px">
+                <div class="section-h">4. Features <span class="chip chip-ready">BACKEND READY</span></div>
+                <div id="feature-editor"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="preview-card section">
+              <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--accent);margin-bottom:8px">Customer-facing preview</div>
+              <h3>Growth</h3>
+              <div class="price mono">EGP 1,999 / month</div>
+              <ul>
+                <li>Up to 1,000 active members</li>
+                <li>10 staff seats</li>
+                <li>3 branches</li>
+                <li>2,000 WhatsApp messages / mo</li>
+                <li>Sales, Shifts, Trials, Debtors, Refunds, Imports, Inventory, HR</li>
+              </ul>
+              <p class="note" style="margin-top:12px">Preview only — no public customer pricing page exists today.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRICE CHANGE IMPACT -->
+      <section class="page" id="page-price-change">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>Price change impact — Growth</h1>
+            <p class="subtitle">Operational safety panel before publishing a new list price.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="showPage('edit')">← Back to editor</button>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><div class="card-b" style="padding:16px">
+            <div class="field-row">
+              <div class="field"><label>Current list price</label><input class="mono" value="EGP 1,999" disabled></div>
+              <div class="field"><label>New list price</label><input class="mono" value="EGP 2,499" id="new-price-demo"></div>
+            </div>
+            <div class="impact">
+              <h3>Impact summary</h3>
+              <div class="impact-row"><span>New subscriptions (StartTrial / RestartPaid / Provision)</span><strong class="mono">EGP 2,499</strong></div>
+              <div class="impact-row"><span>Existing renewals (normal path)</span><strong>UNCHANGED — uses frozen PriceEgp</strong></div>
+              <div class="impact-row"><span>Change Plan (upgrade / effective now)</span><strong>Current list at change time</strong></div>
+              <div class="impact-row"><span>Scheduled downgrade at period end</span><strong>Applies new list at renewal job</strong></div>
+              <div class="impact-row"><span>Existing frozen subscription prices</span><strong><span class="chip chip-proposed">MOCK</span> 143 tenants</strong></div>
+            </div>
+            <div class="field" style="margin-top:12px"><label>Reason (required for audit)</label><textarea placeholder="Commercial reprice — Q4 2026 list adjustment"></textarea></div>
+            <div class="actions" style="margin-top:12px">
+              <button class="btn btn-primary" onclick="openConfirmModal()">Publish list price</button>
+              <span class="chip chip-required">API not implemented</span>
+            </div>
+          </div></div>
+          <div class="warn"><strong>Verified behavior today</strong>
+            <ul style="margin:8px 0 0 18px;font-size:13px">
+              <li><code class="mono">EnsureRenewalInvoiceAsync</code> bills <code class="mono">subscription.PriceEgp</code></li>
+              <li>List price changes in code do <em>not</em> auto-update existing rows</li>
+              <li>Explicit ChangeTier sets new frozen price from list</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- DUPLICATE -->
+      <section class="page" id="page-duplicate">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>Duplicate plan — Growth → Growth Plus</h1>
+            <p class="subtitle"><span class="chip chip-required">PROPOSED — BACKEND CHANGE REQUIRED</span> Today tiers are fixed (<code class="mono">starter|growth|pro|enterprise</code>) with a DB CHECK constraint.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="showPage('landing')">← Back</button>
+        </div>
+        <div class="card" style="margin-top:16px"><div class="card-b" style="padding:16px">
+          <div class="field-row">
+            <div class="field"><label>Source plan</label><input value="growth" disabled></div>
+            <div class="field"><label>New plan key</label><input value="growth_plus"></div>
+          </div>
+          <div class="field"><label>Display name</label><input value="Growth Plus"></div>
+          <div class="field-row">
+            <div class="field"><label>Monthly (EGP)</label><input value="2299"></div>
+            <div class="field"><label>Annual (EGP)</label><input value="22990"></div>
+          </div>
+          <p class="note">Would require extending <code class="mono">PlanTiers</code>, relaxing <code class="mono">CK_tier_feature_map_tier</code>, and subscription FK semantics — not available today.</p>
+          <button class="btn btn-primary" disabled>Create duplicate (preview)</button>
+        </div></div>
+      </section>
+
+      <!-- CUSTOMER PREVIEW -->
+      <section class="page" id="page-customer-preview">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>Preview Pricing</h1>
+            <p class="subtitle">Customer-facing view of configured list prices. Values from live plan config once APIs ship — today mirrors <code class="mono">PlatformListPrices</code>.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="showPage('landing')">← Back to plans</button>
+        </div>
+        <div class="preview-toggle" role="tablist">
+          <button id="toggle-monthly" class="active" onclick="setBillingCycle('monthly')">Monthly</button>
+          <button id="toggle-annual" onclick="setBillingCycle('annual')">Annual</button>
+        </div>
+        <div class="pricing-grid" id="customer-pricing-grid"></div>
+        <p class="note">Annual = monthly × 10 (~17% savings vs 12× monthly). Source: <code class="mono">PlatformListPrices.ForCycle</code>. No public customer pricing page exists today.</p>
+      </section>
+
+      <!-- CREATE TENANT INTEGRATION -->
+      <section class="page" id="page-integration">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>Create Tenant integration</h1>
+            <p class="subtitle">Provision wizard must read live plan configuration — not duplicate pricing in <code class="mono">ProvisionGymDialog</code>.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="showPage('landing')">← Back</button>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><div class="card-h"><h2>Today (problem)</h2><span class="chip chip-required">Hardcoded FE</span></div><div class="card-b" style="padding:16px;font-size:13px">
+            <p><code class="mono">ProvisionGymDialog.tsx</code> imports <code class="mono">PLATFORM_PLAN_DISPLAY</code> from <code class="mono">platform-plans.ts</code> for plan cards and review step.</p>
+            <p style="margin-top:8px">Server assigns price via <code class="mono">StartTrialAsync</code> → <code class="mono">PlatformListPrices.ForCycle</code>. If admin changes Growth 1,999 → 2,299 in backend only, wizard still shows 1,999 until FE is wired.</p>
+          </div></div>
+          <div class="card"><div class="card-h"><h2>Target (after approval)</h2><span class="chip chip-proposed">GET /platform-api/plans</span></div><div class="card-b" style="padding:16px;font-size:13px">
+            <p>Wizard fetches plans on open. Plan step shows live monthly/annual from API. Review step shows same values. Submit still calls existing <code class="mono">POST /platform-api/tenants/provision</code> with <code class="mono">tier</code> only — server freezes current list into <code class="mono">PriceEgp</code>.</p>
+            <p style="margin-top:8px">Trial duration remains independent (1–90 days). No separate trial pricing system.</p>
+          </div></div>
+        </div>
+        <div class="integration-callout">
+          <strong>Provision flow (verified):</strong> <code class="mono">TenantProvisioningService</code> defaults tier to <code class="mono">PlanTiers.Growth</code> when blank → <code class="mono">StartTrialAsync</code> sets <code class="mono">PriceEgp = PlatformListPrices.ForCycle(tier, monthly)</code>.
+        </div>
+        <div class="card" style="margin-top:16px"><div class="card-h"><h2>Wizard plan step (mock with live-shaped data)</h2></div><div class="card-b" style="padding:16px">
+          <div class="pricing-grid" id="wizard-plan-grid"></div>
+        </div></div>
+      </section>
+
+      <!-- UI STATES -->
+      <section class="page" id="page-states">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
+          <div>
+            <h1>Loading / empty / error states</h1>
+            <p class="subtitle">Production Plans page should handle API fetch lifecycle cleanly.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="showPage('landing')">← Back</button>
+        </div>
+        <div class="state-demo">
+          <div class="state-box loading"><div class="spinner"></div><div>Loading plans…</div><div style="font-size:12px;color:var(--text-muted)">GET /platform-api/plans</div></div>
+          <div class="state-box"><div style="font-size:28px;color:var(--text-faint)">∅</div><div>No plans configured</div><div style="font-size:12px;color:var(--text-muted)">Should not happen with fixed 4-tier catalog</div></div>
+          <div class="state-box error"><strong>Failed to load plans</strong><div style="font-size:12px">403 — Requires Platform Admin for mutations; Support read-only</div><button class="btn btn-secondary btn-sm" style="margin-top:8px">Retry</button></div>
+        </div>
+      </section>
+
+      <!-- OVERVIEW PLACEHOLDER -->
+      <section class="page" id="page-overview">
+        <h1>Dashboard</h1>
+        <p class="subtitle">Navigation stub — only Plans &amp; Pricing flows are interactive in this preview.</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-h">
+    <strong>Pricing change history</strong>
+    <button class="btn btn-ghost" onclick="closeDrawer()">Close</button>
+  </div>
+  <div class="drawer-b">
+    <span class="chip chip-required">PROPOSED — no persistence</span>
+    <div class="history-item">
+      <div><strong>Growth</strong> · Monthly price</div>
+      <div class="mono">EGP 1,999 → EGP 2,499</div>
+      <div class="history-meta">Changed by Platform Admin · Aug 28, 2026 · Reason: Q4 list adjustment (preview)</div>
+    </div>
+    <div class="history-item">
+      <div><strong>Pro</strong> · WhatsApp cap</div>
+      <div class="mono">8,000 → 10,000 messages</div>
+      <div class="history-meta">Seed migration · Jul 30, 2026 (illustrative)</div>
+    </div>
+    <p class="note">Real system today logs subscription mutations in <code class="mono">subscription_changes</code>, not list-price edits.</p>
+  </div>
+</aside>
+
+<div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)closeConfirmModal()">
+  <div class="modal" role="dialog" aria-labelledby="confirm-title">
+    <div class="modal-h" id="confirm-title">Confirm list price change</div>
+    <div class="modal-b">
+      <p style="margin-bottom:12px;font-size:13px">You are changing the commercial list price for <strong>Growth</strong>.</p>
+      <div class="impact" style="margin-bottom:12px">
+        <div class="impact-row"><span>Monthly price</span><strong class="mono">EGP 1,999 → EGP 2,499</strong></div>
+        <div class="impact-row"><span>Annual price</span><strong class="mono">EGP 19,990 → EGP 24,990</strong></div>
+        <div class="impact-row"><span>New subscriptions</span><strong class="mono">EGP 2,499 / mo</strong></div>
+        <div class="impact-row"><span>Existing subscriptions</span><strong>UNCHANGED (frozen PriceEgp)</strong></div>
+      </div>
+      <div class="warn" style="margin:0"><strong>Grandfathering</strong>Existing subscriptions retain their current frozen price until an explicit plan change is applied.</div>
+      <div class="field" style="margin-top:12px"><label>Audit reason (required)</label><textarea placeholder="Q4 2026 commercial list adjustment"></textarea></div>
+    </div>
+    <div class="modal-f">
+      <button class="btn btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+      <button class="btn btn-primary" disabled>Confirm &amp; publish</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLANS = [
+  { tier:'starter', label:'Starter', monthly:999, members:200, staff:3, branches:1, wa:500, features:7, isDefault:false },
+  { tier:'growth', label:'Growth', monthly:1999, members:1000, staff:10, branches:3, wa:2000, features:8, isDefault:true },
+  { tier:'pro', label:'Pro', monthly:3999, members:5000, staff:25, branches:10, wa:10000, features:9, isDefault:false },
+  { tier:'enterprise', label:'Enterprise', monthly:7999, members:null, staff:null, branches:null, wa:null, features:9, isDefault:false },
+];
+
+let billingCycle = 'monthly';
+
+function annualSavingsPct(monthly){
+  const full = monthly * 12;
+  const annual = monthly * 10;
+  return Math.round((1 - annual / full) * 100);
+}
+
+function renderTable(){
+  const tbody = document.getElementById('plans-table');
+  tbody.innerHTML = PLANS.map(p => {
+    const annual = p.monthly * 10;
+    const savings = annualSavingsPct(p.monthly);
+    return `
+    <tr>
+      <td><strong>${p.label}</strong><div class="mono" style="font-size:11px;color:var(--text-faint)">${p.tier}</div></td>
+      <td><span class="chip chip-active">Active</span></td>
+      <td class="mono">${fmtEgp(p.monthly)}</td>
+      <td class="mono">${fmtEgp(annual)}</td>
+      <td class="mono">~${savings}%</td>
+      <td class="mono">${fmtCap(p.members)}</td>
+      <td class="mono">${fmtCap(p.staff)}</td>
+      <td class="mono">${fmtCap(p.branches)}</td>
+      <td class="mono">${fmtCap(p.wa)}</td>
+      <td>${p.features} modules</td>
+      <td><span class="chip chip-proposed" title="Paying-only count available via GET /platform-api/metrics/tier-distribution — trialing excluded">Unavailable*</span></td>
+      <td><span class="chip chip-active">Enabled</span> <span class="chip chip-required" title="No IsActiveForSales column">implicit</span></td>
+      <td>${p.isDefault ? '<span class="chip chip-impl">Default</span>' : '—'}</td>
+      <td style="font-size:12px;color:var(--text-muted)">Code default</td>
+      <td><div class="actions">
+        <button class="btn btn-ghost" onclick="showPage('edit')">View</button>
+        <button class="btn btn-ghost" onclick="showPage('edit')">Edit</button>
+        <button class="btn btn-ghost" onclick="showPage('duplicate')">Duplicate</button>
+        <button class="btn btn-ghost" onclick="openDrawer()">History</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderCustomerPreview(){
+  const grid = document.getElementById('customer-pricing-grid');
+  if(!grid) return;
+  grid.innerHTML = PLANS.map(p => {
+    const isAnnual = billingCycle === 'annual';
+    const price = isAnnual ? p.monthly * 10 : p.monthly;
+    const suffix = isAnnual ? '/ year' : '/ month';
+    const equiv = isAnnual ? `<div style="font-size:12px;color:var(--text-muted);margin-top:4px">≈ ${fmtEgp(Math.round(price/12))} / mo</div>` : '';
+    return `<div class="pricing-card ${p.isDefault?'default':''}">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-muted)">${p.label}</div>
+      <div class="mono" style="font-size:24px;font-weight:700;margin-top:8px">${fmtEgp(price)}<span style="font-size:13px;font-weight:500;color:var(--text-muted)"> ${suffix}</span></div>
+      ${equiv}
+      ${p.isDefault?'<span class="chip chip-impl" style="margin-top:8px">Default provision tier</span>':''}
+    </div>`;
+  }).join('');
+}
+
+function renderWizardGrid(){
+  const grid = document.getElementById('wizard-plan-grid');
+  if(!grid) return;
+  grid.innerHTML = PLANS.map(p => `
+    <button type="button" class="pricing-card ${p.tier==='growth'?'default':''}" style="text-align:left;cursor:pointer;width:100%">
+      <div style="font-weight:700">${p.label}</div>
+      <div class="mono" style="margin-top:4px">${fmtEgp(p.monthly)}<span style="font-size:12px;color:var(--text-muted)"> / mo list</span></div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Frozen at provision into PriceEgp</div>
+    </button>`).join('');
+}
+
+function setBillingCycle(cycle){
+  billingCycle = cycle;
+  document.getElementById('toggle-monthly').classList.toggle('active', cycle==='monthly');
+  document.getElementById('toggle-annual').classList.toggle('active', cycle==='annual');
+  renderCustomerPreview();
+}
+
+const FEATURES = {
+  'Core POS': ['sales','shifts','trials','debtors','refunds'],
+  'Operations': ['imports','inventory','stock_management','hr'],
+};
+
+const GROWTH_FEATURES = new Set(['sales','shifts','trials','debtors','refunds','imports','inventory','hr']);
+
+function fmtCap(v){ return v == null ? '∞' : v.toLocaleString('en-US'); }
+function fmtEgp(n){ return 'EGP ' + n.toLocaleString('en-US'); }
+
+function renderFeatures(){
+  const root = document.getElementById('feature-editor');
+  root.innerHTML = Object.entries(FEATURES).map(([group, keys]) => `
+    <div class="feature-group">
+      <div class="feature-group-title">${group}</div>
+      <div class="feature-grid">${keys.map(k => `
+        <label class="feature-item"><input type="checkbox" ${GROWTH_FEATURES.has(k)?'checked':''} ${k==='stock_management'?'disabled':''}>
+          <span><code class="mono">${k}</code></span></label>`).join('')}</div>
+    </div>`).join('');
+  root.innerHTML += '<p class="note">Keys from <code class="mono">FeatureKeys</code>. Growth excludes <code class="mono">stock_management</code> (Pro+).</p>';
+}
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const titles = {
+    landing:'Plans & Pricing',
+    edit:'Edit plan — Growth',
+    'price-change':'Price change impact',
+    duplicate:'Duplicate plan',
+    'customer-preview':'Preview Pricing',
+    integration:'Create Tenant integration',
+    states:'UI states',
+    overview:'Dashboard'
+  };
+  document.getElementById('breadcrumb').innerHTML = '<b>' + (titles[id]||'Platform') + '</b>';
+  if(id==='customer-preview') renderCustomerPreview();
+  if(id==='integration') renderWizardGrid();
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.page === id || (id !== 'overview' && n.dataset.page === 'landing' && id === 'landing'));
+  });
+  window.scrollTo(0,0);
+}
+
+function syncAnnual(){
+  const m = Number(document.getElementById('monthly-price').value)||0;
+  document.getElementById('annual-price').value = m * 10;
+}
+
+function openDrawer(){ document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
+function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
+function openConfirmModal(){ document.getElementById('confirm-modal').classList.add('open'); }
+function closeConfirmModal(){ document.getElementById('confirm-modal').classList.remove('open'); }
+
+document.getElementById('nav').addEventListener('click', e => {
+  const btn = e.target.closest('.nav-item');
+  if(btn) showPage(btn.dataset.page);
+});
+
+renderTable();
+renderFeatures();
+renderCustomerPreview();
+renderWizardGrid();
+</script>
+</body>
+</html>

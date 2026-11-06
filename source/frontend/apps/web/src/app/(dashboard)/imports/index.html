@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Bulk Import</title>
+<meta name="description" content="Bulk member import wizard: template, upload, mapping, dry-run, execute, rollback.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="imports.css?v=i18n1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current" data-en="Import" data-ar="الاستيراد">Import</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div id="featureDisabled" class="banner warn" style="display:none">
+    <i class="ti ti-flag-off"></i>
+    <div><strong data-en="Bulk import isn't turned on yet" data-ar="الاستيراد الجماعي غير مفعّل بعد">Bulk import isn't turned on yet</strong><p data-en="This feature isn't turned on for your gym yet — contact support to enable it." data-ar="هذه الميزة غير مفعّلة لناديك بعد — تواصل مع الدعم لتفعيلها.">This feature isn't turned on for your gym yet — contact support to enable it.</p></div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ti ti-file-import"></i> <span data-en="Bulk import" data-ar="الاستيراد الجماعي">Bulk import</span></h1>
+      <p class="page-subtitle" data-en="Upload a spreadsheet to add lots of members at once — up to 5 MB or 10,000 rows. Clicking Upload twice by mistake won't create duplicates." data-ar="ارفع ملف إكسل لإضافة عدد كبير من الأعضاء دفعة واحدة — بحد أقصى 5 ميجابايت أو 10,000 صف. الضغط على «رفع» مرتين بالخطأ لن يكرر البيانات.">Upload a spreadsheet to add lots of members at once — up to 5 MB or 10,000 rows. Clicking Upload twice by mistake won't create duplicates.</p>
+    </div>
+    <div class="hdr-actions">
+      <button type="button" class="btn secondary" id="btnNewBatch"><i class="ti ti-plus"></i> <span data-en="Start new import" data-ar="بدء استيراد جديد">Start new import</span></button>
+    </div>
+  </div>
+
+  <div class="steps" id="stepTrack" aria-hidden="true"></div>
+
+  <div id="batchMeta" class="banner warn" style="display:none">
+    <i class="ti ti-database"></i>
+    <div>
+      <strong id="metaTitle">Batch</strong>
+      <p id="metaLine"></p>
+    </div>
+  </div>
+
+  <!-- START: template + upload (no batch) -->
+  <section class="card panel" data-show-when="none" id="panelStart">
+    <div class="card-h"><h2 data-en="1. Get the template &amp; upload your file" data-ar="1. حمّل النموذج وارفع ملفك">1. Get the template &amp; upload your file</h2></div>
+    <p class="hint" data-en="Download the template, fill in your members' rows, then upload it. Files bigger than 5 MB won't be accepted." data-ar="حمّل النموذج، املأ صفوف الأعضاء، ثم ارفعه. الملفات الأكبر من 5 ميجابايت لن تُقبل.">Download the template, fill in your members' rows, then upload it. Files bigger than 5 MB won't be accepted.</p>
+    <div class="row-inline" style="margin-bottom:14px">
+      <button type="button" class="btn secondary" id="btnTemplate"><i class="ti ti-download"></i> <span data-en="Download template" data-ar="تحميل النموذج">Download template</span></button>
+    </div>
+    <label data-en="Import file (.xlsx / .csv)" data-ar="ملف الاستيراد (.xlsx / .csv)">Import file (.xlsx / .csv)
+      <input type="file" id="fileInput" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv">
+    </label>
+    <button type="button" class="btn primary" id="btnUpload"><i class="ti ti-upload"></i> <span data-en="Upload" data-ar="رفع">Upload</span></button>
+    <p class="muted" id="uploadHint"></p>
+  </section>
+
+  <!-- MAPPING: validating | dry_run_ready | failed -->
+  <section class="card panel" data-show-when="validating,dry_run_ready,failed" id="panelMapping" style="display:none">
+    <div class="card-h">
+      <h2 data-en="Match your columns" data-ar="مطابقة الأعمدة">Match your columns</h2>
+      <span class="muted" data-en="These columns are set automatically" data-ar="يتم ضبط هذه الأعمدة تلقائيًا">These columns are set automatically</span>
+    </div>
+    <p class="hint" data-en="We match each column in your file to: Full name, Phone number, Plan name, Start date, End date, Sessions remaining, and Date of birth. Saving will check the file again." data-ar="نطابق كل عمود في ملفك مع: الاسم الكامل، رقم الهاتف، اسم الباقة، تاريخ البدء، تاريخ الانتهاء، الحصص المتبقية، وتاريخ الميلاد. الحفظ سيعيد التحقق من الملف.">We match each column in your file to: Full name, Phone number, Plan name, Start date, End date, Sessions remaining, and Date of birth. Saving will check the file again.</p>
+    <div id="mappingRows" class="map-rows"></div>
+    <div class="row-inline" style="margin-top:12px">
+      <button type="button" class="btn primary" id="btnSaveMapping"><span data-en="Save &amp; re-check" data-ar="حفظ وإعادة التحقق">Save &amp; re-check</span></button>
+      <span class="muted" id="validatingNote" style="display:none"><i class="ti ti-loader"></i> <span data-en="Checking your file…" data-ar="جارٍ التحقق من ملفك…">Checking your file…</span></span>
+    </div>
+  </section>
+
+  <!-- DRY RUN -->
+  <section class="card panel" data-show-when="dry_run_ready" id="panelDryRun" style="display:none">
+    <div class="card-h"><h2 data-en="Review before you import" data-ar="راجع قبل الاستيراد">Review before you import</h2></div>
+    <div class="kpi-row" id="dryKpis"></div>
+    <div class="row-inline" style="margin:12px 0">
+      <button type="button" class="btn secondary" id="btnErrorsCsv"><i class="ti ti-file-spreadsheet"></i> <span data-en="Download row problems" data-ar="تحميل قائمة المشاكل">Download row problems</span></button>
+      <button type="button" class="btn primary" id="btnExecute"><i class="ti ti-player-play"></i> <span data-en="Import now" data-ar="استيراد الآن">Import now</span></button>
+    </div>
+    <p class="hint" data-en="This may take a moment — the page will update automatically when it's done. Clicking Import now twice by mistake is safe and won't create duplicates." data-ar="قد يستغرق هذا بعض الوقت — الصفحة ستتحدث تلقائيًا عند الانتهاء. الضغط على «استيراد الآن» مرتين بالخطأ آمن ولن يكرر البيانات.">This may take a moment — the page will update automatically when it's done. Clicking Import now twice by mistake is safe and won't create duplicates.</p>
+  </section>
+
+  <!-- CREATE PLANS branch -->
+  <section class="card panel" data-show-when="dry_run_ready,failed" id="panelPlans" style="display:none">
+    <div class="card-h"><h2 data-en="Create missing membership plans" data-ar="إنشاء باقات مفقودة">Create missing membership plans</h2></div>
+    <p class="hint" data-en="Some rows mention a membership plan that doesn't exist yet. Create it here so those rows can import — you'll need permission to manage plans. Once created, we'll re-check your file." data-ar="بعض الصفوف تذكر باقة عضوية غير موجودة بعد. أنشئها هنا حتى يمكن استيراد هذه الصفوف — ستحتاج صلاحية إدارة الباقات. بعد الإنشاء، سنعيد التحقق من ملفك.">Some rows mention a membership plan that doesn't exist yet. Create it here so those rows can import — you'll need permission to manage plans. Once created, we'll re-check your file.</p>
+    <button type="button" class="btn secondary" id="btnScanPlans"><span data-en="Find missing plan names" data-ar="البحث عن أسماء الباقات المفقودة">Find missing plan names</span></button>
+    <div id="planSpecs" class="plan-specs"></div>
+    <button type="button" class="btn primary" id="btnCreatePlans" style="display:none;margin-top:10px"><span data-en="Create plans &amp; re-check" data-ar="إنشاء الباقات وإعادة التحقق">Create plans &amp; re-check</span></button>
+  </section>
+
+  <!-- IMPORTING -->
+  <section class="card panel" data-show-when="importing" id="panelImporting" style="display:none">
+    <div class="card-h"><h2 data-en="Importing your members…" data-ar="جارٍ استيراد الأعضاء…">Importing your members…</h2></div>
+    <p class="hint"><i class="ti ti-loader"></i> <span data-en="Import in progress — this page will update automatically when it's done." data-ar="الاستيراد جارٍ — ستتحدث هذه الصفحة تلقائيًا عند الانتهاء.">Import in progress — this page will update automatically when it's done.</span></p>
+    <div class="kpi-row" id="importingKpis"></div>
+  </section>
+
+  <!-- COMPLETED -->
+  <section class="card panel" data-show-when="completed" id="panelDone" style="display:none">
+    <div class="card-h"><h2 data-en="Import complete" data-ar="اكتمل الاستيراد">Import complete</h2></div>
+    <div class="kpi-row" id="doneKpis"></div>
+    <p class="hint" data-en="This import is finished. A Manager or Owner can undo it within 7 days of the finish time." data-ar="اكتمل هذا الاستيراد. يمكن لمدير أو مالك التراجع عنه خلال 7 أيام من وقت الانتهاء.">This import is finished. A Manager or Owner can undo it within 7 days of the finish time.</p>
+    <div class="row-inline">
+      <button type="button" class="btn secondary" id="btnErrorsCsvDone"><i class="ti ti-file-spreadsheet"></i> <span data-en="Download row problems" data-ar="تحميل قائمة المشاكل">Download row problems</span></button>
+      <button type="button" class="btn danger" id="btnRollback" style="display:none"><i class="ti ti-arrow-back-up"></i> <span data-en="Undo this import" data-ar="التراجع عن الاستيراد">Undo this import</span></button>
+      <span class="muted" id="rollbackNote"></span>
+    </div>
+  </section>
+
+  <!-- ROLLED BACK / FAILED footer -->
+  <section class="card panel" data-show-when="rolled_back" id="panelRolled" style="display:none">
+    <div class="card-h"><h2 data-en="Import undone" data-ar="تم التراجع عن الاستيراد">Import undone</h2></div>
+    <p class="hint" data-en="This import was undone. Start a new import to try again." data-ar="تم التراجع عن هذا الاستيراد. ابدأ استيرادًا جديدًا للمحاولة مرة أخرى.">This import was undone. Start a new import to try again.</p>
+    <div class="kpi-row" id="rolledKpis"></div>
+  </section>
+
+  <section class="card panel" data-show-when="failed" id="panelFailed" style="display:none">
+    <div class="card-h"><h2 data-en="Import needs your attention" data-ar="الاستيراد يحتاج مراجعتك">Import needs your attention</h2></div>
+    <p class="hint" data-en="Fix the column matching or create the missing plans above, then check the file again. Download the row problems for details." data-ar="عدّل مطابقة الأعمدة أو أنشئ الباقات المفقودة أعلاه، ثم أعد التحقق من الملف. حمّل قائمة المشاكل للتفاصيل.">Fix the column matching or create the missing plans above, then check the file again. Download the row problems for details.</p>
+    <button type="button" class="btn secondary" id="btnErrorsCsvFail"><i class="ti ti-file-spreadsheet"></i> <span data-en="Download row problems" data-ar="تحميل قائمة المشاكل">Download row problems</span></button>
+  </section>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/shared/api-config.js"></script>
+<script>
+const API_BASE=window.API_BASE||window.GFP_DEFAULT_API_BASE||'/api';
+function getToken(){return localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');}
+function getH(){const t=getToken();const h={'Content-Type':'application/json'};if(t)h['Authorization']='Bearer '+t;return h;}
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();
+if(!user||!getToken()) location.href='/auth/login/';
+document.getElementById('userAvatar').textContent=(user.fullName||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('userName').textContent=user.fullName||'User';
+document.getElementById('userRole').textContent=user.role||'Staff';
+if(/^Owner$/i.test(user.role||'')) document.getElementById('navStaff').style.display='';
+document.getElementById('btnLogout').onclick=function(){['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});location.href='/auth/login/';};
+(async()=>{const r=await fetch(API_BASE+'/settings',{headers:getH()});if(r.ok){const s=await r.json();document.getElementById('gymName').textContent=s.gymName||'';}})();
+</script>
+<script src="imports-app.js?v=i18n1"></script>
+</body>
+</html>

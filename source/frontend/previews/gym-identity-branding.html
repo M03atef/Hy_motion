@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Gym Identity & Branding (design preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --brand:#7ACC00;--brand2:#148F8F;--accent:#A0E040;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:10px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--lbg);color:var(--ltp);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.banner span{opacity:.9;font-weight:500}
+.app{display:flex;min-height:calc(100vh - 44px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;padding:20px 0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid var(--c700);margin-bottom:8px}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--brand);transition:background .2s}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--accent)}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300);text-decoration:none}
+.sb-item.act{color:#fff;background:color-mix(in srgb, var(--brand) 18%, transparent);border-right:3px solid var(--brand)}
+.sb-item i{font-size:16px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:60px;background:var(--ls1);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:14px;color:var(--lts)}
+.crumb .cur{color:var(--ltp)}
+.pill{font-size:12px;padding:4px 10px;border-radius:999px;background:color-mix(in srgb, var(--brand) 18%, #fff);color:#166534;font-weight:600}
+.content{padding:24px 28px;flex:1}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-title i{color:var(--brand)}
+.page-sub{font-size:13px;color:var(--ltt);margin:6px 0 18px;max-width:46rem;line-height:1.5}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tab{height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--ls3);background:var(--ls1);font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--lts);display:inline-flex;align-items:center;gap:6px}
+.tab.act{background:var(--brand);border-color:var(--brand);color:var(--c900)}
+.layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:18px;align-items:start}
+@media(max-width:980px){.layout{grid-template-columns:1fr}}
+.card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden}
+.card-h{padding:14px 18px;border-bottom:1px solid var(--ls3);font-family:var(--fd);font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.card-h i{color:var(--brand)}
+.card-b{padding:18px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--lts);margin-bottom:6px}
+.fg .hint{font-size:11px;color:var(--ltt);margin-top:4px}
+.req{color:#EF4444}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.row{grid-template-columns:1fr}}
+input[type=text],input[type=email],input[type=url],textarea,select{
+  width:100%;height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit;font-size:14px;background:#fff;color:var(--ltp)
+}
+textarea{height:auto;padding:10px 12px;resize:vertical}
+input:focus,textarea:focus,select:focus{outline:2px solid color-mix(in srgb, var(--brand) 45%, transparent);border-color:var(--brand)}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--c800);color:#F0F0F0;padding:8px 12px;border-radius:8px;font-family:ui-monospace,monospace;font-size:13px}
+.logo-box{border:1.5px dashed var(--ls3);border-radius:var(--rmd);padding:16px;display:flex;align-items:center;gap:14px;background:var(--ls2)}
+.logo-box img{width:64px;height:64px;object-fit:contain;border-radius:10px;background:#fff;border:1px solid var(--ls3)}
+.logo-ph{width:64px;height:64px;border-radius:10px;background:#fff;border:1px solid var(--ls3);display:grid;place-items:center;color:var(--ltt)}
+.btn{height:40px;padding:0 16px;border-radius:var(--rlg);font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--brand);color:var(--c900)}
+.btn.secondary{background:#fff;border:1px solid var(--ls3);color:var(--ltp)}
+.btn.ghost{background:transparent;border:1px solid var(--ls3)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.swatch-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.swatch{border:1px solid var(--ls3);border-radius:var(--rmd);padding:12px;background:var(--ls2)}
+.swatch label{font-size:12px;font-weight:600;margin-bottom:8px;display:block}
+.swatch input[type=color]{width:100%;height:44px;border:none;background:transparent;cursor:pointer;padding:0}
+.preview-shell{border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden;background:var(--ls2)}
+.preview-shell .bar{height:44px;background:#fff;border-bottom:1px solid var(--ls3);display:flex;align-items:center;gap:10px;padding:0 12px}
+.preview-shell .mark{width:22px;height:22px;border-radius:6px;background:var(--brand)}
+.preview-shell .name{font-family:var(--fd);font-weight:700;font-size:13px}
+.preview-shell .body{padding:14px;display:flex;gap:10px;flex-wrap:wrap}
+.preview-shell .cta{height:34px;padding:0 14px;border-radius:10px;background:var(--brand);color:var(--c900);font-weight:700;font-size:12px;border:none}
+.preview-shell .cta2{height:34px;padding:0 14px;border-radius:10px;background:var(--brand2);color:#fff;font-weight:700;font-size:12px;border:none}
+.preview-shell .chipx{height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--accent);color:var(--c900);font-size:11px;font-weight:600;display:inline-flex;align-items:center;background:#fff}
+.sticky{position:sticky;top:16px}
+.card-preview-wrap{display:flex;flex-direction:column;gap:12px}
+.cr80{
+  width:min(100%,340px);aspect-ratio:86/54;background:#fff;border:1px solid #E8E8E8;border-radius:12px;
+  padding:12px 14px;display:flex;flex-direction:column;box-shadow:0 8px 24px rgba(0,0,0,.06);margin:0 auto;
+}
+.cr80 .hdr{display:flex;align-items:flex-start;gap:10px}
+.cr80 .logo{width:28px;height:28px;border-radius:7px;object-fit:contain;background:#fff;border:1px solid #eee}
+.cr80 .mark{width:28px;height:28px;border-radius:7px;background:var(--cardPrimary, var(--brand));flex-shrink:0}
+.cr80 .product{font-weight:700;font-size:13px;line-height:1.15}
+.cr80 .gym{font-size:11px;font-weight:600;color:#4A4A4A;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr80 .gym-ar{font-size:10px;color:#8C8C8C;direction:rtl;margin-top:1px}
+.cr80 .identity{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;min-height:0}
+.cr80 .photo{width:42px;height:42px;border-radius:10px;background:#F0F0F0;display:none;align-items:center;justify-content:center;color:#8C8C8C;font-size:18px;margin-bottom:4px}
+.cr80.show-photo .photo{display:flex}
+.cr80 .mname{font-weight:700;font-size:15px}
+.cr80 .mname-ar{font-size:12px;color:#4A4A4A;direction:rtl}
+.cr80 .meta{font-size:10px;color:#8C8C8C}
+.cr80 .scan{display:flex;flex-direction:column;align-items:center;gap:4px}
+.cr80 .bars{height:36px;width:85%;background:repeating-linear-gradient(90deg,#111 0 2px,transparent 2px 4px);border-radius:2px}
+.cr80 .num{font-family:ui-monospace,monospace;font-size:11px;font-weight:600;letter-spacing:.04em}
+.toggles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.toggle{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 10px;border:1px solid var(--ls3);border-radius:8px;background:var(--ls2)}
+.toggle input{accent-color:var(--brand)}
+.note{font-size:12px;color:var(--lts);background:#FEF3C7;border:1px solid #FDE68A;border-radius:10px;padding:10px 12px;line-height:1.45;margin-top:12px}
+.note strong{display:block;margin-bottom:4px;color:#92400E}
+.panel{display:none}.panel.act{display:block}
+.footer-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--ls3)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div><strong>DESIGN PREVIEW ONLY</strong> — not wired to API. Review before implementation.</div>
+  <span>Reuse: Tenant + /api/settings · Upload pattern: products/image · Cards: MAC-P0 access-card-html</span>
+</div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark" id="sbMark"></div><span id="sbBrand">Fitness Hub</span></div>
+    <a class="sb-item" href="#"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+    <a class="sb-item" href="#"><i class="ti ti-users"></i>Members</a>
+    <a class="sb-item act" href="#"><i class="ti ti-palette"></i>Gym Identity</a>
+    <a class="sb-item" href="#"><i class="ti ti-settings"></i>Settings</a>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">🏠 / Settings / <span class="cur">Gym Identity</span></div>
+      <span class="pill" id="livePill">Live brand preview</span>
+    </header>
+    <div class="content">
+      <h1 class="page-title"><i class="ti ti-building-store"></i> Gym Identity &amp; Branding</h1>
+      <p class="page-sub">This is <em>your gym</em> inside HyMotion — name, logo, colors, and how membership cards look when printed. Changes apply only to this gym (tenant-scoped).</p>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab act" data-tab="identity"><i class="ti ti-id"></i> Gym Identity</button>
+        <button type="button" class="tab" data-tab="colors"><i class="ti ti-palette"></i> Brand Colors</button>
+        <button type="button" class="tab" data-tab="card"><i class="ti ti-credit-card"></i> Membership Card</button>
+      </div>
+
+      <div class="layout">
+        <div>
+          <!-- IDENTITY -->
+          <div class="panel act" id="panel-identity">
+            <div class="card">
+              <div class="card-h"><i class="ti ti-info-circle"></i> Gym Identity</div>
+              <div class="card-b">
+                <div class="row">
+                  <div class="fg"><label>Gym Name (English) <span class="req">*</span></label><input id="gymName" type="text" value="Fitness Hub"></div>
+                  <div class="fg"><label>Gym Name (Arabic) <span class="req">*</span></label><input id="gymNameAr" type="text" value="فتنس هب" dir="rtl"></div>
+                </div>
+                <div class="row">
+                  <div class="fg"><label>Short Name <span style="font-weight:500;color:var(--ltt)">(optional)</span></label><input id="shortName" type="text" value="FH"></div>
+                  <div class="fg"><label>Gym Code</label><div class="chip">GYM-TEST-01 <i class="ti ti-copy"></i></div><div class="hint">System-generated — not editable</div></div>
+                </div>
+                <div class="row">
+                  <div class="fg"><label>Phone</label><input id="phone" type="text" value="+20 123 456 7890"></div>
+                  <div class="fg"><label>Email</label><input id="email" type="email" value="hello@fitnesshub.eg" placeholder="new — today on Tenant, not in settings API"></div>
+                </div>
+                <div class="fg"><label>Website <span style="font-weight:500;color:var(--ltt)">(optional)</span></label><input id="website" type="url" placeholder="https://…"></div>
+                <div class="fg"><label>Address</label><textarea id="address" rows="2">123 Main Street, Cairo, Egypt</textarea></div>
+                <div class="fg">
+                  <label>Logo</label>
+                  <div class="logo-box">
+                    <div class="logo-ph" id="logoPh"><i class="ti ti-photo"></i></div>
+                    <img id="logoImg" alt="" style="display:none">
+                    <div>
+                      <div style="font-weight:600;font-size:13px;margin-bottom:6px">Upload logo (tenant-scoped)</div>
+                      <div class="actions">
+                        <button type="button" class="btn secondary" id="btnFakeUpload"><i class="ti ti-upload"></i> Choose file</button>
+                        <button type="button" class="btn ghost" id="btnClearLogo"><i class="ti ti-trash"></i> Remove</button>
+                      </div>
+                      <div class="hint">Preview: PNG/JPG/WEBP · ≤2MB · stored under uploads/logos-{tenantId}/ (same pattern as product photos). SVG only if security review allows.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="footer-actions">
+                  <button type="button" class="btn secondary">Cancel</button>
+                  <button type="button" class="btn primary"><i class="ti ti-device-floppy"></i> Save identity</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLORS -->
+          <div class="panel" id="panel-colors">
+            <div class="card">
+              <div class="card-h"><i class="ti ti-palette"></i> Brand Colors</div>
+              <div class="card-b">
+                <div class="swatch-row">
+                  <div class="swatch"><label>Primary</label><input type="color" id="cPrimary" value="#7ACC00"></div>
+                  <div class="swatch"><label>Secondary</label><input type="color" id="cSecondary" value="#148F8F"></div>
+                  <div class="swatch"><label>Accent</label><input type="color" id="cAccent" value="#A0E040"></div>
+                </div>
+                <p class="hint" style="margin:12px 0">Stored as data (hex), never as injected CSS strings. Desk UI may tint primary buttons / active nav — with contrast guardrails.</p>
+                <div class="preview-shell">
+                  <div class="bar"><div class="mark"></div><div class="name" id="shellName">Fitness Hub</div></div>
+                  <div class="body">
+                    <button type="button" class="cta">Primary action</button>
+                    <button type="button" class="cta2">Secondary</button>
+                    <span class="chipx">Accent chip</span>
+                  </div>
+                </div>
+                <div class="footer-actions">
+                  <button type="button" class="btn secondary" id="btnResetColors">Reset to HyMotion defaults</button>
+                  <button type="button" class="btn primary"><i class="ti ti-device-floppy"></i> Save colors</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD -->
+          <div class="panel" id="panel-card">
+            <div class="card">
+              <div class="card-h"><i class="ti ti-credit-card"></i> Membership Card options</div>
+              <div class="card-b">
+                <div class="row">
+                  <div class="fg"><label>Card primary color</label><input type="color" id="cardPrimary" value="#7ACC00"></div>
+                  <div class="fg"><label>Layout</label>
+                    <select id="cardLayout">
+                      <option value="mac-p0" selected>MAC-P0 Access card (CR80) — current production</option>
+                      <option value="photo-left" disabled>Photo + barcode (Phase 3 — gated)</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="toggles">
+                  <label class="toggle"><input type="checkbox" id="showGymName" checked> Show gym name</label>
+                  <label class="toggle"><input type="checkbox" id="showGymLogo" checked> Show gym logo</label>
+                  <label class="toggle"><input type="checkbox" id="showMemberNo" checked> Show member number</label>
+                  <label class="toggle"><input type="checkbox" id="showBarcode" checked> Show barcode</label>
+                  <label class="toggle"><input type="checkbox" id="showPhoto"> Show member photo</label>
+                  <label class="toggle"><input type="checkbox" id="showExpiry"> Show membership expiry</label>
+                  <label class="toggle"><input type="checkbox" id="showPhone"> Show phone</label>
+                  <label class="toggle"><input type="checkbox" id="showQr"> Show QR (optional)</label>
+                </div>
+                <div class="note">
+                  <strong>MAC-P0 constraint</strong>
+                  Production access cards today are identity-only (name + MemberNumber + Code128). Photo / expiry / phone on the card are <em>preview explorations</em> — shipping them needs a Product Decision Log revision (Phase 3 deferred). Safe Phase 1 branding: gym name, logo, mark color.
+                </div>
+                <div class="footer-actions">
+                  <button type="button" class="btn secondary"><i class="ti ti-printer"></i> Print sample</button>
+                  <button type="button" class="btn primary"><i class="ti ti-device-floppy"></i> Save card branding</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: live card -->
+        <div class="sticky card-preview-wrap">
+          <div class="card">
+            <div class="card-h"><i class="ti ti-eye"></i> Live membership card preview</div>
+            <div class="card-b">
+              <div class="cr80" id="cr80">
+                <div class="hdr">
+                  <img class="logo" id="cardLogo" alt="" style="display:none">
+                  <div class="mark" id="cardMark"></div>
+                  <div style="min-width:0;flex:1">
+                    <div class="product">HyMotion</div>
+                    <div class="gym" id="cardGym">Fitness Hub</div>
+                    <div class="gym-ar" id="cardGymAr">فتنس هب</div>
+                  </div>
+                </div>
+                <div class="identity">
+                  <div class="photo" id="cardPhoto"><i class="ti ti-user"></i></div>
+                  <div class="mname">Ahmed Mohamed</div>
+                  <div class="mname-ar">أحمد محمد</div>
+                  <div class="meta" id="cardMeta">Member No: GYM-018</div>
+                  <div class="meta" id="cardExpiry" style="display:none">Expires: 30/09/2026</div>
+                  <div class="meta" id="cardPhone" style="display:none">+20 100 000 0000</div>
+                </div>
+                <div class="scan" id="cardScan">
+                  <div class="bars" id="cardBars"></div>
+                  <div class="num" id="cardNum">GYM-018</div>
+                </div>
+              </div>
+              <p class="hint" style="text-align:center;margin-top:12px">CR80 · 86×54mm · matches MAC-P0 print target. Print hides admin chrome.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var demoLogo = 'data:image/svg+xml,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><rect width="128" height="128" rx="28" fill="#7ACC00"/><path d="M40 88L64 40L88 88" stroke="#0D0D0D" stroke-width="10" fill="none" stroke-linecap="round"/><path d="M48 72H80" stroke="#0D0D0D" stroke-width="8" stroke-linecap="round"/></svg>'
+  );
+
+  function $(id) { return document.getElementById(id); }
+
+  document.querySelectorAll('.tab').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab').forEach(function (b) { b.classList.remove('act'); });
+      document.querySelectorAll('.panel').forEach(function (p) { p.classList.remove('act'); });
+      btn.classList.add('act');
+      $('panel-' + btn.getAttribute('data-tab')).classList.add('act');
+    });
+  });
+
+  function applyColors() {
+    var p = $('cPrimary').value;
+    var s = $('cSecondary').value;
+    var a = $('cAccent').value;
+    var cp = $('cardPrimary').value;
+    document.documentElement.style.setProperty('--brand', p);
+    document.documentElement.style.setProperty('--brand2', s);
+    document.documentElement.style.setProperty('--accent', a);
+    document.documentElement.style.setProperty('--cardPrimary', cp);
+    $('cardMark').style.background = cp;
+  }
+
+  function applyIdentity() {
+    var name = $('gymName').value.trim() || 'Gym';
+    var nameAr = $('gymNameAr').value.trim();
+    $('sbBrand').textContent = name;
+    $('shellName').textContent = name;
+    $('cardGym').textContent = name;
+    $('cardGymAr').textContent = nameAr;
+    $('cardGym').style.display = $('showGymName').checked ? '' : 'none';
+    $('cardGymAr').style.display = $('showGymName').checked && nameAr ? '' : 'none';
+  }
+
+  function applyCardToggles() {
+    var showLogo = $('showGymLogo').checked && $('logoImg').style.display !== 'none';
+    $('cardLogo').style.display = showLogo ? '' : 'none';
+    $('cardMark').style.display = showLogo ? 'none' : '';
+    $('cr80').classList.toggle('show-photo', $('showPhoto').checked);
+    $('cardMeta').style.display = $('showMemberNo').checked ? '' : 'none';
+    $('cardExpiry').style.display = $('showExpiry').checked ? '' : 'none';
+    $('cardPhone').style.display = $('showPhone').checked ? '' : 'none';
+    $('cardScan').style.display = ($('showBarcode').checked || $('showQr').checked) ? '' : 'none';
+    $('cardBars').style.display = $('showBarcode').checked ? '' : 'none';
+    $('cardNum').style.display = $('showMemberNo').checked ? '' : 'none';
+  }
+
+  function setLogo(url) {
+    if (url) {
+      $('logoImg').src = url;
+      $('logoImg').style.display = '';
+      $('logoPh').style.display = 'none';
+      $('cardLogo').src = url;
+    } else {
+      $('logoImg').removeAttribute('src');
+      $('logoImg').style.display = 'none';
+      $('logoPh').style.display = '';
+      $('cardLogo').removeAttribute('src');
+    }
+    applyCardToggles();
+  }
+
+  ['gymName', 'gymNameAr'].forEach(function (id) {
+    $(id).addEventListener('input', applyIdentity);
+  });
+  ['cPrimary', 'cSecondary', 'cAccent', 'cardPrimary'].forEach(function (id) {
+    $(id).addEventListener('input', applyColors);
+  });
+  ['showGymName', 'showGymLogo', 'showMemberNo', 'showBarcode', 'showPhoto', 'showExpiry', 'showPhone', 'showQr'].forEach(function (id) {
+    $(id).addEventListener('change', function () {
+      applyIdentity();
+      applyCardToggles();
+    });
+  });
+
+  $('btnFakeUpload').addEventListener('click', function () {
+    setLogo(demoLogo);
+  });
+  $('btnClearLogo').addEventListener('click', function () {
+    setLogo(null);
+  });
+  $('btnResetColors').addEventListener('click', function () {
+    $('cPrimary').value = '#7ACC00';
+    $('cSecondary').value = '#148F8F';
+    $('cAccent').value = '#A0E040';
+    $('cardPrimary').value = '#7ACC00';
+    applyColors();
+  });
+
+  applyColors();
+  applyIdentity();
+  applyCardToggles();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,2108 @@
+<!-- PREVIEW ONLY — no production code. Platform Tenant Control Plane redesign. Discovery-aligned Aug 2026. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Platform Tenant Control Plane — Redesign Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --sidebar: #0B1220;
+  --sidebar-2: #111827;
+  --sidebar-border: #1F2937;
+  --sidebar-text: #9CA3AF;
+  --sidebar-text-h: #F9FAFB;
+  --canvas: #F4F6F9;
+  --surface: #FFFFFF;
+  --surface-2: #F8FAFC;
+  --border: #E5E7EB;
+  --border-soft: #EEF1F5;
+  --text: #111827;
+  --text-muted: #6B7280;
+  --text-faint: #9CA3AF;
+  --accent: #2563EB;
+  --accent-600: #1D4ED8;
+  --accent-soft: #EFF6FF;
+  --accent-border: #BFDBFE;
+  --good: #16A34A;
+  --good-soft: #ECFDF5;
+  --good-border: #A7F3D0;
+  --amber: #D97706;
+  --amber-soft: #FFFBEB;
+  --amber-border: #FDE68A;
+  --critical: #DC2626;
+  --critical-soft: #FEF2F2;
+  --critical-border: #FECACA;
+  --violet: #7C3AED;
+  --violet-soft: #F5F3FF;
+  --violet-border: #DDD6FE;
+  --font: "DM Sans", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --r: 8px;
+  --r-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, .08);
+  --shadow-lg: 0 20px 50px rgba(15, 23, 42, .18);
+  --sidebar-w: 248px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--canvas);
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -.02em; }
+.mono { font-family: var(--mono); }
+.tabular { font-variant-numeric: tabular-nums; }
+svg { display: block; flex-shrink: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Preview strip */
+.preview-strip {
+  background: var(--sidebar);
+  color: #CBD5E1;
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--sidebar-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.preview-strip b { color: #fff; }
+.preview-strip .pill {
+  background: rgba(37, 99, 235, .25);
+  color: #93C5FD;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.strip-legend { margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
+.strip-legend button {
+  background: transparent;
+  border: 1px solid var(--sidebar-border);
+  color: #CBD5E1;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.strip-legend button:hover { border-color: #4B5563; color: #fff; }
+
+/* Capability badges */
+.cap {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  vertical-align: middle;
+}
+.cap-impl { color: #15803D; border-color: var(--good-border); background: var(--good-soft); }
+.cap-ready { color: #1D4ED8; border-color: var(--accent-border); background: var(--accent-soft); }
+.cap-prop { color: #B45309; border-color: var(--amber-border); background: var(--amber-soft); }
+.cap-change { color: #6D28D9; border-color: var(--violet-border); background: var(--violet-soft); }
+
+/* Shell */
+.shell { display: flex; min-height: calc(100vh - 37px); }
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: linear-gradient(180deg, var(--sidebar) 0%, var(--sidebar-2) 100%);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 37px;
+  height: calc(100vh - 37px);
+  border-right: 1px solid var(--sidebar-border);
+  z-index: 40;
+  transition: transform .2s ease;
+}
+.sb-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 18px 16px 16px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+.sb-mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--accent);
+  display: grid; place-items: center;
+  color: #fff; font-weight: 700; font-size: 13px;
+}
+.sb-brand .name { color: #fff; font-weight: 700; font-size: 14px; }
+.sb-brand .sub { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; color: #64748B; font-weight: 600; }
+.sb-nav { flex: 1; overflow-y: auto; padding: 10px 10px 16px; }
+.sb-group { margin-top: 14px; }
+.sb-group:first-child { margin-top: 4px; }
+.sb-group-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: #64748B; padding: 4px 10px 6px;
+}
+.sb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 7px;
+  font-size: 13.5px; font-weight: 600; color: #9CA3AF;
+  border: none; background: transparent; width: 100%; text-align: left;
+  margin-bottom: 1px;
+}
+.sb-item:hover { background: rgba(255,255,255,.05); color: #fff; }
+.sb-item.active { background: var(--accent); color: #fff; }
+.sb-item svg { width: 16px; height: 16px; opacity: .9; }
+.sb-item .nav-badge {
+  margin-left: auto; font-size: 9px; font-weight: 800;
+  padding: 2px 5px; border-radius: 4px;
+  background: rgba(217, 119, 6, .2); color: #FBBF24; letter-spacing: .02em;
+}
+.sb-item.active .nav-badge { background: rgba(255,255,255,.2); color: #fff; }
+.sb-foot {
+  padding: 14px; border-top: 1px solid var(--sidebar-border);
+  display: flex; align-items: center; gap: 10px;
+}
+.sb-av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: #1F2937; color: #fff;
+  display: grid; place-items: center; font-weight: 700; font-size: 11px;
+}
+.sb-foot .nm { color: #fff; font-size: 12.5px; font-weight: 700; }
+.sb-foot .role { font-size: 11px; color: #64748B; }
+
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.topbar {
+  height: 52px; flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 22px;
+}
+.menu-btn {
+  display: none; width: 34px; height: 34px;
+  border: 1px solid var(--border); border-radius: 7px;
+  background: var(--surface); align-items: center; justify-content: center;
+}
+.crumbs { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); flex-wrap: wrap; }
+.crumbs button {
+  background: none; border: none; color: var(--accent); font-weight: 600; padding: 0;
+}
+.crumbs button:hover { text-decoration: underline; }
+.crumbs .cur { color: var(--text); font-weight: 700; }
+.crumbs .sep { color: var(--text-faint); }
+.top-search {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 12px; color: var(--text-faint);
+  font-size: 12.5px; min-width: 200px;
+}
+.top-search kbd {
+  font-family: var(--mono); font-size: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 5px; color: var(--text-muted);
+}
+.legend-toggle {
+  border: 1px solid var(--border); background: var(--surface);
+  border-radius: 7px; padding: 6px 11px; font-size: 12px; font-weight: 600;
+  color: var(--text-muted);
+}
+.legend-toggle:hover { border-color: #CBD5E1; color: var(--text); }
+
+.content { flex: 1; padding: 22px 24px 48px; }
+.content-inner { max-width: 1280px; }
+.view { display: none; animation: fade .18s ease; }
+.view.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+.page-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.page-head h1 { font-size: 22px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.page-head p { margin: 4px 0 0; color: var(--text-muted); font-size: 13.5px; max-width: 52rem; }
+.page-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 34px; padding: 0 12px; border-radius: 7px;
+  font-size: 13px; font-weight: 600; border: 1px solid transparent; white-space: nowrap;
+}
+.btn svg { width: 14px; height: 14px; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-600); }
+.btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border); }
+.btn-secondary:hover { background: var(--surface-2); border-color: #CBD5E1; }
+.btn-danger { background: var(--surface); color: var(--critical); border-color: var(--critical-border); }
+.btn-danger:hover { background: var(--critical-soft); }
+.btn-danger-solid { background: var(--critical); color: #fff; }
+.btn-ghost { background: transparent; color: var(--text-muted); }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn-sm { height: 28px; padding: 0 9px; font-size: 12px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.icon-btn {
+  width: 32px; height: 32px; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--surface);
+  display: grid; place-items: center; color: var(--text-muted);
+}
+.icon-btn:hover { color: var(--text); border-color: #CBD5E1; }
+
+/* Cards / KPIs */
+.kpi-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+.kpi {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 12px 14px; box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.kpi .lbl { font-size: 11.5px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+.kpi .lbl .dot { width: 6px; height: 6px; border-radius: 50%; }
+.kpi .val { font-size: 22px; font-weight: 700; margin-top: 4px; letter-spacing: -.03em; }
+.kpi .sub { font-size: 11px; color: var(--text-faint); margin-top: 1px; }
+.kpi .cap { position: absolute; top: 8px; right: 8px; }
+
+.attn-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+.attn {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 14px; box-shadow: var(--shadow-sm);
+  cursor: pointer; transition: border-color .15s, box-shadow .15s;
+}
+.attn:hover { border-color: var(--accent-border); box-shadow: var(--shadow-md); }
+.attn .t { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.attn .n { font-size: 26px; font-weight: 700; margin-top: 4px; letter-spacing: -.03em; }
+.attn .h { font-size: 11.5px; color: var(--text-faint); margin-top: 2px; }
+.attn.warn { border-left: 3px solid var(--amber); }
+.attn.crit { border-left: 3px solid var(--critical); }
+.attn.info { border-left: 3px solid var(--accent); }
+
+.card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+}
+.card-pad { padding: 16px 18px; }
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-bottom: 1px solid var(--border); gap: 10px; flex-wrap: wrap;
+}
+.card-head h3 { font-size: 13.5px; display: flex; align-items: center; gap: 8px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.section-gap { margin-bottom: 16px; }
+
+/* Toolbar / filters */
+.toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.search { position: relative; flex: 1; min-width: 200px; max-width: 300px; }
+.search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text-faint); }
+.search input {
+  width: 100%; height: 34px; padding: 0 10px 0 32px;
+  border: 1px solid var(--border); border-radius: 7px; background: var(--surface);
+}
+.select {
+  height: 34px; padding: 0 28px 0 10px;
+  border: 1px solid var(--border); border-radius: 7px; background: var(--surface);
+  appearance: none; font-size: 12.5px; font-weight: 600; color: var(--text);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.spacer { flex: 1; }
+
+/* Tables */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.table-scroll { overflow-x: auto; max-height: min(62vh, 640px); }
+table { width: 100%; border-collapse: collapse; min-width: 880px; }
+thead th {
+  position: sticky; top: 0; z-index: 2;
+  text-align: left; font-size: 10.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint);
+  background: var(--surface-2); padding: 10px 12px;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+tbody td {
+  padding: 11px 12px; border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle; font-size: 13px;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr { cursor: pointer; transition: background .1s; }
+tbody tr:hover { background: var(--surface-2); }
+.t-cell { display: flex; align-items: center; gap: 10px; }
+.t-logo {
+  width: 30px; height: 30px; border-radius: 7px;
+  background: var(--accent-soft); color: var(--accent-600);
+  display: grid; place-items: center; font-weight: 700; font-size: 11px; flex-shrink: 0;
+}
+.t-name { font-weight: 700; }
+.t-meta { font-size: 11px; color: var(--text-faint); font-family: var(--mono); }
+
+/* Status badges */
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px; border-radius: 99px;
+  font-size: 11.5px; font-weight: 700; border: 1px solid transparent; white-space: nowrap;
+}
+.badge .d { width: 5px; height: 5px; border-radius: 50%; }
+.b-trialing { background: var(--accent-soft); color: #1D4ED8; border-color: var(--accent-border); }
+.b-trialing .d { background: var(--accent); }
+.b-active { background: var(--good-soft); color: #15803D; border-color: var(--good-border); }
+.b-active .d { background: var(--good); }
+.b-past_due { background: var(--amber-soft); color: #B45309; border-color: var(--amber-border); }
+.b-past_due .d { background: var(--amber); }
+.b-suspended { background: var(--critical-soft); color: #B91C1C; border-color: var(--critical-border); }
+.b-suspended .d { background: var(--critical); }
+.b-cancelled { background: #F3F4F6; color: #4B5563; border-color: var(--border); }
+.b-cancelled .d { background: #9CA3AF; }
+.b-healthy { background: var(--good-soft); color: #15803D; border-color: var(--good-border); }
+.b-watch { background: var(--amber-soft); color: #B45309; border-color: var(--amber-border); }
+.b-at_risk { background: #FFF7ED; color: #C2410C; border-color: #FED7AA; }
+.b-critical { background: var(--critical-soft); color: #B91C1C; border-color: var(--critical-border); }
+.plan-chip {
+  display: inline-flex; padding: 2px 8px; border-radius: 5px;
+  font-size: 11px; font-weight: 700; text-transform: capitalize;
+}
+.plan-starter { background: #F3F4F6; color: #4B5563; }
+.plan-growth { background: var(--accent-soft); color: #1D4ED8; }
+.plan-pro { background: var(--violet-soft); color: #6D28D9; }
+.plan-enterprise { background: #111827; color: #fff; }
+
+.usage-mini { display: flex; align-items: center; gap: 6px; min-width: 70px; }
+.usage-track { flex: 1; height: 4px; border-radius: 99px; background: var(--border-soft); overflow: hidden; }
+.usage-fill { height: 100%; border-radius: 99px; }
+.usage-fill.g { background: var(--good); }
+.usage-fill.w { background: var(--amber); }
+.usage-fill.c { background: var(--critical); }
+.usage-pct { font-family: var(--mono); font-size: 11px; width: 28px; text-align: right; color: var(--text-muted); }
+
+/* Tabs */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 16px; overflow-x: auto; }
+.tab {
+  padding: 9px 2px; margin-right: 18px; font-size: 13px; font-weight: 600;
+  color: var(--text-muted); border: none; background: none;
+  border-bottom: 2px solid transparent; white-space: nowrap;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; animation: fade .15s ease; }
+
+/* Tenant 360 header */
+.t360-head {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 18px 20px; margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.t360-title { display: flex; gap: 14px; align-items: flex-start; }
+.t360-logo {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: var(--accent-soft); color: var(--accent-600);
+  display: grid; place-items: center; font-weight: 700; font-size: 16px;
+}
+.t360-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+.t360-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Lifecycle */
+.lifecycle {
+  display: flex; align-items: center; gap: 0; overflow-x: auto;
+  padding: 8px 0;
+}
+.lc-step {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  min-width: 100px; position: relative; flex: 1;
+}
+.lc-step::after {
+  content: ""; position: absolute; top: 11px; left: 50%; right: -50%;
+  height: 2px; background: var(--border); z-index: 0;
+}
+.lc-step:last-child::after { display: none; }
+.lc-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border); background: var(--surface);
+  z-index: 1; position: relative;
+}
+.lc-step.done .lc-dot { border-color: var(--good); background: var(--good); }
+.lc-step.current .lc-dot { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.lc-step.skipped .lc-dot { border-color: #D1D5DB; background: #E5E7EB; }
+.lc-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-align: center; }
+.lc-step.current .lc-label { color: var(--accent); }
+.lc-step.done .lc-label { color: var(--text); }
+
+/* Health / usage cards */
+.health-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.health-card {
+  border: 1px solid var(--border); border-radius: var(--r);
+  padding: 12px 14px; background: var(--surface-2);
+}
+.health-card .hn { font-size: 12px; font-weight: 700; margin-bottom: 6px; display: flex; justify-content: space-between; }
+.health-card .hd { font-size: 11.5px; color: var(--text-muted); }
+.usage-card {
+  border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 14px 16px; background: var(--surface);
+}
+.usage-card .top { display: flex; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+.usage-card .name { font-weight: 700; font-size: 13px; }
+.usage-card .nums { font-family: var(--mono); font-size: 12px; color: var(--text-muted); }
+.usage-card .nums b { color: var(--text); }
+.usage-card .track { height: 6px; border-radius: 99px; background: var(--border-soft); overflow: hidden; }
+.usage-card .fill { height: 100%; border-radius: 99px; }
+.usage-card .pct { margin-top: 6px; font-family: var(--mono); font-size: 11.5px; font-weight: 600; }
+
+.field-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 8px 0; border-bottom: 1px solid var(--border-soft); font-size: 13px; gap: 12px;
+}
+.field-row:last-child { border-bottom: none; }
+.field-row .k { color: var(--text-muted); }
+.field-row .v { font-weight: 600; text-align: right; }
+
+.notice {
+  border-radius: 8px; padding: 11px 13px; font-size: 12.5px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.notice-info { background: var(--accent-soft); color: #1D4ED8; border: 1px solid var(--accent-border); }
+.notice-prop { background: var(--amber-soft); color: #92400E; border: 1px solid var(--amber-border); }
+.notice-ready { background: var(--accent-soft); color: #1E40AF; border: 1px solid var(--accent-border); }
+.notice-warn { background: var(--amber-soft); color: #92400E; border: 1px solid var(--amber-border); }
+
+/* Wizard */
+.wiz-steps {
+  display: flex; gap: 4px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px;
+}
+.wiz-step {
+  flex: 1; min-width: 90px; text-align: center; padding: 10px 8px;
+  border-radius: 8px; border: 1px solid var(--border); background: var(--surface);
+  font-size: 11.5px; font-weight: 600; color: var(--text-muted);
+}
+.wiz-step .n {
+  display: inline-grid; place-items: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--border-soft); font-size: 11px; margin-bottom: 4px;
+}
+.wiz-step.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.wiz-step.active .n { background: var(--accent); color: #fff; }
+.wiz-step.done { border-color: var(--good-border); color: #15803D; }
+.wiz-step.done .n { background: var(--good); color: #fff; }
+.wiz-panel { display: none; }
+.wiz-panel.active { display: block; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.fg { display: flex; flex-direction: column; gap: 5px; }
+.fg.full { grid-column: 1 / -1; }
+.fg label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.fg input, .fg select, .fg textarea {
+  height: 36px; padding: 0 11px; border: 1px solid var(--border);
+  border-radius: 7px; background: var(--surface); color: var(--text);
+}
+.fg textarea { height: auto; min-height: 72px; padding: 9px 11px; resize: vertical; }
+.fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+.fg .hint { font-size: 11.5px; color: var(--text-faint); }
+.invite-compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
+}
+.invite-card {
+  border: 1px solid var(--border); border-radius: var(--r-lg); padding: 14px;
+  background: var(--surface-2);
+}
+.invite-card.impl { border-color: var(--good-border); background: var(--good-soft); }
+.invite-card.prop { border-color: var(--amber-border); background: var(--amber-soft); border-style: dashed; }
+.trial-opts { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.trial-opt {
+  border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px;
+  background: var(--surface); font-weight: 600; font-size: 13px; min-width: 80px; text-align: center;
+}
+.trial-opt.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.trial-opt.prop { opacity: .85; }
+.trial-timeline {
+  display: flex; align-items: center; gap: 0; margin: 16px 0;
+  background: var(--surface-2); border-radius: 8px; padding: 16px; overflow-x: auto;
+}
+.tt-node { text-align: center; flex: 1; min-width: 90px; position: relative; }
+.tt-node::after {
+  content: ""; position: absolute; top: 8px; left: 50%; width: 100%; height: 2px; background: var(--border);
+}
+.tt-node:last-child::after { display: none; }
+.tt-dot {
+  width: 16px; height: 16px; border-radius: 50%; background: var(--accent);
+  margin: 0 auto 6px; position: relative; z-index: 1; border: 3px solid var(--accent-soft);
+}
+.tt-dot.muted { background: #D1D5DB; border-color: #F3F4F6; }
+.tt-l { font-size: 11.5px; font-weight: 700; }
+.tt-d { font-size: 10.5px; color: var(--text-faint); }
+
+.plan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.plan-card {
+  border: 1.5px solid var(--border); border-radius: var(--r-lg);
+  padding: 14px; background: var(--surface); cursor: pointer; position: relative;
+}
+.plan-card:hover { border-color: var(--accent-border); }
+.plan-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.plan-card h4 { font-size: 14px; text-transform: capitalize; }
+.plan-card .price { font-size: 20px; font-weight: 700; margin: 6px 0 2px; }
+.plan-card .price span { font-size: 11px; font-weight: 500; color: var(--text-faint); }
+.plan-card ul { list-style: none; margin: 10px 0 0; padding: 0; font-size: 11.5px; color: var(--text-muted); }
+.plan-card li { margin-bottom: 4px; }
+
+/* Charts mock */
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding-top: 8px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.bar-col .bar { width: 100%; max-width: 36px; border-radius: 4px 4px 0 0; background: var(--accent); min-height: 4px; }
+.bar-col .bl { font-size: 10px; color: var(--text-faint); font-weight: 600; }
+.donut-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.donut {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: conic-gradient(#2563EB 0 28%, #7C3AED 28% 52%, #16A34A 52% 78%, #9CA3AF 78% 100%);
+  position: relative;
+}
+.donut::after {
+  content: ""; position: absolute; inset: 22px; background: var(--surface); border-radius: 50%;
+}
+.legend-list { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; }
+.legend-list span { display: flex; align-items: center; gap: 8px; }
+.sw { width: 10px; height: 10px; border-radius: 3px; }
+
+/* Overlay / modal / drawer */
+.overlay {
+  position: fixed; inset: 0; background: rgba(11, 18, 32, .48);
+  backdrop-filter: blur(2px); z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none; transition: opacity .15s ease;
+}
+.overlay.open { opacity: 1; pointer-events: auto; }
+.modal {
+  background: var(--surface); border-radius: 14px; box-shadow: var(--shadow-lg);
+  width: 100%; max-width: 460px; max-height: calc(100vh - 40px);
+  display: flex; flex-direction: column;
+  transform: translateY(8px); transition: transform .15s ease;
+}
+.overlay.open .modal { transform: none; }
+.modal.wide { max-width: 720px; }
+.modal.xl { max-width: 900px; }
+.modal-head {
+  padding: 16px 18px 12px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.modal-head h2 { font-size: 16px; }
+.modal-head p { font-size: 12.5px; color: var(--text-muted); margin: 3px 0 0; }
+.modal-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+.modal-foot {
+  padding: 12px 18px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px; flex-shrink: 0;
+}
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(11, 18, 32, .4);
+  z-index: 190; opacity: 0; pointer-events: none; transition: opacity .15s;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%);
+  background: var(--surface); box-shadow: var(--shadow-lg); z-index: 195;
+  transform: translateX(100%); transition: transform .2s ease;
+  display: flex; flex-direction: column;
+}
+.drawer.open { transform: none; }
+.drawer-head {
+  padding: 16px 18px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.drawer-body { padding: 16px 18px; overflow-y: auto; flex: 1; }
+
+/* Dropdown menu */
+.menu-pop {
+  position: absolute; right: 0; top: 100%; margin-top: 4px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; box-shadow: var(--shadow-md); min-width: 180px;
+  z-index: 30; padding: 4px; display: none;
+}
+.menu-pop.open { display: block; }
+.menu-pop button {
+  display: block; width: 100%; text-align: left;
+  padding: 8px 10px; border: none; background: none;
+  border-radius: 6px; font-size: 12.5px; font-weight: 600; color: var(--text);
+}
+.menu-pop button:hover { background: var(--surface-2); }
+.menu-pop button.danger { color: var(--critical); }
+.qa-wrap { position: relative; }
+
+/* Toast */
+.toast-host {
+  position: fixed; bottom: 20px; right: 20px; z-index: 300;
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-end;
+}
+.toast {
+  background: var(--sidebar); color: #fff; padding: 10px 14px;
+  border-radius: 8px; font-size: 12.5px; font-weight: 600;
+  box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px;
+  max-width: 340px; animation: slidein .2s ease;
+}
+@keyframes slidein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.toast.ok::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #4ADE80; }
+.toast.err::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #F87171; }
+
+/* Meta legend panel */
+.meta-panel {
+  margin-top: 28px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 14px 16px; box-shadow: var(--shadow-sm);
+}
+.meta-panel h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-faint); margin-bottom: 10px; }
+.meta-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.meta-item { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+.meta-item strong { display: block; color: var(--text); margin-bottom: 2px; }
+
+.empty {
+  text-align: center; padding: 40px 20px; color: var(--text-muted);
+}
+.empty h3 { font-size: 15px; margin-bottom: 4px; color: var(--text); }
+
+.role-tag {
+  font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 5px;
+  background: #F3F4F6; color: #4B5563;
+}
+.role-tag.owner { background: #FEF2F2; color: #B91C1C; }
+.role-tag.manager { background: var(--accent-soft); color: #1D4ED8; }
+.avatar-sm {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #111827; color: #fff;
+  display: grid; place-items: center; font-weight: 700; font-size: 10px;
+}
+
+.sb-backdrop {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 35;
+}
+
+@media (max-width: 1200px) {
+  .kpi-row { grid-template-columns: repeat(3, 1fr); }
+  .attn-grid { grid-template-columns: repeat(3, 1fr); }
+  .plan-grid { grid-template-columns: repeat(2, 1fr); }
+  .health-grid { grid-template-columns: repeat(2, 1fr); }
+  .meta-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+  .sidebar { position: fixed; transform: translateX(-100%); top: 37px; }
+  .sidebar.open { transform: none; }
+  .sb-backdrop.open { display: block; }
+  .menu-btn { display: grid; }
+  .kpi-row, .attn-grid { grid-template-columns: repeat(2, 1fr); }
+  .grid-2, .grid-3, .grid-4, .invite-compare { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .top-search { display: none; }
+  .strip-legend { display: none; }
+  .plan-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="preview-strip">
+  <span class="pill">Preview only</span>
+  <span><b>Platform Tenant Control Plane</b> — redesign aligned to discovery Aug 2026. Mock data · no API.</span>
+  <div class="strip-legend">
+    <button type="button" onclick="toggleLegend()">Status legend</button>
+  </div>
+</div>
+
+<div class="sb-backdrop" id="sbBackdrop" onclick="closeSidebar()"></div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-mark">GF</div>
+      <div>
+        <div class="name">HyMotion</div>
+        <div class="sub">Platform Console</div>
+      </div>
+    </div>
+    <nav class="sb-nav" id="sbNav">
+      <div class="sb-group">
+        <div class="sb-group-label">Overview</div>
+        <button class="sb-item active" data-view="dashboard" onclick="nav('dashboard')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Dashboard
+        </button>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Customer Operations</div>
+        <button class="sb-item" data-view="tenants" onclick="nav('tenants')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+          Tenants
+        </button>
+        <button class="sb-item" data-view="risk" onclick="nav('risk')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          Risk Queue
+        </button>
+        <button class="sb-item" data-view="subscriptions" onclick="nav('subscriptions')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Subscriptions
+        </button>
+        <button class="sb-item" data-view="trials" onclick="nav('trials')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Trials <span class="nav-badge">PROPOSED</span>
+        </button>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Business</div>
+        <button class="sb-item" data-view="metrics" onclick="nav('metrics')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M10 19V9M16 19v-6M22 19V7"/></svg>
+          Metrics
+        </button>
+        <button class="sb-item" data-view="usage" onclick="nav('usage')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          Usage
+        </button>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Governance</div>
+        <button class="sb-item" data-view="audit" onclick="nav('audit')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          Audit Log
+        </button>
+        <button class="sb-item" data-view="platform-users" onclick="nav('platform-users')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Platform Users
+        </button>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Configuration</div>
+        <button class="sb-item" data-view="plans" onclick="nav('plans')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Plans &amp; Pricing <span class="nav-badge">PROPOSED</span>
+        </button>
+        <button class="sb-item" data-view="settings" onclick="nav('settings')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings <span class="nav-badge">PROPOSED</span>
+        </button>
+      </div>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-av">SA</div>
+      <div>
+        <div class="nm">Sara Ahmed</div>
+        <div class="role">Platform Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="menu-btn" type="button" onclick="toggleSidebar()" aria-label="Menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <div class="crumbs" id="crumbs"><span class="cur">Dashboard</span></div>
+      <div class="top-search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        Search tenants, audits… <kbd>/</kbd>
+      </div>
+      <button class="legend-toggle" type="button" onclick="toggleLegend()">Legend</button>
+    </div>
+
+    <div class="content">
+      <div class="content-inner">
+
+        <!-- DASHBOARD -->
+        <section class="view active" id="view-dashboard">
+          <div class="page-head">
+            <div>
+              <h1>Dashboard <span class="cap cap-impl">Implemented</span></h1>
+              <p>Attention queue and commercial pulse for the platform control plane.</p>
+            </div>
+          </div>
+          <div class="attn-grid">
+            <div class="attn crit" onclick="nav('risk')">
+              <div class="t">Risk queue open</div>
+              <div class="n tabular">5</div>
+              <div class="h">2 critical · 3 watch</div>
+            </div>
+            <div class="attn warn" onclick="nav('trials')">
+              <div class="t">Trials ending ≤7d</div>
+              <div class="n tabular">2</div>
+              <div class="h">Power Gym · Prime Athletics</div>
+            </div>
+            <div class="attn warn" onclick="nav('subscriptions')">
+              <div class="t">Renewals (14d)</div>
+              <div class="n tabular">3</div>
+              <div class="h">Sep 2026 window</div>
+            </div>
+            <div class="attn info" onclick="nav('usage')">
+              <div class="t">Usage alerts</div>
+              <div class="n tabular">2</div>
+              <div class="h">Near member / WA caps</div>
+            </div>
+            <div class="attn crit" onclick="filterTenantsStatus('past_due')">
+              <div class="t">Past due</div>
+              <div class="n tabular">1</div>
+              <div class="h">Iron Club</div>
+            </div>
+          </div>
+          <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+            <div class="kpi"><div class="lbl">MRR <span class="cap cap-impl">Impl</span></div><div class="val tabular">EGP 16,995</div><div class="sub">Active + past_due billed</div></div>
+            <div class="kpi"><div class="lbl">ARR</div><div class="val tabular">EGP 169,950</div><div class="sub">MRR × 10 annual equiv</div></div>
+            <div class="kpi"><div class="lbl">Churn (30d)</div><div class="val tabular">4.2%</div><div class="sub">1 cancelled · Pulse Fitness</div></div>
+            <div class="kpi"><div class="lbl">Trial conversion</div><div class="val tabular">38%</div><div class="sub">Started vs converted</div></div>
+          </div>
+          <div class="grid-2 section-gap">
+            <div class="card">
+              <div class="card-head"><h3>Tier distribution <span class="cap cap-impl">Implemented</span></h3></div>
+              <div class="card-pad">
+                <div class="donut-row">
+                  <div class="donut" aria-hidden="true"></div>
+                  <div class="legend-list">
+                    <span><i class="sw" style="background:#2563EB"></i> Growth · 3</span>
+                    <span><i class="sw" style="background:#7C3AED"></i> Pro · 2</span>
+                    <span><i class="sw" style="background:#16A34A"></i> Starter · 2</span>
+                    <span><i class="sw" style="background:#9CA3AF"></i> Enterprise · 1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>MRR movement (Aug–Sep) <span class="cap cap-impl">Implemented</span></h3></div>
+              <div class="card-pad">
+                <div class="bar-chart">
+                  <div class="bar-col"><div class="bar" style="height:55%;background:#93C5FD"></div><div class="bl">Jun</div></div>
+                  <div class="bar-col"><div class="bar" style="height:62%"></div><div class="bl">Jul</div></div>
+                  <div class="bar-col"><div class="bar" style="height:78%"></div><div class="bl">Aug</div></div>
+                  <div class="bar-col"><div class="bar" style="height:88%;background:#1D4ED8"></div><div class="bl">Sep</div></div>
+                </div>
+                <div style="margin-top:10px;font-size:12px;color:var(--text-muted)">New +EGP 3,998 · Expansion +EGP 2,000 · Churn −EGP 1,999</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Recent platform activity</h3><button class="btn btn-sm btn-ghost" onclick="nav('audit')">Audit log →</button></div>
+            <div class="card-pad" id="dashActivity"></div>
+          </div>
+        </section>
+
+        <!-- TENANTS -->
+        <section class="view" id="view-tenants">
+          <div class="page-head">
+            <div>
+              <h1>Tenants <span class="cap cap-impl">Implemented</span></h1>
+              <p>Provision, inspect, and operate gym tenants across subscription lifecycle.</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-primary" onclick="openWizard()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                Create Tenant
+              </button>
+            </div>
+          </div>
+          <div class="kpi-row" id="tenantKpis"></div>
+          <div class="toolbar">
+            <div class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input id="tenantSearch" type="search" placeholder="Search name, city, owner…" oninput="renderTenants()" />
+            </div>
+            <select class="select" id="fLifecycle" onchange="renderTenants()">
+              <option value="">All lifecycle</option>
+              <option value="trialing">trialing</option>
+              <option value="active">active</option>
+              <option value="past_due">past_due</option>
+              <option value="suspended">suspended</option>
+              <option value="cancelled">cancelled</option>
+            </select>
+            <select class="select" id="fPlan" onchange="renderTenants()">
+              <option value="">All plans</option>
+              <option value="starter">starter</option>
+              <option value="growth">growth</option>
+              <option value="pro">pro</option>
+              <option value="enterprise">enterprise</option>
+            </select>
+            <select class="select" id="fTrial" onchange="renderTenants()">
+              <option value="">Trial filter</option>
+              <option value="in_trial">In trial</option>
+              <option value="ending">Ending ≤7d</option>
+            </select>
+            <select class="select" id="fHealth" onchange="renderTenants()">
+              <option value="">All health</option>
+              <option value="healthy">healthy</option>
+              <option value="watch">watch</option>
+              <option value="at_risk">at_risk</option>
+              <option value="critical">critical</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tenant</th>
+                    <th>Status</th>
+                    <th>Plan</th>
+                    <th>MRR</th>
+                    <th>Health</th>
+                    <th>Members</th>
+                    <th>Trial / renew</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tenantTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- CREATE WIZARD -->
+        <section class="view" id="view-create">
+          <div class="page-head">
+            <div>
+              <h1>Create Tenant <span class="cap cap-impl">Implemented</span></h1>
+              <p>Provision fields match live API. Owner invitation &amp; custom trial days marked where proposed.</p>
+            </div>
+            <button class="btn btn-secondary" onclick="nav('tenants')">Cancel</button>
+          </div>
+          <div class="wiz-steps" id="wizSteps"></div>
+          <div class="card card-pad">
+            <div class="wiz-panel active" data-step="0" id="wiz-0">
+              <h3 style="margin-bottom:12px">Business</h3>
+              <div class="form-grid">
+                <div class="fg"><label>Name *</label><input id="wName" value="Nile Athletics" /></div>
+                <div class="fg"><label>Name (AR)</label><input id="wNameAr" placeholder="اختياري" /></div>
+                <div class="fg"><label>City *</label><input id="wCity" value="Cairo" /></div>
+                <div class="fg"><label>Address</label><input id="wAddress" placeholder="Optional" /></div>
+                <div class="fg"><label>Phone *</label><input id="wPhone" value="+20 100 555 0101" /></div>
+                <div class="fg"><label>Email *</label><input id="wEmail" value="ops@nileathletics.eg" /></div>
+                <div class="fg"><label>Gym code</label><input id="wGymCode" placeholder="Optional" /></div>
+                <div class="fg"><label>Time zone</label><select id="wTz"><option>Africa/Cairo</option><option>Asia/Riyadh</option></select></div>
+              </div>
+            </div>
+            <div class="wiz-panel" data-step="1" id="wiz-1">
+              <h3 style="margin-bottom:8px">Owner</h3>
+              <div class="form-grid">
+                <div class="fg"><label>Owner full name *</label><input id="wOwnerName" value="Karim Hassan" /></div>
+                <div class="fg"><label>Owner email *</label><input id="wOwnerEmail" value="karim@nileathletics.eg" /></div>
+                <div class="fg full">
+                  <label>Owner password * <span class="cap cap-impl">Implemented</span></label>
+                  <input id="wOwnerPass" type="password" value="SecurePass1" />
+                  <div class="hint">Platform Admin sets password today (min 8). No email invite flow yet.</div>
+                </div>
+              </div>
+              <div class="invite-compare">
+                <div class="invite-card impl">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <strong>Admin sets password</strong>
+                    <span class="cap cap-impl">Implemented</span>
+                  </div>
+                  <div style="font-size:12.5px;color:var(--text-muted)">You create the Owner account with a temporary password and share it out-of-band.</div>
+                </div>
+                <div class="invite-card prop">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                    <strong>Owner Invitation</strong>
+                    <span class="cap cap-prop">Proposed</span>
+                  </div>
+                  <div style="font-size:12.5px;color:var(--text-muted)">Email invite link; owner sets their own password. Not available in live create flow.</div>
+                </div>
+              </div>
+            </div>
+            <div class="wiz-panel" data-step="2" id="wiz-2">
+              <h3 style="margin-bottom:12px">Subscription</h3>
+              <div class="plan-grid" id="wizPlans"></div>
+              <p style="margin-top:12px;font-size:12px;color:var(--text-muted)">Field <code class="mono">tier</code> on provision. Annual = monthly × 10.</p>
+            </div>
+            <div class="wiz-panel" data-step="3" id="wiz-3">
+              <h3 style="margin-bottom:8px">Trial</h3>
+              <div class="notice notice-info" style="margin-bottom:12px">
+                Global default <strong>TrialDays = 14</strong> <span class="cap cap-impl">Implemented</span>
+              </div>
+              <div class="trial-opts">
+                <button type="button" class="trial-opt active" data-days="14" onclick="pickTrialDays(14,this)">14 days</button>
+                <button type="button" class="trial-opt prop" data-days="7" onclick="pickTrialDays(7,this)">7 <span class="cap cap-prop">Prop</span></button>
+                <button type="button" class="trial-opt prop" data-days="30" onclick="pickTrialDays(30,this)">30 <span class="cap cap-prop">Prop</span></button>
+                <button type="button" class="trial-opt prop" data-days="custom" onclick="pickTrialDays('custom',this)">Custom <span class="cap cap-prop">Prop</span></button>
+              </div>
+              <div class="fg" id="customDaysWrap" style="display:none;max-width:160px;margin-bottom:12px">
+                <label>Custom days</label>
+                <input type="number" id="wCustomDays" min="1" max="90" value="21" />
+              </div>
+              <div class="trial-timeline">
+                <div class="tt-node"><div class="tt-dot"></div><div class="tt-l">Provision</div><div class="tt-d">Today</div></div>
+                <div class="tt-node"><div class="tt-dot"></div><div class="tt-l">Trialing</div><div class="tt-d" id="ttTrialEnd">+14 days</div></div>
+                <div class="tt-node"><div class="tt-dot muted"></div><div class="tt-l">Convert to Paid <span class="cap cap-prop">Prop</span></div><div class="tt-d">Auto via billing jobs only</div></div>
+              </div>
+              <div class="notice notice-prop">
+                Convert to Paid is <strong>PROPOSED</strong> as a manual control-plane action. Live conversion runs via billing jobs.
+              </div>
+            </div>
+            <div class="wiz-panel" data-step="4" id="wiz-4">
+              <h3 style="margin-bottom:12px">Review</h3>
+              <div class="grid-2" id="wizReview"></div>
+            </div>
+            <div class="wiz-panel" data-step="5" id="wiz-5">
+              <div class="empty">
+                <div style="width:56px;height:56px;border-radius:50%;background:var(--good-soft);color:var(--good);display:grid;place-items:center;margin:0 auto 12px;font-size:24px;font-weight:700">✓</div>
+                <h3>Tenant provisioned</h3>
+                <p style="max-width:360px;margin:8px auto 16px">Nile Athletics is trialing on the selected plan. Owner credentials are ready (admin-set password).</p>
+                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                  <button class="btn btn-primary" onclick="openTenant('t-new')">Open Tenant 360</button>
+                  <button class="btn btn-secondary" onclick="nav('tenants')">Back to list</button>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)" id="wizNavBtns">
+              <button class="btn btn-secondary" id="wizBack" onclick="wizBack()">Back</button>
+              <button class="btn btn-primary" id="wizNext" onclick="wizNext()">Continue</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TENANT 360 -->
+        <section class="view" id="view-tenant360">
+          <div class="t360-head" id="t360Head"></div>
+          <div class="tabs" id="t360Tabs">
+            <button class="tab active" data-tab="overview" onclick="switchTab(this)">Overview</button>
+            <button class="tab" data-tab="subscription" onclick="switchTab(this)">Subscription</button>
+            <button class="tab" data-tab="usage" onclick="switchTab(this)">Usage</button>
+            <button class="tab" data-tab="health" onclick="switchTab(this)">Health</button>
+            <button class="tab" data-tab="users" onclick="switchTab(this)">Users</button>
+            <button class="tab" data-tab="billing" onclick="switchTab(this)">Billing</button>
+            <button class="tab" data-tab="audit" onclick="switchTab(this)">Audit</button>
+          </div>
+          <div class="tab-panel active" id="tab-overview"></div>
+          <div class="tab-panel" id="tab-subscription"></div>
+          <div class="tab-panel" id="tab-usage"></div>
+          <div class="tab-panel" id="tab-health"></div>
+          <div class="tab-panel" id="tab-users"></div>
+          <div class="tab-panel" id="tab-billing"></div>
+          <div class="tab-panel" id="tab-audit"></div>
+        </section>
+
+        <!-- TRIALS -->
+        <section class="view" id="view-trials">
+          <div class="page-head">
+            <div>
+              <h1>Trials <span class="cap cap-prop">Proposed</span></h1>
+              <p>Dedicated trials workspace. Uses real trial / conversion concepts; page itself is proposed.</p>
+            </div>
+          </div>
+          <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+            <div class="kpi"><div class="lbl">Active trials</div><div class="val">2</div><div class="sub">trialing status</div></div>
+            <div class="kpi"><div class="lbl">Ending ≤7d</div><div class="val">2</div></div>
+            <div class="kpi"><div class="lbl">Extended (30d)</div><div class="val">1</div><div class="sub">Force extend action</div></div>
+            <div class="kpi"><div class="lbl">Conversion rate <span class="cap cap-prop">Prop</span></div><div class="val">38%</div><div class="sub">KPI display proposed</div></div>
+          </div>
+          <div class="notice notice-ready section-gap">
+            <div><strong>Start-trial orphan repair</strong> — backend ready, no UI yet. <span class="cap cap-ready">Backend ready</span></div>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Tenant</th><th>Plan</th><th>Days left</th><th>Ends</th><th>Health</th><th></th></tr>
+                </thead>
+                <tbody id="trialsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SUBSCRIPTIONS -->
+        <section class="view" id="view-subscriptions">
+          <div class="page-head">
+            <div>
+              <h1>Subscriptions <span class="cap cap-impl">Implemented</span></h1>
+              <p>Statuses: trialing · active · past_due · suspended · cancelled</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>Tenant</th><th>Status</th><th>Plan</th><th>MRR (EGP)</th><th>Renews / ends</th><th>Billing</th></tr>
+                </thead>
+                <tbody id="subsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- RISK -->
+        <section class="view" id="view-risk">
+          <div class="page-head">
+            <div>
+              <h1>Risk Queue <span class="cap cap-impl">Implemented</span></h1>
+              <p>UI status <code class="mono">new / in_progress / resolved</code> is <strong>client-derived</strong> — not a persisted backend field.</p>
+            </div>
+          </div>
+          <div class="toolbar">
+            <select class="select" id="riskFilter" onchange="renderRisk()">
+              <option value="">All derived status</option>
+              <option value="new">new</option>
+              <option value="in_progress">in_progress</option>
+              <option value="resolved">resolved</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tenant</th>
+                    <th>Signals</th>
+                    <th>Derived status <span class="cap cap-impl">Client</span></th>
+                    <th>Outcome</th>
+                    <th>Owner</th>
+                    <th>Updated</th>
+                  </tr>
+                </thead>
+                <tbody id="riskTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- METRICS -->
+        <section class="view" id="view-metrics">
+          <div class="page-head">
+            <div>
+              <h1>Metrics <span class="cap cap-impl">Implemented</span></h1>
+              <p>MRR, ARR, churn, conversion, tier distribution, MRR movement.</p>
+            </div>
+          </div>
+          <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+            <div class="kpi"><div class="lbl">MRR</div><div class="val">EGP 16,995</div></div>
+            <div class="kpi"><div class="lbl">ARR</div><div class="val">EGP 169,950</div></div>
+            <div class="kpi"><div class="lbl">Churn</div><div class="val">4.2%</div></div>
+            <div class="kpi"><div class="lbl">Conversion</div><div class="val">38%</div><div class="sub">Trials started vs converted</div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card"><div class="card-head"><h3>Tier distribution</h3></div><div class="card-pad">
+              <div class="donut-row"><div class="donut"></div>
+              <div class="legend-list">
+                <span><i class="sw" style="background:#2563EB"></i> Growth 37.5%</span>
+                <span><i class="sw" style="background:#7C3AED"></i> Pro 25%</span>
+                <span><i class="sw" style="background:#16A34A"></i> Starter 25%</span>
+                <span><i class="sw" style="background:#9CA3AF"></i> Enterprise 12.5%</span>
+              </div></div>
+            </div></div>
+            <div class="card"><div class="card-head"><h3>MRR movement</h3></div><div class="card-pad">
+              <div class="field-row"><span class="k">New business</span><span class="v">+EGP 3,998</span></div>
+              <div class="field-row"><span class="k">Expansion</span><span class="v">+EGP 2,000</span></div>
+              <div class="field-row"><span class="k">Contraction</span><span class="v">−EGP 0</span></div>
+              <div class="field-row"><span class="k">Churn</span><span class="v">−EGP 1,999</span></div>
+              <div class="field-row"><span class="k">Net new</span><span class="v" style="color:var(--good)">+EGP 3,999</span></div>
+            </div></div>
+          </div>
+        </section>
+
+        <!-- USAGE -->
+        <section class="view" id="view-usage">
+          <div class="page-head">
+            <div>
+              <h1>Usage <span class="cap cap-impl">Implemented</span></h1>
+              <p>Four metrics only — no overall % rollup: active_members, whatsapp_messages, staff_seats, branches.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tenant</th>
+                    <th>active_members</th>
+                    <th>whatsapp_messages</th>
+                    <th>staff_seats</th>
+                    <th>branches</th>
+                  </tr>
+                </thead>
+                <tbody id="usageTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- AUDIT -->
+        <section class="view" id="view-audit">
+          <div class="page-head">
+            <div>
+              <h1>Audit Log <span class="cap cap-impl">Implemented</span></h1>
+              <p>Platform actions across tenants.</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>When</th><th>Actor</th><th>Action</th><th>Tenant</th><th>Detail</th></tr>
+                </thead>
+                <tbody id="auditTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PLATFORM USERS -->
+        <section class="view" id="view-platform-users">
+          <div class="page-head">
+            <div>
+              <h1>Platform Users <span class="cap cap-impl">Implemented</span></h1>
+              <p>Control-plane operators (not gym staff).</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="toast('Invite platform user simulated','ok')">Invite</button>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th>User</th><th>Role</th><th>Status</th><th>Last active</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><div class="t-cell"><div class="avatar-sm">SA</div><div><div class="t-name">Sara Ahmed</div><div class="t-meta">sara@gymflow.pro</div></div></div></td><td><span class="role-tag owner">Admin</span></td><td><span class="badge b-active"><i class="d"></i>active</span></td><td class="mono" style="font-size:12px">2026-08-27 22:14</td></tr>
+                  <tr><td><div class="t-cell"><div class="avatar-sm">OM</div><div><div class="t-name">Omar Mostafa</div><div class="t-meta">omar@gymflow.pro</div></div></div></td><td><span class="role-tag manager">Ops</span></td><td><span class="badge b-active"><i class="d"></i>active</span></td><td class="mono" style="font-size:12px">2026-08-27 18:02</td></tr>
+                  <tr><td><div class="t-cell"><div class="avatar-sm">NL</div><div><div class="t-name">Nour Lotfy</div><div class="t-meta">nour@gymflow.pro</div></div></div></td><td><span class="role-tag">Support</span></td><td><span class="badge b-active"><i class="d"></i>active</span></td><td class="mono" style="font-size:12px">2026-08-26 11:40</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- PLANS -->
+        <section class="view" id="view-plans">
+          <div class="page-head">
+            <div>
+              <h1>Plans &amp; Pricing <span class="cap cap-prop">Proposed</span></h1>
+              <p>Catalog is real (EGP monthly; annual = ×10). Edit UI is proposed.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="toast('Plan edit is proposed — not live','err')">Edit catalog <span class="cap cap-prop">Prop</span></button>
+          </div>
+          <div class="plan-grid" id="plansPageGrid"></div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view" id="view-settings">
+          <div class="page-head">
+            <div>
+              <h1>Settings <span class="cap cap-prop">Proposed</span></h1>
+              <p>Platform defaults. Global TrialDays = 14 is live; UI page is proposed.</p>
+            </div>
+          </div>
+          <div class="card card-pad" style="max-width:560px">
+            <div class="field-row"><span class="k">Default TrialDays</span><span class="v">14 <span class="cap cap-impl">Impl</span></span></div>
+            <div class="field-row"><span class="k">Custom trial at provision</span><span class="v"><span class="cap cap-prop">Proposed</span></span></div>
+            <div class="field-row"><span class="k">Owner invitation emails</span><span class="v"><span class="cap cap-prop">Proposed</span></span></div>
+            <div class="field-row"><span class="k">Convert-to-paid control</span><span class="v"><span class="cap cap-prop">Proposed</span></span></div>
+            <div class="field-row"><span class="k">Start-trial orphan repair UI</span><span class="v"><span class="cap cap-ready">Backend ready</span></span></div>
+            <div style="margin-top:14px">
+              <button class="btn btn-primary btn-sm" onclick="toast('Settings save is proposed','err')">Save changes</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="meta-panel" id="legendPanel">
+          <h4>Capability legend</h4>
+          <div class="meta-grid">
+            <div class="meta-item"><strong><span class="cap cap-impl">Implemented</span></strong> Live in platform console today (nav, APIs, tenant actions).</div>
+            <div class="meta-item"><strong><span class="cap cap-ready">Backend ready</span></strong> API exists; no control-plane UI yet (e.g. start-trial orphan repair).</div>
+            <div class="meta-item"><strong><span class="cap cap-prop">Proposed</span></strong> Product direction — not shipped (Trials page, Plans edit, Settings, Owner invite, Convert to Paid UI).</div>
+            <div class="meta-item"><strong><span class="cap cap-change">Backend change required</span></strong> Needs new or changed API before UI can ship.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dialogs -->
+<div class="overlay" id="dlgExtend" role="dialog" aria-modal="true">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div><h2>Extend trial</h2><p>Implemented pattern — days (1–90) and reason required.</p></div>
+      <button class="icon-btn" onclick="closeDlg('dlgExtend')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg" style="margin-bottom:10px"><label>Days (1–90) *</label><input type="number" id="extDays" min="1" max="90" value="7" /></div>
+      <div class="fg"><label>Reason *</label><textarea id="extReason" placeholder="Why is the trial being extended?"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeDlg('dlgExtend')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmExtend()">Extend trial</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgSuspend" role="dialog">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2>Force suspend</h2><p>Sets subscription to suspended.</p></div><button class="icon-btn" onclick="closeDlg('dlgSuspend')">✕</button></div>
+    <div class="modal-body"><div class="fg"><label>Reason *</label><textarea id="susReason"></textarea></div></div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeDlg('dlgSuspend')">Cancel</button><button class="btn btn-danger-solid" onclick="confirmAction('Suspended','dlgSuspend')">Force suspend</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgReactivate" role="dialog">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2>Force reactivate</h2><p>Returns tenant to <code class="mono">active</code>.</p></div><button class="icon-btn" onclick="closeDlg('dlgReactivate')">✕</button></div>
+    <div class="modal-body"><div class="fg"><label>Reason *</label><textarea id="reaReason"></textarea></div></div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeDlg('dlgReactivate')">Cancel</button><button class="btn btn-primary" onclick="confirmAction('Reactivated → active','dlgReactivate')">Reactivate</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgCancel" role="dialog">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2>Cancel subscription</h2><p>Admin action — status → cancelled.</p></div><button class="icon-btn" onclick="closeDlg('dlgCancel')">✕</button></div>
+    <div class="modal-body"><div class="fg"><label>Reason *</label><textarea id="canReason"></textarea></div></div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeDlg('dlgCancel')">Cancel</button><button class="btn btn-danger-solid" onclick="confirmAction('Subscription cancelled','dlgCancel')">Confirm cancel</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgChangePlan" role="dialog">
+  <div class="modal wide" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2>Change plan</h2><p>Admin action. Monthly EGP; annual = ×10.</p></div><button class="icon-btn" onclick="closeDlg('dlgChangePlan')">✕</button></div>
+    <div class="modal-body">
+      <div class="plan-grid" id="changePlanGrid"></div>
+      <div class="fg" style="margin-top:12px"><label>Reason *</label><textarea id="cpReason"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeDlg('dlgChangePlan')">Cancel</button><button class="btn btn-primary" onclick="confirmAction('Plan change queued','dlgChangePlan')">Change plan</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgStaff" role="dialog">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2 id="staffDlgTitle">Staff user</h2><p>Roles: Manager / Trainer / Receptionist. No delete. Owner protected.</p></div><button class="icon-btn" onclick="closeDlg('dlgStaff')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg full"><label>Full name</label><input id="stName" /></div>
+        <div class="fg full"><label>Email</label><input id="stEmail" type="email" /></div>
+        <div class="fg full"><label>Role</label>
+          <select id="stRole"><option>Manager</option><option>Trainer</option><option>Receptionist</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" onclick="closeDlg('dlgStaff')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmStaff()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgCoupon" role="dialog">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2>Apply coupon</h2><p>Implemented tenant action.</p></div><button class="icon-btn" onclick="closeDlg('dlgCoupon')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Coupon code</label><input id="couponCode" placeholder="e.g. RETAIN20" /></div>
+      <div class="fg" style="margin-top:10px"><label>Reason</label><textarea id="couponReason"></textarea></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeDlg('dlgCoupon')">Cancel</button><button class="btn btn-primary" onclick="confirmAction('Coupon applied','dlgCoupon')">Apply</button></div>
+  </div>
+</div>
+
+<div class="overlay" id="dlgFeatures" role="dialog">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><div><h2>Feature overrides</h2><p>Per-tenant module overrides.</p></div><button class="icon-btn" onclick="closeDlg('dlgFeatures')">✕</button></div>
+    <div class="modal-body" id="featBody"></div>
+    <div class="modal-foot"><button class="btn btn-secondary" onclick="closeDlg('dlgFeatures')">Cancel</button><button class="btn btn-primary" onclick="confirmAction('Feature overrides saved','dlgFeatures')">Save</button></div>
+  </div>
+</div>
+
+<!-- Trial drawer -->
+<div class="drawer-overlay" id="trialDrawerBg" onclick="closeTrialDrawer()"></div>
+<div class="drawer" id="trialDrawer">
+  <div class="drawer-head">
+    <div><h2 id="tdTitle">Trial detail</h2><p id="tdSub" style="margin:4px 0 0;font-size:12.5px;color:var(--text-muted)"></p></div>
+    <button class="icon-btn" onclick="closeTrialDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="tdBody"></div>
+</div>
+
+<div class="toast-host" id="toasts"></div>
+
+<script>
+const PLANS = {
+  starter: { price: 999, members: 200, staff: 3, branches: 1, wa: 500, features: ['sales','shifts','trials','debtors','refunds','inventory','hr'] },
+  growth: { price: 1999, members: 1000, staff: 10, branches: 3, wa: 2000, features: ['+imports'] },
+  pro: { price: 3999, members: 5000, staff: 25, branches: 10, wa: 10000, features: ['+all Phase A'] },
+  enterprise: { price: 7999, members: Infinity, staff: Infinity, branches: Infinity, wa: Infinity, features: ['unlimited + all modules'] }
+};
+
+const HEALTH_SIGNALS = ['login_frequency','feature_breadth','payment_health','member_base_trend','support_ticket_volume','usage_vs_cap'];
+
+let tenants = [
+  { id:'t1', name:'Fitness Factory', nameAr:'مصنع اللياقة', city:'Cairo', status:'active', plan:'growth', owner:'Youssef Mansour', ownerEmail:'youssef@fitnessfactory.eg', phone:'+20 100 111 2001', health:'healthy', healthScore:88, trialEnd:null, renew:'2026-09-12', created:'2026-03-04',
+    usage:{ active_members:720, whatsapp_messages:1450, staff_seats:7, branches:2 },
+    signals:{ login_frequency:'healthy', feature_breadth:'healthy', payment_health:'healthy', member_base_trend:'healthy', support_ticket_volume:'watch', usage_vs_cap:'healthy' },
+    staff:[
+      { id:'s1', name:'Youssef Mansour', email:'youssef@fitnessfactory.eg', role:'Owner', status:'active', protected:true },
+      { id:'s2', name:'Mona Farid', email:'mona@fitnessfactory.eg', role:'Manager', status:'active' },
+      { id:'s3', name:'Ali Nabil', email:'ali@fitnessfactory.eg', role:'Trainer', status:'active' },
+      { id:'s4', name:'Hana Samir', email:'hana@fitnessfactory.eg', role:'Receptionist', status:'disabled' }
+    ]},
+  { id:'t2', name:'Power Gym', city:'Giza', status:'trialing', plan:'starter', owner:'Rania Saleh', ownerEmail:'rania@powergym.eg', phone:'+20 101 222 3002', health:'watch', healthScore:62, trialEnd:'2026-09-02', renew:null, created:'2026-08-19',
+    usage:{ active_members:48, whatsapp_messages:120, staff_seats:2, branches:1 },
+    signals:{ login_frequency:'watch', feature_breadth:'watch', payment_health:'healthy', member_base_trend:'healthy', support_ticket_volume:'healthy', usage_vs_cap:'healthy' },
+    staff:[{ id:'s5', name:'Rania Saleh', email:'rania@powergym.eg', role:'Owner', status:'active', protected:true },{ id:'s6', name:'Tarek Fouad', email:'tarek@powergym.eg', role:'Receptionist', status:'active' }]},
+  { id:'t3', name:'Iron Club', city:'Cairo', status:'past_due', plan:'pro', owner:'Hassan Elmasry', ownerEmail:'hassan@ironclub.eg', phone:'+20 102 333 4003', health:'at_risk', healthScore:41, trialEnd:null, renew:'2026-08-20', created:'2025-11-12',
+    usage:{ active_members:2100, whatsapp_messages:8200, staff_seats:18, branches:4 },
+    signals:{ login_frequency:'watch', feature_breadth:'healthy', payment_health:'critical', member_base_trend:'watch', support_ticket_volume:'at_risk', usage_vs_cap:'watch' },
+    staff:[{ id:'s7', name:'Hassan Elmasry', email:'hassan@ironclub.eg', role:'Owner', status:'active', protected:true },{ id:'s8', name:'Dina Kamal', email:'dina@ironclub.eg', role:'Manager', status:'active' }]},
+  { id:'t4', name:'Elite Fitness', city:'New Cairo', status:'active', plan:'enterprise', owner:'Layla Ibrahim', ownerEmail:'layla@elitefitness.eg', phone:'+20 103 444 5004', health:'healthy', healthScore:94, trialEnd:null, renew:'2026-09-28', created:'2025-06-01',
+    usage:{ active_members:6200, whatsapp_messages:14000, staff_seats:40, branches:8 },
+    signals:{ login_frequency:'healthy', feature_breadth:'healthy', payment_health:'healthy', member_base_trend:'healthy', support_ticket_volume:'healthy', usage_vs_cap:'healthy' },
+    staff:[{ id:'s9', name:'Layla Ibrahim', email:'layla@elitefitness.eg', role:'Owner', status:'active', protected:true }]},
+  { id:'t5', name:'Urban Strength', city:'Alexandria', status:'suspended', plan:'growth', owner:'Karim Adel', ownerEmail:'karim@urbanstrength.eg', phone:'+20 104 555 6005', health:'critical', healthScore:22, trialEnd:null, renew:null, created:'2026-01-18',
+    usage:{ active_members:310, whatsapp_messages:900, staff_seats:5, branches:1 },
+    signals:{ login_frequency:'critical', feature_breadth:'at_risk', payment_health:'critical', member_base_trend:'at_risk', support_ticket_volume:'watch', usage_vs_cap:'healthy' },
+    staff:[{ id:'s10', name:'Karim Adel', email:'karim@urbanstrength.eg', role:'Owner', status:'active', protected:true }]},
+  { id:'t6', name:'Prime Athletics', city:'Cairo', status:'trialing', plan:'starter', owner:'Salma Nour', ownerEmail:'salma@primeath.eg', phone:'+20 105 666 7006', health:'healthy', healthScore:71, trialEnd:'2026-09-05', renew:null, created:'2026-08-22',
+    usage:{ active_members:22, whatsapp_messages:45, staff_seats:1, branches:1 },
+    signals:{ login_frequency:'healthy', feature_breadth:'watch', payment_health:'healthy', member_base_trend:'healthy', support_ticket_volume:'healthy', usage_vs_cap:'healthy' },
+    staff:[{ id:'s11', name:'Salma Nour', email:'salma@primeath.eg', role:'Owner', status:'active', protected:true }]},
+  { id:'t7', name:'Pulse Fitness', city:'Maadi', status:'cancelled', plan:'growth', owner:'Omar Zaki', ownerEmail:'omar@pulsefitness.eg', phone:'+20 106 777 8007', health:'at_risk', healthScore:35, trialEnd:null, renew:null, created:'2025-09-09',
+    usage:{ active_members:0, whatsapp_messages:0, staff_seats:0, branches:1 },
+    signals:{ login_frequency:'critical', feature_breadth:'critical', payment_health:'watch', member_base_trend:'critical', support_ticket_volume:'healthy', usage_vs_cap:'healthy' },
+    staff:[{ id:'s12', name:'Omar Zaki', email:'omar@pulsefitness.eg', role:'Owner', status:'active', protected:true }]},
+  { id:'t8', name:'Titan Gym', city:'Nasr City', status:'active', plan:'pro', owner:'Nadine Fawzy', ownerEmail:'nadine@titangym.eg', phone:'+20 107 888 9008', health:'watch', healthScore:58, trialEnd:null, renew:'2026-09-08', created:'2026-02-14',
+    usage:{ active_members:4800, whatsapp_messages:9600, staff_seats:22, branches:6 },
+    signals:{ login_frequency:'watch', feature_breadth:'healthy', payment_health:'healthy', member_base_trend:'watch', support_ticket_volume:'watch', usage_vs_cap:'at_risk' },
+    staff:[{ id:'s13', name:'Nadine Fawzy', email:'nadine@titangym.eg', role:'Owner', status:'active', protected:true },{ id:'s14', name:'Bassem Raouf', email:'bassem@titangym.eg', role:'Manager', status:'active' },{ id:'s15', name:'Yara Hossam', email:'yara@titangym.eg', role:'Trainer', status:'active' }]}
+];
+
+const RISK = [
+  { tenantId:'t3', signals:['payment_health','support_ticket_volume'], derived:'in_progress', outcome:'contacted', owner:'Omar Mostafa', updated:'2026-08-27' },
+  { tenantId:'t5', signals:['login_frequency','payment_health'], derived:'new', outcome:'watching', owner:'—', updated:'2026-08-26' },
+  { tenantId:'t8', signals:['usage_vs_cap','member_base_trend'], derived:'in_progress', outcome:'watching', owner:'Nour Lotfy', updated:'2026-08-27' },
+  { tenantId:'t7', signals:['login_frequency','member_base_trend'], derived:'resolved', outcome:'churned', owner:'Sara Ahmed', updated:'2026-08-15' },
+  { tenantId:'t2', signals:['feature_breadth','login_frequency'], derived:'new', outcome:'no_answer', owner:'—', updated:'2026-08-28' }
+];
+
+const AUDIT = [
+  { at:'2026-08-27 21:04', actor:'Sara Ahmed', action:'force_suspend', tenant:'Urban Strength', detail:'Non-payment escalation' },
+  { at:'2026-08-27 16:22', actor:'Omar Mostafa', action:'extend_trial', tenant:'Power Gym', detail:'+7 days · onboarding delay' },
+  { at:'2026-08-26 11:10', actor:'Sara Ahmed', action:'change_plan', tenant:'Titan Gym', detail:'growth → pro' },
+  { at:'2026-08-25 09:41', actor:'Nour Lotfy', action:'impersonate', tenant:'Fitness Factory', detail:'Support session 18m' },
+  { at:'2026-08-24 14:02', actor:'Omar Mostafa', action:'coupon', tenant:'Iron Club', detail:'RETAIN20' },
+  { at:'2026-08-22 10:15', actor:'Sara Ahmed', action:'provision_gym', tenant:'Prime Athletics', detail:'starter · trial 14d' }
+];
+
+let currentView = 'dashboard';
+let currentTenant = null;
+let wizStep = 0;
+let wizTier = 'starter';
+let wizTrialDays = 14;
+let changePlanPick = 'growth';
+let staffMode = 'create';
+let openMenuId = null;
+
+function initials(n){ return n.split(/\s+/).map(p=>p[0]).slice(0,2).join('').toUpperCase(); }
+function mrr(t){ if(t.status==='cancelled'||t.status==='trialing') return 0; return PLANS[t.plan].price; }
+function fmt(n){ return n === Infinity ? '∞' : n.toLocaleString('en-EG'); }
+function pct(u, cap){ if(cap===Infinity) return 0; return Math.min(100, Math.round((u/cap)*100)); }
+function band(p){ return p>=90?'c':p>=75?'w':'g'; }
+function statusBadge(s){ return `<span class="badge b-${s}"><i class="d"></i>${s}</span>`; }
+function healthBadge(h){ return `<span class="badge b-${h}">${h}</span>`; }
+function planChip(p){ return `<span class="plan-chip plan-${p}">${p}</span>`; }
+function usageBar(u, cap){
+  const p = pct(u,cap);
+  return `<div class="usage-mini"><div class="usage-track"><div class="usage-fill ${band(p)}" style="width:${cap===Infinity?8:p}%"></div></div><span class="usage-pct">${cap===Infinity?'∞':p+'%'}</span></div>`;
+}
+
+function toast(msg, type='ok'){
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>el.remove(), 3200);
+}
+
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbBackdrop').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbBackdrop').classList.remove('open');
+}
+function toggleLegend(){
+  document.getElementById('legendPanel').scrollIntoView({ behavior:'smooth' });
+}
+
+function setCrumbs(parts){
+  const el = document.getElementById('crumbs');
+  el.innerHTML = parts.map((p,i)=>{
+    if(i===parts.length-1) return `<span class="cur">${p.label}</span>`;
+    if(p.view) return `<button type="button" onclick="nav('${p.view}')">${p.label}</button><span class="sep">/</span>`;
+    return `<span>${p.label}</span><span class="sep">/</span>`;
+  }).join('');
+}
+
+function nav(view){
+  currentView = view;
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const map = {
+    dashboard:'view-dashboard', tenants:'view-tenants', create:'view-create', tenant360:'view-tenant360',
+    trials:'view-trials', subscriptions:'view-subscriptions', risk:'view-risk', metrics:'view-metrics',
+    usage:'view-usage', audit:'view-audit', 'platform-users':'view-platform-users', plans:'view-plans', settings:'view-settings'
+  };
+  document.getElementById(map[view]).classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(b=>{
+    b.classList.toggle('active', b.dataset.view === view || (view==='tenant360'&&b.dataset.view==='tenants') || (view==='create'&&b.dataset.view==='tenants'));
+  });
+  const titles = {
+    dashboard:[{label:'Dashboard'}],
+    tenants:[{label:'Tenants'}],
+    create:[{label:'Tenants',view:'tenants'},{label:'Create Tenant'}],
+    tenant360:[{label:'Tenants',view:'tenants'},{label: currentTenant ? currentTenant.name : 'Tenant'}],
+    trials:[{label:'Trials'}],
+    subscriptions:[{label:'Subscriptions'}],
+    risk:[{label:'Risk Queue'}],
+    metrics:[{label:'Metrics'}],
+    usage:[{label:'Usage'}],
+    audit:[{label:'Audit Log'}],
+    'platform-users':[{label:'Platform Users'}],
+    plans:[{label:'Plans & Pricing'}],
+    settings:[{label:'Settings'}]
+  };
+  setCrumbs(titles[view] || [{label:view}]);
+  closeSidebar();
+  closeMenus();
+  if(view==='tenants') renderTenants();
+  if(view==='trials') renderTrials();
+  if(view==='subscriptions') renderSubs();
+  if(view==='risk') renderRisk();
+  if(view==='usage') renderUsage();
+  if(view==='audit') renderAudit();
+  if(view==='plans') renderPlansPage();
+  window.scrollTo(0,0);
+}
+
+function filterTenantsStatus(st){
+  nav('tenants');
+  document.getElementById('fLifecycle').value = st;
+  renderTenants();
+}
+
+function renderTenants(){
+  const q = (document.getElementById('tenantSearch').value||'').toLowerCase();
+  const lc = document.getElementById('fLifecycle').value;
+  const plan = document.getElementById('fPlan').value;
+  const trial = document.getElementById('fTrial').value;
+  const health = document.getElementById('fHealth').value;
+  const list = tenants.filter(t=>{
+    if(q && !(t.name.toLowerCase().includes(q)||t.city.toLowerCase().includes(q)||t.owner.toLowerCase().includes(q))) return false;
+    if(lc && t.status!==lc) return false;
+    if(plan && t.plan!==plan) return false;
+    if(health && t.health!==health) return false;
+    if(trial==='in_trial' && t.status!=='trialing') return false;
+    if(trial==='ending'){
+      if(t.status!=='trialing'||!t.trialEnd) return false;
+      const days = (new Date(t.trialEnd)-new Date('2026-08-28'))/(86400000);
+      if(days>7) return false;
+    }
+    return true;
+  });
+
+  const kpis = [
+    ['Total', tenants.length, null],
+    ['Active', tenants.filter(t=>t.status==='active').length, 'var(--good)'],
+    ['Trial', tenants.filter(t=>t.status==='trialing').length, 'var(--accent)'],
+    ['At risk', tenants.filter(t=>t.health==='at_risk'||t.health==='critical').length, 'var(--amber)'],
+    ['Past due', tenants.filter(t=>t.status==='past_due').length, 'var(--amber)'],
+    ['Suspended', tenants.filter(t=>t.status==='suspended').length, 'var(--critical)']
+  ];
+  document.getElementById('tenantKpis').innerHTML = kpis.map(([l,v,c])=>`
+    <div class="kpi"><div class="lbl">${c?`<span class="dot" style="background:${c}"></span>`:''}${l}</div><div class="val tabular">${v}</div></div>`).join('');
+
+  document.getElementById('tenantTable').innerHTML = list.map(t=>{
+    const cap = PLANS[t.plan].members;
+    const p = pct(t.usage.active_members, cap);
+    const when = t.status==='trialing' ? `Ends ${t.trialEnd}` : (t.renew ? `Renews ${t.renew}` : '—');
+    return `<tr onclick="openTenant('${t.id}')">
+      <td><div class="t-cell"><div class="t-logo">${initials(t.name)}</div><div><div class="t-name">${t.name}</div><div class="t-meta">${t.city} · ${t.id}</div></div></div></td>
+      <td>${statusBadge(t.status)}</td>
+      <td>${planChip(t.plan)}</td>
+      <td class="tabular mono">${mrr(t)?mrr(t).toLocaleString():'—'}</td>
+      <td>${healthBadge(t.health)}</td>
+      <td>${usageBar(t.usage.active_members, cap)}<div class="t-meta">${fmt(t.usage.active_members)} / ${fmt(cap)}</div></td>
+      <td style="font-size:12px;color:var(--text-muted)">${when}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="qa-wrap">
+          <button class="icon-btn" onclick="toggleMenu('${t.id}',event)" title="Actions">⋯</button>
+          <div class="menu-pop" id="menu-${t.id}">
+            <button onclick="openTenant('${t.id}')">Open 360</button>
+            ${t.status==='trialing'?`<button onclick="openDlg('dlgExtend','${t.id}')">Extend trial</button>`:''}
+            ${t.status!=='suspended'&&t.status!=='cancelled'?`<button class="danger" onclick="openDlg('dlgSuspend','${t.id}')">Force suspend</button>`:''}
+            ${t.status==='suspended'?`<button onclick="openDlg('dlgReactivate','${t.id}')">Reactivate</button>`:''}
+            <button onclick="toast('Impersonation session started (preview)','ok')">Impersonate</button>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="8"><div class="empty"><h3>No tenants match</h3><p>Adjust filters or search.</p></div></td></tr>`;
+}
+
+function toggleMenu(id, e){
+  e.stopPropagation();
+  const menu = document.getElementById('menu-'+id);
+  const was = menu.classList.contains('open');
+  closeMenus();
+  if(!was){ menu.classList.add('open'); openMenuId = id; }
+}
+function closeMenus(){
+  document.querySelectorAll('.menu-pop').forEach(m=>m.classList.remove('open'));
+  openMenuId = null;
+}
+
+function openTenant(id){
+  if(id==='t-new'){
+    currentTenant = {
+      id:'t-new', name:'Nile Athletics', city:'Cairo', status:'trialing', plan:wizTier, owner:'Karim Hassan',
+      ownerEmail:'karim@nileathletics.eg', phone:'+20 100 555 0101', health:'healthy', healthScore:70,
+      trialEnd:'2026-09-11', renew:null, created:'2026-08-28',
+      usage:{ active_members:0, whatsapp_messages:0, staff_seats:1, branches:1 },
+      signals:{ login_frequency:'healthy', feature_breadth:'watch', payment_health:'healthy', member_base_trend:'healthy', support_ticket_volume:'healthy', usage_vs_cap:'healthy' },
+      staff:[{ id:'sn', name:'Karim Hassan', email:'karim@nileathletics.eg', role:'Owner', status:'active', protected:true }]
+    };
+  } else {
+    currentTenant = tenants.find(t=>t.id===id);
+  }
+  if(!currentTenant) return;
+  renderTenant360();
+  nav('tenant360');
+}
+
+function switchTab(btn){
+  document.querySelectorAll('#t360Tabs .tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#view-tenant360 .tab-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+}
+
+function actionButtons(t){
+  const btns = [];
+  btns.push(`<button class="btn btn-secondary btn-sm" onclick="toast('Impersonating ${t.name}…','ok')">Impersonate</button>`);
+  if(t.status==='trialing') btns.push(`<button class="btn btn-secondary btn-sm" onclick="openDlg('dlgExtend')">Extend trial</button>`);
+  if(t.status!=='cancelled') btns.push(`<button class="btn btn-secondary btn-sm" onclick="openDlg('dlgChangePlan')">Change plan</button>`);
+  btns.push(`<button class="btn btn-secondary btn-sm" onclick="openDlg('dlgCoupon')">Coupon</button>`);
+  btns.push(`<button class="btn btn-secondary btn-sm" onclick="openDlg('dlgFeatures')">Feature overrides</button>`);
+  if(t.status!=='suspended' && t.status!=='cancelled') btns.push(`<button class="btn btn-danger btn-sm" onclick="openDlg('dlgSuspend')">Force suspend</button>`);
+  if(t.status==='suspended') btns.push(`<button class="btn btn-primary btn-sm" onclick="openDlg('dlgReactivate')">Force reactivate</button>`);
+  if(t.status!=='cancelled') btns.push(`<button class="btn btn-danger btn-sm" onclick="openDlg('dlgCancel')">Cancel</button>`);
+  return btns.join('');
+}
+
+function renderTenant360(){
+  const t = currentTenant;
+  document.getElementById('t360Head').innerHTML = `
+    <div class="t360-title">
+      <div class="t360-logo">${initials(t.name)}</div>
+      <div>
+        <h1 style="font-size:20px">${t.name}</h1>
+        <div class="t360-meta">
+          ${statusBadge(t.status)} ${planChip(t.plan)} ${healthBadge(t.health)}
+          <span class="t-meta">${t.city} · ${t.id}</span>
+        </div>
+      </div>
+    </div>
+    <div class="t360-actions">${actionButtons(t)}</div>`;
+
+  // Overview
+  const lcOrder = ['trialing','active','past_due','suspended','cancelled'];
+  const idx = lcOrder.indexOf(t.status);
+  document.getElementById('tab-overview').innerHTML = `
+    <div class="card section-gap">
+      <div class="card-head"><h3>Lifecycle <span class="cap cap-impl">Real statuses only</span></h3></div>
+      <div class="card-pad">
+        <div class="lifecycle">
+          ${lcOrder.map((s,i)=>{
+            let cls = '';
+            if(i < idx) cls = 'done';
+            else if(i === idx) cls = 'current';
+            else if(t.status==='active' && (s==='past_due'||s==='suspended'||s==='cancelled')) cls = 'skipped';
+            else if(t.status==='trialing' && i>0) cls = '';
+            return `<div class="lc-step ${cls}"><div class="lc-dot"></div><div class="lc-label">${s}</div></div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="grid-2 section-gap">
+      <div class="card card-pad">
+        <h3 style="font-size:13.5px;margin-bottom:8px">Business</h3>
+        <div class="field-row"><span class="k">Owner</span><span class="v">${t.owner}</span></div>
+        <div class="field-row"><span class="k">Email</span><span class="v">${t.ownerEmail}</span></div>
+        <div class="field-row"><span class="k">Phone</span><span class="v">${t.phone}</span></div>
+        <div class="field-row"><span class="k">Created</span><span class="v mono">${t.created}</span></div>
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-size:13.5px;margin-bottom:8px">Commercial</h3>
+        <div class="field-row"><span class="k">Plan</span><span class="v">${t.plan}</span></div>
+        <div class="field-row"><span class="k">MRR</span><span class="v">EGP ${mrr(t).toLocaleString()}</span></div>
+        <div class="field-row"><span class="k">Trial end</span><span class="v">${t.trialEnd||'—'}</span></div>
+        <div class="field-row"><span class="k">Renews</span><span class="v">${t.renew||'—'}</span></div>
+      </div>
+    </div>
+    <div class="notice notice-ready">Start-trial orphan repair: <span class="cap cap-ready">Backend ready</span> — no UI on this tab yet.</div>`;
+
+  // Subscription
+  const p = PLANS[t.plan];
+  document.getElementById('tab-subscription').innerHTML = `
+    <div class="grid-2">
+      <div class="card card-pad">
+        <div class="field-row"><span class="k">Status</span><span class="v">${statusBadge(t.status)}</span></div>
+        <div class="field-row"><span class="k">Tier</span><span class="v">${planChip(t.plan)}</span></div>
+        <div class="field-row"><span class="k">Monthly</span><span class="v">EGP ${p.price.toLocaleString()}</span></div>
+        <div class="field-row"><span class="k">Annual equiv</span><span class="v">EGP ${(p.price*10).toLocaleString()}</span></div>
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-size:13px;margin-bottom:8px">Caps</h3>
+        <div class="field-row"><span class="k">Members</span><span class="v">${fmt(p.members)}</span></div>
+        <div class="field-row"><span class="k">Staff</span><span class="v">${fmt(p.staff)}</span></div>
+        <div class="field-row"><span class="k">Branches</span><span class="v">${fmt(p.branches)}</span></div>
+        <div class="field-row"><span class="k">WhatsApp</span><span class="v">${fmt(p.wa)}</span></div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-secondary btn-sm" onclick="openDlg('dlgChangePlan')">Change plan</button>
+      <button class="btn btn-secondary btn-sm" onclick="toast('Convert to Paid is proposed — billing jobs only','err')">Convert to Paid <span class="cap cap-prop">Prop</span></button>
+    </div>`;
+
+  // Usage — 4 metrics only
+  const caps = { active_members:p.members, whatsapp_messages:p.wa, staff_seats:p.staff, branches:p.branches };
+  document.getElementById('tab-usage').innerHTML = `
+    <p style="font-size:12.5px;color:var(--text-muted);margin:0 0 12px">Exactly four metrics — no overall %.</p>
+    <div class="grid-2">
+      ${['active_members','whatsapp_messages','staff_seats','branches'].map(k=>{
+        const u = t.usage[k], c = caps[k], pr = pct(u,c);
+        return `<div class="usage-card">
+          <div class="top"><span class="name mono">${k}</span><span class="nums"><b>${fmt(u)}</b> / ${fmt(c)}</span></div>
+          <div class="track"><div class="fill" style="width:${c===Infinity?6:pr}%;background:${band(pr)==='c'?'var(--critical)':band(pr)==='w'?'var(--amber)':'var(--good)'}"></div></div>
+          <div class="pct" style="color:${band(pr)==='c'?'var(--critical)':band(pr)==='w'?'var(--amber)':'var(--good)'}">${c===Infinity?'unlimited':pr+'% of cap'}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Health
+  document.getElementById('tab-health').innerHTML = `
+    <div class="card card-pad section-gap" style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">
+      <div><div style="font-size:12px;color:var(--text-muted);font-weight:600">Health score</div>
+      <div class="mono" style="font-size:48px;font-weight:600;line-height:1;color:${t.health==='healthy'?'var(--good)':t.health==='critical'?'var(--critical)':'var(--amber)'}">${t.healthScore}</div></div>
+      ${healthBadge(t.health)}
+    </div>
+    <div class="health-grid">
+      ${HEALTH_SIGNALS.map(s=>{
+        const b = t.signals[s];
+        return `<div class="health-card"><div class="hn"><span class="mono" style="font-size:11px">${s}</span>${healthBadge(b)}</div>
+          <div class="hd">Signal band from health engine</div></div>`;
+      }).join('')}
+    </div>`;
+
+  // Users
+  document.getElementById('tab-users').innerHTML = `
+    <div class="page-actions" style="margin-bottom:12px">
+      <button class="btn btn-primary btn-sm" onclick="openStaffDialog('create')">Create staff</button>
+    </div>
+    <div class="table-wrap"><div class="table-scroll"><table>
+      <thead><tr><th>User</th><th>Role</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        ${t.staff.map(s=>`<tr>
+          <td><div class="t-cell"><div class="avatar-sm">${initials(s.name)}</div><div><div class="t-name">${s.name}</div><div class="t-meta">${s.email}</div></div></div></td>
+          <td><span class="role-tag ${s.role==='Owner'?'owner':s.role==='Manager'?'manager':''}">${s.role}</span>${s.protected?' <span class="cap cap-impl">Protected</span>':''}</td>
+          <td>${s.status==='active'?statusBadge('active'):'<span class="badge b-cancelled"><i class="d"></i>disabled</span>'}</td>
+          <td onclick="event.stopPropagation()">
+            ${s.protected?'<span class="t-meta">No delete / disable</span>':`
+              <button class="btn btn-sm btn-secondary" onclick="openStaffDialog('edit','${s.id}')">Role</button>
+              ${s.status==='active'
+                ?`<button class="btn btn-sm btn-danger" onclick="toast('Staff disabled (preview)','ok')">Disable</button>`
+                :`<button class="btn btn-sm btn-secondary" onclick="toast('Staff reactivated (preview)','ok')">Reactivate</button>`}
+            `}
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div></div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:10px">No delete action. Owner is protected. Roles: Manager / Trainer / Receptionist.</p>`;
+
+  // Billing
+  document.getElementById('tab-billing').innerHTML = `
+    <div class="card card-pad">
+      <div class="field-row"><span class="k">Current MRR</span><span class="v">EGP ${mrr(t).toLocaleString()}</span></div>
+      <div class="field-row"><span class="k">Last invoice</span><span class="v">${t.status==='trialing'?'—':'2026-08-01 · EGP '+PLANS[t.plan].price.toLocaleString()}</span></div>
+      <div class="field-row"><span class="k">Next renewal</span><span class="v">${t.renew||'—'}</span></div>
+      <div class="field-row"><span class="k">Payment health</span><span class="v">${healthBadge(t.signals.payment_health)}</span></div>
+    </div>`;
+
+  // Audit
+  const ta = AUDIT.filter(a=>a.tenant===t.name);
+  document.getElementById('tab-audit').innerHTML = ta.length ? `
+    <div class="table-wrap"><div class="table-scroll"><table>
+      <thead><tr><th>When</th><th>Actor</th><th>Action</th><th>Detail</th></tr></thead>
+      <tbody>${ta.map(a=>`<tr><td class="mono" style="font-size:12px">${a.at}</td><td>${a.actor}</td><td class="mono">${a.action}</td><td>${a.detail}</td></tr>`).join('')}</tbody>
+    </table></div></div>` : `<div class="empty"><h3>No audit events</h3><p>Actions for this tenant will appear here.</p></div>`;
+
+  // reset tab
+  document.querySelectorAll('#t360Tabs .tab').forEach((t,i)=>t.classList.toggle('active', i===0));
+  document.querySelectorAll('#view-tenant360 .tab-panel').forEach((p,i)=>p.classList.toggle('active', i===0));
+}
+
+function renderTrials(){
+  const trials = tenants.filter(t=>t.status==='trialing');
+  document.getElementById('trialsTable').innerHTML = trials.map(t=>{
+    const days = Math.ceil((new Date(t.trialEnd)-new Date('2026-08-28'))/86400000);
+    return `<tr onclick="openTrialDrawer('${t.id}')">
+      <td><div class="t-cell"><div class="t-logo">${initials(t.name)}</div><div class="t-name">${t.name}</div></div></td>
+      <td>${planChip(t.plan)}</td>
+      <td class="tabular"><strong>${days}d</strong></td>
+      <td class="mono" style="font-size:12px">${t.trialEnd}</td>
+      <td>${healthBadge(t.health)}</td>
+      <td onclick="event.stopPropagation()"><button class="btn btn-sm btn-secondary" onclick="openDlg('dlgExtend','${t.id}')">Extend</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function openTrialDrawer(id){
+  const t = tenants.find(x=>x.id===id);
+  if(!t) return;
+  currentTenant = t;
+  document.getElementById('tdTitle').textContent = t.name;
+  document.getElementById('tdSub').textContent = `trialing · ${t.plan} · ends ${t.trialEnd}`;
+  const days = Math.ceil((new Date(t.trialEnd)-new Date('2026-08-28'))/86400000);
+  document.getElementById('tdBody').innerHTML = `
+    <div class="field-row"><span class="k">Days left</span><span class="v">${days}</span></div>
+    <div class="field-row"><span class="k">Owner</span><span class="v">${t.owner}</span></div>
+    <div class="field-row"><span class="k">Health</span><span class="v">${healthBadge(t.health)}</span></div>
+    <div class="field-row"><span class="k">Members</span><span class="v">${t.usage.active_members}</span></div>
+    <div class="trial-timeline" style="margin:16px 0;padding:12px">
+      <div class="tt-node"><div class="tt-dot"></div><div class="tt-l">Started</div><div class="tt-d">${t.created}</div></div>
+      <div class="tt-node"><div class="tt-dot"></div><div class="tt-l">Now</div><div class="tt-d">${days}d left</div></div>
+      <div class="tt-node"><div class="tt-dot muted"></div><div class="tt-l">Convert <span class="cap cap-prop">Prop</span></div><div class="tt-d">Billing jobs</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-primary" onclick="openDlg('dlgExtend');closeTrialDrawer()">Extend trial</button>
+      <button class="btn btn-secondary" onclick="openTenant('${t.id}');closeTrialDrawer()">Open Tenant 360</button>
+      <button class="btn btn-ghost" onclick="toast('Convert to Paid is proposed','err')">Convert to Paid <span class="cap cap-prop">Prop</span></button>
+    </div>`;
+  document.getElementById('trialDrawer').classList.add('open');
+  document.getElementById('trialDrawerBg').classList.add('open');
+}
+function closeTrialDrawer(){
+  document.getElementById('trialDrawer').classList.remove('open');
+  document.getElementById('trialDrawerBg').classList.remove('open');
+}
+
+function renderSubs(){
+  document.getElementById('subsTable').innerHTML = tenants.map(t=>`<tr onclick="openTenant('${t.id}')">
+    <td><div class="t-cell"><div class="t-logo">${initials(t.name)}</div><div class="t-name">${t.name}</div></div></td>
+    <td>${statusBadge(t.status)}</td>
+    <td>${planChip(t.plan)}</td>
+    <td class="tabular mono">${mrr(t)?mrr(t).toLocaleString():'—'}</td>
+    <td style="font-size:12px;color:var(--text-muted)">${t.trialEnd?('Trial '+t.trialEnd):(t.renew||'—')}</td>
+    <td style="font-size:12px">${t.status==='past_due'?'Failed charge':t.status==='trialing'?'No charge yet':'Card on file'}</td>
+  </tr>`).join('');
+}
+
+function renderRisk(){
+  const f = document.getElementById('riskFilter').value;
+  const rows = RISK.filter(r=>!f||r.derived===f);
+  document.getElementById('riskTable').innerHTML = rows.map(r=>{
+    const t = tenants.find(x=>x.id===r.tenantId);
+    return `<tr onclick="openTenant('${r.tenantId}')">
+      <td><div class="t-cell"><div class="t-logo">${initials(t.name)}</div><div><div class="t-name">${t.name}</div><div class="t-meta">${t.status}</div></div></div></td>
+      <td>${r.signals.map(s=>`<span class="mono" style="font-size:11px;display:block">${s}</span>`).join('')}</td>
+      <td><span class="badge b-${r.derived==='resolved'?'active':r.derived==='new'?'past_due':'trialing'}"><i class="d"></i>${r.derived}</span></td>
+      <td class="mono" style="font-size:12px">${r.outcome}</td>
+      <td>${r.owner}</td>
+      <td class="mono" style="font-size:12px">${r.updated}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderUsage(){
+  document.getElementById('usageTable').innerHTML = tenants.filter(t=>t.status!=='cancelled').map(t=>{
+    const p = PLANS[t.plan];
+    const cell = (k,cap)=>`<td>${usageBar(t.usage[k],cap)}<div class="t-meta">${fmt(t.usage[k])} / ${fmt(cap)}</div></td>`;
+    return `<tr onclick="openTenant('${t.id}')">
+      <td><div class="t-cell"><div class="t-logo">${initials(t.name)}</div><div class="t-name">${t.name}</div></div></td>
+      ${cell('active_members',p.members)}
+      ${cell('whatsapp_messages',p.wa)}
+      ${cell('staff_seats',p.staff)}
+      ${cell('branches',p.branches)}
+    </tr>`;
+  }).join('');
+}
+
+function renderAudit(){
+  document.getElementById('auditTable').innerHTML = AUDIT.map(a=>`<tr>
+    <td class="mono" style="font-size:12px">${a.at}</td>
+    <td>${a.actor}</td>
+    <td class="mono">${a.action}</td>
+    <td>${a.tenant}</td>
+    <td style="color:var(--text-muted)">${a.detail}</td>
+  </tr>`).join('');
+}
+
+function planCardHtml(key, selected, onclick){
+  const p = PLANS[key];
+  return `<div class="plan-card ${selected===key?'selected':''}" onclick="${onclick}">
+    <h4>${key}</h4>
+    <div class="price">EGP ${p.price.toLocaleString()} <span>/ mo</span></div>
+    <div style="font-size:11px;color:var(--text-faint)">Annual EGP ${(p.price*10).toLocaleString()}</div>
+    <ul>
+      <li>Members ${fmt(p.members)}</li>
+      <li>Staff ${fmt(p.staff)} · Branches ${fmt(p.branches)}</li>
+      <li>WA ${fmt(p.wa)}</li>
+      <li>${p.features.join(', ')}</li>
+    </ul>
+  </div>`;
+}
+
+function renderPlansPage(){
+  document.getElementById('plansPageGrid').innerHTML = Object.keys(PLANS).map(k=>planCardHtml(k,null,'')).join('');
+}
+
+/* Wizard */
+const WIZ_LABELS = ['Business','Owner','Subscription','Trial','Review','Success'];
+function openWizard(){
+  wizStep = 0; wizTier = 'starter'; wizTrialDays = 14;
+  renderWizSteps();
+  showWizPanel();
+  document.getElementById('wizPlans').innerHTML = Object.keys(PLANS).map(k=>planCardHtml(k, wizTier, `selectWizPlan('${k}')`)).join('');
+  nav('create');
+}
+function renderWizSteps(){
+  document.getElementById('wizSteps').innerHTML = WIZ_LABELS.map((l,i)=>`
+    <div class="wiz-step ${i===wizStep?'active':''} ${i<wizStep?'done':''}"><div class="n">${i+1}</div>${l}</div>`).join('');
+}
+function showWizPanel(){
+  document.querySelectorAll('.wiz-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('wiz-'+wizStep).classList.add('active');
+  document.getElementById('wizBack').style.visibility = wizStep===0||wizStep===5 ? 'hidden':'visible';
+  document.getElementById('wizNext').style.display = wizStep===5 ? 'none':'inline-flex';
+  document.getElementById('wizNext').textContent = wizStep===4 ? 'Provision gym' : 'Continue';
+  document.getElementById('wizNavBtns').style.display = wizStep===5 ? 'none':'flex';
+  if(wizStep===4){
+    document.getElementById('wizReview').innerHTML = `
+      <div class="card card-pad">
+        <div class="field-row"><span class="k">Name</span><span class="v">${document.getElementById('wName').value}</span></div>
+        <div class="field-row"><span class="k">City</span><span class="v">${document.getElementById('wCity').value}</span></div>
+        <div class="field-row"><span class="k">Phone</span><span class="v">${document.getElementById('wPhone').value}</span></div>
+        <div class="field-row"><span class="k">Email</span><span class="v">${document.getElementById('wEmail').value}</span></div>
+      </div>
+      <div class="card card-pad">
+        <div class="field-row"><span class="k">Owner</span><span class="v">${document.getElementById('wOwnerName').value}</span></div>
+        <div class="field-row"><span class="k">Owner email</span><span class="v">${document.getElementById('wOwnerEmail').value}</span></div>
+        <div class="field-row"><span class="k">Password</span><span class="v">Admin-set <span class="cap cap-impl">Impl</span></span></div>
+        <div class="field-row"><span class="k">Tier</span><span class="v">${wizTier}</span></div>
+        <div class="field-row"><span class="k">Trial days</span><span class="v">${wizTrialDays}${wizTrialDays!==14?' <span class="cap cap-prop">Prop</span>':''}</span></div>
+      </div>`;
+  }
+  renderWizSteps();
+}
+function selectWizPlan(k){ wizTier=k; document.getElementById('wizPlans').innerHTML = Object.keys(PLANS).map(x=>planCardHtml(x, wizTier, `selectWizPlan('${x}')`)).join(''); }
+function pickTrialDays(d, btn){
+  document.querySelectorAll('.trial-opt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const wrap = document.getElementById('customDaysWrap');
+  if(d==='custom'){ wrap.style.display='flex'; wizTrialDays = +document.getElementById('wCustomDays').value||21; toast('Custom trial days are PROPOSED','err'); }
+  else { wrap.style.display='none'; wizTrialDays=d; if(d!==14) toast('Non-default trial length is PROPOSED','err'); }
+  document.getElementById('ttTrialEnd').textContent = '+'+wizTrialDays+' days';
+}
+function wizNext(){
+  if(wizStep===4){
+    toast('Gym provisioned (preview)','ok');
+    wizStep=5; showWizPanel(); return;
+  }
+  if(wizStep<5){ wizStep++; showWizPanel(); }
+}
+function wizBack(){ if(wizStep>0){ wizStep--; showWizPanel(); } }
+
+/* Dialogs */
+let dlgTenantId = null;
+function openDlg(id, tenantId){
+  if(tenantId){ dlgTenantId = tenantId; currentTenant = tenants.find(t=>t.id===tenantId)||currentTenant; }
+  if(id==='dlgChangePlan'){
+    changePlanPick = currentTenant ? currentTenant.plan : 'growth';
+    pickChangePlan(changePlanPick);
+  }
+  if(id==='dlgFeatures'){
+    const feats = ['sales','shifts','trials','debtors','refunds','inventory','hr','imports','classes','whatsapp'];
+    document.getElementById('featBody').innerHTML = feats.map(f=>`
+      <label style="display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px">
+        <input type="checkbox" ${['sales','shifts','inventory'].includes(f)?'checked':''}/> ${f}
+      </label>`).join('');
+  }
+  document.getElementById(id).classList.add('open');
+}
+function pickChangePlan(k){
+  changePlanPick = k;
+  document.getElementById('changePlanGrid').innerHTML = Object.keys(PLANS).map(x=>`
+    <div class="plan-card ${changePlanPick===x?'selected':''}" onclick="pickChangePlan('${x}')">
+      <h4>${x}</h4>
+      <div class="price">EGP ${PLANS[x].price.toLocaleString()} <span>/ mo</span></div>
+    </div>`).join('');
+}
+function closeDlg(id){ document.getElementById(id).classList.remove('open'); }
+function confirmExtend(){
+  const days = +document.getElementById('extDays').value;
+  const reason = document.getElementById('extReason').value.trim();
+  if(!days||days<1||days>90){ toast('Days must be 1–90','err'); return; }
+  if(!reason){ toast('Reason required','err'); return; }
+  toast(`Trial extended +${days}d`,'ok');
+  closeDlg('dlgExtend');
+}
+function confirmAction(msg, dlg){
+  const map = { dlgSuspend:'susReason', dlgReactivate:'reaReason', dlgCancel:'canReason', dlgChangePlan:'cpReason', dlgCoupon:'couponReason' };
+  const rid = map[dlg];
+  if(rid && !document.getElementById(rid).value.trim() && dlg!=='dlgCoupon'){ toast('Reason required','err'); return; }
+  toast(msg,'ok');
+  closeDlg(dlg);
+}
+function openStaffDialog(mode, id){
+  staffMode = mode;
+  document.getElementById('staffDlgTitle').textContent = mode==='create'?'Create staff user':'Edit role';
+  if(mode==='edit' && currentTenant){
+    const s = currentTenant.staff.find(x=>x.id===id);
+    if(s){ document.getElementById('stName').value=s.name; document.getElementById('stEmail').value=s.email; document.getElementById('stRole').value=s.role==='Owner'?'Manager':s.role; }
+  } else {
+    document.getElementById('stName').value=''; document.getElementById('stEmail').value=''; document.getElementById('stRole').value='Receptionist';
+  }
+  openDlg('dlgStaff');
+}
+function confirmStaff(){
+  toast(staffMode==='create'?'Staff user created (preview)':'Role updated (preview)','ok');
+  closeDlg('dlgStaff');
+}
+
+/* Overlay backdrop + Escape */
+document.querySelectorAll('.overlay').forEach(ov=>{
+  ov.addEventListener('click', e=>{ if(e.target===ov) ov.classList.remove('open'); });
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
+    closeTrialDrawer();
+    closeMenus();
+  }
+});
+document.addEventListener('click', ()=>closeMenus());
+
+/* Dashboard activity */
+document.getElementById('dashActivity').innerHTML = AUDIT.slice(0,4).map(a=>`
+  <div style="display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-soft)">
+    <div><div style="font-weight:700;font-size:13px">${a.action.replace(/_/g,' ')} · ${a.tenant}</div>
+    <div style="font-size:12px;color:var(--text-muted)">${a.actor} — ${a.detail}</div></div>
+    <div class="mono" style="font-size:11px;color:var(--text-faint);white-space:nowrap">${a.at}</div>
+  </div>`).join('');
+
+/* Init */
+renderTenants();
+renderPlansPage();
+</script>
+</body>
+</html>

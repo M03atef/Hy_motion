@@ -1,0 +1,61 @@
+# Inventory Guardian (Phase 1 Frozen + Category A + PAP AP-1/AP-2 carve-out)
+
+Inventory Phase 1 is **feature-frozen** until the supervised pilot completes and Product unlocks Phase 2 via the Official Product Decision Log.
+
+**Carve-out (2026-08-11):** Purchasing **AP-1** + **AP-2** (Invoices Finance hub / Buy docs over GRN) under Accepted [PAP-P0](canvases/purchasing-ap-product-decision-log.canvas.tsx) and the AP-1 / AP-2 execution packs. Inventory Decision Log **A2** carve-out + **C9** promote. Do **not** treat this as unlock for other Category B/C/D work.
+
+## Binding Source of Truth
+
+- Official Decision Log: `canvases/inventory-product-decision-log.canvas.tsx`
+- Purchasing AP SoT: `canvases/purchasing-ap-product-decision-log.canvas.tsx` (PAP-P0 ACCEPTED)
+- AP-1 pack: `canvases/purchasing-ap-ap1-authorized-execution-pack.canvas.tsx`
+- AP-2 pack: `canvases/purchasing-ap2-invoices-hub-execution-pack.canvas.tsx`
+- Category A pack: `canvases/inventory-category-a-pilot-pack.canvas.tsx`
+- Companion: `canvases/inventory-pilot-readiness.canvas.tsx`
+- Closure: `canvases/inventory-phase1-closure-report.canvas.tsx`
+
+**Any proposal that conflicts with the Decision Log must cite the conflicting ID (A/B/C/D or PAP G/P/R) and request a formal Product revision before implementation.**
+
+## Accept only
+
+- Critical production defects
+- High-severity pilot bugs
+- Security vulnerabilities
+- Data corruption / inventory integrity risks
+- Performance regressions
+- Accessibility fixes
+- AR/EN localization fixes
+- Logging / monitoring improvements
+- Documentation improvements
+- **Approved Category A** pilot-readiness work already decided in the Decision Log (A1–A8)
+- **PAP-P0 AP-1** tasks in the AP-1 Authorized Execution Pack (balance, opening, payment, statement, money columns, address)
+- **PAP-P0 AP-2** tasks in the AP-2 Invoices Hub Execution Pack only (GRN list/get, invoice `lineType` filter, Finance hub tabs Sell/Buy/All, receive → Buy deep-link) — Buy docs are presentation over PO/GRN; **no** `PurchaseInvoice` stock-posting entity; **no** per-GRN paid allocation; **no** PDF export program in this pack
+
+## Reject (do not implement)
+
+- Category **B** (after pilot) — including full IA collapse, Buy/Fix shortcuts, thin helpers as a program, N.1, returns, refund behavior change — **except** do not block PAP AP-1/AP-2 packs above
+- Category **C** productization (hide/gate/Advanced IA) until Product revises the log — engines may remain as shipped — **except C9 AP-1 as authorized**
+- Category **D** — SPA, A0 kit-as-phase, client stock math, Redis Available, batch-count expansion, WAC/GL/branch ERP, fake returns, premature GA marketing, N.1 before evidence, CSS forever-refactor during pilot
+- PAP **AP-3** (returns credit, multi-branch AP) until further Product go
+- Fake Paid/Due/Settled per GRN without allocation engine; inventing a parallel PurchaseInvoice that double-posts stock
+- New features, workflows, or screens not listed as Category A or PAP AP-1/AP-2 packs
+- Auto-continuing into other Phase 2 after Category A or after AP-1/AP-2 completes
+
+## Correctness invariants (never weaken)
+
+- Backend owns Available / FEFO / reorder / Incoming
+- No client-invented stock math
+- Available excludes expired (Cairo today); OnHand is physical
+- Ledger is sole writer of balances/movements
+- CostPrice/UnitCost not leaked to inventory.view-only roles
+- Counts reject TrackBatch/TrackExpiry SKUs (use Fix)
+- Posted adjustments: no edit/reverse API — compensating Fix only
+- Buy documents never change on-hand beyond existing GRN receive path; payments never change on-hand
+
+## After Category A
+
+Stop on Inventory feature expansion outside the PAP AP-1/AP-2 carve-outs. Report completion. Do not start other Phase 2 builds automatically. Pilot ops (deploy tag, migrations, war-room) are human go-live steps in the Category A pack.
+
+## After PAP AP-1 / AP-2
+
+Stop. Report completion. Do not auto-start AP-3 or Inventory B6 returns.

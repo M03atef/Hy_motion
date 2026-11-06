@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Member Outstanding (preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#22C55E;--dng500:#EF4444;
+  --lbg:#F4F5F3;--ls1:#FFFEFB;--ls2:#F3F5F2;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:54rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 72px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#0D0D0D;background:var(--l500);font-weight:700}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;background:rgba(255,254,251,.92);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.content{padding:22px 28px 56px;flex:1}
+.page-tabs{display:flex;gap:18px;border-bottom:1px solid var(--ls3);margin-bottom:20px}
+.page-tabs button{background:none;border:none;padding:0 0 10px;font:inherit;font-size:13px;font-weight:600;color:var(--ltt);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.page-tabs button.act{color:var(--ltp);border-bottom-color:var(--ltp)}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:24px;align-items:start}
+@media(max-width:1024px){.layout{grid-template-columns:1fr}}
+.card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:22px}
+.av{width:72px;height:72px;border-radius:50%;background:#E8EDE6;color:var(--lts);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:22px;margin:0 auto 10px}
+.pname{font-family:var(--fd);font-size:20px;font-weight:700;text-align:center}
+.pmeta{font-size:13px;color:var(--ltt);text-align:center;margin:4px 0 14px}
+.status{display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:600;color:#166534;margin-bottom:16px}
+.status .dot{width:8px;height:8px;border-radius:50%;background:var(--suc500)}
+.status.off{color:#991B1B}
+.status.off .dot{background:var(--dng500)}
+.info{font-size:13px;color:var(--lts);display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.info i{color:var(--ltt);width:16px}
+.fin{margin-top:8px;padding:12px 14px;border:1px solid var(--ls3);border-radius:var(--rmd);background:#fff}
+.fin-h{display:flex;align-items:center;gap:8px;font-family:var(--fd);font-size:12px;font-weight:700;color:var(--lts);margin-bottom:8px}
+.fin-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.fin-lbl{font-size:12px;color:var(--ltt)}
+.fin-val{font-family:var(--fd);font-size:18px;font-weight:700}
+.fin.has-due .fin-val{color:var(--dng500)}
+.fin-link{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:600;color:var(--l600);text-decoration:none}
+.btn{height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:10px}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn.ghost{background:transparent}
+.right{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg);min-height:420px;padding:8px}
+.rtabs{display:flex;gap:16px;padding:12px 16px;border-bottom:1px solid var(--ls3)}
+.rtabs span{font-size:13px;font-weight:600;color:var(--ltt)}
+.rtabs span.act{color:var(--ltp);border-bottom:2px solid var(--ltp);padding-bottom:10px;margin-bottom:-13px}
+.rbody{padding:20px 16px;color:var(--lts);font-size:14px;line-height:1.5}
+.rbody h3{font-family:var(--fd);font-size:15px;color:var(--ltp);margin:0 0 8px}
+.muted{color:var(--ltt);font-size:13px}
+.sales{margin-top:12px}
+.sale{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--ls3);font-size:13px}
+.sale b{font-family:var(--fd)}
+.stxt{font-size:12px;color:var(--ltt)}
+.stxt.due{color:#991B1B}
+.overlay{position:fixed;inset:0;background:rgba(13,13,13,.42);z-index:40;display:flex;justify-content:flex-end}
+.drawer{width:min(440px,100%);background:#fff;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.12)}
+.dh{padding:18px 20px;border-bottom:1px solid var(--ls3);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dh h2{font-family:var(--fd);font-size:18px}
+.db{padding:18px 20px;flex:1;overflow:auto}
+.df{padding:14px 20px;border-top:1px solid var(--ls3);display:flex;gap:8px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:700;color:var(--lts);margin-bottom:6px}
+.fg input,.fg select{width:100%;height:40px;border:1px solid var(--ls3);border-radius:10px;padding:0 12px;font:inherit}
+.choice{border:1px solid var(--ls3);border-radius:10px;padding:10px 12px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
+.choice.on{border-color:#C5D6B8;background:#F7FAF4}
+.choice small{display:block;color:var(--ltt);margin-top:2px}
+.doc{max-width:760px}
+.doc h2{font-family:var(--fd);font-size:22px;margin:0 0 8px}
+.doc h3{font-family:var(--fd);font-size:15px;margin:22px 0 8px}
+.doc p,.doc li{font-size:14px;color:var(--lts);line-height:1.55}
+.doc ul{padding-left:18px;margin:6px 0 12px}
+.box{background:#fff;border:1px solid var(--ls3);border-radius:var(--rmd);padding:14px 16px;margin:12px 0;font-size:13px;color:var(--lts);line-height:1.5}
+.box strong{color:var(--ltp)}
+.verdict{background:#fff;border:1px solid var(--ls3);border-radius:var(--rmd);padding:16px 18px;margin:12px 0 20px}
+.verdict b{font-family:var(--fd);font-size:16px}
+.flow{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:var(--ls2);border-radius:10px;padding:12px 14px;color:var(--lts);white-space:pre;overflow:auto;margin:10px 0 16px}
+.icon-btn{width:32px;height:32px;border:1px solid var(--ls3);border-radius:8px;background:#fff;cursor:pointer;color:var(--c300)}
+.toast{position:fixed;bottom:20px;right:20px;background:#14532d;color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;z-index:90}
+.scenarios{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px}
+.scenarios button{height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--ls3);background:#fff;font:inherit;font-size:12px;font-weight:600;color:var(--lts);cursor:pointer}
+.scenarios button.act{border-color:#C5D6B8;color:var(--ltp);background:#F7FAF4}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW ONLY — Member Outstanding Balance
+    <div class="note">Inspected from live Sales / Payments / Debtors APIs. No production code in this phase. Wait for Product Accept. Visual language matches Member 360 + Staff/Invoices (quiet). Lime only on Collect Payment.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-view="360">Member 360</button>
+    <button type="button" data-view="arch">Architecture</button>
+  </div>
+</div>
+
+<div class="app" id="view360">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <div class="sb-sec">Desk</div>
+    <div class="sb-item">Dashboard</div>
+    <div class="sb-item act">Members</div>
+    <div class="sb-item">Sale</div>
+    <div class="sb-item">Invoices</div>
+    <div class="sb-item" style="opacity:.45">Debtors — not in nav</div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb">Members / Karim Hassan</div>
+      <span class="muted">Receptionist · sales.sell</span>
+    </div>
+    <div class="content">
+      <div class="scenarios" id="scenarios">
+        <button type="button" class="act" data-sc="multi">Multiple outstanding</button>
+        <button type="button" data-sc="partial">One partial sale</button>
+        <button type="button" data-sc="paid">Fully paid</button>
+        <button type="button" data-sc="archived">Archived + owing</button>
+      </div>
+      <div class="layout">
+        <div class="card">
+          <div class="av">KH</div>
+          <div class="pname" id="pname">Karim Hassan</div>
+          <div class="pmeta">#M-1042 · 0100 555 2211</div>
+          <div class="status" id="pstatus"><span class="dot"></span> Active</div>
+          <div class="info">
+            <div><i class="ti ti-calendar"></i> Gold 12 months · ends 12 Oct 2026</div>
+            <div><i class="ti ti-user-plus"></i> Invitations left 2</div>
+          </div>
+          <div class="fin" id="fin">
+            <div class="fin-h"><i class="ti ti-receipt"></i> Financial</div>
+            <div class="fin-row">
+              <span class="fin-lbl">Outstanding</span>
+              <strong class="fin-val" id="finVal">EGP 1,500.00</strong>
+            </div>
+            <div class="sales" id="salePreview"></div>
+            <button type="button" class="btn primary" id="btnCollect"><i class="ti ti-cash"></i> Collect Payment</button>
+            <a class="fin-link" href="#">View invoices <i class="ti ti-chevron-right"></i></a>
+          </div>
+        </div>
+        <div class="right">
+          <div class="rtabs"><span class="act">Membership</span><span>Attendance</span><span>Invitations</span></div>
+          <div class="rbody">
+            <h3>Not an accounting module</h3>
+            <p>Member 360 stays a person page. Outstanding is one financial fact: how much this member still owes on real sales.</p>
+            <p class="muted" style="margin-top:10px">Collect Payment uses <code>POST /api/sales/{id}/payments</code> — the same write path POS already has. There is no separate debt payment.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content doc" id="viewArch" hidden>
+  <div class="verdict">
+    <b>Verdict: READY FOR IMPLEMENTATION</b>
+    <p style="margin-top:8px">Option <strong>B</strong> — Outstanding derived from Sales / Payments. Do not add <code>Member.DebtAmount</code>. Do not restore a Debtors desk. First implement pass needs one read API (outstanding sales for a member) plus the Collect Payment drawer.</p>
+  </div>
+  <h2>What already exists</h2>
+  <div class="box">
+    Remaining lives on <strong>Sale.AmountDue</strong>. Member total = sum of that member’s <code>partially_paid</code> sales. Follow-on pay is already <code>POST /api/sales/{id}/payments</code>. Dashboard KPI and Member 360 already show the total. POS can create a partial sale; it cannot collect an old one (removed on purpose).
+  </div>
+  <div class="flow">Member → Sale (AmountDue) → PaymentTransaction
+Outstanding = SUM(AmountDue) where status = partially_paid</div>
+  <h3>Collect (proposed)</h3>
+  <div class="flow">Member 360 → Collect Payment
+  → pick one sale
+  → method + amount
+  → POST /sales/{id}/payments
+  → refresh Outstanding</div>
+  <h3>Pay one sale, not auto-allocate</h3>
+  <p>The write API is per-sale. Auto-splitting one cash take across many tickets would be a new allocator. v1 is Option A: receptionist chooses the ticket.</p>
+  <h3>Language</h3>
+  <p>Outstanding · Amount due · Remaining · Collect Payment. Not Debtor, AR, aging, write-off.</p>
+  <p class="muted">Full write-up: <code>MEMBER_OUTSTANDING_ARCHITECTURE.md</code></p>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="drawer">
+    <div class="dh">
+      <div>
+        <h2>Collect Payment</h2>
+        <div class="muted" id="drawerSub">Against a real sale — not a debt record</div>
+      </div>
+      <button type="button" class="icon-btn" id="btnClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="db">
+      <div class="fg">
+        <label>Outstanding sale</label>
+        <div id="saleChoices"></div>
+      </div>
+      <div class="fg">
+        <label>Amount (EGP)</label>
+        <input type="number" id="payAmt" min="0" step="0.01">
+        <div class="muted" id="payHint" style="margin-top:6px"></div>
+      </div>
+      <div class="fg">
+        <label>Method</label>
+        <select id="payMethod">
+          <option value="cash">Cash</option>
+          <option value="card_paymob">Card</option>
+          <option value="instapay">InstaPay</option>
+          <option value="vodafone">Vodafone Cash</option>
+        </select>
+      </div>
+    </div>
+    <div class="df">
+      <button type="button" class="btn ghost" id="btnCancel">Cancel</button>
+      <button type="button" class="btn primary" id="btnPay">Take payment</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+  var scenarios = {
+    multi: {
+      name:'Karim Hassan', active:true, due:1500,
+      sales:[
+        {id:'A', label:'Gold 12 months', remaining:1000, total:3000, paid:2000, due:'20 Aug 2026'},
+        {id:'B', label:'Protein · 2 kg', remaining:500, total:800, paid:300, due:'22 Aug 2026'}
+      ]
+    },
+    partial: {
+      name:'Karim Hassan', active:true, due:1000,
+      sales:[{id:'A', label:'Gold 12 months', remaining:1000, total:3000, paid:2000, due:'20 Aug 2026'}]
+    },
+    paid: {
+      name:'Karim Hassan', active:true, due:0, sales:[]
+    },
+    archived: {
+      name:'Karim Hassan', active:false, due:1300,
+      sales:[{id:'A', label:'Day pass pack', remaining:1300, total:1300, paid:0, due:'01 Aug 2026'}]
+    }
+  };
+  var sc = 'multi';
+  var selected = null;
+
+  function money(n){
+    return 'EGP ' + Number(n).toLocaleString('en-EG', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function render(){
+    var d = scenarios[sc];
+    document.getElementById('pname').textContent = d.name;
+    var st = document.getElementById('pstatus');
+    st.className = 'status' + (d.active ? '' : ' off');
+    st.innerHTML = '<span class="dot"></span> ' + (d.active ? 'Active' : 'Archived');
+    var fin = document.getElementById('fin');
+    fin.classList.toggle('has-due', d.due > 0);
+    document.getElementById('finVal').textContent = money(d.due);
+    var prev = document.getElementById('salePreview');
+    prev.innerHTML = d.sales.map(function(s){
+      return '<div class="sale"><div>'+s.label+'<div class="stxt">Paid '+money(s.paid)+' of '+money(s.total)+'</div></div><div class="stxt due">'+money(s.remaining)+'</div></div>';
+    }).join('');
+    document.getElementById('btnCollect').hidden = d.due <= 0;
+  }
+  function openDrawer(){
+    var d = scenarios[sc];
+    if(!d.sales.length) return;
+    selected = d.sales[0].id;
+    var box = document.getElementById('saleChoices');
+    box.innerHTML = d.sales.map(function(s){
+      return '<div class="choice'+(s.id===selected?' on':'')+'" data-id="'+s.id+'"><div><b>'+s.label+'</b><small>Due '+s.due+' · Paid '+money(s.paid)+' of '+money(s.total)+'</small></div><b>'+money(s.remaining)+'</b></div>';
+    }).join('');
+    fillAmount();
+    document.getElementById('overlay').hidden = false;
+  }
+  function fillAmount(){
+    var d = scenarios[sc];
+    var s = d.sales.find(function(x){ return x.id === selected; }) || d.sales[0];
+    document.getElementById('payAmt').value = s.remaining;
+    document.getElementById('payAmt').max = s.remaining;
+    document.getElementById('payHint').textContent = 'Remaining on this sale: ' + money(s.remaining) + '. Cannot exceed.';
+  }
+  document.getElementById('scenarios').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    sc = b.getAttribute('data-sc');
+    document.querySelectorAll('#scenarios button').forEach(function(x){ x.classList.toggle('act', x===b); });
+    render();
+  });
+  document.getElementById('btnCollect').addEventListener('click', openDrawer);
+  document.getElementById('saleChoices').addEventListener('click', function(e){
+    var c = e.target.closest('.choice'); if(!c) return;
+    selected = c.getAttribute('data-id');
+    document.querySelectorAll('.choice').forEach(function(x){ x.classList.toggle('on', x===c); });
+    fillAmount();
+  });
+  function close(){ document.getElementById('overlay').hidden = true; }
+  document.getElementById('btnClose').addEventListener('click', close);
+  document.getElementById('btnCancel').addEventListener('click', close);
+  document.getElementById('btnPay').addEventListener('click', function(){
+    var d = scenarios[sc];
+    var s = d.sales.find(function(x){ return x.id === selected; });
+    var amt = Number(document.getElementById('payAmt').value);
+    if(!s || !(amt > 0)) return;
+    if(amt > s.remaining){
+      document.getElementById('payHint').textContent = 'Amount exceeds remaining on this sale.';
+      return;
+    }
+    s.paid += amt; s.remaining = Math.round((s.remaining - amt)*100)/100;
+    d.sales = d.sales.filter(function(x){ return x.remaining > 0; });
+    d.due = d.sales.reduce(function(a,x){ return a + x.remaining; }, 0);
+    close();
+    render();
+    var t = document.getElementById('toast');
+    t.hidden = false;
+    t.textContent = 'Payment recorded on the sale. Outstanding updated. Shift would move if cash.';
+    setTimeout(function(){ t.hidden = true; }, 2800);
+  });
+  document.querySelector('.banner .controls').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var v = b.getAttribute('data-view');
+    document.querySelectorAll('.banner .controls button').forEach(function(x){ x.classList.toggle('act', x===b); });
+    document.getElementById('view360').hidden = v !== '360';
+    document.getElementById('viewArch').hidden = v !== 'arch';
+  });
+  render();
+})();
+</script>
+</body>
+</html>

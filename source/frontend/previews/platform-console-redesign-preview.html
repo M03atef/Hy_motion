@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Control Plane Redesign</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --ink-900:#0B0F19; --ink-800:#141A29; --ink-700:#232B3E; --ink-600:#384152; --ink-400:#7C8697;
+  --canvas:#F6F7F9; --surface:#FFFFFF; --surface-2:#FBFBFC; --border:#E3E6EB; --border-soft:#EDEFF2;
+  --text:#12151C; --text-muted:#5B6472; --text-faint:#8A93A2;
+  --accent:#3E63DD; --accent-600:#3453BE; --accent-soft:#EAF0FE; --accent-soft-border:#D3E0FC;
+  --good:#16A34A; --good-soft:#E9F8EF; --good-border:#BEEBCF;
+  --warning:#D97706; --warning-soft:#FEF3E2; --warning-border:#FBDFAE;
+  --critical:#DC2626; --critical-soft:#FDECEC; --critical-border:#F7C6C6;
+  --neutral:#94A3B8; --neutral-soft:#F1F3F6; --neutral-border:#E1E5EB;
+  --implemented:#16A34A; --backend-ready:#3E63DD; --proposed:#94A3B8;
+  --fd:'Manrope',sans-serif; --fb:'Source Sans 3',sans-serif; --fm:'IBM Plex Mono',monospace;
+  --r-sm:8px; --r-md:10px; --r-lg:14px; --r-xl:18px;
+  --shadow-sm:0 1px 2px rgba(11,15,25,.05);
+  --shadow-md:0 4px 12px rgba(11,15,25,.08);
+  --shadow-lg:0 16px 48px rgba(11,15,25,.18);
+  --sidebar-w:236px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--fb); color:var(--text); background:var(--canvas); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.5}
+h1,h2,h3,h4{font-family:var(--fd); color:var(--text); margin:0; text-wrap:balance}
+button{font-family:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.mono{font-family:var(--fm)}
+.tabular{font-variant-numeric:tabular-nums}
+a{color:inherit}
+
+/* ===== Discovery banner ===== */
+.discovery-banner{
+  background:var(--ink-900); color:#C9CEDA; padding:9px 20px; font-size:12.5px; font-weight:600;
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap; border-bottom:1px solid var(--ink-700);
+}
+.discovery-banner b{color:#fff}
+.legend{display:flex; align-items:center; gap:14px; margin-left:auto; font-weight:600}
+.legend-item{display:flex; align-items:center; gap:5px}
+.legend-dot{width:8px; height:8px; border-radius:50%; flex-shrink:0}
+
+/* ===== Status capability chip ===== */
+.cap{
+  display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:99px;
+  font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap; border:1px solid transparent;
+}
+.cap .d{width:6px; height:6px; border-radius:50%; flex-shrink:0}
+.cap-impl{background:var(--good-soft); color:#0F7A38; border-color:var(--good-border)}
+.cap-impl .d{background:var(--implemented)}
+.cap-ready{background:var(--accent-soft); color:var(--accent-600); border-color:var(--accent-soft-border)}
+.cap-ready .d{background:var(--backend-ready)}
+.cap-proposed{background:var(--neutral-soft); color:var(--ink-600); border-color:var(--neutral-border)}
+.cap-proposed .d{background:var(--proposed)}
+
+/* ===== Shell ===== */
+.shell{display:flex; min-height:calc(100vh - 38px)}
+.sidebar{
+  width:var(--sidebar-w); flex-shrink:0; background:var(--ink-900); color:#C9CEDA;
+  display:flex; flex-direction:column; position:sticky; top:38px; height:calc(100vh - 38px);
+}
+.sb-brand{display:flex; align-items:center; gap:10px; padding:18px 20px 16px; border-bottom:1px solid var(--ink-700)}
+.sb-brand .mark{width:28px; height:28px; border-radius:8px; background:var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0}
+.sb-brand .mark svg{width:15px; height:15px}
+.sb-brand .name{font-family:var(--fd); font-weight:800; font-size:14px; color:#fff; letter-spacing:-.01em}
+.sb-brand .plane{font-size:10px; color:var(--text-faint); font-weight:600; text-transform:uppercase; letter-spacing:.06em}
+.sb-nav{flex:1; padding:12px 10px; overflow-y:auto}
+.sb-item{
+  display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:var(--r-sm);
+  font-size:13.5px; font-weight:600; color:#AEB6C4; cursor:pointer; margin-bottom:1px;
+}
+.sb-item:hover{background:var(--ink-700); color:#fff}
+.sb-item.act{background:var(--accent); color:#fff}
+.sb-item svg{width:16px; height:16px; flex-shrink:0; opacity:.9}
+.sb-item .tag{margin-left:auto; font-size:9px; font-weight:800; padding:1px 5px; border-radius:5px; background:rgba(255,255,255,.14); letter-spacing:.02em}
+.sb-foot{padding:14px; border-top:1px solid var(--ink-700); display:flex; align-items:center; gap:10px}
+.sb-foot .av{width:32px; height:32px; border-radius:50%; background:var(--ink-700); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-weight:700; font-size:12px; flex-shrink:0}
+.sb-foot .nm{font-size:12.5px; font-weight:700; color:#fff}
+.sb-foot .role{font-size:11px; color:var(--text-faint)}
+
+.main{flex:1; min-width:0; display:flex; flex-direction:column}
+.topbar{height:56px; flex-shrink:0; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 26px; gap:16px}
+.crumb{font-size:13px; color:var(--text-muted); display:flex; align-items:center; gap:6px}
+.crumb b{color:var(--text); font-weight:700}
+.crumb .sep{color:var(--text-faint)}
+.topbar-actions{display:flex; align-items:center; gap:10px}
+.content{flex:1; padding:26px 30px 60px}
+.content-inner{max-width:1320px}
+.screen{display:none}
+.screen.active{display:block}
+.tab-panel{display:none}
+.tab-panel.active{display:block; animation:fadein .15s ease}
+@keyframes fadein{from{opacity:0; transform:translateY(2px)} to{opacity:1; transform:none}}
+
+.page-head{display:flex; align-items:flex-start; justify-content:space-between; gap:20px; margin-bottom:20px; flex-wrap:wrap}
+.page-head h1{font-size:22px; font-weight:800; letter-spacing:-.015em; display:flex; align-items:center; gap:10px}
+.page-head p{margin:5px 0 0; color:var(--text-muted); font-size:13.5px; max-width:50rem}
+.page-actions{display:flex; gap:10px; flex-shrink:0; align-items:center}
+
+.btn{display:inline-flex; align-items:center; gap:7px; height:35px; padding:0 13px; border-radius:var(--r-sm); font-size:13.5px; font-weight:700; cursor:pointer; border:1px solid transparent; white-space:nowrap}
+.btn svg{width:14px; height:14px}
+.btn-primary{background:var(--accent); color:#fff}
+.btn-primary:hover{background:var(--accent-600)}
+.btn-secondary{background:var(--surface); color:var(--text); border-color:var(--border)}
+.btn-secondary:hover{border-color:var(--ink-400); background:var(--surface-2)}
+.btn-danger{background:var(--surface); color:var(--critical); border-color:var(--critical-border)}
+.btn-danger:hover{background:var(--critical-soft)}
+.btn-danger-solid{background:var(--critical); color:#fff}
+.btn-ghost{background:transparent; color:var(--text-muted); border-color:transparent}
+.btn-ghost:hover{background:var(--neutral-soft); color:var(--text)}
+.btn-sm{height:29px; padding:0 10px; font-size:12.5px}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.icon-btn{width:33px; height:33px; border-radius:var(--r-sm); border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--text-muted); flex-shrink:0}
+.icon-btn:hover{border-color:var(--ink-400); color:var(--text)}
+
+.kpi-row{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:20px}
+.kpi{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:14px 16px; box-shadow:var(--shadow-sm); position:relative}
+.kpi .lbl{font-size:11.5px; font-weight:600; color:var(--text-muted); display:flex; align-items:center; gap:6px}
+.kpi .lbl .dot{width:7px; height:7px; border-radius:50%; flex-shrink:0}
+.kpi .val{font-family:var(--fd); font-size:23px; font-weight:800; margin-top:6px; letter-spacing:-.02em}
+.kpi .sub{font-size:11px; color:var(--text-faint); margin-top:2px}
+.kpi .cap{position:absolute; top:10px; right:10px}
+
+.toolbar{display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap}
+.search{position:relative; flex:1; min-width:220px; max-width:320px}
+.search svg{position:absolute; left:11px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text-faint)}
+.search input{width:100%; height:35px; padding:0 12px 0 32px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:13.5px; font-family:inherit; background:var(--surface); color:var(--text)}
+.select{height:35px; padding:0 28px 0 11px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:12.5px; font-weight:600; background:var(--surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none"><path d="M1 1l4 4 4-4" stroke="%235B6472" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>') no-repeat right 10px center; color:var(--text); appearance:none; cursor:pointer}
+.spacer{flex:1}
+.view-tabs{display:flex; gap:4px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-sm); padding:3px}
+.view-tab{padding:5px 12px; font-size:12.5px; font-weight:700; color:var(--text-muted); border-radius:6px; cursor:pointer}
+.view-tab.act{background:var(--surface); color:var(--accent); box-shadow:var(--shadow-sm)}
+
+.table-wrap{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-sm)}
+.table-scroll{overflow-x:auto}
+table{width:100%; border-collapse:collapse; min-width:900px}
+thead th{text-align:left; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-faint); background:var(--surface-2); padding:10px 14px; border-bottom:1px solid var(--border); white-space:nowrap}
+thead th .cap{margin-left:6px; vertical-align:middle}
+tbody td{padding:12px 14px; border-bottom:1px solid var(--border-soft); vertical-align:middle; font-size:13.5px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+.t-tenant{display:flex; align-items:center; gap:10px}
+.t-logo{width:32px; height:32px; border-radius:var(--r-sm); background:var(--accent-soft); color:var(--accent-600); display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-weight:800; font-size:12px; flex-shrink:0}
+.t-name{font-weight:700; color:var(--text)}
+.t-id{font-size:11px; color:var(--text-faint)}
+
+.badge{display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:99px; font-size:11.5px; font-weight:700; border:1px solid transparent; white-space:nowrap}
+.badge .dot{width:6px; height:6px; border-radius:50%; flex-shrink:0}
+.badge-good{background:var(--good-soft); color:#0F7A38; border-color:var(--good-border)}
+.badge-good .dot{background:var(--good)}
+.badge-warning{background:var(--warning-soft); color:#9A5B04; border-color:var(--warning-border)}
+.badge-warning .dot{background:var(--warning)}
+.badge-critical{background:var(--critical-soft); color:#B01E1E; border-color:var(--critical-border)}
+.badge-critical .dot{background:var(--critical)}
+.badge-neutral{background:var(--neutral-soft); color:var(--ink-600); border-color:var(--neutral-border)}
+.badge-neutral .dot{background:var(--neutral)}
+.plan-chip{display:inline-flex; padding:3px 9px; border-radius:6px; font-size:11.5px; font-weight:700; background:var(--ink-900); color:#fff}
+.plan-chip.starter{background:var(--neutral-soft); color:var(--ink-600)}
+.plan-chip.growth{background:var(--accent-soft); color:var(--accent-600)}
+.plan-chip.pro{background:#EDE7FE; color:#5B21B6}
+.plan-chip.enterprise{background:var(--ink-900); color:#fff}
+
+.usage-cell{display:flex; align-items:center; gap:8px; min-width:80px}
+.usage-track{flex:1; height:5px; border-radius:99px; background:var(--border-soft); overflow:hidden}
+.usage-fill{height:100%; border-radius:99px}
+.usage-fill.good{background:var(--good)} .usage-fill.warning{background:var(--warning)} .usage-fill.critical{background:var(--critical)}
+.usage-pct{font-size:11.5px; font-weight:700; font-family:var(--fm); width:30px; text-align:right; flex-shrink:0}
+
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:var(--shadow-sm)}
+.card-pad{padding:18px 20px}
+.card-head{display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid var(--border); gap:10px; flex-wrap:wrap}
+.card-head h3{font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px}
+.card-head .hint{font-size:11.5px; color:var(--text-faint); font-weight:500}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.section-gap{margin-bottom:18px}
+.field-row{display:flex; justify-content:space-between; align-items:baseline; padding:8px 0; border-bottom:1px solid var(--border-soft); font-size:13.5px; gap:12px}
+.field-row:last-child{border-bottom:none}
+.field-row .k{color:var(--text-muted)}
+.field-row .v{font-weight:600; text-align:right}
+
+.tabs{display:flex; gap:2px; border-bottom:1px solid var(--border); margin-bottom:20px; overflow-x:auto}
+.tab{padding:9px 4px; margin-right:20px; font-size:13.5px; font-weight:700; color:var(--text-muted); cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; flex-shrink:0; display:flex; align-items:center; gap:7px}
+.tab:hover{color:var(--text)}
+.tab.act{color:var(--accent); border-bottom-color:var(--accent)}
+
+.sumstrip{display:grid; grid-template-columns:repeat(4,1fr); border:1px solid var(--border); border-radius:var(--r-lg); background:var(--surface); box-shadow:var(--shadow-sm); margin-bottom:18px; overflow:hidden}
+.sumcell{padding:15px 18px; border-right:1px solid var(--border-soft)}
+.sumcell:last-child{border-right:none}
+.sumcell .lbl{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--text-faint)}
+.sumcell .val{font-family:var(--fd); font-size:16px; font-weight:800; margin-top:5px}
+
+.usage-card{border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 18px; background:var(--surface)}
+.usage-card .top{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:9px; gap:8px}
+.usage-card .name{font-size:13px; font-weight:700}
+.usage-card .nums{font-family:var(--fm); font-size:12.5px; color:var(--text-muted)}
+.usage-card .nums b{color:var(--text); font-weight:700}
+.usage-card .track{height:6px; border-radius:99px; background:var(--border-soft); overflow:hidden}
+.usage-card .fill{height:100%; border-radius:99px}
+.usage-card .pct-lbl{margin-top:6px; font-size:11.5px; font-weight:700; font-family:var(--fm)}
+.usage-card.good .fill{background:var(--good)} .usage-card.good .pct-lbl{color:var(--good)}
+.usage-card.warning .fill{background:var(--warning)} .usage-card.warning .pct-lbl{color:var(--warning)}
+.usage-card.critical .fill{background:var(--critical)} .usage-card.critical .pct-lbl{color:var(--critical)}
+.usage-card.unlimited .track{background:var(--border-soft)}
+
+.health-score-box{display:flex; align-items:flex-end; gap:18px; flex-wrap:wrap}
+.health-num{font-family:var(--fm); font-size:44px; font-weight:700; line-height:1}
+.factor-row{display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid var(--border-soft)}
+.factor-row:last-child{border-bottom:none}
+.factor-glyph{width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px}
+.factor-glyph.pos{background:var(--good-soft); color:var(--good)}
+.factor-glyph.neg{background:var(--critical-soft); color:var(--critical)}
+.factor-glyph.neu{background:var(--neutral-soft); color:var(--ink-600)}
+.factor-name{font-size:13.5px; font-weight:700}
+.factor-weight{font-family:var(--fm); font-size:11.5px; color:var(--text-faint)}
+.factor-detail{font-size:12.5px; color:var(--text-muted); margin-top:2px}
+
+.feed{display:flex; flex-direction:column}
+.feed-item{display:flex; gap:13px; padding:12px 0; border-bottom:1px solid var(--border-soft)}
+.feed-item:last-child{border-bottom:none}
+.feed-icon{width:28px; height:28px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background:var(--neutral-soft); color:var(--ink-600)}
+.feed-icon svg{width:13px; height:13px}
+.feed-icon.good{background:var(--good-soft); color:var(--good)}
+.feed-icon.accent{background:var(--accent-soft); color:var(--accent)}
+.feed-icon.warning{background:var(--warning-soft); color:var(--warning)}
+.feed-icon.critical{background:var(--critical-soft); color:var(--critical)}
+.feed-body{flex:1; min-width:0}
+.feed-title{font-size:13px; font-weight:700}
+.feed-sub{font-size:12px; color:var(--text-muted); margin-top:1px}
+.feed-time{font-size:11px; color:var(--text-faint); white-space:nowrap; flex-shrink:0; padding-top:2px}
+
+.timeline{position:relative; padding-left:24px}
+.timeline::before{content:'';position:absolute; left:5px; top:5px; bottom:5px; width:1.5px; background:var(--border)}
+.tl-item{position:relative; padding-bottom:20px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute; left:-24px; top:3px; width:12px; height:12px; border-radius:50%; background:var(--surface); border:2.5px solid var(--accent)}
+.tl-item.system .tl-dot{border-color:var(--neutral)}
+.tl-time{font-size:11px; color:var(--text-faint); font-family:var(--fm); margin-bottom:3px}
+.tl-title{font-size:13.5px; font-weight:700}
+.tl-by{font-size:12px; color:var(--text-muted); margin-top:2px}
+.tl-by b{color:var(--text)}
+.tl-reason{font-size:12px; color:var(--text-muted); margin-top:3px; font-style:italic}
+
+.plan-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px}
+.plan-card{border:1.5px solid var(--border); border-radius:var(--r-lg); padding:17px 17px 15px; background:var(--surface); position:relative}
+.plan-card.current{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft)}
+.plan-card .current-tag{position:absolute; top:-9px; left:50%; transform:translateX(-50%); background:var(--accent); color:#fff; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; padding:2px 9px; border-radius:99px}
+.plan-card h4{font-size:14px; font-weight:800}
+.plan-card .price{font-family:var(--fd); font-size:22px; font-weight:800; margin:7px 0 2px}
+.plan-card .price span{font-size:11.5px; font-weight:600; color:var(--text-faint)}
+.plan-card ul{list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column; gap:7px}
+.plan-card li{font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:7px}
+.plan-card li svg{width:12px; height:12px; color:var(--good); flex-shrink:0}
+.plan-card .pick{width:100%; margin-top:14px}
+
+.empty-state{padding:50px 24px; text-align:center; color:var(--text-muted)}
+.empty-state svg{width:36px; height:36px; color:var(--text-faint); margin-bottom:10px}
+.empty-state h3{font-size:14.5px; margin-bottom:4px; color:var(--text)}
+.empty-state p{font-size:13px; margin:0}
+
+.notice{border-radius:var(--r-md); padding:12px 15px; font-size:12.5px; display:flex; gap:10px; align-items:flex-start}
+.notice svg{width:16px; height:16px; flex-shrink:0; margin-top:1px}
+.notice-info{background:var(--accent-soft); color:var(--accent-600); border:1px solid var(--accent-soft-border)}
+.notice-proposed{background:var(--neutral-soft); color:var(--ink-600); border:1px solid var(--neutral-border)}
+.notice-warning{background:var(--warning-soft); color:#9A5B04; border:1px solid var(--warning-border)}
+
+.danger-zone{border:1px solid var(--critical-border); border-radius:var(--r-lg); background:var(--critical-soft); overflow:hidden}
+.danger-zone .dz-head{padding:13px 20px; border-bottom:1px solid var(--critical-border)}
+.danger-zone .dz-head h3{color:#B01E1E; font-size:14px}
+.danger-zone .dz-head p{font-size:12px; color:#9A3434; margin:3px 0 0}
+.dz-row{display:flex; align-items:center; justify-content:space-between; padding:13px 20px; border-bottom:1px solid var(--critical-border); gap:16px; background:var(--surface); flex-wrap:wrap}
+.dz-row:last-child{border-bottom:none}
+.dz-row .t{font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:8px}
+.dz-row .d{font-size:12px; color:var(--text-muted); margin-top:2px}
+
+.lifecycle{display:flex; align-items:center; margin-bottom:8px; overflow-x:auto; padding-bottom:4px}
+.lc-node{display:flex; flex-direction:column; align-items:center; gap:7px; min-width:96px; text-align:center; flex-shrink:0}
+.lc-circle{width:32px; height:32px; border-radius:50%; border:2.5px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-weight:800; font-size:12px; color:var(--text-faint)}
+.lc-node.done .lc-circle{border-color:var(--good); color:var(--good); background:var(--good-soft)}
+.lc-node.current .lc-circle{border-color:var(--accent); color:#fff; background:var(--accent); box-shadow:0 0 0 4px var(--accent-soft)}
+.lc-node.proposed .lc-circle{border-style:dashed; color:var(--text-faint)}
+.lc-node .lc-lbl{font-size:11.5px; font-weight:700; color:var(--text-faint)}
+.lc-node.done .lc-lbl, .lc-node.current .lc-lbl{color:var(--text)}
+.lc-line{width:50px; height:2px; background:var(--border); flex-shrink:0; margin:0 -2px 20px}
+.lc-line.done{background:var(--good)}
+.lc-line.dashed{background:none; border-top:2px dashed var(--border)}
+
+.role-tag{font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:6px; background:var(--neutral-soft); color:var(--ink-600)}
+.role-tag.admin{background:#FDECEC; color:#B01E1E}
+.role-tag.ops{background:var(--accent-soft); color:var(--accent-600)}
+.role-tag.support{background:var(--neutral-soft); color:var(--ink-600)}
+.avatar-sm{width:29px; height:29px; border-radius:50%; background:var(--ink-900); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--fd); font-weight:700; font-size:11px; flex-shrink:0}
+
+.overlay{position:fixed; inset:0; background:rgba(11,15,25,.5); backdrop-filter:blur(2px); z-index:200; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity .15s ease}
+.overlay.open{opacity:1; pointer-events:auto}
+.modal{background:var(--surface); border-radius:var(--r-xl); box-shadow:var(--shadow-lg); width:100%; max-width:480px; max-height:calc(100vh - 48px); display:flex; flex-direction:column; transform:translateY(8px); transition:transform .15s ease}
+.overlay.open .modal{transform:none}
+.modal.wide{max-width:760px}
+.modal-head{padding:19px 22px 15px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:12px}
+.modal-head h2{font-size:16px; font-weight:800}
+.modal-head p{font-size:12.5px; color:var(--text-muted); margin:4px 0 0}
+.modal-body{padding:20px 22px; overflow-y:auto; flex:1}
+.modal-foot{padding:15px 22px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; flex-shrink:0}
+
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:13px}
+.fg{display:flex; flex-direction:column; gap:6px}
+.fg.full{grid-column:1/-1}
+.fg label{font-size:12.5px; font-weight:700; color:var(--text-muted)}
+.fg input,.fg select,.fg textarea{height:37px; padding:0 12px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:13.5px; font-family:inherit; color:var(--text); background:var(--surface)}
+.fg textarea{height:auto; padding:10px 12px; resize:vertical; min-height:68px}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+.fg .hint{font-size:11.5px; color:var(--text-faint)}
+
+.wiz-steps{display:flex; align-items:center; padding:17px 22px 0}
+.wiz-step{display:flex; align-items:center; gap:8px; flex:1}
+.wiz-step .n{width:23px; height:23px; border-radius:50%; background:var(--neutral-soft); color:var(--text-faint); font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:var(--fd)}
+.wiz-step.done .n{background:var(--good); color:#fff}
+.wiz-step.current .n{background:var(--accent); color:#fff}
+.wiz-step .lbl{font-size:11px; font-weight:700; color:var(--text-faint); white-space:nowrap}
+.wiz-step.current .lbl, .wiz-step.done .lbl{color:var(--text)}
+.wiz-line{flex:1; height:1.5px; background:var(--border); margin:0 6px}
+.wiz-line.done{background:var(--good)}
+.wiz-panel{display:none}
+.wiz-panel.active{display:block}
+.review-block{margin-bottom:15px}
+.review-block h4{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-faint); margin-bottom:6px}
+.success-box{text-align:center; padding:28px 10px}
+.success-icon{width:54px; height:54px; border-radius:50%; background:var(--good-soft); color:var(--good); display:flex; align-items:center; justify-content:center; margin:0 auto 15px}
+.success-icon svg{width:26px; height:26px}
+.toggle-row{display:flex; border:1px solid var(--border); border-radius:var(--r-sm); overflow:hidden; margin-bottom:14px}
+.toggle-opt{flex:1; padding:9px 10px; text-align:center; font-size:12.5px; font-weight:700; cursor:pointer; color:var(--text-muted); border-right:1px solid var(--border)}
+.toggle-opt:last-child{border-right:none}
+.toggle-opt.act{background:var(--accent-soft); color:var(--accent-600)}
+
+.toast-host{position:fixed; bottom:22px; right:22px; z-index:300; display:flex; flex-direction:column; gap:8px; align-items:flex-end}
+.toast{background:var(--ink-900); color:#fff; padding:11px 15px; border-radius:var(--r-md); font-size:12.5px; font-weight:600; box-shadow:var(--shadow-lg); display:flex; align-items:center; gap:9px; max-width:340px; opacity:.98}
+.toast svg{width:14px; height:14px; flex-shrink:0}
+.toast.good svg{color:#4ADE80}
+.toast.critical svg{color:#FCA5A5}
+.toast.info svg{color:#93C5FD}
+
+@media (max-width:1200px){
+  .kpi-row{grid-template-columns:repeat(3,1fr)}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .plan-grid{grid-template-columns:repeat(2,1fr)}
+  .sumstrip{grid-template-columns:repeat(2,1fr)}
+  .sumcell:nth-child(2){border-right:none}
+}
+@media (max-width:820px){
+  .sidebar{position:fixed; z-index:150; transform:translateX(-100%); transition:transform .2s ease; top:38px}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+  .discovery-banner{padding:8px 14px}
+  .legend{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="discovery-banner">
+  <span>🔍 <b>Discovery Preview</b> — visual redesign only. Every element is tagged against the real backend.</span>
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--implemented)"></span>Implemented</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--backend-ready)"></span>Backend ready, no UI yet</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--proposed)"></span>Proposed</span>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M4 17V7M9 17V4M14 17v-8M19 17v-5" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div><div class="name">HyMotion</div><div class="plane">Control Plane</div></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-item act" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>Dashboard<span class="tag" style="background:rgba(148,163,184,.3)">NEW</span></div>
+      <div class="sb-item" data-nav="tenants"><svg viewBox="0 0 24 24" fill="none"><path d="M4 21V8l8-5 8 5v13" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 21v-6h6v6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Tenants</div>
+      <div class="sb-item" data-nav="subscriptions"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M3 10h18" stroke="currentColor" stroke-width="1.8"/></svg>Subscriptions<span class="tag" style="background:rgba(148,163,184,.3)">NEW</span></div>
+      <div class="sb-item" data-nav="usage"><svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10M12 20V4M20 20v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Usage<span class="tag" style="background:rgba(62,99,221,.35)">API</span></div>
+      <div class="sb-item" data-nav="audit"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/></svg>Audit Log<span class="tag" style="background:rgba(62,99,221,.35)">API</span></div>
+      <div class="sb-item" data-nav="platform-users"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M16 8.2a3 3 0 010 5.9M19 20a5.5 5.5 0 00-3.2-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Platform Users<span class="tag" style="background:rgba(62,99,221,.35)">API</span></div>
+      <div class="sb-item" data-nav="plans"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5.5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Plans &amp; Pricing<span class="tag" style="background:rgba(148,163,184,.3)">PHASE A</span></div>
+      <div class="sb-item" data-nav="settings"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.6 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Settings<span class="tag" style="background:rgba(148,163,184,.3)">NEW</span></div>
+    </nav>
+    <div class="sb-foot">
+      <div class="av">PA</div>
+      <div><div class="nm">Platform Admin</div><div class="role">platform_admin</div></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb" id="crumb"><b>Dashboard</b></div>
+      <div class="topbar-actions"></div>
+    </header>
+
+    <div class="content"><div class="content-inner">
+
+      <!-- ================= DASHBOARD ================= -->
+      <section class="screen active" id="screen-dashboard">
+        <div class="page-head">
+          <div><h1>Dashboard</h1><p>What is happening across the platform right now — tenants, revenue, risk, and usage in one view.</p></div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span>
+            <div class="lbl"><span class="dot" style="background:var(--ink-600)"></span>Total Tenants</div>
+            <div class="val tabular">146</div><div class="sub">All statuses</div>
+          </div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span>
+            <div class="lbl"><span class="dot" style="background:var(--good)"></span>Active</div>
+            <div class="val tabular">112</div><div class="sub">Billing current</div>
+          </div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span>
+            <div class="lbl"><span class="dot" style="background:var(--accent)"></span>Trials</div>
+            <div class="val tabular">18</div><div class="sub">Converting soon</div>
+          </div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span>
+            <div class="lbl"><span class="dot" style="background:var(--critical)"></span>Suspended</div>
+            <div class="val tabular">6</div><div class="sub">Needs attention</div>
+          </div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span>
+            <div class="lbl"><span class="dot" style="background:var(--good)"></span>MRR</div>
+            <div class="val tabular">218,430 EGP</div><div class="sub">GET /metrics/mrr</div>
+          </div>
+          <div class="kpi"><span class="cap cap-ready"><span class="d"></span>Ready</span>
+            <div class="lbl"><span class="dot" style="background:var(--warning)"></span>Renewing ≤7d</div>
+            <div class="val tabular">9</div><div class="sub">tenants?renewingBefore=</div>
+          </div>
+        </div>
+
+        <div class="grid-2 section-gap">
+          <div class="card">
+            <div class="card-head"><h3>Tenant Health <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3><span class="hint">rules_v1 health score model</span></div>
+            <div class="card-pad">
+              <p class="factor-detail" style="margin-bottom:12px">Real 6-signal weighted model already computed nightly per tenant (login frequency, feature breadth, payment health, member-base trend, support tickets, usage vs. cap) — not the simplified 4-box concept in the original spec.</p>
+              <div class="grid-3">
+                <div class="usage-card good"><div class="top"><span class="name">Healthy</span></div><div class="nums tabular" style="margin-top:4px"><b>98</b> tenants</div></div>
+                <div class="usage-card warning"><div class="top"><span class="name">Watch</span></div><div class="nums tabular" style="margin-top:4px"><b>27</b> tenants</div></div>
+                <div class="usage-card critical"><div class="top"><span class="name">At risk / Critical</span></div><div class="nums tabular" style="margin-top:4px"><b>21</b> tenants</div></div>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-top:14px" data-nav-to="tenants">View Risk Queue →</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Subscription Mix <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3><span class="hint">GET /metrics/tier-distribution</span></div>
+            <div class="card-pad">
+              <ul style="display:flex; flex-direction:column; gap:12px">
+                <li><div class="field-row" style="border:none; padding:0"><span class="k">Starter</span><span class="v tabular">38 · 37,962 EGP</span></div><div class="usage-track" style="margin-top:6px"><div class="usage-fill good" style="width:17%"></div></div></li>
+                <li><div class="field-row" style="border:none; padding:0"><span class="k">Growth</span><span class="v tabular">52 · 103,948 EGP</span></div><div class="usage-track" style="margin-top:6px"><div class="usage-fill good" style="width:47%"></div></div></li>
+                <li><div class="field-row" style="border:none; padding:0"><span class="k">Pro</span><span class="v tabular">17 · 67,983 EGP</span></div><div class="usage-track" style="margin-top:6px"><div class="usage-fill good" style="width:31%"></div></div></li>
+                <li><div class="field-row" style="border:none; padding:0"><span class="k">Enterprise</span><span class="v tabular">5 · 39,995 EGP</span></div><div class="usage-track" style="margin-top:6px"><div class="usage-fill good" style="width:18%"></div></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2 section-gap">
+          <div class="card">
+            <div class="card-head"><h3>Renewal Risk <span class="cap cap-ready"><span class="d"></span>Backend ready</span></h3><span class="hint">tenants?renewingBefore= + riskBand filter</span></div>
+            <div class="card-pad">
+              <div class="field-row"><span class="k">Renewing in 7 days</span><span class="v tabular">9</span></div>
+              <div class="field-row"><span class="k">Renewing in 30 days</span><span class="v tabular">24</span></div>
+              <div class="field-row"><span class="k">Recently cancelled (30d)</span><span class="v tabular" style="color:var(--critical)">4</span></div>
+              <div class="field-row"><span class="k">Failed / at-risk accounts</span><span class="v tabular" style="color:var(--warning)">21</span></div>
+              <p class="factor-detail" style="margin-top:10px">"Recently cancelled" needs a date-bounded query on status=cancelled — not exposed today, but additive to the existing list filter.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Usage Alerts <span class="cap cap-ready"><span class="d"></span>Backend ready</span></h3><span class="hint">GET /platform-api/usage/summary</span></div>
+            <div class="card-pad">
+              <div class="limit-row" style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-soft)">
+                <span style="width:130px; font-size:13px; font-weight:700; flex-shrink:0">Urban Strength</span>
+                <span style="font-size:12px; color:var(--text-muted); flex:1">whatsapp_messages 92% of cap</span>
+                <span class="badge badge-critical"><span class="dot"></span>92%</span>
+              </div>
+              <div class="limit-row" style="display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border-soft)">
+                <span style="width:130px; font-size:13px; font-weight:700; flex-shrink:0">Fitness Factory</span>
+                <span style="font-size:12px; color:var(--text-muted); flex:1">active_members 82% of cap</span>
+                <span class="badge badge-warning"><span class="dot"></span>82%</span>
+              </div>
+              <div class="limit-row" style="display:flex; align-items:center; gap:12px; padding:10px 0">
+                <span style="width:130px; font-size:13px; font-weight:700; flex-shrink:0">Iron Club</span>
+                <span style="font-size:12px; color:var(--text-muted); flex:1">staff_seats 80% of cap</span>
+                <span class="badge badge-warning"><span class="dot"></span>80%</span>
+              </div>
+              <p class="factor-detail" style="margin-top:10px">Real DTO shape: <span class="mono">TenantsNearLimit[]</span> — metric, count, cap, percentOfCap. This exact list already comes back from the API; only the frontend page is missing.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h3>Recent Platform Activity <span class="cap cap-ready"><span class="d"></span>Backend ready</span></h3><span class="hint">GET /platform-api/audit (global, unfiltered by tenant)</span></div>
+          <div class="card-pad">
+            <div class="feed">
+              <div class="feed-item"><div class="feed-icon accent"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feed-body"><div class="feed-title">Fitness Factory — plan changed</div><div class="feed-sub">platform.tenant.change_tier · Growth → Pro</div></div><div class="feed-time">2m ago</div></div>
+              <div class="feed-item"><div class="feed-icon critical"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div><div class="feed-body"><div class="feed-title">Prime Athletics — subscription cancelled</div><div class="feed-sub">platform.subscription.cancel · immediate</div></div><div class="feed-time">41m ago</div></div>
+              <div class="feed-item"><div class="feed-icon good"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feed-body"><div class="feed-title">Platform user created</div><div class="feed-sub">platform.platform_user.create · sarah.ops@HyMotion.com</div></div><div class="feed-time">2h ago</div></div>
+              <div class="feed-item"><div class="feed-icon warning"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg></div><div class="feed-body"><div class="feed-title">Platform user disabled</div><div class="feed-sub">platform.platform_user.disable · mike.support@HyMotion.com</div></div><div class="feed-time">5h ago</div></div>
+            </div>
+            <p class="factor-detail" style="margin-top:12px">Action labels above mirror the real taxonomy already used per-tenant (<span class="mono">platform.tenant.force_suspend</span>, <span class="mono">.feature_override_upsert</span>, etc.) — this feed is the same table with the tenant filter removed, exactly as the backend route already supports.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TENANTS ================= -->
+      <section class="screen" id="screen-tenants">
+        <div class="page-head">
+          <div><h1>Tenants</h1><p>Manage customers, subscriptions, usage and account lifecycle.</p></div>
+          <div class="page-actions">
+            <button class="btn btn-secondary" id="btnFilters"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Filters</button>
+            <button class="btn btn-primary" id="btnCreateTenant"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Create Tenant</button>
+          </div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl"><span class="dot" style="background:var(--ink-600)"></span>Total</div><div class="val tabular">146</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl"><span class="dot" style="background:var(--good)"></span>Active</div><div class="val tabular">112</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl"><span class="dot" style="background:var(--accent)"></span>Trial</div><div class="val tabular">18</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl"><span class="dot" style="background:var(--critical)"></span>Suspended</div><div class="val tabular">6</div></div>
+          <div class="kpi"><span class="cap cap-ready"><span class="d"></span>Ready</span><div class="lbl"><span class="dot" style="background:var(--warning)"></span>Renewing Soon</div><div class="val tabular">24</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl"><span class="dot" style="background:var(--critical)"></span>At Risk</div><div class="val tabular">21</div></div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search"><svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="text" id="tenantSearch" placeholder="Search name or gym code…"></div>
+          <select class="select"><option>All plans</option><option>Starter</option><option>Growth</option><option>Pro</option><option>Enterprise</option></select>
+          <select class="select"><option>All statuses</option><option>Trialing</option><option>Active</option><option>Past due</option><option>Suspended</option><option>Cancelled</option></select>
+          <select class="select"><option>Any risk</option><option>Healthy</option><option>Watch</option><option>At risk</option><option>Critical</option></select>
+          <select class="select" title="Backend ready via renewingBefore — no UI control today"><option>Any renewal ⚡</option><option>≤ 7 days</option><option>≤ 30 days</option></select>
+          <div class="spacer"></div>
+          <span style="font-size:12px;color:var(--text-faint)">146 tenants · owner/email search and usage-% filter need list-DTO fields <span class="cap cap-proposed"><span class="d"></span>Proposed</span></span>
+        </div>
+
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead><tr>
+                <th>Tenant</th>
+                <th>Owner <span class="cap cap-proposed"><span class="d"></span>Proposed</span></th>
+                <th>Plan</th><th>Status</th>
+                <th>Members <span class="cap cap-proposed"><span class="d"></span>Proposed</span></th>
+                <th>Branches <span class="cap cap-proposed"><span class="d"></span>Proposed</span></th>
+                <th>Renewal</th>
+                <th>Usage <span class="cap cap-proposed"><span class="d"></span>Proposed</span></th>
+                <th>Health</th><th></th>
+              </tr></thead>
+              <tbody id="tenantTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <p class="notice notice-proposed" style="margin-top:14px">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+          <span>The real <span class="mono">PlatformTenantListItemDto</span> today returns id, name, gymCode, planTier, status, billingCycle, currentPeriodEnd, priceEgp, riskBand, healthScore, lastLoginAtUtc. Owner name/email, member count, branch count, and a per-row usage % are <b>not on the wire yet</b> — those columns require a list-DTO expansion, not just a UI change.</span>
+        </p>
+      </section>
+
+      <!-- ================= TENANT DETAIL ================= -->
+      <section class="screen" id="screen-detail">
+        <div class="page-head">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+              <div class="t-logo" style="width:42px;height:42px;font-size:15px">FF</div>
+              <div>
+                <h1 style="font-size:20px">Fitness Factory</h1>
+                <div style="display:flex; align-items:center; gap:9px; margin-top:4px; flex-wrap:wrap">
+                  <span class="mono" style="font-size:11.5px; color:var(--text-faint)">GYM-0142</span>
+                  <span class="badge badge-good"><span class="dot"></span>Active</span>
+                  <span class="plan-chip growth">Growth</span>
+                  <span class="badge badge-warning"><span class="dot"></span>Watch · Score 68</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="page-actions">
+            <button class="btn btn-secondary" data-open-modal="modalChangePlan">Change Plan</button>
+            <button class="btn btn-danger" data-open-modal="modalCancelSub">Cancel Subscription</button>
+            <button class="btn btn-secondary btn-sm" title="Implemented — reason required, ≥10 chars">Impersonate</button>
+          </div>
+        </div>
+
+        <div class="tabs" id="detailTabs">
+          <div class="tab act" data-tab="overview">Overview</div>
+          <div class="tab" data-tab="subscription">Subscription</div>
+          <div class="tab" data-tab="usage">Usage <span class="cap cap-impl" style="transform:scale(.82)"><span class="d"></span></span></div>
+          <div class="tab" data-tab="users">Users</div>
+          <div class="tab" data-tab="branches">Branches <span class="cap cap-proposed" style="transform:scale(.82)"><span class="d"></span></span></div>
+          <div class="tab" data-tab="audit">Audit</div>
+          <div class="tab" data-tab="settings">Settings</div>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div class="tab-panel active" id="tab-overview">
+          <div class="sumstrip">
+            <div class="sumcell"><div class="lbl">Plan</div><div class="val">Growth · 1,999 EGP/mo</div></div>
+            <div class="sumcell"><div class="lbl">Status</div><div class="val" style="color:var(--good)">Active</div></div>
+            <div class="sumcell"><div class="lbl">Last login</div><div class="val">Aug 27, 09:14</div></div>
+            <div class="sumcell"><div class="lbl">Period end</div><div class="val">Sep 12, 2026</div></div>
+          </div>
+
+          <div class="grid-2 section-gap">
+            <div class="card">
+              <div class="card-head"><h3>Business Information <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3></div>
+              <div class="card-pad">
+                <div class="field-row"><span class="k">Name</span><span class="v">Fitness Factory</span></div>
+                <div class="field-row"><span class="k">Gym code</span><span class="v mono">GYM-0142</span></div>
+                <div class="field-row"><span class="k">City</span><span class="v">Cairo</span></div>
+                <div class="field-row"><span class="k">Email</span><span class="v">contact@fitnessfactory.example</span></div>
+                <div class="field-row"><span class="k">Phone</span><span class="v mono">+20 100 555 0142</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Health Score <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3><span class="hint">rules_v1</span></div>
+              <div class="card-pad">
+                <div class="health-score-box">
+                  <div class="health-num" style="color:var(--warning)">68</div>
+                  <div><span class="badge badge-warning" style="text-transform:uppercase"><span class="dot"></span>Watch</span><div class="factor-detail">Confidence 82% · computed Aug 27, 03:00</div></div>
+                </div>
+                <p class="factor-detail" style="margin-top:10px">Payment health and usage-vs-cap are pulling the score down; login frequency and feature breadth remain strong.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card section-gap">
+            <div class="card-head"><h3>Why this score</h3><span class="hint">6 weighted signals</span></div>
+            <div class="card-pad">
+              <div class="factor-row"><div class="factor-glyph pos">↑</div><div><div class="factor-name">Owner login frequency <span class="factor-weight">weight 20</span></div><div class="factor-detail">Logged in 24 of the last 30 days</div></div></div>
+              <div class="factor-row"><div class="factor-glyph pos">↑</div><div><div class="factor-name">Feature breadth <span class="factor-weight">weight 15</span></div><div class="factor-detail">Uses 9 of 15 available feature modules</div></div></div>
+              <div class="factor-row"><div class="factor-glyph neg">↓</div><div><div class="factor-name">Payment health <span class="factor-weight">weight 25</span></div><div class="factor-detail">1 past-due invoice in the last 60 days</div></div></div>
+              <div class="factor-row"><div class="factor-glyph neu">−</div><div><div class="factor-name">Member-base trend <span class="factor-weight">weight 15</span></div><div class="factor-detail">Flat over trailing 30 days</div></div></div>
+              <div class="factor-row"><div class="factor-glyph neu">−</div><div><div class="factor-name">Support ticket volume <span class="factor-weight">weight 10</span></div><div class="factor-detail">Signal unavailable</div></div></div>
+              <div class="factor-row"><div class="factor-glyph neg">↓</div><div><div class="factor-name">Usage vs. plan caps <span class="factor-weight">weight 15</span></div><div class="factor-detail">active_members at 82% of cap</div></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Recent Activity <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3><span class="hint" data-goto-tab="audit" style="cursor:pointer;color:var(--accent)">View all →</span></div>
+            <div class="card-pad">
+              <div class="feed">
+                <div class="feed-item"><div class="feed-icon accent"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="feed-body"><div class="feed-title">Plan changed Starter → Growth</div><div class="feed-sub">platform.tenant.change_tier</div></div><div class="feed-time">Aug 20</div></div>
+                <div class="feed-item"><div class="feed-icon warning"><svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg></div><div class="feed-body"><div class="feed-title">Feature override granted — imports</div><div class="feed-sub">platform.tenant.feature_override_upsert</div></div><div class="feed-time">Aug 14</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBSCRIPTION -->
+        <div class="tab-panel" id="tab-subscription">
+          <div class="grid-2 section-gap" style="grid-template-columns:1.1fr 1fr">
+            <div class="card">
+              <div class="card-head"><h3>Current Plan <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3></div>
+              <div class="card-pad">
+                <div class="field-row"><span class="k">Plan</span><span class="v"><span class="plan-chip growth">Growth</span></span></div>
+                <div class="field-row"><span class="k">Price</span><span class="v tabular">1,999 EGP / month</span></div>
+                <div class="field-row"><span class="k">Billing cycle</span><span class="v">Monthly</span></div>
+                <div class="field-row"><span class="k">Period end</span><span class="v">Sep 12, 2026</span></div>
+                <div class="field-row"><span class="k">Cancel at period end</span><span class="v">No</span></div>
+                <div class="field-row"><span class="k">Pending downgrade</span><span class="v">None</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-head"><h3>Actions</h3></div>
+              <div class="card-pad" style="display:flex; flex-direction:column; gap:9px">
+                <button class="btn btn-secondary" style="width:100%; justify-content:center" data-open-modal="modalChangePlan">Change Plan <span class="cap cap-impl" style="margin-left:auto"><span class="d"></span>Admin only</span></button>
+                <button class="btn btn-secondary" style="width:100%; justify-content:center" data-open-modal="modalCancelPeriodEnd">Cancel at Period End <span class="cap cap-impl" style="margin-left:auto"><span class="d"></span>Admin only</span></button>
+                <button class="btn btn-danger" style="width:100%; justify-content:center" data-open-modal="modalCancelSub">Cancel Immediately <span class="cap cap-impl" style="margin-left:auto"><span class="d"></span>Admin only</span></button>
+                <button class="btn btn-secondary" style="width:100%; justify-content:center" data-open-modal="modalCoupon">Apply Coupon <span class="cap cap-impl" style="margin-left:auto"><span class="d"></span>Ops+</span></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card section-gap">
+            <div class="card-head"><h3>Compare Plans <span class="cap cap-impl"><span class="d"></span>Real prices &amp; tiers</span></h3><span class="hint">Growth is current — Enterprise pricing is custom</span></div>
+            <div class="card-pad"><div class="plan-grid" id="planCompareGrid"></div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><h3>Feature Overrides <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3><span class="hint">Ops+ · 15 real feature keys</span></div>
+            <div class="card-pad">
+              <div class="field-row"><span class="k mono">imports</span><span class="v">Enabled · granted by ops · expires never</span></div>
+              <div class="field-row"><span class="k mono">crm</span><span class="v">Enabled · expires Sep 30, 2026</span></div>
+              <p class="factor-detail" style="margin-top:10px">Full key list: sales, shifts, trials, refunds, debtors, imports, digital_waivers, presence_verification, crm, online_joining, marketing_broadcasts, retention_automation, referrals, eta_invoicing, pt_booking.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- USAGE -->
+        <div class="tab-panel" id="tab-usage">
+          <div class="notice notice-info section-gap">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Real metric keys are <span class="mono">active_members</span>, <span class="mono">whatsapp_messages</span>, <span class="mono">staff_seats</span>, <span class="mono">branches</span> (a counter, not a manageable list). There is no <span class="mono">storage</span> or <span class="mono">api_usage</span> metric in the current system.</span>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Usage This Period <span class="cap cap-impl"><span class="d"></span>Implemented</span></h3><span class="hint">August 2026 · monthly rollup, not live</span></div>
+            <div class="card-pad">
+              <div class="grid-4">
+                <div class="usage-card warning"><div class="top"><span class="name">Active Members</span></div><div class="nums tabular"><b>1,645</b> / 2,000</div><div class="track" style="margin-top:8px"><div class="fill" style="width:82%"></div></div><div class="pct-lbl">82%</div></div>
+                <div class="usage-card critical"><div class="top"><span class="name">WhatsApp Messages</span></div><div class="nums tabular"><b>4,620</b> / 5,000</div><div class="track" style="margin-top:8px"><div class="fill" style="width:92%"></div></div><div class="pct-lbl">92% · +340 EGP overage</div></div>
+                <div class="usage-card good"><div class="top"><span class="name">Staff Seats</span></div><div class="nums tabular"><b>18</b> / 30</div><div class="track" style="margin-top:8px"><div class="fill" style="width:60%"></div></div><div class="pct-lbl">60%</div></div>
+                <div class="usage-card unlimited"><div class="top"><span class="name">Branches</span></div><div class="nums tabular"><b>2</b> / Unlimited</div><div class="track" style="margin-top:8px"><div class="fill" style="width:0%"></div></div><div class="pct-lbl" style="color:var(--text-faint)">No cap on this tier</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="tab-panel" id="tab-users">
+          <div class="notice notice-info section-gap">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+            <span>These are the gym's own staff login accounts — distinct from <b>Platform Users</b>, who operate HyMotion itself. Gym members are tracked separately under Usage, not listed here.</span>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table style="min-width:720px">
+                <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions <span class="cap cap-proposed"><span class="d"></span>Proposed</span></th></tr></thead>
+                <tbody>
+                  <tr><td><div class="t-tenant"><div class="avatar-sm">SH</div><span class="t-name">Sara Haddad</span></div></td><td class="mono" style="font-size:12.5px">sara@fitnessfactory.example</td><td><span class="role-tag" style="background:#FEF3E2;color:#9A5B04">Owner</span></td><td><span class="badge badge-good"><span class="dot"></span>Active</span></td><td><button class="btn btn-ghost btn-sm" disabled title="Backend has no disable/role-change route for tenant staff yet">Disable</button></td></tr>
+                  <tr><td><div class="t-tenant"><div class="avatar-sm">KM</div><span class="t-name">Karim Mostafa</span></div></td><td class="mono" style="font-size:12.5px">karim@fitnessfactory.example</td><td><span class="role-tag" style="background:var(--accent-soft);color:var(--accent-600)">Manager</span></td><td><span class="badge badge-good"><span class="dot"></span>Active</span></td><td><button class="btn btn-ghost btn-sm" disabled title="Backend has no disable/role-change route for tenant staff yet">Disable</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p class="notice notice-proposed" style="margin-top:12px">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+            <span>Today's <span class="mono">PlatformTenantUserDto</span> is read-only (id, fullName, email, role, isActive). View is implemented; Change Role / Disable / Reactivate from the Platform Console require new write endpoints.</span>
+          </p>
+        </div>
+
+        <!-- BRANCHES -->
+        <div class="tab-panel" id="tab-branches">
+          <div class="notice notice-warning section-gap">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+            <span><b>Entirely proposed.</b> "Branches" exists today only as a usage-counter metric (a number with a cap) — there is no branch entity with a name, location, or status exposed at the platform level. This tab is a product concept, not a reskin of anything real.</span>
+          </div>
+          <div class="table-wrap">
+            <div class="table-scroll">
+              <table style="min-width:600px">
+                <thead><tr><th>Branch</th><th>Location</th><th>Status</th><th>Created</th></tr></thead>
+                <tbody>
+                  <tr><td class="t-name">Main Branch</td><td>Cairo</td><td><span class="badge badge-neutral"><span class="dot"></span>Mock</span></td><td>—</td></tr>
+                  <tr><td class="t-name">Ladies Branch</td><td>Cairo</td><td><span class="badge badge-neutral"><span class="dot"></span>Mock</span></td><td>—</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUDIT -->
+        <div class="tab-panel" id="tab-audit">
+          <div class="toolbar">
+            <select class="select"><option>All actions</option><option>change_tier</option><option>force_suspend</option><option>coupon_applied</option></select>
+            <select class="select"><option>Last 30 days</option><option>Last 7 days</option></select>
+            <div class="spacer"></div>
+            <span class="cap cap-impl"><span class="d"></span>Implemented — per-tenant, with before/after diff</span>
+          </div>
+          <div class="card card-pad">
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">Aug 27, 15:20</div><div class="tl-title">Plan changed — Starter → Growth</div><div class="tl-by">By <b>Platform Admin</b></div><div class="tl-reason">"Customer requested more capacity ahead of renewal."</div></div>
+              <div class="tl-item"><div class="tl-dot"></div><div class="tl-time">Aug 14, 11:02</div><div class="tl-title">Feature override granted — imports</div><div class="tl-by">By <b>Platform Ops</b></div></div>
+              <div class="tl-item system"><div class="tl-dot"></div><div class="tl-time">Aug 12, 09:16</div><div class="tl-title">Trial started</div><div class="tl-by">By <b>System</b></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SETTINGS (lifecycle + danger zone) -->
+        <div class="tab-panel" id="tab-settings">
+          <div class="card section-gap">
+            <div class="card-head"><h3>Subscription Lifecycle</h3><span class="hint">Real statuses: trialing → active → past_due → suspended → cancelled</span></div>
+            <div class="card-pad">
+              <div class="lifecycle">
+                <div class="lc-node done"><div class="lc-circle">✓</div><div class="lc-lbl">Trialing</div></div>
+                <div class="lc-line done"></div>
+                <div class="lc-node current"><div class="lc-circle">●</div><div class="lc-lbl">Active</div></div>
+                <div class="lc-line"></div>
+                <div class="lc-node"><div class="lc-circle">3</div><div class="lc-lbl">Past Due</div></div>
+                <div class="lc-line"></div>
+                <div class="lc-node"><div class="lc-circle">4</div><div class="lc-lbl">Suspended</div></div>
+                <div class="lc-line"></div>
+                <div class="lc-node"><div class="lc-circle">5</div><div class="lc-lbl">Cancelled</div></div>
+                <div class="lc-line dashed"></div>
+                <div class="lc-node proposed"><div class="lc-circle">?</div><div class="lc-lbl">Archived</div></div>
+              </div>
+              <p class="notice notice-proposed">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+                <span><span class="mono">SubscriptionStatuses</span> defines exactly 5 values today — <span class="mono">trialing, active, past_due, suspended, cancelled</span>. There is no <span class="mono">Archived</span> status in the backend; the dashed node above is a proposal, not a hidden existing state.</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="danger-zone">
+            <div class="dz-head"><h3>Danger Zone</h3><p>Every action below already requires a reason of 10+ characters, written to the platform audit log — this is real, existing behavior, not a new UX rule.</p></div>
+            <div class="dz-row">
+              <div><div class="t">Force Suspend <span class="cap cap-impl"><span class="d"></span>Implemented — Ops+</span></div><div class="d">Blocks admin dashboard logins immediately. Member check-in continues for a 48–72h buffer.</div></div>
+              <button class="btn btn-danger" data-open-modal="modalSuspend">Force Suspend</button>
+            </div>
+            <div class="dz-row">
+              <div><div class="t">Archive Tenant <span class="cap cap-proposed"><span class="d"></span>Proposed — requires backend support</span></div><div class="d">Not implementable today — there is no archived status or archival flow anywhere in the schema.</div></div>
+              <button class="btn btn-danger" disabled title="Proposed — requires backend support">Archive Tenant</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SUBSCRIPTIONS (global) ================= -->
+      <section class="screen" id="screen-subscriptions">
+        <div class="page-head">
+          <div><h1>Subscriptions <span class="cap cap-proposed"><span class="d"></span>New screen — proposed</span></h1><p>How are all customer subscriptions performing? Reuses the existing tenant list + filters — no new billing engine needed.</p></div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl">Active</div><div class="val tabular">112</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl">Trialing</div><div class="val tabular">18</div></div>
+          <div class="kpi"><span class="cap cap-ready"><span class="d"></span>Ready</span><div class="lbl">Renewing Soon</div><div class="val tabular">24</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl">Cancelled</div><div class="val tabular">9</div></div>
+          <div class="kpi"><span class="cap cap-impl"><span class="d"></span>Live</span><div class="lbl">At Risk</div><div class="val tabular">21</div></div>
+        </div>
+        <div class="toolbar">
+          <div class="view-tabs">
+            <div class="view-tab act">All</div><div class="view-tab">Trial</div><div class="view-tab">Active</div><div class="view-tab">Renewing Soon</div><div class="view-tab">Cancelled</div><div class="view-tab">At Risk</div>
+          </div>
+          <div class="spacer"></div>
+          <span style="font-size:12px;color:var(--text-faint)">Every column below already exists on <span class="mono">GET /platform-api/tenants</span></span>
+        </div>
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Tenant</th><th>Plan</th><th>Status</th><th>Price</th><th>Billing Cycle</th><th>Renewal</th><th>Health</th><th></th></tr></thead>
+              <tbody id="subsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= USAGE (global) ================= -->
+      <section class="screen" id="screen-usage">
+        <div class="page-head">
+          <div><h1>Usage <span class="cap cap-ready"><span class="d"></span>Backend implemented — new screen</span></h1><p>Platform-wide usage rollup. This page renders the exact shape already returned by <span class="mono">GET /platform-api/usage/summary</span> — no second usage-tracking concept.</p></div>
+        </div>
+        <div class="grid-4 section-gap">
+          <div class="usage-card good"><div class="top"><span class="name">Active Members</span></div><div class="nums tabular"><b>48,210</b> total</div><div class="factor-detail" style="margin-top:6px">Across 146 tenants</div></div>
+          <div class="usage-card good"><div class="top"><span class="name">WhatsApp Messages</span></div><div class="nums tabular"><b>612,900</b> total</div><div class="factor-detail" style="margin-top:6px">Across 98 tenants</div></div>
+          <div class="usage-card good"><div class="top"><span class="name">Staff Seats</span></div><div class="nums tabular"><b>1,844</b> total</div><div class="factor-detail" style="margin-top:6px">Across 146 tenants</div></div>
+          <div class="usage-card good"><div class="top"><span class="name">Branches</span></div><div class="nums tabular"><b>203</b> total</div><div class="factor-detail" style="margin-top:6px">Across 146 tenants</div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Tenants Near Limit <span class="cap cap-ready"><span class="d"></span>≥ 80% of cap</span></h3><span class="hint">TenantsNearLimit[] from the real DTO</span></div>
+          <div class="table-wrap" style="border:none; box-shadow:none">
+            <div class="table-scroll">
+              <table>
+                <thead><tr><th>Tenant</th><th>Metric</th><th>Count</th><th>Cap</th><th>% of Cap</th></tr></thead>
+                <tbody>
+                  <tr onclick="openTenantDetail()"><td class="t-name">Urban Strength</td><td class="mono">whatsapp_messages</td><td class="tabular">4,600</td><td class="tabular">5,000</td><td><span class="badge badge-critical"><span class="dot"></span>92%</span></td></tr>
+                  <tr onclick="openTenantDetail()"><td class="t-name">Fitness Factory</td><td class="mono">active_members</td><td class="tabular">1,645</td><td class="tabular">2,000</td><td><span class="badge badge-warning"><span class="dot"></span>82%</span></td></tr>
+                  <tr onclick="openTenantDetail()"><td class="t-name">Iron Club</td><td class="mono">staff_seats</td><td class="tabular">8</td><td class="tabular">10</td><td><span class="badge badge-warning"><span class="dot"></span>80%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= AUDIT LOG (global) ================= -->
+      <section class="screen" id="screen-audit">
+        <div class="page-head">
+          <div><h1>Audit Log <span class="cap cap-ready"><span class="d"></span>Backend implemented — new screen</span></h1><p>Cross-tenant view of the same <span class="mono">platform_audit_log</span> table already shown per-tenant. Backed by the real <span class="mono">GET /platform-api/audit</span> endpoint with tenant/action/date filters and pagination.</p></div>
+        </div>
+        <div class="toolbar">
+          <select class="select"><option>All tenants</option><option>Fitness Factory</option><option>Urban Strength</option></select>
+          <select class="select"><option>All actions</option><option>change_tier</option><option>force_suspend</option><option>impersonate</option><option>platform_user.create</option></select>
+          <input type="date" class="select" style="width:150px">
+          <input type="date" class="select" style="width:150px">
+          <div class="spacer"></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Timestamp</th><th>Tenant</th><th>Action</th><th>Actor</th><th>Details</th></tr></thead>
+              <tbody>
+                <tr><td class="mono" style="font-size:12.5px">2026-08-27 15:20</td><td class="t-name">Fitness Factory</td><td>Plan changed</td><td>Platform Admin</td><td class="factor-detail">Growth → Pro</td></tr>
+                <tr><td class="mono" style="font-size:12.5px">2026-08-27 14:41</td><td class="t-name">Prime Athletics</td><td>Subscription cancelled</td><td>Platform Admin</td><td class="factor-detail">Immediate</td></tr>
+                <tr><td class="mono" style="font-size:12.5px">2026-08-27 12:05</td><td class="t-name">—</td><td>Platform user created</td><td>Platform Admin</td><td class="factor-detail">sarah.ops@HyMotion.com</td></tr>
+                <tr><td class="mono" style="font-size:12.5px">2026-08-27 08:30</td><td class="t-name">Urban Strength</td><td>Impersonation started</td><td>Platform Support</td><td class="factor-detail">"Debugging a reported checkout issue"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:12.5px; color:var(--text-muted)">
+          <span>Page 1 of 38 · 754 total</span>
+          <div style="display:flex; gap:8px"><button class="btn btn-secondary btn-sm" disabled>Previous</button><button class="btn btn-secondary btn-sm">Next</button></div>
+        </div>
+      </section>
+
+      <!-- ================= PLATFORM USERS ================= -->
+      <section class="screen" id="screen-platform-users">
+        <div class="page-head">
+          <div><h1>Platform Users <span class="cap cap-ready"><span class="d"></span>Backend implemented — new screen</span></h1><p>Accounts for the SaaS company's own staff — Platform Admin, Platform Ops, Platform Support. Fully built on the backend already; only the console page is missing.</p></div>
+          <div class="page-actions"><button class="btn btn-primary" data-open-modal="modalCreatePlatformUser">Create Platform User</button></div>
+        </div>
+        <div class="notice notice-info section-gap">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Platform users have access to platform-level operations across every tenant. Tenant users (gym staff) are managed separately, per tenant, under the Users tab.</span>
+        </div>
+        <div class="table-wrap">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>MFA</th><th>Last Login</th><th>Created</th><th></th></tr></thead>
+              <tbody>
+                <tr><td class="t-name">Platform Admin</td><td class="mono" style="font-size:12.5px">admin@HyMotion.com</td><td><span class="role-tag admin">platform_admin</span></td><td><span class="badge badge-good"><span class="dot"></span>Active</span></td><td>On</td><td class="mono">Aug 27, 09:00</td><td class="mono">Jul 26, 2026</td><td><span class="factor-detail">You</span></td></tr>
+                <tr><td class="t-name">Sarah Nabil</td><td class="mono" style="font-size:12.5px">sarah.ops@HyMotion.com</td><td><span class="role-tag ops">platform_ops</span></td><td><span class="badge badge-good"><span class="dot"></span>Active</span></td><td>On</td><td class="mono">Aug 27, 08:12</td><td class="mono">Aug 02, 2026</td><td><div class="row-actions" style="display:flex;gap:6px;justify-content:flex-end"><button class="btn btn-ghost btn-sm">Role</button><button class="btn btn-ghost btn-sm">Disable</button></div></td></tr>
+                <tr><td class="t-name">Mike Fahmy</td><td class="mono" style="font-size:12.5px">mike.support@HyMotion.com</td><td><span class="role-tag support">platform_support</span></td><td><span class="badge badge-neutral"><span class="dot"></span>Disabled</span></td><td>Off</td><td class="mono">Aug 22, 16:40</td><td class="mono">Jul 30, 2026</td><td><button class="btn btn-ghost btn-sm">Reactivate</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="factor-detail" style="margin-top:12px">Create/Disable/Reactivate/Change-role are all <b>PlatformAdminOnly</b>, with self-disable and self-demotion blocked server-side (<span class="mono">SELF_PROTECTED</span>) — already implemented exactly as shown.</p>
+      </section>
+
+      <!-- ================= PLANS & PRICING ================= -->
+      <section class="screen" id="screen-plans">
+        <div class="page-head">
+          <div><h1>Plans &amp; Pricing <span class="cap cap-proposed"><span class="d"></span>Phase A — proposed</span></h1><p>Tier names stay fixed (Starter, Growth, Pro, Enterprise) — this is a visibility and future-editability concept for the existing hardcoded feature map and price list, not a dynamic tier builder.</p></div>
+        </div>
+        <div class="notice notice-proposed section-gap">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Prices below (999 / 1,999 / 3,999 / 7,999 EGP monthly, annual = ×10) and the 15 feature keys are the <b>real</b> hardcoded values from <span class="mono">PlatformListPrices</span> and <span class="mono">TierFeatureMapSeed</span>. The Edit actions are proposed — today these values only change via a C# code deploy.</span>
+        </div>
+        <div class="plan-grid">
+          <div class="plan-card"><h4>Starter</h4><div class="price">999<span> EGP/mo</span></div><ul><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>sales, shifts</li><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>trials, refunds</li></ul><button class="btn btn-secondary pick" disabled title="Proposed">Edit pricing</button></div>
+          <div class="plan-card current"><span class="current-tag">Most Common</span><h4>Growth</h4><div class="price">1,999<span> EGP/mo</span></div><ul><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>+ debtors, imports</li><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>+ digital waivers</li></ul><button class="btn btn-secondary pick" disabled title="Proposed">Edit pricing</button></div>
+          <div class="plan-card"><h4>Pro</h4><div class="price">3,999<span> EGP/mo</span></div><ul><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>+ CRM, online joining</li><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>+ marketing broadcasts</li></ul><button class="btn btn-secondary pick" disabled title="Proposed">Edit pricing</button></div>
+          <div class="plan-card"><h4>Enterprise</h4><div class="price">7,999<span> EGP/mo</span></div><ul><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>All 15 feature keys</li><li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Unlimited usage caps</li></ul><button class="btn btn-secondary pick" disabled title="Proposed">Edit pricing</button></div>
+        </div>
+      </section>
+
+      <!-- ================= SETTINGS ================= -->
+      <section class="screen" id="screen-settings">
+        <div class="page-head"><div><h1>Settings <span class="cap cap-proposed"><span class="d"></span>Entirely proposed</span></h1><p>No platform settings entity or controller exists today. These sections are a concept for where future configuration would live.</p></div></div>
+        <div class="grid-2">
+          <div class="card card-pad"><h3 style="font-size:14px">Platform Settings</h3><p class="factor-detail" style="margin-top:6px">Company name, support email, default trial length.</p></div>
+          <div class="card card-pad"><h3 style="font-size:14px">Security</h3><p class="factor-detail" style="margin-top:6px">MFA enforcement policy, session length, IP allowlists.</p></div>
+          <div class="card card-pad"><h3 style="font-size:14px">Notifications</h3><p class="factor-detail" style="margin-top:6px">Which events page platform ops (renewals, suspensions, risk-band drops).</p></div>
+          <div class="card card-pad"><h3 style="font-size:14px">Audit</h3><p class="factor-detail" style="margin-top:6px">Retention window for platform_audit_log, export controls.</p></div>
+          <div class="card card-pad" style="grid-column:1/-1"><h3 style="font-size:14px">Defaults</h3><p class="factor-detail" style="margin-top:6px">Default plan tier and trial length for new tenant provisioning.</p></div>
+        </div>
+      </section>
+
+    </div></div>
+  </div>
+</div>
+
+<!-- ================= CREATE TENANT (toggle: current vs proposed wizard) ================= -->
+<div class="overlay" id="wizardOverlay">
+  <div class="modal wide">
+    <div class="modal-head">
+      <div><h2 id="wizTitle">Create Tenant</h2><p>Toggle between what ships today and the proposed 5-step flow.</p></div>
+      <button class="icon-btn" data-close-modal="wizardOverlay"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="toggle-row">
+        <div class="toggle-opt act" id="toggleCurrent">Current — 1 step <span class="cap cap-impl" style="margin-left:6px"><span class="d"></span></span></div>
+        <div class="toggle-opt" id="toggleProposed">Proposed — 5 steps <span class="cap cap-proposed" style="margin-left:6px"><span class="d"></span></span></div>
+      </div>
+
+      <div id="wizCurrentPane">
+        <div class="form-grid">
+          <div class="fg"><label>Gym name *</label><input type="text" value="Urban Fit Studio"></div>
+          <div class="fg"><label>City *</label><input type="text" value="Cairo"></div>
+          <div class="fg"><label>Phone *</label><input type="text" value="+20 111 222 3344"></div>
+          <div class="fg"><label>Gym email *</label><input type="text" value="contact@urbanfit.example"></div>
+          <div class="fg"><label>Plan tier</label><select><option>Growth</option><option>Starter</option><option>Pro</option><option>Enterprise</option></select></div>
+          <div class="fg"><label>Gym code (optional)</label><input type="text" placeholder="Auto if blank"></div>
+          <div class="fg full"><label>Owner full name *</label><input type="text" value="Mona Kassem"></div>
+          <div class="fg"><label>Owner email *</label><input type="text" value="mona@urbanfit.example"></div>
+          <div class="fg"><label>Owner password * (min 8) <span class="cap cap-proposed" style="margin-left:4px">Admin sets it directly today</span></label><input type="password" value="••••••••"></div>
+        </div>
+      </div>
+
+      <div id="wizProposedPane" style="display:none">
+        <p class="notice notice-proposed section-gap">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2"/></svg>
+          <span>Requires a backend change: today's provisioning API takes and stores <span class="mono">ownerPassword</span> directly. An invitation-based flow needs a new "set your own password" email step before this UI can be real.</span>
+        </p>
+        <div class="wiz-steps" style="padding:0 0 14px">
+          <div class="wiz-step current"><div class="n">1</div><span class="lbl">Business</span></div><div class="wiz-line"></div>
+          <div class="wiz-step"><div class="n">2</div><span class="lbl">Owner</span></div><div class="wiz-line"></div>
+          <div class="wiz-step"><div class="n">3</div><span class="lbl">Subscription</span></div><div class="wiz-line"></div>
+          <div class="wiz-step"><div class="n">4</div><span class="lbl">Branch</span></div><div class="wiz-line"></div>
+          <div class="wiz-step"><div class="n">5</div><span class="lbl">Review</span></div>
+        </div>
+        <div class="form-grid">
+          <div class="fg full"><label>Owner full name *</label><input type="text" value="Mona Kassem"></div>
+          <div class="fg full"><label>Owner email *</label><input type="text" value="mona@urbanfit.example"></div>
+        </div>
+        <p class="factor-detail" style="margin-top:10px">The owner receives an email invitation and sets their own password. The platform administrator never sees or creates it.</p>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close-modal="wizardOverlay">Cancel</button>
+      <div class="spacer"></div>
+      <button class="btn btn-primary" id="wizSubmit">Provision gym</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CREATE PLATFORM USER ================= -->
+<div class="overlay" id="modalCreatePlatformUser">
+  <div class="modal">
+    <div class="modal-head"><div><h2>Create Platform User</h2><p>PlatformAdminOnly · new user must complete MFA setup on first login</p></div><button class="icon-btn" data-close-modal="modalCreatePlatformUser"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="fg full"><label>Full name *</label><input type="text" placeholder="e.g. Sarah Nabil"></div>
+        <div class="fg full"><label>Email *</label><input type="email" placeholder="name@HyMotion.com"></div>
+        <div class="fg full"><label>Role *</label><select><option>platform_support</option><option>platform_ops</option><option>platform_admin</option></select></div>
+        <div class="fg full"><label>Temporary password *</label><input type="password" placeholder="Min 10 characters"></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close-modal="modalCreatePlatformUser">Cancel</button><button class="btn btn-primary" id="createPlatformUserConfirm">Create User</button></div>
+  </div>
+</div>
+
+<!-- ================= GENERIC CONFIRM DIALOG ================= -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal">
+    <div class="modal-head"><div><h2 id="confirmTitle">Confirm action</h2><p id="confirmDesc">Are you sure?</p></div><button class="icon-btn" data-close-modal="confirmOverlay"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+    <div class="modal-body">
+      <div class="fg" id="confirmPlanRow" style="display:none; margin-bottom:14px">
+        <label>New Plan</label>
+        <select id="confirmPlanSelect"><option value="Starter">Starter — 999 EGP/mo</option><option value="Pro">Pro — 3,999 EGP/mo</option><option value="Enterprise">Enterprise — Custom</option></select>
+      </div>
+      <div class="fg">
+        <label>Audit reason * <span class="cap cap-impl" style="margin-left:4px"><span class="d"></span>Real rule — min 10 chars</span></label>
+        <textarea id="confirmReason" placeholder="e.g. Customer requested cancellation."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close-modal="confirmOverlay">Cancel</button><button class="btn btn-danger-solid" id="confirmActionBtn">Confirm</button></div>
+  </div>
+</div>
+
+<div class="toast-host" id="toastHost"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  var TENANTS = [
+    { id:'GYM-0142', name:'Fitness Factory', initials:'FF', plan:'Growth', status:'Active', renewal:'Sep 12, 2026', price:'1,999 EGP', usage:82, health:'warning', score:68 },
+    { id:'GYM-0098', name:'Power Gym', initials:'PG', plan:'Pro', status:'Active', renewal:'Oct 03, 2026', price:'3,999 EGP', usage:54, health:'good', score:91 },
+    { id:'GYM-0210', name:'Iron Club', initials:'IC', plan:'Starter', status:'Trial', renewal:'Trial ends Sep 02', price:'999 EGP', usage:38, health:'good', score:88 },
+    { id:'GYM-0033', name:'Elite Fitness', initials:'EF', plan:'Enterprise', status:'Active', renewal:'Dec 18, 2026', price:'7,999 EGP', usage:61, health:'good', score:94 },
+    { id:'GYM-0177', name:'Urban Strength', initials:'US', plan:'Growth', status:'Past due', renewal:'Overdue since Aug 25', price:'1,999 EGP', usage:92, health:'critical', score:31 },
+    { id:'GYM-0055', name:'Prime Athletics', initials:'PA', plan:'Starter', status:'Suspended', renewal:'—', price:'999 EGP', usage:0, health:'critical', score:12 }
+  ];
+  var PLANS = [
+    { key:'Starter', price:999, features:['1 branch cap','sales, shifts, trials'] },
+    { key:'Growth', price:1999, features:['+ debtors, imports','digital waivers'] },
+    { key:'Pro', price:3999, features:['+ CRM, online joining','marketing broadcasts'] },
+    { key:'Enterprise', price:null, features:['All 15 feature keys','Unlimited usage caps'] }
+  ];
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=s==null?'':String(s); return d.innerHTML; }
+  function usageTone(pct){ return pct >= 80 ? 'critical' : pct >= 60 ? 'warning' : 'good'; }
+  function statusBadge(status){
+    var map = { 'Active':['badge-good','Active'], 'Trial':['badge-warning','Trial'], 'Past due':['badge-critical','Past due'], 'Suspended':['badge-critical','Suspended'] };
+    var m = map[status] || ['badge-neutral', status];
+    return '<span class="badge ' + m[0] + '"><span class="dot"></span>' + esc(m[1]) + '</span>';
+  }
+  function healthDot(h, score){
+    var map = { good:['var(--good)','Healthy'], warning:['var(--warning)','Watch'], critical:['var(--critical)','At risk'] };
+    var m = map[h];
+    return '<span class="health-dot" style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600"><span style="width:8px;height:8px;border-radius:50%;background:' + m[0] + '"></span>' + m[1] + ' · ' + score + '</span>';
+  }
+
+  function renderTenantRow(t, extraCols){
+    var tone = usageTone(t.usage);
+    var planClass = t.plan.toLowerCase();
+    var base = '' +
+      '<td><div class="t-tenant"><div class="t-logo">' + esc(t.initials) + '</div><div><div class="t-name">' + esc(t.name) + '</div><div class="t-id mono">' + esc(t.id) + '</div></div></div></td>';
+    if (extraCols === 'tenants') {
+      base += '<td class="factor-detail">—</td>';
+    }
+    base += '<td><span class="plan-chip ' + planClass + '">' + esc(t.plan) + '</span></td>';
+    base += '<td>' + statusBadge(t.status) + '</td>';
+    if (extraCols === 'tenants') {
+      base += '<td class="factor-detail">—</td><td class="factor-detail">—</td>';
+    } else {
+      base += '<td class="tabular">' + t.price + '</td><td>Monthly</td>';
+    }
+    base += '<td>' + esc(t.renewal) + '</td>';
+    if (extraCols === 'tenants') {
+      base += '<td><div class="usage-cell"><div class="usage-track"><div class="usage-fill ' + tone + '" style="width:' + t.usage + '%"></div></div><span class="usage-pct">' + t.usage + '%</span></div></td>';
+    }
+    base += '<td>' + healthDot(t.health, t.score) + '</td>';
+    base += '<td><button class="btn btn-ghost btn-sm" data-open-tenant="1">Open →</button></td>';
+    return '<tr data-open-tenant="1">' + base + '</tr>';
+  }
+
+  function renderTables(){
+    document.getElementById('tenantTableBody').innerHTML = TENANTS.map(function(t){ return renderTenantRow(t, 'tenants'); }).join('');
+    document.getElementById('subsTableBody').innerHTML = TENANTS.map(function(t){ return renderTenantRow(t, 'subs'); }).join('');
+    document.querySelectorAll('[data-open-tenant]').forEach(function(el){
+      el.addEventListener('click', function(e){ e.stopPropagation(); openTenantDetail(); });
+    });
+  }
+
+  function renderPlanGrid(){
+    document.getElementById('planCompareGrid').innerHTML = PLANS.map(function(p){
+      var isCurrent = p.key === 'Growth';
+      var priceHtml = p.price === null ? '<div class="price">Custom</div>' : '<div class="price">' + p.price.toLocaleString('en-US') + '<span> EGP/mo</span></div>';
+      return '' +
+        '<div class="plan-card' + (isCurrent ? ' current' : '') + '">' +
+          (isCurrent ? '<span class="current-tag">Current plan</span>' : '') +
+          '<h4>' + p.key + '</h4>' + priceHtml +
+          '<ul>' + p.features.map(function(f){ return '<li><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>' + esc(f) + '</li>'; }).join('') + '</ul>' +
+          (isCurrent ? '<button class="btn btn-secondary pick" disabled>Current plan</button>' : '<button class="btn ' + (p.key==='Enterprise'?'btn-secondary':'btn-primary') + ' pick" data-pick-plan="' + p.key + '">' + (p.key==='Enterprise'?'Contact sales':'Switch to ' + p.key) + '</button>') +
+        '</div>';
+    }).join('');
+    document.querySelectorAll('[data-pick-plan]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        openConfirm({ title:'Change Plan', desc:'Confirm the new plan. Upgrades apply immediately; this is Admin-only.', confirmLabel:'Change Plan', danger:false,
+          onConfirm:function(){ toast('Plan changed to ' + btn.getAttribute('data-pick-plan') + '.', 'good'); } });
+      });
+    });
+  }
+
+  /* ---- toasts ---- */
+  function toast(msg, kind){
+    kind = kind || 'good';
+    var host = document.getElementById('toastHost');
+    var el = document.createElement('div');
+    el.className = 'toast ' + kind;
+    var icon = kind === 'critical'
+      ? '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>'
+      : kind === 'info'
+      ? '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2.2"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    el.innerHTML = icon + '<span>' + esc(msg) + '</span>';
+    host.appendChild(el);
+    setTimeout(function(){ el.style.transition='opacity .25s,transform .25s'; el.style.opacity='0'; el.style.transform='translateY(6px)'; setTimeout(function(){ el.remove(); }, 260); }, 3200);
+  }
+
+  /* ---- sidebar nav ---- */
+  var NAV_LABELS = { dashboard:'Dashboard', tenants:'Tenants', subscriptions:'Subscriptions', usage:'Usage', audit:'Audit Log', 'platform-users':'Platform Users', plans:'Plans & Pricing', settings:'Settings' };
+  document.querySelectorAll('.sb-item').forEach(function(item){
+    item.addEventListener('click', function(){ navTo(item.getAttribute('data-nav')); });
+  });
+  document.querySelectorAll('[data-nav-to]').forEach(function(el){
+    el.addEventListener('click', function(){ navTo(el.getAttribute('data-nav-to')); });
+  });
+  function navTo(key){
+    document.querySelectorAll('.sb-item').forEach(function(i){ i.classList.toggle('act', i.getAttribute('data-nav') === key); });
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    var el = document.getElementById('screen-' + key);
+    if (el) el.classList.add('active');
+    document.getElementById('crumb').innerHTML = '<b>' + esc(NAV_LABELS[key]) + '</b>';
+    window.scrollTo(0,0);
+  }
+
+  /* ---- tenant detail ---- */
+  window.openTenantDetail = function(){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('screen-detail').classList.add('active');
+    document.getElementById('crumb').innerHTML = '<span style="cursor:pointer" id="crumbBack">Tenants</span><span class="sep">/</span><b>Fitness Factory</b>';
+    document.getElementById('crumbBack').addEventListener('click', function(){ navTo('tenants'); });
+    switchTab('overview');
+    window.scrollTo(0,0);
+  };
+  function switchTab(name){
+    document.querySelectorAll('#detailTabs .tab').forEach(function(tb){ tb.classList.toggle('act', tb.getAttribute('data-tab') === name); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+  document.getElementById('detailTabs').addEventListener('click', function(e){
+    var tab = e.target.closest('.tab');
+    if (tab) switchTab(tab.getAttribute('data-tab'));
+  });
+  document.querySelectorAll('[data-goto-tab]').forEach(function(el){
+    el.addEventListener('click', function(){ switchTab(el.getAttribute('data-goto-tab')); });
+  });
+
+  /* ---- view tabs (Subscriptions page) ---- */
+  document.querySelectorAll('.view-tabs .view-tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.view-tabs .view-tab').forEach(function(x){ x.classList.remove('act'); });
+      t.classList.add('act');
+      toast('Filtered view: ' + t.textContent + ' (client-side filter over the same list endpoint).', 'info');
+    });
+  });
+
+  /* ---- modal plumbing ---- */
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('[data-close-modal]').forEach(function(btn){ btn.addEventListener('click', function(){ closeModal(btn.getAttribute('data-close-modal')); }); });
+  document.querySelectorAll('.overlay').forEach(function(ov){ ov.addEventListener('click', function(e){ if (e.target === ov) closeModal(ov.id); }); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') document.querySelectorAll('.overlay.open').forEach(function(ov){ closeModal(ov.id); }); });
+
+  var confirmHandler = null;
+  function openConfirm(opts){
+    document.getElementById('confirmTitle').textContent = opts.title;
+    document.getElementById('confirmDesc').textContent = opts.desc;
+    document.getElementById('confirmPlanRow').style.display = opts.showPlan ? 'flex' : 'none';
+    document.getElementById('confirmReason').value = '';
+    document.getElementById('confirmActionBtn').textContent = opts.confirmLabel || 'Confirm';
+    document.getElementById('confirmActionBtn').className = 'btn ' + (opts.danger === false ? 'btn-primary' : 'btn-danger-solid');
+    confirmHandler = opts.onConfirm;
+    openModal('confirmOverlay');
+  }
+  document.getElementById('confirmActionBtn').addEventListener('click', function(){
+    var reason = document.getElementById('confirmReason').value.trim();
+    if (reason.length < 10){
+      document.getElementById('confirmReason').style.borderColor = 'var(--critical)';
+      document.getElementById('confirmReason').focus();
+      return;
+    }
+    closeModal('confirmOverlay');
+    if (confirmHandler) confirmHandler(reason, document.getElementById('confirmPlanSelect').value);
+  });
+  document.getElementById('confirmReason').addEventListener('input', function(){ this.style.borderColor = ''; });
+
+  document.querySelectorAll('[data-open-modal]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      var target = btn.getAttribute('data-open-modal');
+      if (target === 'modalChangePlan') {
+        openConfirm({ title:'Change Plan', desc:'Changes the plan tier. Upgrades apply immediately; downgrades can be scheduled at period end. Admin-only.', showPlan:true, danger:false, confirmLabel:'Change Plan',
+          onConfirm:function(r, plan){ toast('Plan changed to ' + plan + '.', 'good'); } });
+      } else if (target === 'modalCancelSub') {
+        openConfirm({ title:'Cancel Subscription Immediately', desc:'Cuts off admin access right away, subject to the standard check-in buffer. Admin-only.', confirmLabel:'Cancel Immediately',
+          onConfirm:function(){ toast('Subscription cancelled immediately.', 'critical'); } });
+      } else if (target === 'modalCancelPeriodEnd') {
+        openConfirm({ title:'Cancel at Period End', desc:'Schedules cancellation for Sep 12, 2026. No further invoice will be issued. Admin-only.', confirmLabel:'Schedule Cancellation',
+          onConfirm:function(){ toast('Subscription will cancel on Sep 12, 2026.', 'good'); } });
+      } else if (target === 'modalSuspend') {
+        openConfirm({ title:'Force Suspend', desc:'Blocks admin dashboard logins immediately. Member check-in continues for a 48-72h buffer. Ops+.', confirmLabel:'Suspend Now',
+          onConfirm:function(){ toast('Fitness Factory has been suspended.', 'critical'); } });
+      } else if (target === 'modalCoupon') {
+        openConfirm({ title:'Apply Coupon', desc:'Creates a time-boxed price override. Ops+.', confirmLabel:'Apply Coupon', danger:false,
+          onConfirm:function(){ toast('Coupon applied.', 'good'); } });
+      } else {
+        openModal(target);
+      }
+    });
+  });
+
+  /* ---- wizard toggle ---- */
+  document.getElementById('toggleCurrent').addEventListener('click', function(){
+    this.classList.add('act'); document.getElementById('toggleProposed').classList.remove('act');
+    document.getElementById('wizCurrentPane').style.display = 'block';
+    document.getElementById('wizProposedPane').style.display = 'none';
+  });
+  document.getElementById('toggleProposed').addEventListener('click', function(){
+    this.classList.add('act'); document.getElementById('toggleCurrent').classList.remove('act');
+    document.getElementById('wizCurrentPane').style.display = 'none';
+    document.getElementById('wizProposedPane').style.display = 'block';
+  });
+  document.getElementById('btnCreateTenant').addEventListener('click', function(){ openModal('wizardOverlay'); });
+  document.getElementById('wizSubmit').addEventListener('click', function(){
+    closeModal('wizardOverlay');
+    toast('Urban Fit Studio provisioned (POST /platform-api/tenants/provision).', 'good');
+  });
+  document.getElementById('createPlatformUserConfirm').addEventListener('click', function(){
+    closeModal('modalCreatePlatformUser');
+    toast('Platform user created (POST /platform-api/platform-users).', 'good');
+  });
+
+  renderTables();
+  renderPlanGrid();
+})();
+</script>
+</body>
+</html>

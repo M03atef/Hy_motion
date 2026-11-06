@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Biometric Devices</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../hr.css">
+<link rel="stylesheet" href="biometric-devices.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Biometric devices" data-ar="أجهزة البصمة">Biometric devices</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Biometric devices are not available for your role." data-ar="أجهزة البصمة غير متاحة لدورك.">Biometric devices are not available for your role.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Biometric devices" data-ar="أجهزة البصمة">Biometric devices</h1>
+        <p class="page-subtitle" data-en="Register push-to-local devices and map employees. No fingerprint templates are stored. Hardware connection is not claimed until a verified model is integrated." data-ar="سجّل أجهزة الدفع المحلي واربط الموظفين. لا تُخزَّن قوالب البصمة. لا يُدّعى اتصال الأجهزة حتى يُدمج طراز مُتحقق.">Register push-to-local devices and map employees. No fingerprint templates are stored. Hardware connection is not claimed until a verified model is integrated.</p>
+      </div>
+      <div class="hdr-actions">
+        <a class="btn-secondary-link" href="/dashboard/hr/biometric-events/"><i class="ti ti-list"></i> <span data-en="Event review" data-ar="مراجعة الأحداث">Event review</span></a>
+        <button type="button" class="btn-create" id="btnAdd" hidden><i class="ti ti-plus"></i> <span data-en="Add device" data-ar="إضافة جهاز">Add device</span></button>
+      </div>
+    </div>
+    <div class="notice-banner" data-en="Statuses such as Awaiting events / Receiving reflect push traffic only — not a vendor SDK handshake." data-ar="حالات مثل بانتظار الأحداث / يستقبل تعكس حركة الدفع فقط — وليست مصافحة SDK.">Statuses such as Awaiting events / Receiving reflect push traffic only — not a vendor SDK handshake.</div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="deviceModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="deviceModalTitle" data-en="Add device" data-ar="إضافة جهاز">Add device</h2>
+      <button type="button" class="modal-close" data-close="deviceModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="deviceForm" class="modal-body">
+      <input type="hidden" id="editDeviceId">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Device code" data-ar="رمز الجهاز">Device code</span><input id="devCode" required maxlength="40" placeholder="BIO-FRONT-01"></label>
+        <label class="fg"><span data-en="Display name" data-ar="الاسم المعروض">Display name</span><input id="devName" required maxlength="120"></label>
+      </div>
+      <div class="form-grid">
+        <label class="fg"><span data-en="Vendor (label only)" data-ar="المورّد (تسمية فقط)">Vendor (label only)</span><input id="devVendor" maxlength="80" placeholder="e.g. unverified label"></label>
+        <label class="fg"><span data-en="Model (label only)" data-ar="الطراز (تسمية فقط)">Model (label only)</span><input id="devModel" maxlength="80"></label>
+      </div>
+      <div class="form-grid">
+        <label class="fg"><span data-en="Integration" data-ar="التكامل">Integration</span>
+          <select id="devIntegration">
+            <option value="PushToLocal" data-en="Push to Local (recommended)" data-ar="دفع إلى المحلي (موصى به)">Push to Local (recommended)</option>
+            <option value="VendorMiddleware" data-en="Vendor middleware (future)" data-ar="برمجية وسيطة (مستقبلاً)">Vendor middleware (future)</option>
+            <option value="LanPull" data-en="LAN pull (not implemented)" data-ar="سحب LAN (غير منفّذ)">LAN pull (not implemented)</option>
+          </select>
+        </label>
+        <label class="fg"><span data-en="Location" data-ar="الموقع">Location</span><input id="devLocation" maxlength="120"></label>
+      </div>
+      <label class="fg" id="enabledRow" hidden><span data-en="Enabled" data-ar="مفعّل">Enabled</span>
+        <select id="devEnabled"><option value="true" data-en="Yes" data-ar="نعم">Yes</option><option value="false" data-en="No" data-ar="لا">No</option></select>
+      </label>
+      <p class="form-hint" data-en="Creating a device issues a push API key once. Store it securely — HyMotion keeps only a hash." data-ar="إنشاء الجهاز يُصدر مفتاح API للدفع مرة واحدة. احفظه بأمان — HyMotion يحتفظ بالتجزئة فقط.">Creating a device issues a push API key once. Store it securely — HyMotion keeps only a hash.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="deviceModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveDevice" data-en="Save" data-ar="حفظ">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="keyModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="Push API key (shown once)" data-ar="مفتاح API للدفع (يُعرض مرة واحدة)">Push API key (shown once)</h2>
+      <button type="button" class="modal-close" data-close="keyModal"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="form-hint" data-en="Copy now. This plaintext key will not be shown again." data-ar="انسخ الآن. لن يُعرض هذا المفتاح مرة أخرى.">Copy now. This plaintext key will not be shown again.</p>
+      <code class="key-box ltr" id="keyPlain"></code>
+      <p class="form-hint" id="keyMeta"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-primary" data-close="keyModal" data-en="I saved the key" data-ar="حفظت المفتاح">I saved the key</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="mapModal" hidden>
+  <div class="modal modal-lg">
+    <div class="modal-hdr">
+      <h2 id="mapModalTitle" data-en="Employee mappings" data-ar="ربط الموظفين">Employee mappings</h2>
+      <button type="button" class="modal-close" data-close="mapModal"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <form id="mapForm" class="map-form" hidden>
+        <select id="mapEmployee" required></select>
+        <input id="mapDeviceUserId" required maxlength="64" placeholder="Device user ID" class="ltr">
+        <button type="submit" class="btn-primary" data-en="Save mapping" data-ar="حفظ الربط">Save mapping</button>
+      </form>
+      <p class="form-hint" data-en="Device user ID is not HyMotion Employee.Id. Remote device disablement is not confirmed without a verified adapter." data-ar="معرّف مستخدم الجهاز ليس Employee.Id. تعطيل الجهاز عن بُعد غير مؤكد بدون محوّل مُتحقق.">Device user ID is not HyMotion Employee.Id. Remote device disablement is not confirmed without a verified adapter.</p>
+      <div id="mapTableHost"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="biometric-devices-app.js?v=1"></script>
+</body>
+</html>

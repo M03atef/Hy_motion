@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Access cards</title>
+<meta name="description" content="Physical PVC access card inventory — create stock, view counts, search codes.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="access-cards.css?v=theme1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Members" data-ar="الأعضاء">Members</span><span class="sep">/</span><span class="current" data-en="Access cards" data-ar="كارنيهات الدخول">Access cards</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ti ti-id"></i> <span data-en="Access cards" data-ar="كارنيهات الدخول">Access cards</span></h1>
+      <p class="page-subtitle" data-en="PVC inventory. MemberNumber stays the admin ID — desk scan uses Assigned card Code (legacy cards = MemberNumber)." data-ar="مخزون الكارنيهات. رقم العضو للإدارة — المسح يستخدم كود الكارنيه المعيَّن.">PVC inventory. MemberNumber stays the admin ID — desk scan uses Assigned card Code (legacy cards = MemberNumber).</p>
+    </div>
+    <div class="page-header-actions">
+      <button type="button" class="btn primary" id="btnBulkCreate" hidden><i class="ti ti-plus"></i> <span data-en="Add batch" data-ar="إضافة دفعة">Add batch</span></button>
+      <button type="button" class="btn secondary" id="btnPrintBatch"><i class="ti ti-printer"></i> <span data-en="Print / preview batch" data-ar="طباعة / معاينة الدفعة">Print / preview batch</span></button>
+      <button type="button" class="btn secondary" id="btnRefresh"><i class="ti ti-refresh"></i> <span data-en="Refresh" data-ar="تحديث">Refresh</span></button>
+    </div>
+  </div>
+
+  <div class="ac-stats" id="acStats">
+    <div class="ac-stat"><span class="ac-stat-val" id="stTotal">—</span><span class="ac-stat-lbl" data-en="Total" data-ar="الإجمالي">Total</span></div>
+    <div class="ac-stat"><span class="ac-stat-val" id="stAvailable">—</span><span class="ac-stat-lbl" data-en="Available" data-ar="متاح">Available</span></div>
+    <div class="ac-stat"><span class="ac-stat-val" id="stAssigned">—</span><span class="ac-stat-lbl" data-en="Assigned" data-ar="معيَّن">Assigned</span></div>
+    <div class="ac-stat"><span class="ac-stat-val" id="stLost">—</span><span class="ac-stat-lbl" data-en="Lost" data-ar="مفقود">Lost</span></div>
+    <div class="ac-stat"><span class="ac-stat-val" id="stDamaged">—</span><span class="ac-stat-lbl" data-en="Damaged" data-ar="تالف">Damaged</span></div>
+    <div class="ac-stat"><span class="ac-stat-val" id="stBlocked">—</span><span class="ac-stat-lbl" data-en="Blocked" data-ar="محظور">Blocked</span></div>
+  </div>
+  <p class="ac-low" id="acLowStock" hidden data-en="Low Available stock — add a batch." data-ar="المخزون المتاح منخفض — أضف دفعة.">Low Available stock — add a batch.</p>
+
+  <div class="ac-toolbar">
+    <div class="ac-search"><i class="ti ti-search"></i><input id="searchQ" type="search" placeholder="Search code or member…" data-en-placeholder="Search code or member…" data-ar-placeholder="ابحث بالكود أو العضو…" autocomplete="off"></div>
+    <select id="filterStatus" aria-label="Status">
+      <option value="" data-en="All statuses" data-ar="كل الحالات">All statuses</option>
+      <option value="Available">Available</option>
+      <option value="Assigned">Assigned</option>
+      <option value="Lost">Lost</option>
+      <option value="Damaged">Damaged</option>
+      <option value="Blocked">Blocked</option>
+    </select>
+  </div>
+
+  <div class="ac-table-wrap">
+    <table class="ac-table">
+      <thead>
+        <tr>
+          <th data-en="Code" data-ar="الكود">Code</th>
+          <th data-en="Status" data-ar="الحالة">Status</th>
+          <th data-en="Member" data-ar="العضو">Member</th>
+          <th data-en="Assigned" data-ar="التعيين">Assigned</th>
+          <th data-en="Batch" data-ar="الدفعة">Batch</th>
+        </tr>
+      </thead>
+      <tbody id="acBody">
+        <tr><td colspan="5" class="ac-empty" data-en="Loading…" data-ar="جاري التحميل…">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ac-pager" id="acPager" hidden>
+    <button type="button" class="btn secondary" id="btnPrev" data-en="Prev" data-ar="السابق">Prev</button>
+    <span id="acPageLabel">1</span>
+    <button type="button" class="btn secondary" id="btnNext" data-en="Next" data-ar="التالي">Next</button>
+  </div>
+</div>
+</div>
+
+<div class="modal-backdrop" id="bulkModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-hdr">
+      <h2 data-en="Add card batch" data-ar="إضافة دفعة كارنيهات">Add card batch</h2>
+      <button type="button" class="modal-close" id="btnBulkClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <label><span data-en="Prefix" data-ar="البادئة">Prefix</span>
+        <input id="bulkPrefix" type="text" value="CARD" maxlength="12">
+      </label>
+      <label><span data-en="Start number" data-ar="رقم البداية">Start number</span>
+        <input id="bulkStart" type="number" min="1" value="1">
+      </label>
+      <label><span data-en="Quantity" data-ar="الكمية">Quantity</span>
+        <input id="bulkQty" type="number" min="1" max="500" value="25">
+      </label>
+      <p class="modal-hint" data-en="Codes become PREFIX-0001 … Avoid GYM- (MemberNumber)." data-ar="الأكواد PREFIX-0001 … تجنب GYM- (رقم العضو).">Codes become PREFIX-0001 … Avoid GYM- (MemberNumber).</p>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="btnBulkCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="btn primary" id="btnBulkSave" data-en="Create" data-ar="إنشاء">Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="printModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" style="width:min(440px,92vw)">
+    <div class="modal-hdr">
+      <h2 data-en="Print blank stock" data-ar="طباعة مخزون الكارنيهات">Print blank stock</h2>
+      <button type="button" class="modal-close" id="btnPrintClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-hint" data-en="Blank PVC stock branded as your gym (logo, names, card color from Settings → Gym Identity). Barcode = AccessCard.Code only — no member PII. CR80 86×54 mm." data-ar="مخزون فارغ بهوية صالتك (الشعار والأسماء واللون من الإعدادات). الباركود = كود الكارنيه فقط — بدون بيانات عضو. 86×54 مم.">Blank PVC stock branded as your gym (logo, names, card color from Settings → Gym Identity). Barcode = AccessCard.Code only — no member PII. CR80 86×54 mm.</p>
+      <label><span data-en="Batch id (optional)" data-ar="معرّف الدفعة (اختياري)">Batch id (optional)</span>
+        <input id="printBatchId" type="text" placeholder="Leave empty = all matching" data-en-placeholder="Leave empty = all matching" data-ar-placeholder="فارغ = كل المطابق">
+      </label>
+      <label><span data-en="Status" data-ar="الحالة">Status</span>
+        <select id="printStatus">
+          <option value="Available" selected>Available</option>
+          <option value="Assigned">Assigned</option>
+          <option value="">All</option>
+        </select>
+      </label>
+      <label><span data-en="Max cards" data-ar="أقصى عدد">Max cards</span>
+        <input id="printLimit" type="number" min="1" max="500" value="100">
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn secondary" id="btnPrintCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="btn primary" id="btnPrintOpen" data-en="Open preview" data-ar="فتح المعاينة">Open preview</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/shared/api-config.js"></script>
+<script src="/shared/api-client.js"></script>
+<script src="/shared/i18n-catalog.js"></script>
+<script src="/shared/shell.js"></script>
+<script src="access-cards-app.js?v=1"></script>
+</body>
+</html>

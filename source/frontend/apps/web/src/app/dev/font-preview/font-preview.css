@@ -1,0 +1,500 @@
+/**
+ * Font preview page styles — scoped. Does NOT change production --fd/--fb/--fa.
+ */
+.fp-page {
+  --fp-bg: #fafafa;
+  --fp-surface: #fff;
+  --fp-border: #d4d4d4;
+  --fp-text: #1a1a1a;
+  --fp-muted: #4a4a4a;
+  --fp-faint: #8c8c8c;
+  --fp-lime: #7acc00;
+  --fp-ink: #0d0d0d;
+  --fp-suc: #22c55e;
+  --fp-wrn: #f59e0b;
+  --fp-dng: #ef4444;
+  --fp-inf: #3b82f6;
+  margin: 0;
+  background: var(--fp-bg);
+  color: var(--fp-text);
+  font-family: 'Cairo', system-ui, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+.fp-page *,
+.fp-page *::before,
+.fp-page *::after {
+  box-sizing: border-box;
+}
+
+.fp-top {
+  border-bottom: 1px solid var(--fp-border);
+  background: var(--fp-surface);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.fp-top-inner,
+.fp-toolbar-inner,
+.fp-footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+
+.fp-title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.fp-sub {
+  margin: 0;
+  color: var(--fp-muted);
+  font-size: 13px;
+  max-width: 62ch;
+}
+
+.fp-controls {
+  margin-top: 12px;
+}
+
+.fp-lang {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.fp-lang-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fp-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fp-chip {
+  border: 1.5px solid var(--fp-border);
+  background: var(--fp-surface);
+  color: var(--fp-muted);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fp-chip.is-active {
+  border-color: var(--fp-lime);
+  background: #edfcd8;
+  color: var(--fp-ink);
+}
+
+.fp-toolbar {
+  border-bottom: 1px solid var(--fp-border);
+  background: #f5f5f5;
+}
+
+.fp-toolbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.fp-compare-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  flex: 1;
+}
+
+.fp-compare-checks label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fp-muted);
+  cursor: pointer;
+}
+
+.fp-compare-checks label.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.fp-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.fp-btn {
+  border-radius: 10px;
+  border: 1.5px solid var(--fp-border);
+  background: var(--fp-surface);
+  color: var(--fp-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  cursor: pointer;
+  min-height: 40px;
+}
+
+.fp-btn.ghost {
+  background: transparent;
+}
+
+.fp-btn.primary {
+  background: linear-gradient(135deg, #7acc00, #5eaf00);
+  border-color: transparent;
+  color: var(--fp-ink);
+  font-weight: 700;
+}
+
+.fp-btn.primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.fp-btn.lime {
+  background: linear-gradient(135deg, #7acc00, #5eaf00);
+  border: none;
+  color: var(--fp-ink);
+  font-weight: 700;
+}
+
+.fp-btn.danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fef2f2;
+}
+
+.fp-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.fp-card {
+  background: var(--fp-surface);
+  border: 1px solid var(--fp-border);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.fp-card.is-unavailable {
+  opacity: 0.72;
+  background: #f8f8f8;
+}
+
+.fp-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.fp-card-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.fp-card-pair {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--fp-faint);
+  line-height: 1.4;
+}
+
+.fp-badge-avail {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #dcfce7;
+  color: #166534;
+  white-space: nowrap;
+}
+
+.fp-badge-avail.no {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.fp-ui {
+  border: 1px solid var(--fp-border);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+/* Candidate font scoped ONLY inside .fp-ui */
+.fp-ui {
+  font-family: var(--fp-stack, inherit);
+}
+
+.fp-ui .fp-display {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.fp-ui .fp-page-h {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.fp-ui .fp-section {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 10px 0 6px;
+}
+
+.fp-ui .fp-body {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.fp-ui .fp-small {
+  font-size: 12px;
+  color: var(--fp-muted);
+}
+
+.fp-ui .fp-caption {
+  font-size: 11px;
+  color: var(--fp-faint);
+}
+
+.fp-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.fp-kpi {
+  background: #fff;
+  border: 1px solid var(--fp-border);
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.fp-kpi .lbl {
+  font-size: 11px;
+  color: var(--fp-faint);
+  font-weight: 600;
+}
+
+.fp-kpi .val {
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.fp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.fp-ui .fp-btn {
+  font-family: inherit;
+}
+
+.fp-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.fp-status {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.fp-status.active {
+  background: #dcfce7;
+  color: #166534;
+}
+.fp-status.expired {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.fp-status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.fp-status.cancelled {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.fp-table-wrap {
+  overflow-x: auto;
+  margin-top: 10px;
+  border: 1px solid var(--fp-border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.fp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.fp-table th,
+.fp-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--fp-border);
+  text-align: start;
+  white-space: nowrap;
+}
+
+.fp-table th {
+  font-weight: 700;
+  background: #f5f5f5;
+  font-size: 11px;
+  color: var(--fp-muted);
+}
+
+.fp-stress {
+  margin-top: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.fp-scale {
+  margin-top: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.fp-weights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.fp-weights span {
+  font-size: 13px;
+}
+
+.fp-eval {
+  border-top: 1px dashed var(--fp-border);
+  padding-top: 10px;
+}
+
+.fp-eval h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--fp-faint);
+}
+
+.fp-eval-grid {
+  display: grid;
+  gap: 6px;
+}
+
+.fp-eval-grid label {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fp-muted);
+}
+
+.fp-eval-grid input {
+  border: 1px solid var(--fp-border);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.fp-license {
+  font-size: 11px;
+  color: var(--fp-faint);
+  line-height: 1.45;
+}
+
+.fp-footer {
+  border-top: 1px solid var(--fp-border);
+  background: var(--fp-surface);
+  margin-top: 8px;
+}
+
+.fp-prod-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr auto;
+  gap: 16px;
+  align-items: end;
+}
+
+.fp-meta-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fp-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.fp-meta-value {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.fp-apply-note {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--fp-faint);
+  max-width: 28ch;
+}
+
+html[dir='rtl'] .fp-table th,
+html[dir='rtl'] .fp-table td {
+  text-align: start;
+}
+
+@media (max-width: 900px) {
+  .fp-prod-row {
+    grid-template-columns: 1fr;
+  }
+  .fp-kpis {
+    grid-template-columns: 1fr;
+  }
+  .fp-grid {
+    grid-template-columns: 1fr;
+    padding: 12px;
+  }
+}

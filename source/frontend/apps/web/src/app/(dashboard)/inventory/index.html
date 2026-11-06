@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Inventory</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="inventory-home.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-breadcrumb">
+      <span data-en="Inventory" data-ar="المخزون">Inventory</span>
+      <span class="sep">/</span>
+      <span class="current" data-en="Overview" data-ar="نظرة عامة">Overview</span>
+    </div>
+  </div>
+  <div class="tb-right">
+    <div class="gym-name" id="gymName">HyMotion</div>
+    <div class="gym-name-ar" id="gymNameAr"></div>
+  </div>
+</header>
+
+<div class="content">
+  <div class="page-header">
+    <div class="ph-left">
+      <h1 class="page-title" data-en="Inventory pulse" data-ar="نبض المخزون">Inventory pulse</h1>
+      <p class="page-subtitle" data-en="See stock health, then open On Hand to manage products." data-ar="شوف صحة المخزون، بعدين افتح الرصيد لإدارة المنتجات.">See stock health, then open On Hand to manage products.</p>
+    </div>
+    <div class="ph-right">
+      <button type="button" class="btn-secondary" id="btnRefresh" data-en="Refresh" data-ar="تحديث">
+        <i class="ti ti-refresh"></i><span data-i18n-text>Refresh</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="pulse-grid" id="pulseHost" aria-live="polite">
+    <div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div>
+  </div>
+
+  <div id="reorderSection" class="reorder-section" hidden>
+    <div class="reorder-hdr">
+      <h2 class="section-title" style="margin:0" data-en="Need — restock queue" data-ar="الاحتياج — قائمة التزويد">Need — restock queue</h2>
+      <button type="button" class="btn-create" id="btnDraftPo" hidden>
+        <i class="ti ti-clipboard-plus"></i>
+        <span data-en="Draft PO from selected" data-ar="مسودة شراء من المحدد" data-i18n-text>Draft PO from selected</span>
+      </button>
+    </div>
+    <div id="reorderHost"></div>
+  </div>
+
+  <h2 class="section-title" data-en="What do you need to do?" data-ar="محتاج تعمل إيه؟">What do you need to do?</h2>
+  <div class="action-grid" id="actionGrid">
+    <a class="action-card primary" href="/dashboard/inventory/stock-management/?tab=on-hand" id="actRestock">
+      <div class="action-ico"><i class="ti ti-stack-2"></i></div>
+      <div class="action-body">
+        <div class="action-title" data-en="Stock Management" data-ar="إدارة المخزون">Stock Management</div>
+        <div class="action-sub" data-en="On Hand, Move, and Count in one place." data-ar="الرصيد والنقل والجرد في مكان واحد.">On Hand, Move, and Count in one place.</div>
+      </div>
+      <i class="ti ti-chevron-right action-chev"></i>
+    </a>
+    <a class="action-card" href="/dashboard/inventory/stock-management/?tab=move" id="actMove" hidden>
+      <div class="action-ico"><i class="ti ti-arrows-exchange"></i></div>
+      <div class="action-body">
+        <div class="action-title" data-en="Move stock" data-ar="نقل مخزون">Move stock</div>
+        <div class="action-sub" data-en="Send products between warehouses." data-ar="ابعت منتجات بين المستودعات.">Send products between warehouses.</div>
+      </div>
+      <i class="ti ti-chevron-right action-chev"></i>
+    </a>
+    <a class="action-card" href="/dashboard/inventory/stock-management/?tab=count" id="actCount" hidden>
+      <div class="action-ico amber"><i class="ti ti-clipboard-check"></i></div>
+      <div class="action-body">
+        <div class="action-title" data-en="Count stock" data-ar="جرد">Count stock</div>
+        <div class="action-sub" data-en="Count shelves, then approve." data-ar="عُدّ الرف وبعدين وافق.">Count shelves, then approve.</div>
+      </div>
+      <i class="ti ti-chevron-right action-chev"></i>
+    </a>
+    <a class="action-card" href="/dashboard/inventory/reports/" id="actInsights">
+      <div class="action-ico"><i class="ti ti-chart-histogram"></i></div>
+      <div class="action-body">
+        <div class="action-title" data-en="Insights" data-ar="رؤى">Insights</div>
+        <div class="action-sub" data-en="Movements, dead stock, performance." data-ar="حركات، راكد، أداء.">Movements, dead stock, performance.</div>
+      </div>
+      <i class="ti ti-chevron-right action-chev"></i>
+    </a>
+  </div>
+
+  <h2 class="section-title" data-en="Setup (less often)" data-ar="إعداد (أقل استخداماً)">Setup (less often)</h2>
+  <div class="browse-grid" id="setupBrowse">
+    <a class="browse-link" href="/dashboard/inventory/products/" id="browseProducts" hidden><i class="ti ti-box"></i><span data-en="Products" data-ar="المنتجات">Products</span></a>
+    <a class="browse-link" href="/dashboard/inventory/suppliers/" id="browseSuppliers" hidden><i class="ti ti-truck"></i><span data-en="Suppliers" data-ar="الموردون">Suppliers</span></a>
+    <a class="browse-link" href="/dashboard/inventory/warehouses/" id="browseWarehouses" hidden><i class="ti ti-building-warehouse"></i><span data-en="Warehouses" data-ar="المستودعات">Warehouses</span></a>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="draftPoModal" hidden>
+  <div class="modal" role="dialog" aria-labelledby="draftPoTitle" aria-modal="true">
+    <div class="modal-hdr">
+      <h2 id="draftPoTitle" data-en="Create draft purchase order" data-ar="إنشاء مسودة أمر شراء">Create draft purchase order</h2>
+      <button type="button" class="modal-close" id="btnCloseDraftPo" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="draftPoForm" class="modal-body">
+      <p class="modal-meta" id="draftPoMeta"></p>
+      <label>
+        <span data-en="Supplier" data-ar="المورد">Supplier</span>
+        <select id="draftSupplier" required></select>
+      </label>
+      <label>
+        <span data-en="Receive into warehouse" data-ar="الاستلام في المستودع">Receive into warehouse</span>
+        <select id="draftWarehouse" required></select>
+      </label>
+      <label>
+        <span data-en="Notes (optional)" data-ar="ملاحظات (اختياري)">Notes (optional)</span>
+        <input type="text" id="draftNotes" maxlength="500" autocomplete="off">
+      </label>
+      <p class="form-hint" id="draftPoHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="btnCancelDraftPo" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-create" id="btnConfirmDraftPo">
+          <i class="ti ti-clipboard-plus"></i>
+          <span data-en="Create draft" data-ar="إنشاء مسودة">Create draft</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="inventory-home-app.js"></script>
+</body>
+</html>

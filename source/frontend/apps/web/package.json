@@ -1,0 +1,41 @@
+{
+  "name": "gymflowpro-web",
+  "version": "1.0.0",
+  "description": "HyMotion Admin Dashboard Web App",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "prepare:wwwroot": "node scripts/prepare-wwwroot.mjs",
+    "publish:monsterasp": "node scripts/prepare-wwwroot.mjs",
+    "serve": "node server.js",
+    "test:nav": "node src/app/shared/nav.selftest.js",
+    "test:prepare": "node src/app/shared/prepare-gym.selftest.js",
+    "test:shell": "node src/app/shared/shell.selftest.js",
+    "test:staff": "node src/app/(dashboard)/staff/staff.selftest.js",
+    "test:roles": "node src/app/(dashboard)/roles/roles.selftest.js",
+    "test:classes": "node src/app/(dashboard)/classes/classes.selftest.js",
+    "test:dashboard": "node src/app/(dashboard)/dashboard-home.selftest.js",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.0",
+    "express": "^5.2.1",
+    "lucide-react": "^0.292.0",
+    "next": "^13.5.0",
+    "postcss": "^8.4.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwindcss": "^3.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^13.5.0",
+    "typescript": "^5.0.0"
+  }
+}

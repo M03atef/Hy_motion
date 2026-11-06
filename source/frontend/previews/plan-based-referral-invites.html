@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Invitations (final product preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#22C55E;--suc100:#DCFCE7;--wrn500:#F59E0B;--wrn100:#FEF3C7;
+  --dng500:#EF4444;--dng100:#FEE2E2;--inf500:#3B82F6;--inf100:#DBEAFE;
+  --lbg:#F4F5F3;--ls1:#FFFEFB;--ls2:#F3F5F2;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:54rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.controls button.act{background:#fff;color:#14532d}
+.findings{margin:12px 16px 0;padding:14px 16px;border-radius:12px;background:#fff;border:1px solid var(--ls3);font-size:13px;color:var(--lts);line-height:1.5}
+.findings strong{color:var(--ltp)}
+.findings code{font-size:12px;background:var(--ls2);padding:1px 6px;border-radius:4px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
+@media(max-width:900px){.grid4{grid-template-columns:1fr 1fr}}
+.box{background:var(--ls2);border-radius:10px;padding:10px 12px}
+.box h4{font-family:var(--fd);font-size:12px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.box ul{margin:0 0 0 16px;font-size:12px}
+.app{display:flex;margin-top:12px;min-height:calc(100vh - 90px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#0D0D0D;background:var(--l500);font-weight:700}
+.main{flex:1;min-width:0}
+.topbar{height:56px;background:#fff;border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:var(--fd);font-weight:600}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;padding:22px 24px 48px;align-items:start}
+@media(max-width:1100px){.stage{grid-template-columns:1fr}}
+.page-title{font-family:var(--fd);font-size:24px;font-weight:700;display:flex;align-items:center;gap:8px}
+.page-title i{color:var(--l500)}
+.page-sub{font-size:14px;color:var(--lts);margin:6px 0 16px;line-height:1.5;max-width:40rem}
+.card{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden;margin-bottom:14px}
+.card-h{padding:14px 18px;border-bottom:1px solid var(--ls3);font-family:var(--fd);font-weight:700;display:flex;align-items:center;gap:8px}
+.card-h i{color:var(--l500)}
+.card-b{padding:16px 18px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:800px){.kpis{grid-template-columns:repeat(3,1fr)}}
+.kpi{background:var(--ls2);border-radius:12px;padding:12px}
+.kpi .lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt)}
+.kpi strong{font-family:var(--fd);font-size:20px;display:block}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ltt);padding:8px 0;border-bottom:1px solid var(--ls3)}
+td{padding:10px 0;border-bottom:1px solid var(--ls3)}
+.st{display:inline-flex;padding:3px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.st.new{background:var(--inf100);color:#1d4ed8}
+.st.contacted{background:var(--wrn100);color:#92400E}
+.st.interested{background:#EDE9FE;color:#5B21B6}
+.st.ni{background:var(--dng100);color:#991B1B}
+.st.converted{background:var(--suc100);color:#166534}
+.btn{height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+label{display:block;font-size:12px;font-weight:700;color:var(--lts);margin:10px 0 6px}
+input,textarea,select{width:100%;border:1px solid var(--ls3);border-radius:12px;padding:10px 12px;font:inherit}
+.opt{font-weight:500;color:var(--ltt)}
+.hint{font-size:12px;color:var(--ltt);margin-top:8px;line-height:1.45}
+.phone{width:300px;background:var(--c900);border-radius:28px;padding:12px;margin:0 auto;box-shadow:0 16px 40px rgba(0,0,0,.18)}
+.phone-in{background:#111;border-radius:20px;min-height:580px;color:#F0F0F0;overflow:auto}
+.ph-top{padding:18px 16px 8px;font-family:var(--fd);font-weight:700;color:var(--l400)}
+.ph-card{margin:0 12px 12px;background:#1C1C1C;border:1px solid #2A2A2A;border-radius:16px;padding:14px}
+.ph-card h3{font-family:var(--fd);font-size:15px;margin-bottom:6px}
+.ph-big{font-family:var(--fd);font-size:28px;font-weight:700}
+.ph-muted{font-size:12px;color:#8C8C8C;line-height:1.4}
+.ph-cta{margin-top:10px;height:40px;width:100%;border:none;border-radius:12px;background:var(--l500);color:#0D0D0D;font-family:var(--fd);font-weight:700;cursor:pointer}
+.ph-cta:disabled{opacity:.4}
+.ph-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #2A2A2A;font-size:13px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{height:32px;padding:0 10px;border-radius:999px;border:1px solid var(--ls3);background:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.tabs button.act{background:rgba(122,204,0,.2);border-color:rgba(122,204,0,.5)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    Preview only — one Invitation product
+    <div class="note">Guest Pass and Referral Code are retired. UI says <strong>Invitation</strong> only. National ID is optional. No Lead table. Reply <strong>Accept</strong> before any production work.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-screen="list">Invitations</button>
+    <button type="button" data-screen="member">Member 360</button>
+    <button type="button" data-screen="plans">Plans</button>
+  </div>
+</div>
+
+<div class="findings">
+  <strong>Classify existing code (no deletes until Accept + implement):</strong>
+  <div class="grid4">
+    <div class="box">
+      <h4>Remove (runtime)</h4>
+      <ul>
+        <li>Guest redeem on Attendance</li>
+        <li>pending / redeem-visit APIs</li>
+        <li>guest-quota APIs</li>
+        <li>referral-share API</li>
+        <li>Referral code on add member / sale</li>
+        <li>Plan “Guest invitations per month”</li>
+        <li>Plan referral reward fields in UI</li>
+        <li>Flutter Invite Guest + Share code</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Replace</h4>
+      <ul>
+        <li><code>POST /invitation/send</code> → create Invitation (name, phone, optional NID, notes)</li>
+        <li>Quota: consume on create, covering membership</li>
+        <li>Conversion: phone match + paid membership (not referral code)</li>
+        <li>Reports invitations widget → new statuses</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Keep</h4>
+      <ul>
+        <li><code>member_invitations</code> table</li>
+        <li>Tenant isolation / JWT sub → member</li>
+        <li>Phone normalizer</li>
+        <li>NID encryption (members)</li>
+        <li>Trial, Sale, Attendance, Check-in</li>
+        <li>Call sheet (renewals)</li>
+        <li>INV-4 reward ledger rows (archive, hide UI)</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Migrate / archive</h4>
+      <ul>
+        <li>Old <code>guest_pass</code> / <code>referral</code> rows stay in DB</li>
+        <li>Do not delete historical visits or codes</li>
+        <li>Add <code>ReferralInviteQuota</code> on plans</li>
+        <li>Old <code>InvitationQuota</code> column kept, unused by product</li>
+        <li>Member <code>ReferralCode</code> kept, hidden</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>Fitness Hub</span></div>
+    <div class="sb-sec">Members</div>
+    <div class="sb-item act" id="navList">Invitations</div>
+    <div class="sb-item" id="navMem">Members</div>
+    <div class="sb-item">Attendance</div>
+    <div class="sb-sec">Catalog</div>
+    <div class="sb-item" id="navPlan">Plans</div>
+  </aside>
+  <div class="main">
+    <header class="topbar"><span id="crumb">Members / Invitations</span><span>Fitness Hub</span></header>
+    <div class="stage">
+      <div>
+        <div id="screenList">
+          <h1 class="page-title"><i class="ti ti-user-plus"></i> Invitations</h1>
+          <p class="page-sub">People members recommended. Front desk can create on behalf of a member. Call them, update status, then use existing Trial or Sale if they join. Invitation does not create a trial.</p>
+          <p style="margin:0 0 12px"><button class="btn primary" type="button">New invitation</button></p>
+          <div class="card">
+            <div class="card-b">
+              <table>
+                <thead><tr><th>Name</th><th>Phone</th><th>Invited by</th><th>Created</th><th>Status</th><th>Last contact</th><th></th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>Ahmed Mohamed</td><td>01012345678</td><td>Mohamed Ali</td><td>15 Aug</td>
+                    <td><span class="st new">New</span></td><td>—</td>
+                    <td><button class="btn" type="button">View</button></td>
+                  </tr>
+                  <tr>
+                    <td>Omar Ali</td><td>01098765432</td><td>Mohamed Ali</td><td>12 Aug</td>
+                    <td><span class="st contacted">Contacted</span></td><td>14 Aug</td>
+                    <td><button class="btn" type="button">View</button></td>
+                  </tr>
+                  <tr>
+                    <td>Ali Hassan</td><td>01211112222</td><td>Sara Nabil</td><td>1 Aug</td>
+                    <td><span class="st converted">Converted</span></td><td>8 Aug</td>
+                    <td><button class="btn" type="button">View</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h">Ahmed Mohamed</div>
+            <div class="card-b">
+              <p>01012345678 · Invited by Mohamed Ali · 15 Aug</p>
+              <p class="hint">Notes: Interested in bodybuilding · National ID not provided</p>
+              <label>Status</label>
+              <select>
+                <option>New</option>
+                <option>Contacted</option>
+                <option>Interested</option>
+                <option>Not Interested</option>
+                <option>Converted</option>
+              </select>
+              <p class="hint">Converted is set automatically when this phone becomes a paying member. Trial stays on the Trials/Members desk — not a status here.</p>
+              <div style="display:flex;gap:8px;margin-top:12px">
+                <button class="btn primary" type="button">Save status</button>
+                <button class="btn" type="button">New member</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="screenMem" hidden>
+          <h1 class="page-title"><i class="ti ti-user"></i> Mohamed Ali</h1>
+          <p class="page-sub">Existing Member 360. Invitations section only — not Referrals, not Guest.</p>
+          <div class="kpis">
+            <div class="kpi"><span class="lbl">Total</span><strong>12</strong></div>
+            <div class="kpi"><span class="lbl">New</span><strong>3</strong></div>
+            <div class="kpi"><span class="lbl">Contacted</span><strong>4</strong></div>
+            <div class="kpi"><span class="lbl">Interested</span><strong>2</strong></div>
+            <div class="kpi"><span class="lbl">Converted</span><strong>2</strong></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><i class="ti ti-user-plus"></i> Invitations</div>
+            <div class="card-b">
+              <table>
+                <thead><tr><th>Name</th><th>Phone</th><th>Status</th></tr></thead>
+                <tbody>
+                  <tr><td>Ahmed Mohamed</td><td>01012345678</td><td><span class="st new">New</span></td></tr>
+                  <tr><td>Omar Ali</td><td>01098765432</td><td><span class="st contacted">Contacted</span></td></tr>
+                  <tr><td>Ali Hassan</td><td>01211112222</td><td><span class="st converted">Converted</span></td></tr>
+                  <tr><td>Mostafa Hassan</td><td>01155554444</td><td><span class="st ni">Not Interested</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div id="screenPlans" hidden>
+          <h1 class="page-title"><i class="ti ti-list"></i> Plans</h1>
+          <p class="page-sub">Growth plan. One quota: how many Invitations a member can create on this membership.</p>
+          <div class="card">
+            <div class="card-h">Invitations</div>
+            <div class="card-b">
+              <label>Invitations per membership</label>
+              <input type="number" value="15" min="0">
+              <p class="hint">Members on this plan can send this many invitations while the membership is active. Unused invitations do not carry to the next membership. Frozen, expired, or cancelled = 0.</p>
+              <button class="btn primary" type="button">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="tabs" id="phTabs">
+          <button type="button" class="act" data-ph="home">Summary</button>
+          <button type="button" data-ph="form">Invite</button>
+          <button type="button" data-ph="ok">Success</button>
+          <button type="button" data-ph="zero">Zero</button>
+        </div>
+        <div class="phone"><div class="phone-in" id="phone"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+var PH = {
+  home:
+    '<div class="ph-top">Fitness Hub</div>' +
+    '<div class="ph-card"><h3>Invitations</h3>' +
+    '<div class="ph-big">11 <span style="font-size:15px;color:#8C8C8C">available</span></div>' +
+    '<p class="ph-muted">4 used · 15 total</p>' +
+    '<button class="ph-cta" type="button" data-ph="form">+ Invite a Friend</button></div>' +
+    '<div class="ph-card"><h3>Sent</h3>' +
+    '<div class="ph-row"><span>Ahmed Mohamed</span><span class="st new">New</span></div>' +
+    '<div class="ph-row"><span>Omar Ali</span><span class="st contacted">Contacted</span></div>' +
+    '<div class="ph-row" style="border:none"><span>Ali Hassan</span><span class="st converted">Converted</span></div></div>',
+  form:
+    '<div class="ph-top">Invite a Friend</div>' +
+    '<div class="ph-card">' +
+    '<label style="color:#ccc">Name *</label><input placeholder="Ahmed Mohamed">' +
+    '<label style="color:#ccc">Phone number *</label><input placeholder="01012345678">' +
+    '<label style="color:#ccc">National ID <span class="opt">(optional)</span></label><input placeholder="If you know it">' +
+    '<p class="ph-muted">You can send without a National ID.</p>' +
+    '<label style="color:#ccc">Notes <span class="opt">(optional)</span></label><textarea rows="2" placeholder="Interested in bodybuilding"></textarea>' +
+    '<button class="ph-cta" type="button" data-ph="ok">Send invitation</button></div>',
+  ok:
+    '<div class="ph-top">Fitness Hub</div>' +
+    '<div class="ph-card"><h3>Invitation sent</h3>' +
+    '<p class="ph-muted">Your friend has been added to your Invitations.</p>' +
+    '<div class="ph-big" style="margin-top:10px">10 <span style="font-size:15px;color:#8C8C8C">available</span></div>' +
+    '<p class="ph-muted">5 used · 15 total</p></div>',
+  zero:
+    '<div class="ph-top">Fitness Hub</div>' +
+    '<div class="ph-card"><h3>Invitations</h3>' +
+    '<div class="ph-big">0 <span style="font-size:15px;color:#8C8C8C">available</span></div>' +
+    '<p class="ph-muted">You\'ve used all Invitations included in your current Membership.</p>' +
+    '<button class="ph-cta" type="button" disabled>+ Invite a Friend</button></div>'
+};
+function paintPhone(k) {
+  document.getElementById('phone').innerHTML = PH[k];
+  document.querySelectorAll('#phTabs button').forEach(function (b) {
+    b.classList.toggle('act', b.getAttribute('data-ph') === k);
+  });
+}
+function show(name) {
+  document.getElementById('screenList').hidden = name !== 'list';
+  document.getElementById('screenMem').hidden = name !== 'member';
+  document.getElementById('screenPlans').hidden = name !== 'plans';
+  document.getElementById('crumb').textContent =
+    name === 'member' ? 'Members / Mohamed Ali' : name === 'plans' ? 'Catalog / Plans' : 'Members / Invitations';
+  document.querySelectorAll('.banner .controls button').forEach(function (b) {
+    b.classList.toggle('act', b.getAttribute('data-screen') === name);
+  });
+}
+document.querySelectorAll('.banner .controls button').forEach(function (b) {
+  b.onclick = function () { show(b.getAttribute('data-screen')); };
+});
+document.getElementById('navList').onclick = function () { show('list'); };
+document.getElementById('navMem').onclick = function () { show('member'); };
+document.getElementById('navPlan').onclick = function () { show('plans'); };
+document.getElementById('phTabs').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-ph]');
+  if (b) paintPhone(b.getAttribute('data-ph'));
+});
+document.getElementById('phone').addEventListener('click', function (e) {
+  var b = e.target.closest('[data-ph]');
+  if (b && !b.disabled) paintPhone(b.getAttribute('data-ph'));
+});
+paintPhone('home');
+</script>
+</body>
+</html>

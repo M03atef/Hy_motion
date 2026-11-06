@@ -1,0 +1,16 @@
+{
+  "comment": "Shrink this allowlist as modules migrate to GfpI18n.t / catalog keys. Paths are relative to Frontend/.",
+  "files": [],
+  "paths": [
+    "apps/web/src/app/(dashboard)/",
+    "apps/web/src/app/auth/",
+    "apps/web/src/app/member/",
+    "apps/admin/src/features/",
+    "apps/admin/src/layout/",
+    "apps/admin/src/pages/",
+    "apps/platform-console/src/features/",
+    "apps/platform-console/src/layout/",
+    "apps/platform-console/src/pages/",
+    "apps/platform-console/src/components/"
+  ]
+}

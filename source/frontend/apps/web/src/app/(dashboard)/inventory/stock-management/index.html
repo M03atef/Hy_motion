@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Stock Management</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="stock-management.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Inventory" data-ar="المخزون">Inventory</span><span class="sep">/</span><span class="current" data-en="Stock Management" data-ar="إدارة المخزون">Stock Management</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content sm-content">
+  <div class="sm-header">
+    <div>
+      <h1 class="page-title" data-en="Stock Management" data-ar="إدارة المخزون">Stock Management</h1>
+      <p class="page-subtitle" data-en="One place to check stock, move between warehouses, and count shelves." data-ar="مكان واحد: شوف الرصيد، انقل بين المستودعات، واجرد الرفوف.">One place to check stock, move between warehouses, and count shelves.</p>
+    </div>
+  </div>
+
+  <div class="sm-tabs" role="tablist" aria-label="Stock Management">
+    <button type="button" class="sm-tab act" role="tab" aria-selected="true" data-tab="on-hand" id="tabOnHand">
+      <i class="ti ti-stack-2"></i>
+      <span data-en="On Hand" data-ar="الرصيد">On Hand</span>
+    </button>
+    <button type="button" class="sm-tab" role="tab" aria-selected="false" data-tab="move" id="tabMove" hidden>
+      <i class="ti ti-arrows-exchange"></i>
+      <span data-en="Move" data-ar="نقل">Move</span>
+    </button>
+    <button type="button" class="sm-tab" role="tab" aria-selected="false" data-tab="count" id="tabCount" hidden>
+      <i class="ti ti-clipboard-check"></i>
+      <span data-en="Count" data-ar="جرد">Count</span>
+    </button>
+  </div>
+
+  <div class="sm-frame-wrap">
+    <iframe id="smFrame" class="sm-frame" title="Stock Management workspace"></iframe>
+  </div>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="stock-management-app.js?v=1"></script>
+</body>
+</html>

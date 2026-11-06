@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light" data-pref="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — System-wide Dark Mode (preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+/* ── Semantic tokens (proposed design system) ── */
+:root, [data-theme="light"]{
+  --bg-app:#F3F5F2; --bg-section:#EEF1ED;
+  --surface:#FFFEFB; --surface-2:#F4F6F3; --elev:#FFFFFF;
+  --overlay:rgba(20,28,20,.48);
+  --text:#1F2420; --text-2:#4A524C; --text-muted:#7A847C; --text-disabled:#A8B0A6; --text-inv:#0D0D0D;
+  --border:#E4E8E2; --border-strong:#C9D0C6; --border-subtle:#EEF1ED;
+  --brand:#7ACC00; --brand-2:#148F8F; --brand-accent:#A0E040;
+  --primary:#7ACC00; --focus:#5EAF00; --focus-ring:rgba(94,175,0,.38);
+  --suc:#166534; --suc-bg:#DCFCE7; --wrn:#92400E; --wrn-bg:#FEF3C7;
+  --dng:#991B1B; --dng-bg:#FEE2E2; --inf:#1E40AF; --inf-bg:#DBEAFE;
+  --neu:#3F463F; --neu-bg:#E8EBE6;
+  --hover:rgba(20,30,20,.05); --selected:rgba(122,204,0,.14);
+  --sidebar:#0D0D0D; --sidebar-text:#B0B0B0; --sidebar-act:#A0E040;
+  --topbar:rgba(255,254,251,.9);
+  --sh:0 1px 2px rgba(20,30,20,.04),0 8px 24px rgba(20,30,20,.06);
+  --chart-1:#5EAF00; --chart-2:#148F8F; --chart-3:#A16207; --chart-grid:#E4E8E2;
+  --l500:var(--brand); --l600:#5EAF00; --l400:var(--brand-accent);
+  --lbg:var(--bg-app); --ls1:var(--surface); --ls2:var(--surface-2); --ls3:var(--border);
+  --ltp:var(--text); --lts:var(--text-2); --ltt:var(--text-muted);
+  --c900:var(--sidebar); --c700:#2A2A2A; --c300:#8C8C8C;
+}
+[data-theme="dark"]{
+  --bg-app:#151716; --bg-section:#191C1A;
+  --surface:#1C201D; --surface-2:#222722; --elev:#2A2F2B;
+  --overlay:rgba(0,0,0,.62);
+  --text:#E8EBE6; --text-2:#B5BBB4; --text-muted:#8C948A; --text-disabled:#6A7268; --text-inv:#0D0D0D;
+  --border:#2E342F; --border-strong:#404840; --border-subtle:#262B27;
+  --brand:#7ACC00; --brand-2:#3DB5B5; --brand-accent:#A0E040;
+  --primary:#7ACC00; --focus:#A0E040; --focus-ring:rgba(160,224,64,.42);
+  --suc:#86EFAC; --suc-bg:#16351F; --wrn:#FCD34D; --wrn-bg:#3A2E12;
+  --dng:#FCA5A5; --dng-bg:#3A1C1C; --inf:#93C5FD; --inf-bg:#1A2A44;
+  --neu:#C5CBC2; --neu-bg:#2A2F2B;
+  --hover:rgba(255,255,255,.045); --selected:rgba(122,204,0,.16);
+  --sidebar:#101210; --sidebar-text:#A8AEA6; --sidebar-act:#A0E040;
+  --topbar:rgba(28,32,29,.92);
+  --sh:0 1px 2px rgba(0,0,0,.28),0 12px 28px rgba(0,0,0,.28);
+  --chart-1:#7ACC00; --chart-2:#3DB5B5; --chart-3:#FBBF24; --chart-grid:#2E342F;
+  --lbg:var(--bg-app); --ls1:var(--surface); --ls2:var(--surface-2); --ls3:var(--border);
+  --ltp:var(--text); --lts:var(--text-2); --ltt:var(--text-muted);
+  --c900:var(--sidebar);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{
+  font-family:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  background:var(--bg-app);color:var(--text);line-height:1.5;
+  transition:background .18s ease,color .18s ease;
+}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;box-shadow:0 0 0 4px var(--focus-ring)}
+
+.banner{
+  position:sticky;top:0;z-index:90;
+  background:#14532d;color:#fff;padding:10px 16px;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;
+  font-size:13px;font-weight:600;
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:58rem;line-height:1.45}
+.banner code{background:rgba(255,255,255,.16);padding:1px 6px;border-radius:4px;font-weight:500}
+.toolbar{
+  position:sticky;top:52px;z-index:80;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);
+}
+.scenes{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+.scene-btn{
+  height:32px;padding:0 11px;border-radius:999px;border:1px solid var(--border);
+  background:var(--surface);color:var(--text-2);font-size:12px;font-weight:600;cursor:pointer
+}
+.scene-btn.act{background:var(--text);color:var(--elev);border-color:var(--text)}
+.pref{
+  display:flex;gap:4px;padding:3px;border:1px solid var(--border);border-radius:999px;background:var(--surface-2)
+}
+.pref button{
+  height:28px;padding:0 12px;border:0;border-radius:999px;background:transparent;
+  color:var(--text-2);font-size:12px;font-weight:700;cursor:pointer
+}
+.pref button.act{background:var(--brand);color:#0D0D0D}
+
+.page{padding:22px 24px 72px;max-width:1280px;margin:0 auto}
+h1.pt{font-family:'Space Grotesk',sans-serif;font-size:26px;letter-spacing:-.02em}
+.sub{color:var(--text-muted);font-size:13px;margin:6px 0 18px;max-width:46rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:980px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh)}
+.card-h{padding:12px 16px;border-bottom:1px solid var(--border);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+.card-b{padding:14px 16px}
+.muted{color:var(--text-muted);font-size:12px}
+.k{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+
+/* architecture */
+.token-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-subtle);font-size:13px}
+.token-row:last-child{border-bottom:0}
+.sw{width:22px;height:22px;border-radius:6px;border:1px solid var(--border);flex-shrink:0}
+.levels{display:flex;flex-direction:column;gap:8px}
+.lvl{border-radius:10px;padding:12px 14px;font-size:12px;font-weight:700}
+.find{font-size:13px;padding:8px 0;border-bottom:1px solid var(--border-subtle)}
+.find b{display:block;margin-bottom:2px}
+.do{background:var(--suc-bg);color:var(--suc);border:1px solid color-mix(in srgb,var(--suc) 25%,transparent);border-radius:10px;padding:10px 12px;font-size:12px}
+.dont{background:var(--dng-bg);color:var(--dng);border:1px solid color-mix(in srgb,var(--dng) 25%,transparent);border-radius:10px;padding:10px 12px;font-size:12px}
+
+/* appearance cards */
+.appear{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:800px){.appear{grid-template-columns:1fr}}
+.appear-opt{
+  border:2px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;background:var(--surface);text-align:start
+}
+.appear-opt.act{border-color:var(--brand);box-shadow:0 0 0 3px var(--focus-ring)}
+.appear-mini{height:88px;display:flex}
+.appear-mini .s{width:28px}
+.appear-mini .c{flex:1;padding:10px}
+.appear-mini .bar{height:8px;border-radius:4px;width:70%;margin-bottom:6px}
+.appear-mini .row{height:6px;border-radius:3px;width:88%;margin-bottom:4px}
+.appear-lab{padding:10px 12px;font-size:13px;font-weight:700}
+.appear-lab span{display:block;font-weight:500;color:var(--text-muted);font-size:12px;margin-top:2px}
+
+/* mini desk */
+.desk{display:flex;min-height:420px;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--bg-app)}
+.sb{width:200px;background:var(--sidebar);color:var(--sidebar-text);flex-shrink:0;display:flex;flex-direction:column}
+.sb-h{display:flex;align-items:center;gap:8px;padding:16px 14px;border-bottom:1px solid #2A2A2A}
+.mark{width:28px;height:28px;border-radius:7px;background:var(--brand);display:grid;place-items:center}
+.mark i{color:#0D0D0D;font-size:16px}
+.sb-h span{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--sidebar-act);font-size:14px}
+.logo-pad{width:28px;height:28px;border-radius:7px;background:#fff;display:grid;place-items:center;flex-shrink:0}
+.logo-pad .g{width:16px;height:16px;border-radius:4px;background:var(--brand)}
+.sb-i{display:flex;align-items:center;gap:8px;padding:9px 16px;font-size:13px;border-left:3px solid transparent}
+.sb-i.act{color:var(--sidebar-act);background:rgba(160,224,64,.08);border-left-color:var(--brand);font-weight:600}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.tb{height:48px;background:var(--topbar);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;backdrop-filter:blur(10px)}
+.crumb{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--text-2)}
+.crumb b{color:var(--text)}
+.ct{padding:16px;flex:1}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:900px){.kpis{grid-template-columns:1fr 1fr}.desk{flex-direction:column}.sb{width:100%;flex-direction:row;overflow:auto}}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 12px}
+.kpi .n{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700}
+.kpi .l{font-size:11px;font-weight:600;color:var(--text-muted)}
+
+.btn{height:36px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:#0D0D0D}
+.btn.ghost{background:transparent}
+.btn.danger{background:var(--dng-bg);border-color:transparent;color:var(--dng)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data th{text-align:start;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);padding:8px 10px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+table.data td{padding:10px;border-bottom:1px solid var(--border-subtle);color:var(--text)}
+table.data tr:hover td{background:var(--hover)}
+table.data tr.sel td{background:var(--selected)}
+
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fg label{font-size:12px;font-weight:600;color:var(--text-2)}
+.fg input,.fg select,.fg textarea{
+  height:40px;padding:0 12px;border:2px solid var(--border);border-radius:10px;
+  background:var(--surface);color:var(--text);outline:none
+}
+.fg textarea{height:72px;padding:10px 12px;resize:vertical}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--focus);box-shadow:0 0 0 3px var(--focus-ring)}
+.fg .ph{color:var(--text-muted)}
+.hint{font-size:11px;color:var(--dng)}
+.check{display:flex;align-items:center;gap:8px;font-size:13px}
+
+.badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:700}
+.badge i{font-size:13px}
+.b-suc{background:var(--suc-bg);color:var(--suc)}
+.b-wrn{background:var(--wrn-bg);color:var(--wrn)}
+.b-dng{background:var(--dng-bg);color:var(--dng)}
+.b-inf{background:var(--inf-bg);color:var(--inf)}
+.b-neu{background:var(--neu-bg);color:var(--neu)}
+
+.toast{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:var(--elev);border:1px solid var(--border);box-shadow:var(--sh);font-size:13px;font-weight:600}
+.alert{padding:10px 12px;border-radius:10px;background:var(--wrn-bg);color:var(--wrn);font-size:13px;font-weight:600}
+.empty{text-align:center;padding:28px 12px;color:var(--text-muted)}
+.empty i{font-size:28px;display:block;margin-bottom:6px}
+.skel{height:10px;border-radius:6px;background:linear-gradient(90deg,var(--surface-2),var(--border),var(--surface-2));background-size:200% 100%;animation:sk 1.2s infinite}
+@keyframes sk{to{background-position:-200% 0}}
+
+.overlay{position:absolute;inset:0;background:var(--overlay);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{width:min(420px,100%);background:var(--elev);border:1px solid var(--border);border-radius:16px;box-shadow:var(--sh)}
+.drawer{position:absolute;inset:0 0 0 auto;width:min(340px,90%);background:var(--elev);border-inline-start:1px solid var(--border);display:flex;flex-direction:column}
+.stage{position:relative;min-height:320px;background:var(--bg-section);border-radius:16px;overflow:hidden;border:1px solid var(--border)}
+
+.qrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border-subtle);cursor:pointer}
+.qrow:hover{background:var(--hover)}
+.ms-card{display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--surface-2)}
+.ms-rail{width:6px;background:var(--suc)}
+.ms-b{padding:12px 14px;flex:1}
+.chart{height:120px;display:flex;align-items:flex-end;gap:8px;padding:8px 4px 0}
+.bar{flex:1;border-radius:6px 6px 0 0;background:var(--chart-1);opacity:.85}
+.bar:nth-child(even){background:var(--chart-2)}
+.axis{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);padding-top:6px;border-top:1px dashed var(--chart-grid);margin-top:4px}
+
+.print-paper{background:#fff;color:#1A1A1A;border:1px solid #ddd;border-radius:8px;padding:16px;font-size:13px}
+.print-paper h3{font-family:'Space Grotesk',sans-serif;margin-bottom:4px}
+.rtl-demo[dir="rtl"]{font-family:'IBM Plex Sans Arabic','IBM Plex Sans',sans-serif}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){.compare{grid-template-columns:1fr}}
+.mini-wrap{border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.mini-wrap .cap{padding:8px 12px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);background:var(--surface);border-bottom:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW — not live
+    <div class="note">One global theme system for the whole HyMotion desk (Light / Dark / System). This is not a Call Sheet-only skin. Production CSS is unchanged until Product Accept. Open this file to validate the language, then Accept to implement once — not page by page.</div>
+  </div>
+  <div class="muted" style="color:#d1fae5">SoT · wait Accept</div>
+</div>
+
+<div class="toolbar">
+  <div class="scenes" id="scenes"></div>
+  <div class="pref" role="group" aria-label="Appearance">
+    <button type="button" data-pref="light" class="act">Light</button>
+    <button type="button" data-pref="dark">Dark</button>
+    <button type="button" data-pref="system">System</button>
+  </div>
+</div>
+
+<div class="page">
+  <section data-scene="overview">
+    <h1 class="pt">System-wide Dark Mode</h1>
+    <p class="sub">Upgrade HyMotion into a multi-theme design system. One token sheet remaps the existing <code>--lbg / --ls1 / --ltp</code> variables so every current module inherits Light and Dark. Future pages use the same tokens — they do not invent another Dark Mode.</p>
+    <div class="grid3">
+      <div class="card"><div class="card-h">Today</div><div class="card-b muted">Light canvas only. Sidebar is already charcoal. Tokens duplicated per page. No <code>prefers-color-scheme</code>. Tenant branding remaps lime only.</div></div>
+      <div class="card"><div class="card-h">After Accept</div><div class="card-b muted">Shared <code>theme.css</code> + boot script in <code>&lt;head&gt;</code> (no flash). Settings → Appearance. Persist <code>gfp_appearance</code> like locale. Print stays white paper.</div></div>
+      <div class="card"><div class="card-h">Not in scope</div><div class="card-b muted">APIs, memberships, sales, permissions, Flutter Member App coupling, dark printed invoices, neon/gaming UI.</div></div>
+    </div>
+    <div class="compare" style="margin-top:16px">
+      <div class="mini-wrap">
+        <div class="cap">Light — current identity kept</div>
+        <div class="desk" data-theme="light" style="min-height:220px;border:0;border-radius:0">
+          <aside class="sb"><div class="sb-h"><div class="mark"><i class="ti ti-activity"></i></div><span>HyMotion</span></div>
+            <div class="sb-i act">Dashboard</div><div class="sb-i">Members</div></aside>
+          <div class="main"><div class="tb"><span class="crumb">Home / <b>Dashboard</b></span></div>
+            <div class="ct"><div class="kpis" style="grid-template-columns:1fr 1fr"><div class="kpi"><div class="n">184</div><div class="l">In gym</div></div><div class="kpi"><div class="n">EGP 12.4k</div><div class="l">Today</div></div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="mini-wrap">
+        <div class="cap">Dark — professional SaaS + POS</div>
+        <div class="desk" data-theme="dark" style="min-height:220px;border:0;border-radius:0">
+          <aside class="sb"><div class="sb-h"><div class="mark"><i class="ti ti-activity"></i></div><span>HyMotion</span></div>
+            <div class="sb-i act">Dashboard</div><div class="sb-i">Members</div></aside>
+          <div class="main"><div class="tb"><span class="crumb">Home / <b>Dashboard</b></span></div>
+            <div class="ct"><div class="kpis" style="grid-template-columns:1fr 1fr"><div class="kpi"><div class="n">184</div><div class="l">In gym</div></div><div class="kpi"><div class="n">EGP 12.4k</div><div class="l">Today</div></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="architecture" hidden>
+    <h1 class="pt">Architecture</h1>
+    <p class="sub">No Tailwind. No new CSS framework. The staff desk is static HTML + vanilla CSS. Shared scripts already inject from <code>apps/web/server.js</code>. Theme belongs there — next to locale and branding.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-h">How it wires</div>
+        <div class="card-b" style="font-size:13px;line-height:1.65">
+          <ol style="padding-inline-start:18px">
+            <li>Boot script in <code>&lt;head&gt;</code> (same slot as <code>gfp_locale</code>) reads <code>gfp_appearance</code> and sets <code>html[data-theme]</code> before paint.</li>
+            <li><code>shared/theme.css</code> defines semantic tokens and remaps existing <code>--lbg --ls1 --ltp --ls3</code>.</li>
+            <li>Pages that already use those variables inherit both themes.</li>
+            <li><code>html[data-theme="dark"]</code> beats page-local <code>:root { --lbg:#FAFAFA }</code> (higher specificity).</li>
+            <li>Hardcoded <code>#fff</code> / rgba cream (POS topbar, some cards) get a second pass.</li>
+            <li>Tenant branding still sets <code>--gfp-brand-primary</code> only — never Success / Danger / Warning.</li>
+          </ol>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">Surface hierarchy (Dark)</div>
+        <div class="card-b">
+          <div class="levels">
+            <div class="lvl" style="background:#151716;color:#E8EBE6;border:1px solid #2E342F">App background · #151716</div>
+            <div class="lvl" style="background:#1C201D;color:#E8EBE6;border:1px solid #2E342F;margin-inline-start:12px">Surface · cards / tables</div>
+            <div class="lvl" style="background:#2A2F2B;color:#E8EBE6;border:1px solid #404840;margin-inline-start:24px">Elevated · modal / popover / drawer</div>
+            <div class="lvl" style="background:rgba(0,0,0,.45);color:#E8EBE6;margin-inline-start:36px">Overlay · dim behind dialogs</div>
+          </div>
+          <p class="muted" style="margin-top:10px">Not pure black. Not pure white text. No glow. Lime stays the brand CTA.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-h">Audit findings</div>
+      <div class="card-b">
+        <div class="find"><b>Tokens exist, Light-only.</b> Canonical palette lives in <code>pos.css :root</code>. Dashboard, Members, Notifications, auth OTP copy their own <code>:root</code>.</div>
+        <div class="find"><b>Injection point already exists.</b> <code>server.js</code> injects <code>rtl.css</code>, <code>typography.css</code>, <code>gfp-branding.js</code>, early locale script. Theme boot belongs in that early script.</div>
+        <div class="find"><b>Tenant branding.</b> <code>gfp-branding.js</code> remaps <code>--l500/--l600/--l400</code>. Logo sits on a white 32px pad (safe for dark-unfriendly logos). No light/dark logo pair in Settings today.</div>
+        <div class="find"><b>Persistence model.</b> Locale is browser <code>localStorage</code> (<code>gfp_locale</code>). Appearance should match: <code>gfp_appearance = light | dark | system</code>. Not a Tenant.Settings field. No new API.</div>
+        <div class="find"><b>Charts.</b> Dashboard Chart.js. After Accept, series/grid/tooltip colors read CSS variables.</div>
+        <div class="find"><b>Print already separate.</b> Reports and Z-Report have <code>@media print</code>. Dark Mode must force light tokens in print.</div>
+        <div class="find"><b>Member App.</b> Flutter, separate frontend. Do not couple. Same semantic principles can be a later Flutter prompt.</div>
+        <div class="find"><b>Admin Vite app.</b> Placeholder shell, not the live desk. Out of the first implementation pass.</div>
+        <div class="find"><b>Hardcoded UI colors.</b> Widespread <code>#fff</code> in Offers, Call Sheet, Settings, POS cream rgba, Member 360. Token remap covers most pages; those files need a targeted replace — not a rewrite of business logic.</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="appearance" hidden>
+    <h1 class="pt">Settings → Appearance</h1>
+    <p class="sub">A simple control next to Gym Identity. Per browser (and user id if we key the store), not per gym. Switching is instant — no reload.</p>
+    <div class="desk">
+      <aside class="sb">
+        <div class="sb-h"><div class="mark"><i class="ti ti-activity"></i></div><span>HyMotion</span></div>
+        <div class="sb-i">Dashboard</div>
+        <div class="sb-i act"><i class="ti ti-settings"></i> Settings</div>
+      </aside>
+      <div class="main">
+        <div class="tb"><span class="crumb">Settings / <b>Appearance</b></span></div>
+        <div class="ct">
+          <h2 style="font-family:'Space Grotesk',sans-serif;font-size:20px;margin-bottom:4px">Appearance</h2>
+          <p class="muted" style="margin-bottom:14px">Choose how HyMotion looks. This does not change your gym logo or brand colors.</p>
+          <div class="appear" id="appearOpts">
+            <button type="button" class="appear-opt act" data-pref="light">
+              <div class="appear-mini" data-theme="light" style="background:#F3F5F2">
+                <div class="s" style="background:#0D0D0D"></div>
+                <div class="c"><div class="bar" style="background:#fff"></div><div class="row" style="background:#E4E8E2"></div><div class="row" style="background:#E4E8E2;width:55%"></div></div>
+              </div>
+              <div class="appear-lab">Light<span>Always the current HyMotion look.</span></div>
+            </button>
+            <button type="button" class="appear-opt" data-pref="dark">
+              <div class="appear-mini" data-theme="dark" style="background:#151716">
+                <div class="s" style="background:#101210"></div>
+                <div class="c"><div class="bar" style="background:#1C201D"></div><div class="row" style="background:#2E342F"></div><div class="row" style="background:#2E342F;width:55%"></div></div>
+              </div>
+              <div class="appear-lab">Dark<span>Neutral surfaces. Lime CTAs. No neon.</span></div>
+            </button>
+            <button type="button" class="appear-opt" data-pref="system">
+              <div class="appear-mini" style="background:linear-gradient(90deg,#F3F5F2 50%,#151716 50%)">
+                <div class="s" style="background:#0D0D0D"></div>
+                <div class="c"><div class="bar" style="background:#7ACC00;opacity:.5"></div><div class="row" style="background:#8C8C8C;opacity:.4"></div></div>
+              </div>
+              <div class="appear-lab">System<span>Follows the device. Updates if the OS theme changes.</span></div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="shell" hidden>
+    <h1 class="pt">Shell</h1>
+    <p class="sub">Sidebar stays charcoal in both themes so navigation remains chrome. In Dark, the canvas moves closer to the sidebar; the header, search, and user chip use surface tokens.</p>
+    <div class="desk" style="min-height:380px">
+      <aside class="sb">
+        <div class="sb-h">
+          <div class="logo-pad" title="Logo on a light pad — safe for light-designed gym logos"><div class="g"></div></div>
+          <span>Fitness Hub</span>
+        </div>
+        <div class="sb-i"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+        <div class="sb-i act"><i class="ti ti-users"></i> Members</div>
+        <div class="sb-i"><i class="ti ti-shopping-cart"></i> POS</div>
+        <div class="sb-i"><i class="ti ti-phone-call"></i> Call sheet</div>
+        <div class="sb-i"><i class="ti ti-settings"></i> Settings</div>
+      </aside>
+      <div class="main">
+        <div class="tb">
+          <span class="crumb">Members / <b>Directory</b></span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn ghost" type="button"><i class="ti ti-search"></i></button>
+            <span class="badge b-suc"><span style="width:6px;height:6px;border-radius:50%;background:currentColor"></span> Active</span>
+          </div>
+        </div>
+        <div class="ct">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+            <button class="btn primary" type="button">Add member</button>
+            <button class="btn" type="button">Export</button>
+            <button class="btn ghost" type="button">More</button>
+            <button class="btn danger" type="button">Archive</button>
+            <button class="btn" type="button" disabled>Disabled</button>
+          </div>
+          <p class="muted">Focus a button with Tab — the ring stays visible on dark surfaces.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="dashboard" hidden>
+    <h1 class="pt">Dashboard</h1>
+    <p class="sub">Same widgets, semantic surfaces. Occupancy ring and money stay readable. Charts use theme grid/series colors.</p>
+    <div class="desk">
+      <aside class="sb">
+        <div class="sb-h"><div class="mark"><i class="ti ti-activity"></i></div><span>HyMotion</span></div>
+        <div class="sb-i act">Dashboard</div>
+      </aside>
+      <div class="main">
+        <div class="tb"><span class="crumb">Home / <b>Dashboard</b></span></div>
+        <div class="ct">
+          <div class="kpis">
+            <div class="kpi"><div class="n">61%</div><div class="l">Occupancy</div></div>
+            <div class="kpi"><div class="n">184</div><div class="l">In gym now</div></div>
+            <div class="kpi"><div class="n">EGP 12.4k</div><div class="l">Cash in today</div></div>
+            <div class="kpi"><div class="n">7</div><div class="l">Call sheet due</div></div>
+          </div>
+          <div class="card">
+            <div class="card-h">Attendance · last 7 days</div>
+            <div class="card-b">
+              <div class="chart" aria-hidden="true">
+                <div class="bar" style="height:40%"></div><div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:48%"></div><div class="bar" style="height:72%"></div>
+                <div class="bar" style="height:64%"></div><div class="bar" style="height:88%"></div>
+                <div class="bar" style="height:70%"></div>
+              </div>
+              <div class="axis"><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="table" hidden>
+    <h1 class="pt">Tables</h1>
+    <p class="sub">Header uses surface-2. Hover is a wash, not a stripe. Selected uses the brand wash. No heavy zebra.</p>
+    <div class="card">
+      <div class="card-h">Members</div>
+      <div class="card-b" style="padding:0">
+        <table class="data">
+          <thead><tr><th>Name</th><th>Plan</th><th>Status</th><th>Outstanding</th></tr></thead>
+          <tbody>
+            <tr><td>Sara Hassan</td><td>Gold 12</td><td><span class="badge b-suc"><i class="ti ti-check"></i> Active</span></td><td>EGP 0</td></tr>
+            <tr class="sel"><td>Omar Ali</td><td>Session 20</td><td><span class="badge b-wrn"><i class="ti ti-clock"></i> Expiring</span></td><td>EGP 600</td></tr>
+            <tr><td>Nour Adel</td><td>—</td><td><span class="badge b-neu"><i class="ti ti-minus"></i> Inactive</span></td><td>EGP 0</td></tr>
+            <tr><td>Karim Fathy</td><td>Silver 3</td><td><span class="badge b-dng"><i class="ti ti-x"></i> Overdue</span></td><td>EGP 1,200</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="form" hidden>
+    <h1 class="pt">Forms</h1>
+    <p class="sub">Inputs, selects, and validation consume tokens. Placeholder is muted, not invisible. Errors use danger text plus a border — not color alone.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-h">New member</div>
+        <div class="card-b">
+          <div class="fg"><label>Full name</label><input value="Mona Said"></div>
+          <div class="fg"><label>Phone</label><input placeholder="01xxxxxxxxx"></div>
+          <div class="fg"><label>Plan</label><select><option>Gold 12 months</option><option>Silver 3 months</option></select></div>
+          <div class="fg"><label>Notes</label><textarea></textarea></div>
+          <label class="check"><input type="checkbox" checked> Send welcome WhatsApp</label>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn primary" type="button">Save</button>
+            <button class="btn ghost" type="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">Validation + feedback</div>
+        <div class="card-b">
+          <div class="fg"><label>Amount</label><input value="" style="border-color:var(--dng)"><span class="hint">Enter the cash collected.</span></div>
+          <div class="alert" style="margin:10px 0"><i class="ti ti-alert-triangle"></i> Shift must be open to take cash.</div>
+          <div class="toast"><i class="ti ti-circle-check" style="color:var(--suc)"></i> Member saved</div>
+          <div class="empty"><i class="ti ti-users"></i>No members match this search.<div class="skel" style="width:60%;margin:12px auto"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="overlays" hidden>
+    <h1 class="pt">Modal + drawer</h1>
+    <p class="sub">Portals inherit <code>html[data-theme]</code>. Elevated surface sits above the canvas. Backdrop uses overlay. No leftover white dialogs.</p>
+    <div class="grid2">
+      <div class="stage">
+        <div class="overlay">
+          <div class="modal">
+            <div class="card-h">Log call</div>
+            <div class="card-b">
+              <div class="fg"><label>Outcome</label><select><option>Contacted</option><option>No answer</option></select></div>
+              <div class="fg"><label>Next action</label><input value="Follow up Thursday"></div>
+              <div style="display:flex;justify-content:flex-end;gap:8px">
+                <button class="btn ghost" type="button">Cancel</button>
+                <button class="btn primary" type="button">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage">
+        <div style="padding:16px" class="muted">Queue behind…</div>
+        <aside class="drawer">
+          <div class="card-h">Omar Ali <button class="btn ghost" type="button" style="margin-inline-start:auto;height:28px">✕</button></div>
+          <div class="card-b">
+            <p style="font-size:13px;margin-bottom:8px"><span class="badge b-wrn">Expiring</span></p>
+            <p class="muted">Gold 12 · 4 days left · Outstanding EGP 600</p>
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button class="btn primary" type="button">Call</button>
+              <button class="btn" type="button">WhatsApp</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="status" hidden>
+    <h1 class="pt">Status system</h1>
+    <p class="sub">Same semantic pill everywhere: color + label + icon. Tenant brand must not recolor these. Active is not blue on one page and green on another.</p>
+    <div class="card"><div class="card-b" style="display:flex;flex-wrap:wrap;gap:8px">
+      <span class="badge b-suc"><i class="ti ti-check"></i> Active / Paid / Completed / Renewed</span>
+      <span class="badge b-wrn"><i class="ti ti-clock"></i> Expiring / Pending / Attention</span>
+      <span class="badge b-dng"><i class="ti ti-alert-circle"></i> Failed / Overdue / Cancelled</span>
+      <span class="badge b-inf"><i class="ti ti-info-circle"></i> Info</span>
+      <span class="badge b-neu"><i class="ti ti-archive"></i> Draft / Archived / Inactive</span>
+    </div></div>
+  </section>
+
+  <section data-scene="callsheet" hidden>
+    <h1 class="pt">Call Sheet (reference module)</h1>
+    <p class="sub">First high-quality consumer of the global theme — not a private Dark Mode. Queue, KPIs, and the log-call dialog all use the same tokens.</p>
+    <div class="desk">
+      <aside class="sb">
+        <div class="sb-h"><div class="mark"><i class="ti ti-activity"></i></div><span>HyMotion</span></div>
+        <div class="sb-i act"><i class="ti ti-phone-call"></i> Call sheet</div>
+      </aside>
+      <div class="main">
+        <div class="tb"><span class="crumb">Sales / <b>Call sheet</b></span></div>
+        <div class="ct">
+          <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+            <div class="kpi"><div class="n">12</div><div class="l">Due today</div></div>
+            <div class="kpi"><div class="n" style="color:var(--dng)">3</div><div class="l">Urgent</div></div>
+            <div class="kpi"><div class="n">4</div><div class="l">No answer</div></div>
+            <div class="kpi"><div class="n">8</div><div class="l">Done</div></div>
+          </div>
+          <div class="card">
+            <div class="card-h">Renewal · today</div>
+            <div class="qrow"><div style="flex:1"><b>Sara Hassan</b><div class="muted">Gold 12 · 2 days left</div></div><span class="badge b-wrn">Expiring</span><button class="btn sm primary" type="button" style="height:32px">Call</button></div>
+            <div class="qrow"><div style="flex:1"><b>Omar Ali</b><div class="muted">Session 20 · outstanding EGP 600</div></div><span class="badge b-dng">Payment</span><button class="btn" type="button" style="height:32px">Log</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="member360" hidden>
+    <h1 class="pt">Member 360</h1>
+    <p class="sub">Keep the recessed membership card (not a dark hero). In Dark it becomes surface-2 with the status rail. Collect Payment and invitations stay in their current places.</p>
+    <div class="ms-card">
+      <div class="ms-rail"></div>
+      <div class="ms-b">
+        <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <div>
+            <span class="badge b-suc"><i class="ti ti-check"></i> Active</span>
+            <h3 style="font-family:'Space Grotesk',sans-serif;margin-top:8px">Gold 12 months</h3>
+            <p class="muted">18 days left · 342 / 365 used</p>
+          </div>
+          <div class="muted" style="text-align:end">Invitations<br><b style="color:var(--text);font-size:18px">2 / 5</b></div>
+        </div>
+        <div style="height:8px;border-radius:99px;background:var(--border);margin-top:12px;overflow:hidden">
+          <div style="width:94%;height:100%;background:var(--brand)"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="charts" hidden>
+    <h1 class="pt">Charts &amp; reports UI</h1>
+    <p class="sub">Grid, axis, and series follow the theme. Printed / exported documents do not. Reports remain a Light paper product even when the desk is Dark.</p>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-h">Cash in · this week</div>
+        <div class="card-b">
+          <div class="chart">
+            <div class="bar" style="height:30%"></div><div class="bar" style="height:50%"></div>
+            <div class="bar" style="height:44%"></div><div class="bar" style="height:80%"></div>
+            <div class="bar" style="height:62%"></div><div class="bar" style="height:90%"></div>
+            <div class="bar" style="height:70%"></div>
+          </div>
+          <div class="axis"><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Mon</span><span>Tue</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h">Print stays light</div>
+        <div class="card-b">
+          <div class="print-paper">
+            <h3>INVOICE · INV-1042</h3>
+            <p style="color:#666;margin-bottom:8px">Fitness Hub · always white paper</p>
+            <p>Gold 12 months &nbsp;&nbsp; EGP 8,000</p>
+            <p style="margin-top:8px;font-weight:700">Total &nbsp; EGP 8,000</p>
+          </div>
+          <p class="muted" style="margin-top:10px"><code>@media print</code> forces light tokens. Z-Report and invoices keep the existing paper layout.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="rtl" hidden>
+    <h1 class="pt">RTL</h1>
+    <p class="sub">Dark Mode must not flip direction. Arabic already uses <code>html[dir=rtl]</code> from i18n. Theme only changes color tokens.</p>
+    <div class="desk rtl-demo" dir="rtl">
+      <aside class="sb">
+        <div class="sb-h"><div class="mark"><i class="ti ti-activity"></i></div><span>HyMotion</span></div>
+        <div class="sb-i act">لوحة التحكم</div>
+        <div class="sb-i">الأعضاء</div>
+      </aside>
+      <div class="main">
+        <div class="tb"><span class="crumb">الرئيسية / <b>لوحة التحكم</b></span></div>
+        <div class="ct">
+          <div class="kpis" style="grid-template-columns:1fr 1fr">
+            <div class="kpi"><div class="n">٦١٪</div><div class="l">الإشغال</div></div>
+            <div class="kpi"><div class="n">١٨٤</div><div class="l">داخل الجيم</div></div>
+          </div>
+          <button class="btn primary" type="button">إضافة عضو</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-scene="coverage" hidden>
+    <h1 class="pt">After Accept — one pass</h1>
+    <p class="sub">Not implemented until you Accept. Sequence is global first, then leftover hardcoded colors, then QA. No business-logic changes.</p>
+    <div class="grid2">
+      <div class="do">
+        <b>Do</b>
+        <ul style="margin:8px 0 0 16px;line-height:1.55">
+          <li>Add <code>shared/theme.css</code> + extend the early <code>&lt;head&gt;</code> boot in <code>server.js</code>.</li>
+          <li>Settings Appearance: Light / Dark / System.</li>
+          <li>Persist <code>gfp_appearance</code> (browser). Listen to OS when System is selected.</li>
+          <li>Remap <code>--lbg --ls1 --ltp --ls3</code> so POS, Reports, Invoices, Attendance, Call Sheet, etc. inherit.</li>
+          <li>Replace leftover UI <code>#fff</code> / cream rgba in POS, Members, Member 360, Offers, Settings.</li>
+          <li>Chart.js colors from CSS variables. Status pills from one badge set.</li>
+          <li>Print stylesheet forces light. Logo keeps the white pad.</li>
+        </ul>
+      </div>
+      <div class="dont">
+        <b>Do not</b>
+        <ul style="margin:8px 0 0 16px;line-height:1.55">
+          <li>Implement Dark Mode inside Call Sheet (or any single page) first.</li>
+          <li>Introduce Tailwind or a theme library.</li>
+          <li>Store appearance on Tenant.Settings (that is Gym Identity).</li>
+          <li>Let brand color override Success / Danger / Warning.</li>
+          <li>Dark-print invoices or Z-Reports.</li>
+          <li>Couple the Flutter Member App. Document tokens later.</li>
+          <li>Change APIs, RBAC, memberships, sales, or attendance logic.</li>
+          <li>Use neon, pure black canvas, or gaming glow (Offers loud UI was already rejected).</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-h">Modules that inherit automatically (token consumers)</div>
+      <div class="card-b muted">Dashboard · Members · Member 360 · Memberships · Plans · Attendance · Shifts · POS · Payments · Call Sheet · Invitations · Offers · Products · Suppliers · Purchasing · Invoices · Member Orders · Reports · Z-Report · Staff · Roles · Settings · Trials · Promo codes · Audit · Notifications · Import · Login</div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  var scenes = [
+    ['overview', 'Overview'],
+    ['architecture', 'Architecture'],
+    ['appearance', 'Appearance'],
+    ['shell', 'Shell'],
+    ['dashboard', 'Dashboard'],
+    ['table', 'Table'],
+    ['form', 'Form'],
+    ['overlays', 'Overlays'],
+    ['status', 'Status'],
+    ['callsheet', 'Call Sheet'],
+    ['member360', 'Member 360'],
+    ['charts', 'Charts / print'],
+    ['rtl', 'RTL'],
+    ['coverage', 'After Accept']
+  ];
+  var nav = document.getElementById('scenes');
+  scenes.forEach(function (s, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'scene-btn' + (i ? '' : ' act');
+    b.textContent = s[1];
+    b.setAttribute('data-scene', s[0]);
+    nav.appendChild(b);
+  });
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-scene]');
+    if (!b) return;
+    nav.querySelectorAll('.scene-btn').forEach(function (x) { x.classList.toggle('act', x === b); });
+    document.querySelectorAll('[data-scene]').forEach(function (sec) {
+      if (sec.classList.contains('scene-btn')) return;
+      sec.hidden = sec.getAttribute('data-scene') !== b.getAttribute('data-scene');
+    });
+  });
+
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  function resolved(pref) {
+    if (pref === 'dark') return 'dark';
+    if (pref === 'light') return 'light';
+    return mq.matches ? 'dark' : 'light';
+  }
+  function apply(pref) {
+    document.documentElement.setAttribute('data-pref', pref);
+    document.documentElement.setAttribute('data-theme', resolved(pref));
+    document.documentElement.style.colorScheme = resolved(pref);
+    document.querySelectorAll('.pref [data-pref]').forEach(function (x) {
+      x.classList.toggle('act', x.getAttribute('data-pref') === pref);
+    });
+    document.querySelectorAll('#appearOpts .appear-opt').forEach(function (x) {
+      x.classList.toggle('act', x.getAttribute('data-pref') === pref);
+    });
+    try { localStorage.setItem('gfp_appearance_preview', pref); } catch (e) {}
+  }
+  document.querySelector('.pref').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pref]');
+    if (b) apply(b.getAttribute('data-pref'));
+  });
+  var opts = document.getElementById('appearOpts');
+  if (opts) opts.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pref]');
+    if (b) apply(b.getAttribute('data-pref'));
+  });
+  mq.addEventListener('change', function () {
+    if (document.documentElement.getAttribute('data-pref') === 'system') apply('system');
+  });
+  var saved = 'light';
+  try { saved = localStorage.getItem('gfp_appearance_preview') || 'light'; } catch (e) {}
+  apply(saved);
+})();
+</script>
+</body>
+</html>

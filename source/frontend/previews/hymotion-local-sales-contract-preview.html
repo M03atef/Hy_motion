@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion Local — Customer Sales Contract (Preview only)</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16181d;
+  --muted:#5b616c;
+  --faint:#8a909b;
+  --line:#d8dbe2;
+  --paper:#fff;
+  --bg:#eef0f3;
+  --accent:#1f6b4a;
+  --warn:#8a4b00;
+  --danger:#8f1d1d;
+  --paid:#14532d;
+  --partial:#7c4a03;
+  --unpaid:#7f1d1d;
+  --sans:"IBM Plex Sans","IBM Plex Sans Arabic",sans-serif;
+  --display:"Space Grotesk","IBM Plex Sans Arabic",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg)}
+.banner{
+  position:sticky;top:0;z-index:20;
+  background:#111827;color:#fff;
+  padding:10px 16px;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-start;
+}
+.banner strong{display:block;font-size:13px}
+.banner .note{font-size:12px;opacity:.9;max-width:52rem;line-height:1.45;margin-top:4px}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls button,.controls label{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.3);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.controls button.act{background:#fff;color:#111827;border-color:#fff}
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 72px)}
+.side{background:#fff;border-right:1px solid var(--line);padding:18px 16px;font-size:12px;line-height:1.5;color:var(--muted)}
+.side h2{font-family:var(--display);font-size:14px;color:var(--ink);margin:0 0 8px}
+.side h3{font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin:16px 0 6px;color:var(--faint)}
+.side ul{margin:0;padding-left:16px}
+.side li{margin:0 0 6px}
+.gap{background:#fff8e8;border:1px solid #ead7a3;color:#6b4e12;padding:8px 10px;border-radius:8px;margin:8px 0}
+.main{padding:24px 16px 48px}
+.sheet{
+  width:210mm;min-height:297mm;margin:0 auto 18px;
+  background:var(--paper);color:var(--ink);
+  padding:14mm 16mm 16mm;
+  box-shadow:0 10px 40px rgba(22,24,29,.08);
+  position:relative;
+}
+.sheet[dir="rtl"]{font-family:"IBM Plex Sans Arabic","IBM Plex Sans",sans-serif}
+.watermark{
+  position:absolute;inset:38% 10% auto;text-align:center;
+  font-family:var(--display);font-size:42px;letter-spacing:.18em;
+  color:rgba(22,24,29,.055);transform:rotate(-18deg);pointer-events:none;font-weight:700;
+}
+.hdr{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--ink);padding-bottom:12px}
+.brand{display:flex;gap:10px;align-items:center}
+.mark{
+  width:46px;height:46px;border:1px solid var(--line);border-radius:8px;background:#0d0d0d;
+  display:grid;place-items:center;overflow:hidden;flex:0 0 46px;
+}
+.mark img{width:40px;height:40px;object-fit:contain}
+.seller-name{font-family:var(--display);font-size:20px;font-weight:700;line-height:1.1}
+.seller-meta{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.45}
+.doc-meta{text-align:right;font-size:12px}
+.sheet[dir="rtl"] .doc-meta{text-align:left}
+.kicker{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--accent)}
+.title{font-family:var(--display);font-size:22px;margin:4px 0 8px}
+.num{display:inline-block;border:1px solid var(--ink);padding:4px 8px;font-weight:700;letter-spacing:.04em}
+.meta-row{margin:3px 0;color:var(--muted)}
+.meta-row b{color:var(--ink);font-weight:600}
+.parties{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.box{border:1px solid var(--line);padding:10px 12px;min-height:112px}
+.box h4{margin:0 0 6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.box .who{font-weight:700;font-size:14px}
+.box p{margin:2px 0;font-size:12px;color:var(--muted)}
+.section{margin:16px 0 0}
+.section h3{margin:0 0 8px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--line);padding-bottom:4px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:inherit;font-size:10px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid var(--ink);padding:6px 0}
+td{padding:7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.r{text-align:right}
+.sheet[dir="rtl"] .r, .sheet[dir="rtl"] th.r{text-align:left}
+.money{font-variant-numeric:tabular-nums;white-space:nowrap;direction:ltr;unicode-bidi:isolate}
+.finance{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
+.totals{border:1px solid var(--ink);padding:10px 12px}
+.tot-row{display:flex;justify-content:space-between;gap:12px;margin:4px 0;font-size:13px}
+.tot-row.grand{font-size:16px;font-weight:700;border-top:1px solid var(--ink);padding-top:8px;margin-top:8px}
+.tot-row.due{font-weight:700}
+.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:999px}
+.badge.paid{background:#dcfce7;color:var(--paid)}
+.badge.partial{background:#fef3c7;color:var(--partial)}
+.badge.unpaid{background:#fee2e2;color:var(--unpaid)}
+.notice{margin-top:10px;font-size:11px;color:var(--muted);line-height:1.45}
+.notice.warn{color:var(--warn);background:#fff8e8;border:1px solid #ead7a3;padding:8px 10px}
+.notice.danger{color:var(--danger);background:#fef2f2;border:1px solid #f0c4c4;padding:8px 10px}
+.signs{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px}
+.sign{border-top:1px solid var(--ink);padding-top:8px;min-height:72px;font-size:12px}
+.sign .role{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.terms ol{margin:0;padding-inline-start:18px}
+.terms li{margin:0 0 8px;font-size:12px;line-height:1.45}
+.legal{font-size:10px;color:var(--faint);margin-top:14px;line-height:1.4}
+.foot{
+  margin-top:22px;padding-top:8px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;gap:12px;font-size:10px;color:var(--faint);
+}
+.page-no::after{content:counter(page)}
+.hidden{display:none !important}
+@media print{
+  body{background:#fff}
+  .banner,.side{display:none !important}
+  .layout{display:block}
+  .main{padding:0}
+  .sheet{box-shadow:none;margin:0;width:auto;min-height:auto;page-break-after:always}
+  .sheet:last-child{page-break-after:auto}
+  .watermark{color:rgba(22,24,29,.04)}
+  @page{size:A4;margin:12mm}
+}
+@media(max-width:1100px){
+  .layout{grid-template-columns:1fr}
+  .sheet{width:auto;max-width:210mm}
+}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <strong>Preview only — HyMotion Local Customer Sales Contract</strong>
+    <div class="note">Demo data. Does not create a sale, license, payment, or issued contract. This is the commercial document between HyMotion and the gym owner — not a gym-member membership contract.</div>
+  </div>
+  <div class="controls">
+    <button type="button" id="btnEn" class="act">English LTR</button>
+    <button type="button" id="btnAr">العربية RTL</button>
+    <button type="button" data-scenario="paid" class="act">Paid</button>
+    <button type="button" data-scenario="partial">Partial</button>
+    <button type="button" data-scenario="unpaid">Unpaid</button>
+    <button type="button" data-scenario="discounted">Discount + partial</button>
+    <button type="button" id="btnPrint">Print / A4</button>
+  </div>
+</div>
+<div class="layout">
+  <aside class="side">
+    <h2>How to read this preview</h2>
+    <p>The paper is what the customer would sign. The notes below are for HyMotion review only and do not print.</p>
+    <h3>Connected to the real sale</h3>
+    <ul>
+      <li>Number uses existing <b>HY-CTR-YYYY-NNNN</b> — do not invent MC-YYYY.</li>
+      <li>Line items already snapshot on <code>platform.contracts</code>.</li>
+      <li>Paid / outstanding on this paper is a <b>snapshot at issue</b>, not the live gym 360 totals.</li>
+    </ul>
+    <h3>Red team — can they misunderstand?</h3>
+    <div class="gap">Lifetime is an edition with no expiry field. The paper must say that explicitly.</div>
+    <div class="gap">Device count is 1 unless Ops set another limit. Resale to another gym is rejected by activation, but that is not written on any current document.</div>
+    <div class="gap">PC failure is handled by Ops transfer, not a new key. Owner password recovery is a different process.</div>
+    <div class="gap">The product can issue a license while unpaid. The paper must not hide outstanding.</div>
+    <h3>Not in the system — do not promise</h3>
+    <ul>
+      <li>No commercial refund / credit note</li>
+      <li>No installment schedule entity</li>
+      <li>No seller tax ID for Local sales (Cloud billing LegalName is “HyMotion”, tax number empty)</li>
+      <li>No Local sales terms store (member membership terms are a different contract)</li>
+      <li>Cancelling the sale does not revoke the license</li>
+    </ul>
+    <h3>Lawyer review</h3>
+    <p>Draft operational wording only. Ownership, resale, refund, warranty, and governing-law language must be reviewed by a qualified lawyer before live commercial use.</p>
+  </aside>
+  <main class="main" id="pages"></main>
+</div>
+<script>
+const COPY = {
+  en: {
+    lang: "en", dir: "ltr",
+    docTitle: "HyMotion Local — Sales Contract",
+    kicker: "Commercial sales contract",
+    watermark: "DEMO",
+    seller: "Seller",
+    customer: "Customer",
+    product: "Purchased product",
+    finance: "Financial summary at issue",
+    payments: "Payments recorded at issue",
+    license: "License",
+    termsTitle: "Licensing and commercial terms",
+    ack: "Customer acknowledgment",
+    signSeller: "For HyMotion",
+    signCustomer: "Customer / gym owner",
+    name: "Name",
+    signature: "Signature",
+    date: "Date",
+    contractNo: "Contract no.",
+    issued: "Issue date",
+    reprint: "Reprint does not create a new contract.",
+    page1: "Page 1 of 2",
+    page2: "Page 2 of 2",
+    sku: "SKU",
+    item: "Item",
+    type: "Type",
+    qty: "Qty",
+    unit: "Unit price",
+    disc: "Discount",
+    line: "Line total",
+    original: "Original price",
+    discount: "Discount",
+    final: "Final price",
+    paid: "Paid at issue",
+    outstanding: "Outstanding at issue",
+    status: "Payment status",
+    method: "Method",
+    ref: "Reference",
+    none: "No payment recorded at issue.",
+    edition: "Edition",
+    licenseType: "License type",
+    devices: "Allowed computers",
+    licenseRef: "License reference",
+    licenseIssued: "License issued",
+    gymCode: "Gym code",
+    lifetime: "Lifetime — no expiry date in the product",
+    oneTime: "One-time Local purchase, not a Cloud subscription",
+    masked: "Full license key is not printed. HyMotion keeps the working key in Operation Center.",
+    snapshotNote: "Paid and outstanding on this contract are frozen at issue. Later payments change the live sale record, not this paper.",
+    unpaidNote: "This contract was issued with an outstanding balance. A license may already exist. Outstanding is not zero.",
+    partialNote: "This is not a fully paid sale. The remaining amount stays due unless HyMotion records a later payment on the live sale.",
+    paidNote: "The live sale was fully paid when this contract was issued.",
+    noTax: "This document is not a tax invoice.",
+    notMember: "This is not a gym-member membership contract.",
+    demoSeller: "Seller legal entity, address, and tax registration are not stored on the Local sales record today. Values below are DEMO.",
+    ackText: "I confirm that I am buying HyMotion Local for the gym named above, that the paid and outstanding amounts on this page were correct on the issue date, and that I have read the terms on page 2.",
+    termsIntro: "These terms describe how HyMotion Local works in the product today. They are a draft for operations. They are not a substitute for legal advice.",
+    terms: [
+      "This contract records the Customer’s purchase of HyMotion Local from HyMotion. It is not a membership contract for gym members.",
+      "Lifetime means the license has no expiry date in the product. It is a one-time Local purchase, not a monthly Cloud subscription.",
+      "The license may be used on the number of computers shown on page 1. The usual limit is one computer.",
+      "The license binds to the computer that activates it. The same key cannot be activated on a second gym or a second computer while the first computer is still active.",
+      "Moving the license to a replacement computer (PC failure, lost or damaged machine) requires HyMotion Operations to authorize a transfer. The Customer cannot do this alone. HyMotion does not automatically issue a new key.",
+      "Selling or giving the license to another gym is not supported. Activation on another gym’s computer is rejected while this license is still active elsewhere.",
+      "Owner password recovery on the gym PC is a separate HyMotion support process. It is not a new license and not a transfer.",
+      "Support, training, hardware, and updates are included only if they appear as purchased items on page 1. The Lifetime license line by itself does not create a support SLA in the current product.",
+      "The Customer is responsible for backing up gym data on the gym computer.",
+      "Paid and outstanding amounts on this paper are the amounts recorded when the contract was issued. A later payment does not rewrite this issued copy.",
+      "HyMotion records payments internally (cash, bank transfer, or other). That record is not a bank-verified receipt by itself.",
+      "The current product has no commercial refund or credit-note function. Do not treat this paper as a refund promise.",
+      "Cancelling the commercial sale in HyMotion does not by itself revoke the license, deactivate the installation, or reverse payments. License revoke is a separate HyMotion Admin action.",
+      "This document is not a tax invoice and not a Cloud SaaS invoice."
+    ],
+    legal: "Draft operational language only. Have a qualified lawyer review ownership, resale, refund, warranty, and governing law before this is used as a live commercial contract.",
+    foot: "HyMotion Local Customer Sales Contract · issued snapshot · DEMO"
+  },
+  ar: {
+    lang: "ar", dir: "rtl",
+    docTitle: "HyMotion Local — عقد بيع للعميل",
+    kicker: "عقد بيع تجاري",
+    watermark: "تجريبي",
+    seller: "البائع",
+    customer: "العميل",
+    product: "المنتج المشترى",
+    finance: "الملخص المالي وقت الإصدار",
+    payments: "الدفعات المسجّلة وقت الإصدار",
+    license: "الترخيص",
+    termsTitle: "شروط الترخيص والبيع",
+    ack: "إقرار العميل",
+    signSeller: "عن HyMotion",
+    signCustomer: "العميل / مالك النادي",
+    name: "الاسم",
+    signature: "التوقيع",
+    date: "التاريخ",
+    contractNo: "رقم العقد",
+    issued: "تاريخ الإصدار",
+    reprint: "إعادة الطباعة لا تنشئ عقدًا جديدًا.",
+    page1: "صفحة 1 من 2",
+    page2: "صفحة 2 من 2",
+    sku: "الصنف",
+    item: "البند",
+    type: "النوع",
+    qty: "الكمية",
+    unit: "سعر الوحدة",
+    disc: "الخصم",
+    line: "إجمالي البند",
+    original: "السعر الأصلي",
+    discount: "الخصم",
+    final: "السعر النهائي",
+    paid: "المدفوع وقت الإصدار",
+    outstanding: "المتبقي وقت الإصدار",
+    status: "حالة الدفع",
+    method: "الطريقة",
+    ref: "المرجع",
+    none: "لا توجد دفعة مسجّلة وقت الإصدار.",
+    edition: "الإصدار",
+    licenseType: "نوع الترخيص",
+    devices: "أجهزة مسموحة",
+    licenseRef: "مرجع الترخيص",
+    licenseIssued: "تاريخ إصدار الترخيص",
+    gymCode: "كود النادي",
+    lifetime: "مدى الحياة — لا يوجد تاريخ انتهاء في المنتج",
+    oneTime: "شراء محلي لمرة واحدة، وليس اشتراك سحابي",
+    masked: "مفتاح الترخيص الكامل لا يُطبع. المفتاح العامل يبقى في مركز التشغيل.",
+    snapshotNote: "المدفوع والمتبقي في هذا العقد مجمّدان وقت الإصدار. أي دفعة لاحقة تغيّر سجل البيع الحي، وليس هذه الورقة.",
+    unpaidNote: "صدر هذا العقد والرصيد المتبقي قائم. قد يكون الترخيص صدر بالفعل. المتبقي ليس صفرًا.",
+    partialNote: "هذا البيع غير مكتمل الدفع. المبلغ المتبقي يبقى مستحقًا ما لم تسجّل HyMotion دفعة لاحقة على سجل البيع الحي.",
+    paidNote: "كان البيع الحي مدفوعًا بالكامل عند إصدار هذا العقد.",
+    noTax: "هذه الوثيقة ليست فاتورة ضريبية.",
+    notMember: "هذه ليست عقد عضوية لأعضاء النادي.",
+    demoSeller: "الكيان القانوني للبائع والعنوان والرقم الضريبي غير مخزّنين اليوم على سجل بيع Local. القيم أدناه تجريبية.",
+    ackText: "أقر أنني أشتري HyMotion Local للنادي المذكور أعلاه، وأن مبلغي المدفوع والمتبقي في هذه الصفحة كانا صحيحين في تاريخ الإصدار، وأنني قرأت الشروط في الصفحة 2.",
+    termsIntro: "هذه البنود تصف سلوك المنتج الحالي. هي مسودة تشغيلية وليست استشارة قانونية.",
+    terms: [
+      "يسجّل هذا العقد شراء العميل لـ HyMotion Local من HyMotion. وهو ليس عقد عضوية لأعضاء النادي.",
+      "مدى الحياة يعني أن الترخيص لا يملك تاريخ انتهاء في المنتج. الشراء مرة واحدة للمحلي، وليس اشتراكًا سحابيًا شهريًا.",
+      "يُستخدم الترخيص على عدد الأجهزة الموضح في الصفحة 1. الحد المعتاد جهاز واحد.",
+      "الترخيص يرتبط بالجهاز الذي فعّله. لا يمكن تفعيل نفس المفتاح على نادي آخر أو جهاز ثانٍ بينما الجهاز الأول ما زال نشطًا.",
+      "نقل الترخيص إلى جهاز بديل (عطل أو فقد أو تلف) يتطلب تفويض عمليات HyMotion. العميل لا يفعل ذلك وحده. HyMotion لا تصدر مفتاحًا جديدًا تلقائيًا.",
+      "بيع الترخيص أو إعطاؤه لنادٍ آخر غير مدعوم. التفعيل على جهاز نادٍ آخر يُرفض طالما هذا الترخيص نشط في مكان آخر.",
+      "استعادة كلمة سر المالك على جهاز النادي عملية دعم منفصلة. ليست ترخيصًا جديدًا وليست نقلًا.",
+      "الدعم والتدريب والأجهزة والتحديثات تُدرج فقط إذا ظهرت كبنود مشتراة في الصفحة 1. بند ترخيص مدى الحياة وحده لا ينشئ اتفاقية دعم في المنتج الحالي.",
+      "العميل مسؤول عن نسخ بيانات النادي احتياطيًا على جهاز النادي.",
+      "المدفوع والمتبقي على هذه الورقة هما المبلغان المسجّلان عند الإصدار. دفعة لاحقة لا تعيد كتابة هذه النسخة.",
+      "تسجّل HyMotion الدفعات داخليًا (كاش أو تحويل بنكي أو أخرى). هذا السجل ليس إيصال بنك متحقَّق بذاته.",
+      "المنتج الحالي لا يملك وظيفة استرداد تجاري أو إشعار دائن. لا تُفهم هذه الورقة وعدًا بالاسترداد.",
+      "إلغاء سجل البيع التجاري في HyMotion لا يسحب الترخيص ولا يوقف التثبيت ولا يعكس الدفعات من تلقاء نفسه. سحب الترخيص إجراء إداري منفصل.",
+      "هذه الوثيقة ليست فاتورة ضريبية وليست فاتورة اشتراك سحابي."
+    ],
+    legal: "صياغة تشغيلية مسودة فقط. يلزم مراجعة محامٍ مختص لمسائل الملكية وإعادة البيع والاسترداد والضمان والقانون الواجب قبل الاستخدام التجاري الفعلي.",
+    foot: "عقد بيع عميل HyMotion Local · لقطة إصدار · تجريبي"
+  }
+};
+
+const DATA = {
+  contractNumber: "HY-CTR-2026-0142",
+  issuedOn: "2026-09-18",
+  seller: {
+    en: { name: "HyMotion", lines: ["DEMO seller identity — not a stored Local sales profile", "Egypt"] },
+    ar: { name: "HyMotion", lines: ["هوية بائع تجريبية — لا يوجد ملف بائع مخزّن لبيع Local", "مصر"] }
+  },
+  customer: {
+    en: {
+      gym: "Nile Strength Gym",
+      owner: "Karim El-Sayed",
+      phone: "010 4455 7788",
+      email: "karim@nilestrength.example",
+      address: "22 El-Thawra St, Heliopolis, Cairo"
+    },
+    ar: {
+      gym: "جيم نايل سترنجث",
+      owner: "كريم السيد",
+      phone: "010 4455 7788",
+      email: "karim@nilestrength.example",
+      address: "٢٢ شارع الثورة، مصر الجديدة، القاهرة"
+    }
+  },
+  item: {
+    sku: "HY-SW-LOCAL-LT",
+    en: { name: "HyMotion Local Lifetime", type: "Software" },
+    ar: { name: "HyMotion Local مدى الحياة", type: "برنامج" }
+  },
+  license: {
+    edition: "Lifetime",
+    devices: 1,
+    ref: "HY-LCL-8F92-••••",
+    issued: "2026-09-18"
+  }
+};
+
+const SCENARIOS = {
+  paid: {
+    unit: 15000, discount: 0, total: 15000, paid: 15000, outstanding: 0, status: "paid",
+    gymCode: "GYM-NS-4821",
+    payments: [{ date: "2026-09-18", method: { en: "Bank transfer", ar: "تحويل بنكي" }, amount: 15000, ref: "TRX-4412" }]
+  },
+  partial: {
+    unit: 15000, discount: 0, total: 15000, paid: 5000, outstanding: 10000, status: "partial",
+    gymCode: "—",
+    payments: [{ date: "2026-09-18", method: { en: "Cash", ar: "كاش" }, amount: 5000, ref: "RCPT-102" }]
+  },
+  unpaid: {
+    unit: 15000, discount: 0, total: 15000, paid: 0, outstanding: 15000, status: "unpaid",
+    gymCode: "—",
+    payments: []
+  },
+  discounted: {
+    unit: 15000, discount: 1000, total: 14000, paid: 5000, outstanding: 9000, status: "partial",
+    gymCode: "—",
+    payments: [{ date: "2026-09-18", method: { en: "Cash", ar: "كاش" }, amount: 5000, ref: "RCPT-102" }]
+  }
+};
+
+const money = (n) => new Intl.NumberFormat("en-EG", { style: "currency", currency: "EGP", maximumFractionDigits: 0 }).format(n);
+const statusLabel = (s, lang) => ({
+  paid: { en: "Paid", ar: "مدفوع" },
+  partial: { en: "Partial", ar: "جزئي" },
+  unpaid: { en: "Unpaid", ar: "غير مدفوع" }
+}[s][lang]);
+
+let lang = "en";
+let scenario = "paid";
+
+function financeNote(c, s) {
+  if (s.status === "unpaid") return c.unpaidNote;
+  if (s.status === "partial") return c.partialNote;
+  return c.paidNote;
+}
+
+function render() {
+  const c = COPY[lang];
+  const s = SCENARIOS[scenario];
+  const customer = DATA.customer[lang];
+  const seller = DATA.seller[lang];
+  const item = DATA.item[lang];
+  const lineTotal = s.total;
+  document.documentElement.lang = c.lang;
+  document.documentElement.dir = c.dir;
+  document.getElementById("btnEn").classList.toggle("act", lang === "en");
+  document.getElementById("btnAr").classList.toggle("act", lang === "ar");
+  document.querySelectorAll("[data-scenario]").forEach((b) => b.classList.toggle("act", b.dataset.scenario === scenario));
+
+  const paymentRows = s.payments.length
+    ? s.payments.map((p) => `<tr><td>${p.date}</td><td>${p.method[lang]}</td><td>${p.ref}</td><td class="r"><span class="money">${money(p.amount)}</span></td></tr>`).join("")
+    : `<tr><td colspan="4">${c.none}</td></tr>`;
+
+  const gymCodeValue = s.gymCode === "—"
+    ? (lang === "ar" ? "— (يظهر بعد أول تفعيل)" : "— (reported after first activation)")
+    : s.gymCode;
+
+  document.getElementById("pages").innerHTML = `
+    <article class="sheet" dir="${c.dir}">
+      <div class="watermark">${c.watermark}</div>
+      <header class="hdr">
+        <div class="brand">
+          <div class="mark"><img src="../apps/platform-console/public/ds/hymotion-mark-transparent.png" alt=""></div>
+          <div>
+            <div class="seller-name">HyMotion</div>
+            <div class="seller-meta">${c.demoSeller}</div>
+          </div>
+        </div>
+        <div class="doc-meta">
+          <div class="kicker">${c.kicker}</div>
+          <div class="title">${c.docTitle}</div>
+          <div class="meta-row">${c.contractNo}: <span class="num">${DATA.contractNumber}</span></div>
+          <div class="meta-row">${c.issued}: <b>${DATA.issuedOn}</b></div>
+          <div class="meta-row">${c.reprint}</div>
+        </div>
+      </header>
+      <div class="parties">
+        <div class="box">
+          <h4>${c.seller}</h4>
+          <div class="who">${seller.name}</div>
+          ${seller.lines.map((l) => `<p>${l}</p>`).join("")}
+        </div>
+        <div class="box">
+          <h4>${c.customer}</h4>
+          <div class="who">${customer.gym}</div>
+          <p>${c.name}: ${customer.owner}</p>
+          <p>${customer.phone}</p>
+          <p>${customer.email}</p>
+          <p>${customer.address}</p>
+          <p>${c.gymCode}: ${gymCodeValue}</p>
+        </div>
+      </div>
+      <section class="section">
+        <h3>${c.product}</h3>
+        <table>
+          <thead><tr><th>${c.sku}</th><th>${c.item}</th><th>${c.type}</th><th class="r">${c.qty}</th><th class="r">${c.unit}</th><th class="r">${c.disc}</th><th class="r">${c.line}</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>${DATA.item.sku}</td>
+              <td>${item.name}<div class="notice" style="margin:4px 0 0">${c.lifetime}. ${c.oneTime}.</div></td>
+              <td>${item.type}</td>
+              <td class="r">1</td>
+              <td class="r"><span class="money">${money(s.unit)}</span></td>
+              <td class="r"><span class="money">${money(s.discount)}</span></td>
+              <td class="r"><span class="money">${money(lineTotal)}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="section finance">
+        <div>
+          <h3>${c.payments}</h3>
+          <table>
+            <thead><tr><th>${c.date}</th><th>${c.method}</th><th>${c.ref}</th><th class="r">${c.paid}</th></tr></thead>
+            <tbody>${paymentRows}</tbody>
+          </table>
+        </div>
+        <div>
+          <h3>${c.finance}</h3>
+          <div class="totals">
+            <div class="tot-row"><span>${c.original}</span><span class="money">${money(s.unit)}</span></div>
+            <div class="tot-row"><span>${c.discount}</span><span class="money">${money(s.discount)}</span></div>
+            <div class="tot-row grand"><span>${c.final}</span><span class="money">${money(s.total)}</span></div>
+            <div class="tot-row"><span>${c.paid}</span><span class="money">${money(s.paid)}</span></div>
+            <div class="tot-row due"><span>${c.outstanding}</span><span class="money">${money(s.outstanding)}</span></div>
+            <div class="tot-row"><span>${c.status}</span><span class="badge ${s.status}">${statusLabel(s.status, lang)}</span></div>
+          </div>
+          <div class="notice ${s.status === "unpaid" ? "danger" : s.status === "partial" ? "warn" : ""}">${financeNote(c, s)} ${c.snapshotNote}</div>
+        </div>
+      </section>
+      <section class="section">
+        <h3>${c.license}</h3>
+        <table>
+          <tbody>
+            <tr><td>${c.edition}</td><td>HyMotion Local · ${DATA.license.edition}</td></tr>
+            <tr><td>${c.licenseType}</td><td>${c.lifetime}</td></tr>
+            <tr><td>${c.devices}</td><td>${DATA.license.devices}</td></tr>
+            <tr><td>${c.licenseRef}</td><td><b>${DATA.license.ref}</b></td></tr>
+            <tr><td>${c.licenseIssued}</td><td>${DATA.license.issued}</td></tr>
+          </tbody>
+        </table>
+        <p class="notice">${c.masked}</p>
+      </section>
+      <p class="notice">${c.noTax} ${c.notMember}</p>
+      <div class="signs">
+        <div class="sign"><div class="role">${c.signSeller}</div><div>${c.name} / ${c.signature} / ${c.date}</div></div>
+        <div class="sign"><div class="role">${c.signCustomer}</div><div>${c.name} / ${c.signature} / ${c.date}</div></div>
+      </div>
+      <footer class="foot"><span>${c.foot}</span><span>${c.page1}</span></footer>
+    </article>
+    <article class="sheet" dir="${c.dir}">
+      <div class="watermark">${c.watermark}</div>
+      <header class="hdr">
+        <div>
+          <div class="kicker">${c.kicker}</div>
+          <div class="title">${c.termsTitle}</div>
+          <div class="meta-row">${c.contractNo}: <b>${DATA.contractNumber}</b> · ${c.issued}: ${DATA.issuedOn}</div>
+        </div>
+      </header>
+      <p class="notice">${c.termsIntro}</p>
+      <div class="terms"><ol>${c.terms.map((t) => `<li>${t}</li>`).join("")}</ol></div>
+      <section class="section">
+        <h3>${c.ack}</h3>
+        <p>${c.ackText}</p>
+      </section>
+      <div class="signs">
+        <div class="sign"><div class="role">${c.signSeller}</div><div>${c.name} / ${c.signature} / ${c.date}</div></div>
+        <div class="sign"><div class="role">${c.signCustomer}</div><div>${c.name} / ${c.signature} / ${c.date}</div></div>
+      </div>
+      <p class="legal">${c.legal}</p>
+      <footer class="foot"><span>${c.foot} · ${c.reprint}</span><span>${c.page2}</span></footer>
+    </article>
+  `;
+}
+
+document.getElementById("btnEn").onclick = () => { lang = "en"; render(); };
+document.getElementById("btnAr").onclick = () => { lang = "ar"; render(); };
+document.getElementById("btnPrint").onclick = () => window.print();
+document.querySelectorAll("[data-scenario]").forEach((b) => {
+  b.onclick = () => { scenario = b.dataset.scenario; render(); };
+});
+render();
+</script>
+</body>
+</html>

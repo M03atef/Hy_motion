@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HyMotion — Members Management</title>
+  <meta name="description"
+    content="Manage gym members, view statuses, search, filter and perform bulk actions on your member database.">
+  <link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+  <link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --c900: #0D0D0D;
+      --c800: #1A1A1A;
+      --c700: #2A2A2A;
+      --c600: #3A3A3A;
+      --c500: #4A4A4A;
+      --c400: #6B6B6B;
+      --c300: #8C8C8C;
+      --c200: #B0B0B0;
+      --c100: #D4D4D4;
+      --c50: #F0F0F0;
+      --l600: #5EAF00;
+      --l500: #7ACC00;
+      --l400: #A0E040;
+      --l300: #BEEC73;
+      --l200: #D8F5A6;
+      --l100: #EDFCD8;
+      --lglow: rgba(160, 224, 64, 0.25);
+      --t700: #0A4D4D;
+      --t600: #0D6B6B;
+      --t500: #148F8F;
+      --t400: #3DB5B5;
+      --suc500: #22C55E;
+      --suc100: #DCFCE7;
+      --suctxt: #166534;
+      --wrn500: #F59E0B;
+      --wrn100: #FEF3C7;
+      --dng500: #EF4444;
+      --dng100: #FEE2E2;
+      --inf500: #3B82F6;
+      --inf100: #DBEAFE;
+      --frz500: #22D3EE;
+      --frz100: #CFFAFE;
+      --pnd500: #FBBF24;
+      --pnd100: #FEF3C7;
+      --lbg: #FAFAFA;
+      --ls1: #FFF;
+      --ls2: #F5F5F5;
+      --ls3: #EBEBEB;
+      --ltp: #1A1A1A;
+      --lts: #4A4A4A;
+      --ltt: #8C8C8C;
+      --lbd: #D4D4D4;
+      --dbg: #0D0D0D;
+      --ds1: #1A1A1A;
+      --ds2: #2A2A2A;
+      --ds3: #3A3A3A;
+      --dtp: #F0F0F0;
+      --dts: #B0B0B0;
+      --dtt: #6B6B6B;
+      --dbd: #4A4A4A;
+      --fd: 'Cairo', sans-serif;
+      --fb: 'Cairo', sans-serif;
+      --fa: 'Cairo', sans-serif;
+      --rsm: 6px;
+      --rmd: 10px;
+      --rlg: 16px;
+      --rxl: 24px;
+      --rpl: 9999px;
+      --sh1: 0 1px 2px rgba(0, 0, 0, .06);
+      --sh2: 0 2px 8px rgba(0, 0, 0, .08);
+      --sh3: 0 4px 16px rgba(0, 0, 0, .12);
+      --sh4: 0 8px 32px rgba(0, 0, 0, .18);
+      --shg: 0 0 20px var(--lglow);
+      --tf: 150ms ease;
+      --tb: 250ms ease;
+      --sidebar-w: 220px;
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      font-family: var(--fb);
+      background: var(--lbg);
+      color: var(--ltp);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    /* ── Sidebar (shared with dashboard) ── */
+    .app {
+      display: flex;
+      height: 100vh
+    }
+
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--c900);
+      color: var(--dtp);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 100;
+      overflow-y: auto;
+      overflow-x: hidden
+    }
+
+    .sb-hdr {
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--c700)
+    }
+
+    .sb-hdr svg {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0
+    }
+
+    .sb-hdr span {
+      font-family: var(--fd);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--l400);
+      letter-spacing: -.3px
+    }
+
+    .sb-nav {
+      padding: 8px 0;
+      flex: 1
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--tf);
+      border-left: 3px solid transparent;
+      color: var(--c300);
+      text-decoration: none
+    }
+
+    .sb-item:hover {
+      background: var(--c700)
+    }
+
+    .sb-item.act {
+      background: rgba(160, 224, 64, .08);
+      color: var(--l400);
+      border-left-color: var(--l500)
+    }
+
+    .sb-item i {
+      font-size: 18px;
+      opacity: .7;
+      width: 20px;
+      text-align: center
+    }
+
+    .sb-item.act i {
+      opacity: 1
+    }
+
+    .sb-item .nav-badge {
+      margin-left: auto;
+      background: var(--dng500);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      border-radius: var(--rpl);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px
+    }
+
+    .sb-ft {
+      padding: 16px;
+      border-top: 1px solid var(--c700);
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .sb-ft-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .sb-ft-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .sb-ft-role {
+      font-size: 11px;
+      color: var(--c400)
+    }
+
+    .sb-logout {
+      background: none;
+      border: none;
+      color: var(--c400);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: color var(--tf)
+    }
+
+    .sb-logout:hover {
+      color: var(--dng500)
+    }
+
+    .av-sm {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--fd);
+      font-weight: 700;
+      font-size: 11px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      background: var(--l300);
+      color: var(--c900)
+    }
+
+    /* ── Main + Topbar ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh
+    }
+
+    .topbar {
+      height: 60px;
+      background: var(--ls1);
+      border-bottom: 1px solid var(--ls3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 50
+    }
+
+    .tb-left {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .tb-breadcrumb {
+      font-family: var(--fd);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--lts)
+    }
+
+    .tb-breadcrumb span {
+      color: var(--ltt);
+      font-weight: 400;
+      margin-right: 6px
+    }
+
+    .tb-right {
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .tb-gym-name {
+      font-family: var(--fd);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--lts)
+    }
+
+    .tb-gym-name-ar {
+      font-family: var(--fa);
+      font-size: 12px;
+      color: var(--ltt);
+      direction: rtl
+    }
+
+    .content {
+      padding: 24px 32px;
+      flex: 1;
+      position: relative
+    }
+
+    .mob-toggle {
+      display: none !important;
+      width: 36px;
+      height: 36px;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: var(--ls2);
+      border-radius: var(--rmd);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--lts)
+    }
+
+    @media(max-width:768px) {
+      .sidebar {
+        transform: translateX(-100%)
+      }
+
+      .sidebar.open {
+        transform: translateX(0)
+      }
+
+      .main {
+        margin-left: 0
+      }
+
+      .content {
+        padding: 16px
+      }
+
+      .topbar {
+        padding: 0 16px
+      }
+
+      .mob-toggle {
+        display: flex !important
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="members.css?v=delconfirm1">
+  <link rel="stylesheet" href="member-modals.css?v=assign-pay2">
+  <link rel="stylesheet" href="/shared/refund-action.css?v=3">
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- ═══════════════════════════════════════════════════════
+       Sidebar — reused from dashboard
+       ═══════════════════════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-hdr">
+        <svg viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#7ACC00" />
+          <path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        <span>HyMotion</span>
+      </div>
+      <nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+      <div class="sb-ft">
+        <div class="av-sm" id="userAvatar">SM</div>
+        <div class="sb-ft-info">
+          <div class="sb-ft-name" id="userName">Sara Manager</div>
+          <div class="sb-ft-role" id="userRole">Manager</div>
+        </div>
+        <button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button>
+      </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════
+       Main Content
+       ═══════════════════════════════════════════════════════ -->
+    <div class="main">
+      <header class="topbar">
+        <div class="tb-left">
+          <button class="mob-toggle" id="mobToggle"><i class="ti ti-menu-2"></i></button>
+          <div class="tb-breadcrumb">
+            <span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span>
+            <span class="sep">/</span>
+            <strong data-en="Members" data-ar="الأعضاء">Members</strong>
+          </div>
+        </div>
+        <div class="tb-right">
+          <div>
+            <div class="tb-gym-name" id="gymName">FitZone Cairo</div>
+            <div class="tb-gym-name-ar" id="gymNameAr">فيت زون القاهرة</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <!-- Page Header -->
+        <div class="pg-hdr">
+          <div class="pg-title">
+            <h1 data-en="Members" data-ar="الأعضاء">Members</h1>
+            <span class="pg-badge" id="totalBadge">0</span>
+          </div>
+          <button class="btn-primary" id="btnAddMember"><i class="ti ti-plus"></i> <span data-en="Add Member" data-ar="إضافة عضو">Add Member</span></button>
+        </div>
+
+        <!-- Search -->
+        <div class="controls">
+          <div class="search-box">
+            <i class="ti ti-search"></i>
+            <input type="text" id="searchInput"
+              placeholder="Search by name, phone, or member number..."
+              data-en-placeholder="Search by name, phone, or member number..."
+              data-ar-placeholder="ابحث بالاسم أو الهاتف أو رقم العضو...">
+          </div>
+        </div>
+
+        <!-- Filter Chips — account status (all/archived, P12-R1/P6) plus membership status,
+             restored per explicit request: filters map straight to values MemberRepository.
+             GetPagedAsync already supports (active/frozen/expired/cancelled/inactive) — no backend change needed. -->
+        <div class="filters">
+          <button class="f-chip act" data-status="all" data-en="All" data-ar="الكل">All</button>
+          <button class="f-chip" data-status="active" data-en="Active" data-ar="نشط">Active</button>
+          <button class="f-chip" data-status="frozen" data-en="Frozen" data-ar="مجمد">Frozen</button>
+          <button class="f-chip" data-status="expired" data-en="Expired" data-ar="منتهي">Expired</button>
+          <button class="f-chip" data-status="cancelled" data-en="Cancelled" data-ar="ملغي">Cancelled</button>
+          <button class="f-chip" data-status="inactive" data-en="Archived" data-ar="مؤرشف">Archived</button>
+        </div>
+
+        <!-- People count from list API (not membership Expired/Frozen KPIs) -->
+        <div class="q-stats">
+          <div class="q-chip"><span class="q-dot active"></span><span class="q-val" id="statPeople">0</span> <span data-en="People" data-ar="أشخاص">People</span>
+          </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="tbl-card">
+
+          <!-- Skeleton Loading -->
+          <div id="skeleton" style="display:none">
+            <div class="sk sk-row">
+              <div class="sk-circ"></div>
+              <div class="sk-bar w30"></div>
+              <div class="sk-bar w15"></div>
+              <div class="sk-bar w20"></div>
+              <div class="sk-bar w10"></div>
+              <div class="sk-bar w15"></div>
+            </div>
+            <div class="sk sk-row">
+              <div class="sk-circ"></div>
+              <div class="sk-bar w30"></div>
+              <div class="sk-bar w15"></div>
+              <div class="sk-bar w20"></div>
+              <div class="sk-bar w10"></div>
+              <div class="sk-bar w15"></div>
+            </div>
+            <div class="sk sk-row">
+              <div class="sk-circ"></div>
+              <div class="sk-bar w30"></div>
+              <div class="sk-bar w15"></div>
+              <div class="sk-bar w20"></div>
+              <div class="sk-bar w10"></div>
+              <div class="sk-bar w15"></div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div id="tblWrap" style="overflow-x:auto">
+            <table class="m-tbl">
+              <thead>
+                <tr>
+                  <th data-en="Member" data-ar="العضو">Member</th>
+                  <th data-en="Status" data-ar="الحالة">Status</th>
+                  <th data-en="Plan" data-ar="الباقة">Plan</th>
+                  <th data-en="Expiry" data-ar="الانتهاء">Expiry</th>
+                  <th data-en="Remaining" data-ar="المتبقي">Remaining</th>
+                  <th style="width:130px" data-en="Actions" data-ar="إجراءات">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tblBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty" id="emptyState" style="display:none">
+            <div class="empty-icon"><i class="ti ti-users-minus"></i></div>
+            <h3 id="emptyTitle" data-en="No members yet" data-ar="لا يوجد أعضاء بعد">No members yet</h3>
+            <p id="emptyBody" data-en="Add a person first. They can be saved without a membership, but they cannot use membership check-in until a valid plan is assigned." data-ar="أضف شخصًا أولًا. يمكن حفظه بدون عضوية، لكن لا يمكنه استخدام تسجيل الحضور بالعضوية حتى تُعيَّن له باقة سارية.">Add a person first. They can be saved without a membership, but they cannot use membership check-in until a valid plan is assigned.</p>
+            <button type="button" class="mdl-btn primary" id="emptyAddMember" style="margin-top:8px" data-en="Add first member" data-ar="أضف أول عضو">Add first member</button>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagi" id="pagination" style="display:none">
+            <button class="pagi-btn" id="pagiPrev"><i class="ti ti-chevron-left"></i> <span data-en="Previous" data-ar="السابق">Previous</span></button>
+            <span class="pagi-info" id="pagiInfo">Page <strong>1</strong> of <strong>1</strong></span>
+            <button class="pagi-btn" id="pagiNext"><span data-en="Next" data-ar="التالي">Next</span> <i class="ti ti-chevron-right"></i></button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ADD MEMBER MODAL — 560px centered overlay
+       API: POST /api/members → CreateMemberRequest
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="addMemberModal">
+    <div class="modal-panel wide">
+      <!-- Header -->
+      <div class="mdl-hdr">
+        <div class="mdl-title-wrap">
+          <div class="mdl-title"><i class="ti ti-user-plus" style="color:var(--l500)"></i> <span data-en="Add New Member" data-ar="إضافة عضو جديد">Add New Member</span></div>
+        </div>
+        <button class="mdl-close"><i class="ti ti-x"></i></button>
+      </div>
+
+      <!-- Body -->
+      <div class="mdl-body">
+        <div id="onboardSteps" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;font-size:12px;font-weight:600;font-family:var(--fd)">
+          <span class="ob-step act" data-step="1" data-en="1. Info" data-ar="1. البيانات" style="padding:6px 10px;border-radius:var(--rmd);background:var(--l100);color:var(--l600)">1. Info</span>
+          <span class="ob-step" data-step="2" data-en="2. Membership" data-ar="2. العضوية" style="padding:6px 10px;border-radius:var(--rmd);background:var(--ls2);color:var(--ltt)">2. Membership</span>
+          <span class="ob-step" data-step="3" data-en="3. Payment" data-ar="3. الدفع" style="padding:6px 10px;border-radius:var(--rmd);background:var(--ls2);color:var(--ltt)">3. Payment</span>
+          <span class="ob-step" data-step="4" data-en="4. Print" data-ar="4. الطباعة" style="padding:6px 10px;border-radius:var(--rmd);background:var(--ls2);color:var(--ltt)">4. Print</span>
+        </div>
+        <!-- Error banner -->
+        <div class="mdl-error-banner" id="addErrorBanner">
+          <i class="ti ti-alert-circle"></i>
+          <div><div class="error-text"></div><div class="error-text-ar" style="display:none"></div></div>
+        </div>
+
+        <!-- Step 1: Personal Info -->
+        <div id="onboardStep1">
+        <div class="form-section">
+          <div class="section-hdr">
+            <div class="section-title" data-en="Personal Information" data-ar="المعلومات الشخصية"><i class="ti ti-user"></i> Personal Information</div>
+            <span class="section-tag" data-en="Required" data-ar="مطلوب">Required</span>
+          </div>
+
+          <div class="mdl-form-row">
+            <div class="mdl-form-group">
+              <label class="mdl-label"><span data-en="Full Name (English)" data-ar="الاسم الكامل (إنجليزي)">Full Name (English)</span> <span class="req">*</span></label>
+              <input type="text" class="mdl-input" id="addNameEn" placeholder="e.g. Ahmed Ali" data-en-placeholder="e.g. Ahmed Ali" data-ar-placeholder="مثال: أحمد علي">
+              <div class="field-error" id="addNameEnError"><i class="ti ti-alert-circle"></i><span class="field-error-text" data-en="This field is required" data-ar="هذا الحقل مطلوب">This field is required</span></div>
+            </div>
+            <div class="mdl-form-group">
+              <label class="mdl-label"><span data-en="Full Name (Arabic)" data-ar="الاسم الكامل (عربي)">Full Name (Arabic)</span> <span class="req">*</span></label>
+              <input type="text" class="mdl-input rtl" id="addNameAr" placeholder="مثال: أحمد علي">
+              <div class="field-error" id="addNameArError"><i class="ti ti-alert-circle"></i><span class="field-error-text" data-en="This field is required" data-ar="هذا الحقل مطلوب">This field is required</span></div>
+            </div>
+          </div>
+
+          <div class="mdl-form-row">
+            <div class="mdl-form-group">
+              <label class="mdl-label"><span data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</span> <span class="req">*</span></label>
+              <div class="phone-input-wrap" id="addPhoneWrap">
+                <div class="phone-prefix"><span class="flag">🇪🇬</span> +20</div>
+                <input type="tel" class="phone-input" id="addPhone" placeholder="010 1234 5678" maxlength="15">
+              </div>
+              <div class="field-error" id="addPhoneError"><i class="ti ti-alert-circle"></i><span class="field-error-text" data-en="Invalid Egyptian phone format" data-ar="صيغة رقم الهاتف المصري غير صحيحة">Invalid Egyptian phone format</span></div>
+            </div>
+            <div class="mdl-form-group">
+              <label class="mdl-label"><span data-en="Date of Birth" data-ar="تاريخ الميلاد">Date of Birth</span> <span class="req">*</span></label>
+              <input type="date" class="mdl-input" id="addDob">
+              <div class="field-error" id="addDobError"><i class="ti ti-alert-circle"></i><span class="field-error-text" data-en="Member must be at least 10 years old" data-ar="يجب أن يكون عمر العضو 10 سنوات على الأقل">Member must be at least 10 years old</span></div>
+            </div>
+          </div>
+
+          <div class="mdl-form-group">
+            <label class="mdl-label"><span data-en="Email" data-ar="البريد الإلكتروني">Email</span> <span data-en="(optional)" data-ar="(اختياري)" style="color:var(--ltt);font-weight:400;text-transform:none">(optional)</span></label>
+            <input type="email" class="mdl-input" id="addEmail" placeholder="member@email.com">
+          </div>
+        </div>
+
+        <!-- Section 2: Additional Info (collapsible) -->
+        <div class="form-section">
+          <div class="section-hdr">
+            <div class="section-title" data-en="Additional Information" data-ar="معلومات إضافية"><i class="ti ti-info-circle"></i> Additional Information</div>
+            <button class="section-toggle" id="addSectionToggle" title="Toggle section" data-en-title="Toggle section" data-ar-title="طي/فتح القسم"><i class="ti ti-chevron-up"></i></button>
+          </div>
+          <div class="section-body" id="addSectionBody">
+            <div class="mdl-form-group">
+              <label class="mdl-label" data-en="National ID" data-ar="الرقم القومي">National ID</label>
+              <input type="text" class="mdl-input" id="addNationalId" placeholder="29901011234567" maxlength="14">
+            </div>
+            <div class="mdl-form-group">
+              <label class="mdl-label" data-en="Emergency Contact" data-ar="جهة اتصال للطوارئ">Emergency Contact</label>
+              <div class="phone-input-wrap">
+                <div class="phone-prefix"><span class="flag">🇪🇬</span> +20</div>
+                <input type="tel" class="phone-input" id="addEmergency" placeholder="010 9876 5432" maxlength="15">
+              </div>
+            </div>
+            <div class="mdl-form-group">
+              <label class="mdl-label" data-en="Notes" data-ar="ملاحظات">Notes</label>
+              <textarea class="mdl-input" id="addNotes" rows="3" placeholder="Any additional notes about this member..." data-en-placeholder="Any additional notes about this member..." data-ar-placeholder="أي ملاحظات إضافية عن هذا العضو..."></textarea>
+            </div>
+            <div class="mdl-form-group" hidden>
+              <label class="mdl-label"><span data-en="Referral code" data-ar="كود الإحالة">Referral code</span> <span data-en="(optional)" data-ar="(اختياري)" style="color:var(--ltt);font-weight:400;text-transform:none">(optional)</span></label>
+              <input type="text" class="mdl-input" id="addReferralCode" placeholder="e.g. RABCDEF1" style="text-transform:uppercase" maxlength="20">
+            </div>
+          </div>
+        </div>
+        </div><!-- /onboardStep1 -->
+
+        <!-- Step 2: Membership selection -->
+        <div id="onboardStep2" style="display:none">
+          <div class="form-section">
+            <div class="section-hdr">
+              <div class="section-title" data-en="Select Membership Plan" data-ar="اختر خطة العضوية"><i class="ti ti-package"></i> Select Membership Plan</div>
+            </div>
+            <div id="onboardPlanLoading" style="display:none;padding:16px;color:var(--ltt)" data-en="Loading plans…" data-ar="جاري تحميل الخطط…">Loading plans…</div>
+            <div id="onboardPlanCards" style="display:grid;gap:10px"></div>
+            <p class="payment-note show" id="onboardSkipHint" style="margin-top:12px">
+              <i class="ti ti-info-circle"></i>
+              <span data-en="You can skip membership and save the person now. They cannot use membership-based check-in until a valid membership is assigned." data-ar="يمكنك تخطي العضوية وحفظ الشخص الآن. لن يتمكن من استخدام تسجيل الحضور بالعضوية حتى تُعيَّن له عضوية سارية.">You can skip membership and save the person now. They cannot use membership-based check-in until a valid membership is assigned.</span>
+            </p>
+            <div class="mdl-form-group" style="margin-top:12px">
+              <label class="mdl-label" data-en="Start date" data-ar="تاريخ البدء">Start date</label>
+              <input type="date" class="mdl-input" id="onboardStartDate">
+              <div style="font-size:11px;color:var(--ltt);margin-top:4px" data-en="Server confirms final dates from the plan duration." data-ar="يحدد الخادم التواريخ النهائية بناءً على مدة الخطة.">Server confirms final dates from the plan duration.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Payment -->
+        <div id="onboardStep3" style="display:none">
+          <div class="form-section">
+            <div class="section-hdr">
+              <div class="section-title" data-en="Membership Summary" data-ar="ملخص العضوية"><i class="ti ti-receipt"></i> Membership Summary</div>
+            </div>
+            <div id="onboardSummary" class="plan-detail-card show" style="display:block;margin-bottom:16px"></div>
+            <div class="section-hdr">
+              <div class="section-title" data-en="Payment" data-ar="الدفع"><i class="ti ti-wallet"></i> Payment</div>
+            </div>
+            <div class="payment-radios" id="onboardPayMethods">
+              <label class="pay-radio"><input type="radio" name="onboardPayment" value="cash" checked><div class="pay-radio-label"><i class="ti ti-cash pay-radio-icon"></i><span class="pay-radio-name" data-en="Cash" data-ar="نقدًا">Cash</span></div></label>
+              <label class="pay-radio"><input type="radio" name="onboardPayment" value="paymob"><div class="pay-radio-label"><i class="ti ti-credit-card pay-radio-icon"></i><span class="pay-radio-name">Paymob</span></div></label>
+              <label class="pay-radio"><input type="radio" name="onboardPayment" value="fawry"><div class="pay-radio-label"><i class="ti ti-building-store pay-radio-icon"></i><span class="pay-radio-name">Fawry</span></div></label>
+              <label class="pay-radio"><input type="radio" name="onboardPayment" value="vodafone_cash"><div class="pay-radio-label"><i class="ti ti-device-mobile pay-radio-icon"></i><span class="pay-radio-name" data-en="Vodafone Cash" data-ar="فودافون كاش">Vodafone Cash</span></div></label>
+            </div>
+            <div class="mdl-form-group" style="margin-top:12px">
+              <label class="mdl-label" data-en="Amount paid (EGP)" data-ar="المبلغ المدفوع (جنيه)">Amount paid (EGP)</label>
+              <input type="number" class="mdl-input" id="onboardAmountPaid" min="0" step="0.01">
+              <p class="assign-due-hint" id="onboardDueHint"></p>
+            </div>
+            <div class="mdl-form-group" id="onboardDueDateWrap" hidden style="margin-top:8px">
+              <label class="mdl-label" data-en="Balance due date" data-ar="تاريخ استحقاق الرصيد">Balance due date</label>
+              <input type="date" class="mdl-input" id="onboardDueDate">
+              <div style="font-size:11px;color:var(--ltt);margin-top:4px" data-en="Required when amount paid is less than the plan price." data-ar="مطلوب عند دفع مبلغ أقل من سعر الخطة.">Required when amount paid is less than the plan price.</div>
+            </div>
+            <div class="payment-note show" id="onboardPayNote"><i class="ti ti-info-circle"></i> <span data-en="Cash membership payments need an open cash shift. Open a cash shift first, then complete this payment." data-ar="دفع العضوية نقدًا يحتاج وردية صندوق مفتوحة. افتح وردية أولًا ثم أكمل هذا الدفع.">Cash membership payments need an open cash shift. Open a cash shift first, then complete this payment.</span> <a href="/dashboard/shifts/" data-en="Open shift" data-ar="افتح الوردية">Open shift</a></div>
+          </div>
+        </div>
+
+        <!-- Step 4: Confirmation + print invoice / assign PVC card -->
+        <div id="onboardStep4" style="display:none">
+          <div style="text-align:center;padding:4px 8px 12px">
+            <i class="ti ti-circle-check" style="font-size:36px;color:var(--l500);display:block;margin-bottom:8px"></i>
+            <div style="font-family:var(--fd);font-size:18px;font-weight:700;margin-bottom:6px" data-en="Member onboarded" data-ar="تم تسجيل العضو">Member onboarded</div>
+            <div id="onboardConfirmText" style="font-size:13px;color:var(--lts);line-height:1.6"></div>
+          </div>
+
+          <div class="form-section" style="margin-top:8px">
+            <div class="section-hdr">
+              <div class="section-title"><i class="ti ti-file-invoice"></i> <span data-en="Invoice" data-ar="الفاتورة">Invoice</span></div>
+            </div>
+            <p id="onboardInvoiceStatus" class="payment-note show" style="margin-bottom:10px">Preparing invoice…</p>
+            <button type="button" class="mdl-btn primary" id="btnOnboardPrintInvoice" disabled style="width:100%;justify-content:center">
+              <i class="ti ti-printer"></i> <span data-en="Print invoice" data-ar="طباعة الفاتورة">Print invoice</span>
+            </button>
+            <button type="button" class="mdl-btn ghost" id="btnOnboardRefund" hidden style="width:100%;justify-content:center;margin-top:8px">
+              <i class="ti ti-receipt-refund"></i> <span data-en="Refund" data-ar="استرداد">Refund</span>
+            </button>
+          </div>
+
+          <div class="form-section" style="margin-top:12px">
+            <div class="section-hdr">
+              <div class="section-title"><i class="ti ti-id"></i> <span data-en="Access card" data-ar="كارنيه الدخول">Access card</span></div>
+            </div>
+            <p id="onboardCardStatus" class="payment-note show" style="margin-bottom:10px">Scan a blank Available PVC card to assign.</p>
+            <div id="onboardAssignCardRow" style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap">
+              <input type="text" class="mdl-input" id="onboardCardScanInput" autocomplete="off"
+                style="flex:1;min-width:160px"
+                placeholder="Scan Available card…"
+                data-en-placeholder="Scan Available card…"
+                data-ar-placeholder="امسح كارنيه متاح…">
+              <button type="button" class="mdl-btn primary" id="btnOnboardAssignCard" style="justify-content:center;white-space:nowrap">
+                <i class="ti ti-link"></i> <span data-en="Assign card" data-ar="تعيين كارنيه">Assign card</span>
+              </button>
+            </div>
+            <div id="onboardCardAssigned" hidden style="margin-top:10px;padding:10px 12px;border:1px solid var(--ls3,#E8E8E8);border-radius:10px;background:#F8FAF5">
+              <div style="font-size:12px;color:var(--lts);margin-bottom:2px" data-en="Assigned" data-ar="معيَّن">Assigned</div>
+              <div id="onboardCardAssignedCode" style="font-family:Consolas,monospace;font-weight:700;font-size:15px;letter-spacing:.06em">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="mdl-footer">
+        <button class="mdl-btn ghost" id="btnOnboardCancel" onclick="closeOverlay('addMemberModal')" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button class="mdl-btn ghost" id="btnOnboardSkip" style="display:none" data-en="Skip membership" data-ar="تخطي العضوية">Skip membership</button>
+        <button class="mdl-btn primary" id="btnCreateMember" disabled>
+          <span class="btn-spinner"></span>
+          <span class="btn-label"><i class="ti ti-arrow-right"></i> <span data-en="Continue" data-ar="متابعة">Continue</span></span>
+        </button>
+        <button type="button" class="mdl-btn ghost" id="btnOnboardDone" style="display:none" onclick="closeOverlay('addMemberModal')">
+          <span data-en="Done" data-ar="تم">Done</span>
+        </button>
+        <a class="mdl-btn primary" id="btnOnboardViewMember" href="#" style="display:none;text-decoration:none"><i class="ti ti-eye"></i> View Member</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding print overlay (invoice / access card) -->
+  <div class="pos-print-overlay" id="onboardPrintOverlay" hidden>
+    <div class="pos-print-sheet" role="dialog" aria-modal="true" aria-labelledby="onboardPrintTitle">
+      <div class="pos-print-actions">
+        <button type="button" class="mdl-btn primary" id="btnOnboardPrintDo"><i class="ti ti-printer"></i> Print</button>
+        <button type="button" class="mdl-btn ghost" id="btnOnboardPrintClose"><i class="ti ti-x"></i> Close</button>
+      </div>
+      <p class="pos-print-caption" id="onboardPrintTitle">Print</p>
+      <iframe id="onboardPrintFrame" title="Onboarding print"></iframe>
+    </div>
+  </div>
+  <style>
+    .pos-print-overlay{position:fixed;inset:0;background:rgba(13,13,13,.45);z-index:3000;display:flex;align-items:center;justify-content:center;padding:24px}
+    .pos-print-overlay[hidden]{display:none!important}
+    .pos-print-sheet{background:#fff;border-radius:16px;border:1px solid var(--ls3,#E8E8E8);width:min(480px,100%);max-height:90vh;display:flex;flex-direction:column;padding:14px;gap:10px}
+    .pos-print-actions{display:flex;gap:8px;justify-content:flex-end}
+    .pos-print-caption{font-family:var(--fd);font-weight:700;font-size:14px;margin:0}
+    #onboardPrintFrame{width:100%;min-height:320px;border:1px solid var(--ls3,#E8E8E8);border-radius:10px;background:#F6F7F9}
+  </style>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       EDIT MEMBER DRAWER — 400px right slide
+       API: PUT /api/members/{id} → UpdateMemberRequest
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay drawer-overlay" id="editMemberDrawer">
+    <div class="drawer-panel">
+      <!-- Header -->
+      <div class="mdl-hdr">
+        <div class="mdl-title-wrap">
+          <div class="mdl-title"><i class="ti ti-edit" style="color:var(--l500)"></i> <span data-en="Edit Member" data-ar="تعديل العضو">Edit Member</span></div>
+          <div class="mdl-subtitle">تعديل بيانات العضو</div>
+          <div class="mdl-timestamp" id="editTimestamp" style="display:none"><i class="ti ti-clock"></i> <span></span></div>
+        </div>
+        <button class="mdl-close"><i class="ti ti-x"></i></button>
+      </div>
+
+      <!-- Body -->
+      <div class="mdl-body">
+        <!-- Error banner -->
+        <div class="mdl-error-banner" id="editErrorBanner">
+          <i class="ti ti-alert-circle"></i>
+          <div><div class="error-text"></div><div class="error-text-ar" style="display:none"></div></div>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="form-section">
+          <div class="section-hdr">
+            <div class="section-title" data-en="Personal Information" data-ar="المعلومات الشخصية"><i class="ti ti-user"></i> Personal Information</div>
+          </div>
+
+          <div class="mdl-form-group">
+            <label class="mdl-label"><span data-en="Full Name (English)" data-ar="الاسم الكامل (إنجليزي)">Full Name (English)</span> <span class="req">*</span></label>
+            <input type="text" class="mdl-input" id="editNameEn" placeholder="e.g. Ahmed Ali" data-en-placeholder="e.g. Ahmed Ali" data-ar-placeholder="مثال: أحمد علي">
+          </div>
+          <div class="mdl-form-group">
+            <label class="mdl-label"><span data-en="Full Name (Arabic)" data-ar="الاسم الكامل (عربي)">Full Name (Arabic)</span> <span class="req">*</span></label>
+            <input type="text" class="mdl-input rtl" id="editNameAr" placeholder="مثال: أحمد علي">
+          </div>
+          <div class="mdl-form-group">
+            <label class="mdl-label"><span data-en="Phone Number" data-ar="رقم الهاتف">Phone Number</span> <span class="req">*</span></label>
+            <div class="phone-input-wrap" id="editPhoneWrap">
+              <div class="phone-prefix"><span class="flag">🇪🇬</span> +20</div>
+              <input type="tel" class="phone-input" id="editPhone" placeholder="010 1234 5678" maxlength="15">
+            </div>
+            <div class="field-error" id="editPhoneError"><i class="ti ti-alert-circle"></i><span class="field-error-text" data-en="Invalid Egyptian phone format" data-ar="صيغة رقم الهاتف المصري غير صحيحة">Invalid Egyptian phone format</span></div>
+          </div>
+          <div class="mdl-form-group">
+            <label class="mdl-label"><span data-en="Date of Birth" data-ar="تاريخ الميلاد">Date of Birth</span> <span class="req">*</span></label>
+            <input type="date" class="mdl-input" id="editDob">
+            <div class="field-error" id="editDobError"><i class="ti ti-alert-circle"></i><span class="field-error-text" data-en="Member must be at least 10 years old" data-ar="يجب أن يكون عمر العضو 10 سنوات على الأقل">Member must be at least 10 years old</span></div>
+          </div>
+          <div class="mdl-form-group">
+            <label class="mdl-label" data-en="Email" data-ar="البريد الإلكتروني">Email</label>
+            <input type="email" class="mdl-input" id="editEmail" placeholder="member@email.com">
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="form-section">
+          <div class="section-hdr">
+            <div class="section-title" data-en="Additional Info" data-ar="معلومات إضافية"><i class="ti ti-info-circle"></i> Additional Info</div>
+            <button class="section-toggle" id="editSectionToggle" title="Toggle section" data-en-title="Toggle section" data-ar-title="طي/فتح القسم"><i class="ti ti-chevron-up"></i></button>
+          </div>
+          <div class="section-body" id="editSectionBody">
+            <div class="mdl-form-group">
+              <label class="mdl-label" data-en="National ID" data-ar="الرقم القومي">National ID</label>
+              <input type="text" class="mdl-input" id="editNationalId" placeholder="29901011234567" maxlength="14">
+            </div>
+            <div class="mdl-form-group">
+              <label class="mdl-label" data-en="Emergency Contact" data-ar="جهة اتصال للطوارئ">Emergency Contact</label>
+              <div class="phone-input-wrap">
+                <div class="phone-prefix"><span class="flag">🇪🇬</span> +20</div>
+                <input type="tel" class="phone-input" id="editEmergency" placeholder="010 9876 5432" maxlength="15">
+              </div>
+            </div>
+            <div class="mdl-form-group">
+              <label class="mdl-label" data-en="Notes" data-ar="ملاحظات">Notes</label>
+              <textarea class="mdl-input" id="editNotes" rows="3" placeholder="Notes..." data-en-placeholder="Notes..." data-ar-placeholder="ملاحظات..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="mdl-footer">
+        <button class="mdl-btn ghost" onclick="closeOverlay('editMemberDrawer')" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button class="mdl-btn primary" id="btnSaveEdit" disabled>
+          <span class="btn-spinner"></span>
+          <span class="btn-label"><i class="ti ti-device-floppy"></i> <span data-en="Save Changes" data-ar="حفظ التغييرات">Save Changes</span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete / Deactivate Member (type Delete to confirm) -->
+  <div class="modal-overlay" id="deleteMemberModal">
+    <div class="modal-panel">
+      <div class="mdl-hdr">
+        <div class="mdl-title-wrap">
+          <div class="mdl-title" id="deleteMemberTitle"><i class="ti ti-trash" style="color:var(--dng500)"></i> <span data-en="Deactivate Member?" data-ar="إلغاء تفعيل العضو؟">Deactivate Member?</span></div>
+        </div>
+        <button type="button" class="mdl-close" id="btnCloseDeleteMember"><i class="ti ti-x"></i></button>
+      </div>
+      <div class="mdl-body">
+        <p style="font-size:13px;color:var(--lts);line-height:1.5;margin:0 0 16px" data-en="This sets the account to inactive (cannot check in). Existing membership plans are not cancelled. Owner only." data-ar="هذا يوقف الحساب (لا يمكن تسجيل الحضور). خطط العضوية الحالية لا تُلغى. للمالك فقط.">This sets the <strong>account</strong> to inactive (cannot check in). Existing membership plans are <strong>not</strong> cancelled. Owner only.</p>
+        <label class="mdl-label" for="deleteMemberConfirmInput" style="text-transform:none;letter-spacing:0;font-size:13px;font-weight:500;margin-bottom:8px" data-en="Type Delete to confirm" data-ar="اكتب Delete للتأكيد">Type <strong style="color:var(--dng500);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace">Delete</strong> to confirm</label>
+        <input type="text" class="mdl-input" id="deleteMemberConfirmInput" autocomplete="off" spellcheck="false" dir="ltr" placeholder="Delete" data-en-placeholder="Delete" data-ar-placeholder="Delete">
+      </div>
+      <div class="mdl-footer">
+        <button type="button" class="mdl-btn ghost" id="btnCancelDeleteMember" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="mdl-btn danger" id="btnConfirmDeleteMember" disabled>
+          <i class="ti ti-trash"></i> <span data-en="Deactivate" data-ar="إلغاء التفعيل">Deactivate</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="/shared/gfp-deployment.js"></script>
+  <script src="/shared/refund-action.js?v=2"></script>
+  <script src="members-app.js?v=prepare1"></script>
+  <script src="member-modals.js?v=prepare1"></script>
+</body>
+
+</html>

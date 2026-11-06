@@ -1,0 +1,135 @@
+/* ── MembershipStatusCard Demo ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c400:#6B6B6B;--c300:#8C8C8C;--c200:#B0B0B0;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;--l100:#EDFCD8;
+  --suc500:#22C55E;--suc100:#DCFCE7;--wrn500:#F59E0B;--wrn100:#FEF3C7;
+  --dng500:#EF4444;--dng100:#FEE2E2;--inf500:#3B82F6;--inf100:#DBEAFE;
+  --ice:#06B6D4;--ice-bg:rgba(6,182,212,.08);--ice-border:rgba(6,182,212,.25);
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;--ls4:#D9D9D9;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Cairo',sans-serif;--fb:'Cairo',sans-serif;
+  --rmd:10px;--rlg:16px;--rpl:9999px;
+  --sh1:0 1px 3px rgba(0,0,0,.06);--sh2:0 4px 12px rgba(0,0,0,.08);
+  --tf:180ms ease
+}
+body{font-family:var(--fb);background:var(--lbg);color:var(--ltp);line-height:1.5}
+
+/* Demo page */
+.demo-page{max-width:1200px;margin:0 auto;padding:24px}
+.demo-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;padding-bottom:16px;border-bottom:1px solid var(--ls3)}
+.demo-brand{display:flex;align-items:center;gap:10px;font-family:var(--fd);font-size:16px;font-weight:700;color:var(--l600)}
+.demo-badge{font-family:var(--fd);font-size:11px;font-weight:700;padding:6px 14px;background:var(--c900);color:var(--l400);border-radius:var(--rpl);letter-spacing:.5px}
+
+/* Controls */
+.controls{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;align-items:center}
+.ctrl-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ltt);margin-right:4px}
+.ctrl-btn{height:34px;padding:0 16px;border:2px solid var(--ls3);border-radius:8px;background:var(--ls1);font-family:var(--fb);font-size:12px;font-weight:600;cursor:pointer;color:var(--lts);transition:all var(--tf)}
+.ctrl-btn:hover{border-color:var(--c200)}
+.ctrl-btn.active{border-color:var(--l500);background:var(--l100);color:var(--l600)}
+.ctrl-sep{width:1px;height:28px;background:var(--ls3);margin:0 8px}
+
+/* Section */
+.section-title{font-family:var(--fd);font-size:18px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-title i{font-size:20px;color:var(--l600)}
+
+/* Grid */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px;margin-bottom:32px}
+.compact-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:32px;max-width:600px}
+
+/* ── Full Card ── */
+.msc{border-radius:var(--rlg);border:1px solid var(--ls3);overflow:hidden;background:var(--ls1);box-shadow:var(--sh1);transition:all .2s}
+.msc:hover{box-shadow:var(--sh2)}
+.msc-top{padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.msc-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 12px;border-radius:var(--rpl)}
+.msc-status i{font-size:14px}
+.msc-plan{font-family:var(--fd);font-size:13px;font-weight:600;color:var(--lts)}
+.msc-body{padding:0 20px 16px}
+.msc-title{font-family:var(--fd);font-size:16px;font-weight:700;margin-bottom:4px}
+.msc-type{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--rpl);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:12px;background:var(--ls2);color:var(--lts)}
+.msc-type i{font-size:12px}
+
+/* Progress */
+.msc-progress{margin-bottom:12px}
+.msc-pbar{height:6px;background:var(--ls3);border-radius:3px;overflow:hidden}
+.msc-pfill{height:100%;border-radius:3px;transition:width .5s ease}
+.msc-pinfo{display:flex;justify-content:space-between;margin-top:5px;font-size:11px;color:var(--ltt)}
+.msc-pinfo strong{color:var(--ltp);font-weight:700}
+
+/* Detail row */
+.msc-details{display:flex;flex-direction:column;gap:6px}
+.msc-row{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--lts)}
+.msc-row i{font-size:14px;color:var(--ltt);width:16px;text-align:center;flex-shrink:0}
+
+/* Sessions */
+.msc-sessions{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--ls2);border-radius:8px;margin-bottom:10px}
+.msc-sessions-count{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--l600)}
+.msc-sessions-label{font-size:11px;color:var(--ltt)}
+.msc-sessions-bar{flex:1;height:4px;background:var(--ls3);border-radius:2px;overflow:hidden}
+.msc-sessions-fill{height:100%;border-radius:2px;background:var(--l500)}
+
+/* Actions */
+.msc-action{margin-top:12px}
+.msc-btn{width:100%;height:38px;border:none;border-radius:8px;font-family:var(--fb);font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all var(--tf)}
+.msc-btn.green{background:var(--suc100);color:var(--suc500)}
+.msc-btn.green:hover{background:var(--suc500);color:#fff}
+.msc-btn.ice{background:var(--ice-bg);color:var(--ice);border:1px solid var(--ice-border)}
+.msc-btn.ice:hover{background:var(--ice);color:#fff}
+.msc-btn.red{background:var(--dng500);color:#fff}
+.msc-btn.red:hover{background:#DC2626}
+.msc-btn.gray{background:var(--ls2);color:var(--ltt);cursor:default}
+
+/* Footer message */
+.msc-note{font-size:11px;color:var(--ltt);margin-top:8px;display:flex;align-items:center;gap:4px;font-style:italic}
+.msc-note i{font-size:13px}
+
+/* Cancelled strikethrough */
+.msc-strike{text-decoration:line-through;opacity:.5}
+
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.msc-spinner{width:16px;height:16px;border:2px solid rgba(245,158,11,.2);border-top-color:var(--wrn500);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+
+/* ── Status Themes ── */
+.msc.active{border-color:rgba(34,197,94,.2)}
+.msc.active .msc-top{background:rgba(34,197,94,.04)}
+.msc.active .msc-status{background:var(--suc100);color:var(--suc500)}
+.msc.active .msc-pfill{background:var(--suc500)}
+
+.msc.frozen{border-color:var(--ice-border)}
+.msc.frozen .msc-top{background:var(--ice-bg)}
+.msc.frozen .msc-status{background:var(--ice-bg);color:var(--ice)}
+
+.msc.expired{border-color:rgba(239,68,68,.2)}
+.msc.expired .msc-top{background:rgba(239,68,68,.04)}
+.msc.expired .msc-status{background:var(--dng100);color:var(--dng500)}
+.msc.expired .msc-pfill{background:var(--dng500)}
+
+.msc.pending{border-color:rgba(245,158,11,.2)}
+.msc.pending .msc-top{background:rgba(245,158,11,.04)}
+.msc.pending .msc-status{background:var(--wrn100);color:var(--wrn500)}
+
+.msc.cancelled{border-color:var(--ls3);opacity:.7}
+.msc.cancelled .msc-top{background:var(--ls2)}
+.msc.cancelled .msc-status{background:var(--ls2);color:var(--ltt)}
+
+/* ── Compact Variant ── */
+.msc-compact{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rmd);transition:all var(--tf)}
+.msc-compact:hover{box-shadow:var(--sh1)}
+.msc-compact .mcc-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.msc-compact .mcc-status.active{background:var(--suc500)}
+.msc-compact .mcc-status.frozen{background:var(--ice)}
+.msc-compact .mcc-status.expired{background:var(--dng500)}
+.msc-compact .mcc-status.pending{background:var(--wrn500)}
+.msc-compact .mcc-status.cancelled{background:var(--ls4)}
+.msc-compact .mcc-plan{font-weight:600;font-size:13px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msc-compact .mcc-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:var(--rpl);text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
+.msc-compact .mcc-badge.active{background:var(--suc100);color:var(--suc500)}
+.msc-compact .mcc-badge.frozen{background:var(--ice-bg);color:var(--ice)}
+.msc-compact .mcc-badge.expired{background:var(--dng100);color:var(--dng500)}
+.msc-compact .mcc-badge.pending{background:var(--wrn100);color:var(--wrn500)}
+.msc-compact .mcc-badge.cancelled{background:var(--ls2);color:var(--ltt)}
+.msc-compact .mcc-info{font-size:11px;color:var(--ltt);flex-shrink:0;display:flex;align-items:center;gap:4px}
+.msc-compact .mcc-info i{font-size:13px}
+.msc-compact .mcc-bar{width:60px;height:4px;background:var(--ls3);border-radius:2px;overflow:hidden;flex-shrink:0}
+.msc-compact .mcc-bar-fill{height:100%;border-radius:2px}

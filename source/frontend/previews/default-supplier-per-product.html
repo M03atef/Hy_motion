@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Default Supplier per Product</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:10px;--rlg:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:50
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:44rem;line-height:1.4}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:220px;background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{background:rgba(160,224,64,.08);color:var(--l400);border-left:3px solid var(--l500)}
+.main{flex:1;padding:24px;max-width:980px}
+h1{font-family:var(--fd);font-size:22px;margin-bottom:6px}
+.sub{color:var(--lts);font-size:13px;margin-bottom:18px;max-width:40rem;line-height:1.45}
+.card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:18px;margin-bottom:16px}
+.card h2{font-family:var(--fd);font-size:15px;margin-bottom:4px}
+.card .hint{font-size:12px;color:var(--ltt);margin-bottom:14px;line-height:1.4}
+.easy-form{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.ef-span-2{grid-column:1/-1}
+.ef-field{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--lts)}
+.ef-field input,.ef-field select{height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit;color:var(--ltp);background:#fff}
+.field-hint{font-weight:400;font-size:11px;color:var(--ltt)}
+.detail-kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv{background:var(--ls2);border-radius:var(--rmd);padding:10px 12px}
+.kv .k{font-size:11px;color:var(--ltt);font-weight:600}
+.kv .v{font-size:15px;font-weight:700;margin-top:2px}
+.muted{color:var(--ltt);font-weight:600}
+.step{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ltt);margin-bottom:8px}
+.buy-meta{font-size:13px;color:var(--lts);margin-bottom:12px}
+.note{font-size:12px;color:var(--lts);background:var(--ls2);border-radius:var(--rmd);padding:10px 12px;margin-top:12px;line-height:1.45}
+[dir=rtl] .main{font-family:'IBM Plex Sans Arabic',var(--fb)}
+@media(max-width:720px){.app{flex-direction:column}.sidebar{width:100%}.easy-form,.detail-kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    Default Supplier per Product — uses the live Products / Buy / Purchases chrome.
+    <div class="note">Optional. Convenience only. Buying from another supplier is always allowed. Historical purchases are never rewritten.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-view="edit">Create / Edit</button>
+    <button type="button" data-view="detail">Details</button>
+    <button type="button" data-view="buy">Buy drawer</button>
+    <button type="button" data-view="po">New purchase</button>
+    <button type="button" data-dir>AR / RTL</button>
+  </div>
+</div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <div class="sb-item">Dashboard</div>
+    <div class="sb-item act"><i class="ti ti-package"></i> Products</div>
+    <div class="sb-item">Purchases</div>
+    <div class="sb-item">Suppliers</div>
+  </aside>
+  <div class="main">
+    <h1 id="title">New product</h1>
+    <p class="sub" id="sub">Same first screen as the live Products desk. Default supplier sits after category — not a new supplier-management section.</p>
+
+    <section class="card" id="panel-edit">
+      <h2>Product create / edit</h2>
+      <p class="hint">Empty option = no default. The gym can still buy this product from any active supplier.</p>
+      <div class="easy-form">
+        <label class="ef-field ef-span-2"><span>Name *</span><input value="Protein 1KG" readonly></label>
+        <label class="ef-field"><span>Sell price *</span><input value="900" readonly></label>
+        <label class="ef-field"><span>Cost</span><input value="600" readonly></label>
+        <label class="ef-field"><span>Category</span><select><option>Supplements</option></select></label>
+        <label class="ef-field"><span>Qty now</span><input value="0" readonly></label>
+        <label class="ef-field ef-span-2">
+          <span>Default supplier</span>
+          <select>
+            <option>No default supplier</option>
+            <option selected>ABC Nutrition</option>
+            <option>XYZ Sports</option>
+          </select>
+          <span class="field-hint">The supplier normally used when buying this product.</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="card" id="panel-detail" hidden>
+      <h2>Product details</h2>
+      <p class="hint">Shown in the existing details drawer. Not added as a Products table column.</p>
+      <div class="detail-kv">
+        <div class="kv"><div class="k">Category</div><div class="v">Supplements</div></div>
+        <div class="kv"><div class="k">Default supplier</div><div class="v">ABC Nutrition</div></div>
+        <div class="kv"><div class="k">Unit</div><div class="v">pcs</div></div>
+        <div class="kv"><div class="k">Default supplier</div><div class="v muted">Not set</div></div>
+      </div>
+    </section>
+
+    <section class="card" id="panel-buy" hidden>
+      <h2>Buy</h2>
+      <p class="buy-meta">Protein 1KG · PROT-001 · Supplements</p>
+      <div class="step">1 · From</div>
+      <label class="ef-field">
+        <span>Supplier</span>
+        <select>
+          <option>Select supplier</option>
+          <option selected>ABC Nutrition</option>
+          <option>XYZ Sports</option>
+          <option>+ New supplier…</option>
+        </select>
+      </label>
+      <p class="note">Product-first Buy drawer preselects the product’s default supplier when that supplier is active. Changing the dropdown to XYZ Sports is kept — no snap-back, no error.</p>
+    </section>
+
+    <section class="card" id="panel-po" hidden>
+      <h2>New purchase</h2>
+      <p class="hint">Supplier-first. If Purchases opens with a product already chosen, the usual supplier is preselected.</p>
+      <label class="ef-field" style="max-width:320px;margin-bottom:12px">
+        <span>Supplier</span>
+        <select>
+          <option>Select supplier</option>
+          <option selected>ABC Nutrition</option>
+          <option>XYZ Sports</option>
+        </select>
+      </label>
+      <label class="ef-field" style="max-width:420px">
+        <span>Product</span>
+        <select>
+          <option>Select product</option>
+          <option selected>PROT-001 — Protein 1KG · usual</option>
+          <option>CREA-500 — Creatine</option>
+        </select>
+      </label>
+      <p class="note"><strong>usual</strong> is a suggestion on the product list when it matches the selected supplier. It does not hide other products or block other suppliers.</p>
+    </section>
+  </div>
+</div>
+<script>
+(function () {
+  var panels = {
+    edit: document.getElementById('panel-edit'),
+    detail: document.getElementById('panel-detail'),
+    buy: document.getElementById('panel-buy'),
+    po: document.getElementById('panel-po')
+  };
+  var titles = {
+    edit: ['New product', 'Same first screen as the live Products desk. Default supplier sits after category — not a new supplier-management section.'],
+    detail: ['Product details', 'Default supplier lives in the drawer next to category. Dense product tables stay unchanged.'],
+    buy: ['Buy', 'Preselect only. The owner can pick any other active supplier on this purchase.'],
+    po: ['New purchase', 'When a product is already known, preselect its usual supplier. Users can still override.']
+  };
+  document.querySelectorAll('[data-view]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('[data-view]').forEach(function (b) { b.classList.remove('act'); });
+      btn.classList.add('act');
+      var key = btn.getAttribute('data-view');
+      Object.keys(panels).forEach(function (k) { panels[k].hidden = k !== key; });
+      document.getElementById('title').textContent = titles[key][0];
+      document.getElementById('sub').textContent = titles[key][1];
+    });
+  });
+  document.querySelector('[data-dir]').addEventListener('click', function () {
+    var rtl = document.documentElement.dir !== 'rtl';
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = rtl ? 'ar' : 'en';
+  });
+})();
+</script>
+</body>
+</html>

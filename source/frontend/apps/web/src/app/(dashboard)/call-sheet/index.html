@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Call Sheet</title>
+<meta name="description" content="Daily member follow-up and action queue.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="call-sheet.css?v=locale2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Front desk" data-ar="الاستقبال">Front desk</span><span class="sep">/</span><span class="current" data-en="Call Sheet" data-ar="ورقة المتابعة">Call Sheet</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Call Sheet" data-ar="ورقة المتابعة">Call Sheet</h1>
+      <p class="page-subtitle" data-en="Stay on top of today's member follow-ups." data-ar="تابع متابعات الأعضاء اليوم.">Stay on top of today's member follow-ups.</p>
+    </div>
+    <button type="button" class="btn primary" id="btnAdd"><i class="ti ti-plus"></i> <span data-en="Add Follow-up" data-ar="إضافة متابعة">Add Follow-up</span></button>
+  </div>
+
+  <div class="overdue-bar" id="overdueBar" hidden>
+    <span id="overdueCopy"></span>
+  </div>
+
+  <div class="cs-toolbar">
+    <div class="cs-chips" id="dateChips">
+      <button type="button" class="chip act" data-date="today" data-en="Today" data-ar="اليوم">Today</button>
+      <button type="button" class="chip" data-date="tomorrow" data-en="Tomorrow" data-ar="بكرة">Tomorrow</button>
+      <button type="button" class="chip" data-date="upcoming" data-en="Upcoming" data-ar="القادمة">Upcoming</button>
+      <button type="button" class="chip warn" data-date="overdue" data-en="Overdue" data-ar="متأخرة">Overdue</button>
+      <button type="button" class="chip" data-date="open" data-en="Open" data-ar="مفتوحة">Open</button>
+      <button type="button" class="chip" data-date="all" data-en="All" data-ar="الكل">All</button>
+    </div>
+    <div class="cs-search"><i class="ti ti-search"></i><input id="searchQ" type="search" placeholder="Name, phone, or member number" data-en-placeholder="Name, phone, or member number" data-ar-placeholder="الاسم أو الهاتف أو رقم العضوية" autocomplete="off"></div>
+    <div class="cs-filter-wrap">
+      <button type="button" class="btn" id="btnFilters"><i class="ti ti-filter"></i> <span data-en="Filters" data-ar="الفلاتر">Filters</span> <span class="n" id="filterCount" hidden>0</span></button>
+      <div class="cs-pop" id="filterPop" hidden>
+        <h3 data-en="Filters" data-ar="الفلاتر">Filters</h3>
+        <label><span data-en="Status" data-ar="الحالة">Status</span>
+          <select id="fltStatus">
+            <option value="" data-en="All statuses" data-ar="كل الحالات">All statuses</option>
+            <option value="pending" data-en="Pending" data-ar="قيد الانتظار">Pending</option>
+            <option value="in_progress" data-en="In progress" data-ar="جارٍ التنفيذ">In progress</option>
+            <option value="contacted" data-en="Contacted" data-ar="تم التواصل">Contacted</option>
+            <option value="no_answer" data-en="No answer" data-ar="لا يوجد رد">No answer</option>
+            <option value="completed" data-en="Completed" data-ar="مكتمل">Completed</option>
+            <option value="cancelled" data-en="Cancelled" data-ar="ملغى">Cancelled</option>
+          </select>
+        </label>
+        <label><span data-en="Reason" data-ar="السبب">Reason</span>
+          <select id="fltReason">
+            <option value="" data-en="All reasons" data-ar="كل الأسباب">All reasons</option>
+            <option value="renewal" data-en="Renewal" data-ar="تجديد">Renewal</option>
+            <option value="trial" data-en="Trial" data-ar="تجربة">Trial</option>
+            <option value="payment" data-en="Payment" data-ar="دفع">Payment</option>
+            <option value="welcome" data-en="Welcome" data-ar="ترحيب">Welcome</option>
+            <option value="inactive" data-en="Inactive" data-ar="غير نشط">Inactive</option>
+            <option value="offer" data-en="Offer" data-ar="عرض">Offer</option>
+            <option value="custom" data-en="Custom" data-ar="مخصص">Custom</option>
+          </select>
+        </label>
+        <label><span data-en="Priority" data-ar="الأولوية">Priority</span>
+          <select id="fltPriority">
+            <option value="" data-en="All" data-ar="الكل">All</option>
+            <option value="high" data-en="High" data-ar="عالية">High</option>
+            <option value="medium" data-en="Medium" data-ar="متوسطة">Medium</option>
+            <option value="low" data-en="Low" data-ar="منخفضة">Low</option>
+          </select>
+        </label>
+        <label><span data-en="Assignee" data-ar="الموظف المسؤول">Assignee</span>
+          <select id="fltAssignee">
+            <option value="" data-en="All staff" data-ar="كل الموظفين">All staff</option>
+            <option value="me" data-en="My follow-ups" data-ar="متابعاتي">My follow-ups</option>
+            <option value="unassigned" data-en="Unassigned" data-ar="غير مسندة">Unassigned</option>
+          </select>
+        </label>
+        <div class="cs-pop-ft">
+          <button type="button" class="btn ghost" id="btnFilterClear" data-en="Clear" data-ar="مسح">Clear</button>
+          <button type="button" class="btn primary" id="btnFilterApply" data-en="Apply" data-ar="تطبيق">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cs-kpis" id="kpis"></div>
+  <div id="queue"></div>
+</div>
+</div>
+</div>
+
+<div class="drawer-ov" id="drawerOv" hidden>
+  <aside class="drawer" role="dialog" aria-labelledby="drawerTitle">
+    <div class="drawer-hdr">
+      <div>
+        <h2 id="drawerTitle">Member</h2>
+        <div class="drawer-id" id="drawerMeta"></div>
+      </div>
+      <button type="button" class="btn sm ghost" id="btnDrawerClose"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+    <div class="drawer-ft" id="drawerFt"></div>
+  </aside>
+</div>
+
+<div class="modal-ov" id="addOv" hidden>
+  <div class="modal" role="dialog">
+    <h3 data-en="Add follow-up" data-ar="إضافة متابعة">Add follow-up</h3>
+    <p class="hint" data-en="Search a member. Reason and due can stay as they are." data-ar="دور على العضو. السبب والموعد ممكن يفضلوا زي ما هم.">Search a member. Reason and due can stay as they are.</p>
+    <label data-en="Member" data-ar="العضو">Member</label>
+    <div class="pick">
+      <input id="addMemberQ" type="search" placeholder="Name, phone, or member number" data-en-placeholder="Name, phone, or member number" data-ar-placeholder="الاسم أو الهاتف أو رقم العضوية" autocomplete="off">
+      <div id="addMemberResults" class="pick-results" hidden></div>
+      <div id="addMemberSelected" class="pick-sel" hidden></div>
+    </div>
+    <label data-en="Reason" data-ar="السبب">Reason</label>
+    <select id="addReason">
+      <option value="custom" data-en="Custom" data-ar="مخصص">Custom</option>
+      <option value="renewal" data-en="Renewal" data-ar="تجديد">Renewal</option>
+      <option value="trial" data-en="Trial" data-ar="تجربة">Trial</option>
+      <option value="payment" data-en="Payment" data-ar="دفع">Payment</option>
+      <option value="welcome" data-en="Welcome" data-ar="ترحيب">Welcome</option>
+      <option value="inactive" data-en="Inactive" data-ar="غير نشط">Inactive</option>
+      <option value="offer" data-en="Offer" data-ar="عرض">Offer</option>
+    </select>
+    <label data-en="Priority" data-ar="الأولوية">Priority</label>
+    <select id="addPriority">
+      <option value="medium" data-en="Medium" data-ar="متوسطة">Medium</option>
+      <option value="high" data-en="High" data-ar="عالية">High</option>
+      <option value="low" data-en="Low" data-ar="منخفضة">Low</option>
+    </select>
+    <label data-en="Due" data-ar="الموعد">Due</label>
+    <input id="addDue" type="datetime-local">
+    <label data-en="Note (optional)" data-ar="ملاحظة (اختياري)">Note (optional)</label>
+    <textarea id="addNote" rows="2" maxlength="500"></textarea>
+    <div class="modal-ft">
+      <button type="button" class="btn ghost" id="btnAddCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+      <button type="button" class="btn primary" id="btnAddSave" data-en="Save" data-ar="حفظ">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-ov" id="outOv" hidden>
+  <div class="modal" role="dialog">
+    <h3 id="outTitle">Log call</h3>
+    <p class="hint" id="outHint"></p>
+    <label data-en="Call outcome" data-ar="نتيجة المكالمة">Call outcome</label>
+    <div class="choice" id="outChoices"></div>
+    <p class="hint" data-en="Outcome is history. Follow-up status stays a separate lifecycle." data-ar="النتيجة بتتسجل كسجل. حالة المتابعة بتفضل منفصلة.">Outcome is history. Follow-up status stays a separate lifecycle.</p>
+    <label data-en="Note (optional)" data-ar="ملاحظة (اختياري)">Note (optional)</label>
+    <textarea id="outNote" rows="2" maxlength="300"></textarea>
+    <label data-en="Next action" data-ar="الإجراء التالي">Next action</label>
+    <div class="choice" id="nextChoices"></div>
+    <label data-en="Follow-up at (if needed)" data-ar="موعد المتابعة (لو محتاج)">Follow-up at (if needed)</label>
+    <input id="outNextAt" type="datetime-local">
+    <div class="modal-ft">
+      <button type="button" class="btn ghost" id="btnOutCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+      <button type="button" class="btn primary" id="btnOutSave" data-en="Save" data-ar="حفظ">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="call-sheet-app.js?v=attn-fix1"></script>
+</body>
+</html>

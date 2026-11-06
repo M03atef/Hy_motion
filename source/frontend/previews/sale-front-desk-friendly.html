@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Sale desk (front-desk preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l100:#EDFCD8;
+  --suc100:#DCFCE7;--dng500:#EF4444;--dng100:#FEE2E2;
+  --lbg:#F4F5F3;--ls1:#FFFEFB;--ls2:#F3F5F2;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:18px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{
+  font-family:var(--fb);color:var(--ltp);min-height:100vh;
+  background:radial-gradient(900px 420px at 8% -8%,rgba(160,224,64,.18),transparent 50%),var(--lbg)
+}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:46rem;line-height:1.45}
+.banner code{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:6px;font-weight:500}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#0D0D0D;background:var(--l500);font-weight:700}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;background:rgba(255,254,251,.92);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.crumb .cur{color:var(--ltp)}
+.content{padding:18px 24px 40px;flex:1}
+.why{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px
+}
+@media(max-width:900px){.why{grid-template-columns:1fr}}
+.why article{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rmd);padding:12px 14px}
+.why h3{font-family:var(--fd);font-size:13px;margin-bottom:6px}
+.why ul{margin:0;padding-inline-start:18px;font-size:12px;color:var(--lts);line-height:1.55}
+.desk{
+  display:grid;grid-template-columns:minmax(0,1.6fr) minmax(320px,400px);gap:14px;align-items:start
+}
+@media(max-width:980px){.desk{grid-template-columns:1fr}.sidebar{display:none}}
+.panel{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden}
+.ticket{position:sticky;top:68px}
+.panel-h{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.panel-h h2{font-family:var(--fd);font-size:16px}
+.quiet{font-size:12px;color:var(--ltt);font-weight:600}
+.scan{
+  margin:0 16px 12px;display:flex;align-items:center;gap:10px;height:52px;padding:0 14px;
+  border:2px solid var(--ls3);border-radius:14px;background:#fff
+}
+.scan:focus-within{border-color:var(--l500);box-shadow:0 0 0 4px rgba(122,204,0,.18)}
+.scan i{font-size:22px;color:var(--l600)}
+.scan input{border:none;outline:none;flex:1;font:inherit;font-size:16px;background:transparent}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 12px}
+.chip{
+  height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--ls3);background:var(--ls2);
+  font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--lts)
+}
+.chip.act{background:rgba(122,204,0,.2);border-color:rgba(122,204,0,.45);color:#3f6212}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 16px 16px}
+@media(max-width:720px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{
+  border:1px solid var(--ls3);border-radius:14px;background:#fff;cursor:pointer;text-align:left;font:inherit;
+  overflow:hidden;display:flex;flex-direction:column;transition:transform 120ms ease,border-color 120ms ease
+}
+.tile:hover{border-color:rgba(122,204,0,.55);transform:translateY(-1px)}
+.tile.out{opacity:.45;cursor:not-allowed}
+.photo{height:92px;display:flex;align-items:center;justify-content:center;color:#fff}
+.photo i{font-size:36px}
+.ph-creat{background:linear-gradient(160deg,#111,#3f3f3f)}
+.ph-water{background:linear-gradient(160deg,#38bdf8,#0369a1)}
+.ph-pro{background:linear-gradient(160deg,#86efac,#16a34a)}
+.ph-shake{background:linear-gradient(160deg,#fde68a,#d97706)}
+.ph-prot{background:linear-gradient(160deg,#c4b5fd,#6d28d9)}
+.ph-bar{background:linear-gradient(160deg,#fda4af,#e11d48)}
+.tile-b{padding:10px 10px 12px}
+.tile-name{font-weight:700;font-size:13px;line-height:1.25}
+.tile-price{font-family:var(--fd);font-weight:700;font-size:15px;color:#3f6212;margin-top:4px}
+.tile-qty{font-size:11px;color:var(--ltt);margin-top:2px}
+.empty{
+  padding:28px 18px 12px;text-align:center;color:var(--ltt)
+}
+.empty i{font-size:36px;color:var(--l500);display:block;margin-bottom:8px}
+.empty strong{display:block;color:var(--ltp);font-family:var(--fd);margin-bottom:4px}
+.lines{padding:0 8px 8px;max-height:280px;overflow:auto}
+.line{
+  display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;
+  padding:10px 8px;border-bottom:1px solid var(--ls2)
+}
+.line .mini{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff}
+.line .mini i{font-size:20px}
+.nm{font-weight:700;font-size:13px}
+.step{display:inline-flex;align-items:center;border:1px solid var(--ls3);border-radius:10px;overflow:hidden;margin-top:6px}
+.step button{width:32px;height:32px;border:none;background:#fff;font-size:16px;cursor:pointer}
+.step span{min-width:28px;text-align:center;font-weight:700;font-family:var(--fd);font-size:13px}
+.amt{font-family:var(--fd);font-weight:700;font-size:14px}
+.rm{border:none;background:none;color:var(--ltt);cursor:pointer;font-size:16px}
+.hero{
+  margin:8px 16px;padding:14px;border-radius:14px;background:linear-gradient(180deg,#fff,rgba(160,224,64,.16));
+  border:1px solid rgba(122,204,0,.28)
+}
+.hero .k{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ltt)}
+.hero .v{font-family:var(--fd);font-size:34px;font-weight:700;letter-spacing:-.03em;color:#3f6212}
+.pay{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 10px}
+.pay button{
+  height:48px;border-radius:12px;border:2px solid var(--ls3);background:#fff;font:inherit;font-weight:700;cursor:pointer
+}
+.pay button.act{background:rgba(122,204,0,.22);border-color:var(--l500)}
+.take{
+  margin:0 16px 8px;height:52px;width:calc(100% - 32px);border:none;border-radius:14px;
+  background:linear-gradient(180deg,var(--l400),var(--l500));color:var(--c900);
+  font:inherit;font-weight:800;font-size:16px;cursor:pointer
+}
+.take:disabled{opacity:.4;cursor:not-allowed}
+.more{margin:0 16px 16px;font-size:12px;color:var(--l600);background:none;border:none;cursor:pointer;font-weight:700}
+.done{padding:22px 18px 18px;text-align:center}
+.done i{font-size:40px;color:var(--l500)}
+.done h3{font-family:var(--fd);font-size:22px;margin:8px 0 4px}
+.done p{color:var(--lts);font-size:13px}
+.done .v{font-family:var(--fd);font-size:28px;font-weight:700;margin:10px 0}
+.shift{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#166534;background:var(--suc100);padding:4px 10px;border-radius:999px}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW — not live Sale.
+    <div class="note">Front-desk version: one search, equal product photos, a ticket with a big total, Cash/Card, then Take money. No warehouse. No idempotency UUID. Engines stay the same.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" id="btnEn">EN</button>
+    <button type="button" id="btnAr">عربي</button>
+  </div>
+</div>
+<div class="app">
+<aside class="sidebar">
+  <div class="sb-hdr"><div class="mark"></div><span>Fitness Hub</span></div>
+  <div class="sb-sec">Front desk</div>
+  <div class="sb-item act"><i class="ti ti-shopping-cart"></i> Sale</div>
+  <div class="sb-item"><i class="ti ti-users"></i> Members</div>
+  <div class="sb-item"><i class="ti ti-package"></i> Products</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div class="crumb">🏠 <span class="sep">/</span> <span class="cur" data-en="Sale" data-ar="البيع">Sale</span></div>
+    <span class="shift"><i class="ti ti-cash"></i> <span data-en="Shift open · Ahmed" data-ar="وردية مفتوحة · أحمد">Shift open · Ahmed</span></span>
+  </header>
+  <div class="content">
+    <div class="why">
+      <article>
+        <h3 data-en="What’s wrong on the live desk" data-ar="إيه الغلط في الشاشة الحالية">What’s wrong on the live desk</h3>
+        <ul>
+          <li data-en="Two search boxes. Reception scans one thing — a barcode or a name." data-ar="صندوقين بحث. الاستقبال بيمسح حاجة واحدة.">Two search boxes. Reception scans one thing — a barcode or a name.</li>
+          <li data-en="Idempotency UUID is for the server, not the person at the counter." data-ar="رقم الـ UUID ده للسيرفر، مش للي واقف على المكتب.">Idempotency UUID is for the server, not the person at the counter.</li>
+          <li data-en="Pay & Complete sale sit there while the cart is empty. Looks broken." data-ar="الدفع و«تمم البيع» ظاهرين والسلة فاضية.">Pay & Complete sale sit there while the cart is empty. Looks broken.</li>
+          <li data-en="Product photos are tiny and uneven. The eye should hit the item, then the price." data-ar="صور المنتجات صغيرة ومش موحّدة.">Product photos are tiny and uneven. The eye should hit the item, then the price.</li>
+        </ul>
+      </article>
+      <article>
+        <h3 data-en="What a receptionist actually does" data-ar="الشغل الحقيقي على المكتب">What a receptionist actually does</h3>
+        <ul>
+          <li data-en="Scan or tap. See the ticket. Take cash or card. Print. Next person." data-ar="امسح أو اضغط. شوف التذكرة. خد الكاش أو الكارت. اطبع. اللي بعده.">Scan or tap. See the ticket. Take cash or card. Print. Next person.</li>
+          <li data-en="Walk-in is the default. Member phone is optional, under More." data-ar="العميل العادي هو الأساس. رقم العضو اختياري تحت المزيد.">Walk-in is the default. Member phone is optional, under More.</li>
+          <li data-en="Warehouse stays invisible. Stock still deducts from the default one." data-ar="المخزن مش ظاهر. الخصم يتم من المخزن الافتراضي.">Warehouse stays invisible. Stock still deducts from the default one.</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="desk">
+      <section class="panel">
+        <div class="panel-h">
+          <h2 data-en="Products" data-ar="المنتجات">Products</h2>
+          <span class="quiet" data-en="Tap to add" data-ar="اضغط عشان تضيف">Tap to add</span>
+        </div>
+        <label class="scan">
+          <i class="ti ti-barcode"></i>
+          <input id="q" data-en-placeholder="Scan or type a name…" data-ar-placeholder="امسح أو اكتب الاسم…" placeholder="Scan or type a name…" autocomplete="off">
+        </label>
+        <div class="chips" id="chips"></div>
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <aside class="panel ticket" id="ticket"></aside>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function () {
+  var ar = false;
+  var pay = 'cash';
+  var cat = 'all';
+  var phase = 'sell';
+  var cart = [];
+  var PRODUCTS = [
+    { id: 'c', name: 'Creatine', nameAr: 'كرياتين', price: 900, cat: 'supp', cls: 'ph-creat', icon: 'ti-bottle', qty: 24 },
+    { id: 'w', name: 'Mineral Water', nameAr: 'مياه', price: 7, cat: 'drink', cls: 'ph-water', icon: 'ti-bottle', qty: 80 },
+    { id: 'p', name: 'Pro', nameAr: 'برو', price: 45, cat: 'drink', cls: 'ph-pro', icon: 'ti-bottle', qty: 18 },
+    { id: 's', name: 'Protein Shake', nameAr: 'شيك بروتين', price: 300, cat: 'supp', cls: 'ph-shake', icon: 'ti-glass-full', qty: 9 },
+    { id: 'b', name: 'Protein', nameAr: 'بروتين', price: 1000, cat: 'supp', cls: 'ph-prot', icon: 'ti-barbell', qty: 6 },
+    { id: 'r', name: 'Protein bar', nameAr: 'بار بروتين', price: 70, cat: 'snack', cls: 'ph-bar', icon: 'ti-candy', qty: 12 }
+  ];
+
+  function t(en, a) { return ar ? a : en; }
+  function money(n) {
+    return 'EGP ' + Number(n).toLocaleString('en-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  function total() {
+    return cart.reduce(function (s, l) { return s + l.qty * l.price; }, 0);
+  }
+  function applyLocale() {
+    document.documentElement.lang = ar ? 'ar' : 'en';
+    document.documentElement.dir = ar ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-en]').forEach(function (el) {
+      el.textContent = ar ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+    });
+    var inp = document.getElementById('q');
+    inp.placeholder = ar ? inp.getAttribute('data-ar-placeholder') : inp.getAttribute('data-en-placeholder');
+    document.getElementById('btnEn').classList.toggle('act', !ar);
+    document.getElementById('btnAr').classList.toggle('act', ar);
+  }
+  function chips() {
+    var host = document.getElementById('chips');
+    var items = [
+      ['all', t('All', 'الكل')],
+      ['drink', t('Drinks', 'مشروبات')],
+      ['supp', t('Supplements', 'مكملات')],
+      ['snack', t('Snacks', 'سناكس')]
+    ];
+    host.innerHTML = items.map(function (x) {
+      return '<button type="button" class="chip' + (cat === x[0] ? ' act' : '') + '" data-c="' + x[0] + '">' + x[1] + '</button>';
+    }).join('');
+    host.querySelectorAll('button').forEach(function (b) {
+      b.onclick = function () { cat = b.getAttribute('data-c'); render(); };
+    });
+  }
+  function grid() {
+    var q = (document.getElementById('q').value || '').trim().toLowerCase();
+    var host = document.getElementById('grid');
+    var rows = PRODUCTS.filter(function (p) {
+      if (cat !== 'all' && p.cat !== cat) return false;
+      if (!q) return true;
+      return (p.name + ' ' + p.nameAr).toLowerCase().indexOf(q) !== -1;
+    });
+    host.innerHTML = rows.map(function (p) {
+      var name = ar ? p.nameAr : p.name;
+      return (
+        '<button type="button" class="tile' + (p.qty <= 0 ? ' out' : '') + '" data-id="' + p.id + '">' +
+        '<div class="photo ' + p.cls + '"><i class="ti ' + p.icon + '"></i></div>' +
+        '<div class="tile-b"><div class="tile-name">' + name + '</div>' +
+        '<div class="tile-price">' + money(p.price) + '</div>' +
+        '<div class="tile-qty">' + t('In stock', 'متاح') + ' ' + p.qty + '</div></div></button>'
+      );
+    }).join('') || '<p class="empty">' + t('No match. Scan the barcode.', 'مفيش نتيجة. امسح الباركود.') + '</p>';
+    host.querySelectorAll('.tile').forEach(function (b) {
+      b.onclick = function () { add(b.getAttribute('data-id')); };
+    });
+  }
+  function add(id) {
+    var p = PRODUCTS.find(function (x) { return x.id === id; });
+    if (!p || p.qty <= 0) return;
+    var line = cart.find(function (l) { return l.id === id; });
+    if (line) line.qty += 1;
+    else cart.push({ id: p.id, name: p.name, nameAr: p.nameAr, price: p.price, cls: p.cls, icon: p.icon, qty: 1 });
+    phase = 'sell';
+    render();
+  }
+  function ticket() {
+    var host = document.getElementById('ticket');
+    if (phase === 'done') {
+      host.innerHTML =
+        '<div class="done"><i class="ti ti-check"></i><h3>' + t('Paid', 'اتدفع') + '</h3>' +
+        '<p>' + t(pay === 'cash' ? 'Cash' : 'Card', pay === 'cash' ? 'كاش' : 'كارت') + '</p>' +
+        '<div class="v">' + money(total() || lastTotal) + '</div>' +
+        '<button type="button" class="take" id="btnPrint">' + t('Print receipt', 'اطبع الإيصال') + '</button>' +
+        '<button type="button" class="more" id="btnNew">' + t('Next customer', 'العميل اللي بعده') + '</button></div>';
+      document.getElementById('btnNew').onclick = function () {
+        cart = []; phase = 'sell'; render();
+      };
+      return;
+    }
+    if (!cart.length) {
+      host.innerHTML =
+        '<div class="panel-h"><h2>' + t('Ticket', 'التذكرة') + '</h2><span class="quiet">0</span></div>' +
+        '<div class="empty"><i class="ti ti-shopping-cart"></i><strong>' + t('Waiting for the first item', 'مستني أول صنف') + '</strong>' +
+        t('Scan or tap a product. Pay appears after that.', 'امسح أو اضغط منتج. الدفع بيظهر بعد كده.') + '</div>';
+      return;
+    }
+    host.innerHTML =
+      '<div class="panel-h"><h2>' + t('Ticket', 'التذكرة') + '</h2><span class="quiet">' + cart.length + '</span></div>' +
+      '<div class="lines">' + cart.map(function (l, i) {
+        return (
+          '<div class="line"><div class="mini ' + l.cls + '"><i class="ti ' + l.icon + '"></i></div>' +
+          '<div><div class="nm">' + (ar ? l.nameAr : l.name) + '</div>' +
+          '<div class="step"><button type="button" data-d="' + i + '">−</button><span>' + l.qty + '</span><button type="button" data-u="' + i + '">+</button></div></div>' +
+          '<div><div class="amt">' + money(l.qty * l.price) + '</div>' +
+          '<button type="button" class="rm" data-x="' + i + '"><i class="ti ti-x"></i></button></div></div>'
+        );
+      }).join('') + '</div>' +
+      '<div class="hero"><div class="k">' + t('To collect', 'المطلوب') + '</div><div class="v">' + money(total()) + '</div></div>' +
+      '<div class="pay">' +
+      '<button type="button" class="' + (pay === 'cash' ? 'act' : '') + '" data-pay="cash">' + t('Cash', 'كاش') + '</button>' +
+      '<button type="button" class="' + (pay === 'card' ? 'act' : '') + '" data-pay="card">' + t('Card', 'كارت') + '</button></div>' +
+      '<button type="button" class="take" id="btnTake">' + t('Take ', 'خد ') + money(total()) + '</button>' +
+      '<button type="button" class="more">' + t('Member phone / split pay', 'رقم عضو / تقسيم الدفع') + '</button>';
+    host.querySelectorAll('[data-d]').forEach(function (b) {
+      b.onclick = function () {
+        var i = Number(b.getAttribute('data-d'));
+        cart[i].qty -= 1;
+        if (cart[i].qty <= 0) cart.splice(i, 1);
+        render();
+      };
+    });
+    host.querySelectorAll('[data-u]').forEach(function (b) {
+      b.onclick = function () { cart[Number(b.getAttribute('data-u'))].qty += 1; render(); };
+    });
+    host.querySelectorAll('[data-x]').forEach(function (b) {
+      b.onclick = function () { cart.splice(Number(b.getAttribute('data-x')), 1); render(); };
+    });
+    host.querySelectorAll('[data-pay]').forEach(function (b) {
+      b.onclick = function () { pay = b.getAttribute('data-pay'); render(); };
+    });
+    document.getElementById('btnTake').onclick = function () { lastTotal = total(); phase = 'done'; render(); };
+  }
+  var lastTotal = 0;
+  function render() {
+    applyLocale();
+    chips();
+    grid();
+    ticket();
+  }
+  document.getElementById('btnEn').onclick = function () { ar = false; render(); };
+  document.getElementById('btnAr').onclick = function () { ar = true; render(); };
+  document.getElementById('q').addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

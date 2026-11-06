@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion Local — First-Run Setup (Preview only)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0D0D0D;
+  --ink-2:#1A1A1A;
+  --muted:#5C5C5C;
+  --faint:#8C8C8C;
+  --line:#E2E4E1;
+  --paper:#FFFFFF;
+  --soft:#F4F6F2;
+  --lime:#7ACC00;
+  --lime-deep:#5EA300;
+  --lime-wash:#EDFCD8;
+  --ok:#166534;
+  --ok-bg:#F0FDF4;
+  --warn:#92400E;
+  --warn-bg:#FFFBEB;
+  --danger:#B91C1C;
+  --danger-bg:#FEF2F2;
+  --info:#0F4C5C;
+  --info-bg:#ECFEFF;
+  --radius:14px;
+  --font:Cairo,system-ui,sans-serif;
+  --shadow:0 18px 50px rgba(13,13,13,.10);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(122,204,0,.18), transparent 55%),
+    radial-gradient(900px 420px at 100% 0%, rgba(15,76,92,.10), transparent 50%),
+    linear-gradient(180deg,#EEF1EB 0%, #F7F8F5 40%, #F3F4F1 100%);
+  min-height:100dvh;
+  font-size:14px;
+  line-height:1.45;
+}
+[dir="rtl"] body{ /* dir on html */ }
+
+.banner{
+  position:sticky;top:0;z-index:50;
+  background:#111827;color:#fff;
+  padding:10px 16px;
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:flex-start;
+  border-bottom:1px solid #1f2937;
+}
+.banner strong{display:block;font-size:13px}
+.banner .note{font-size:12px;opacity:.9;max-width:52rem;margin-top:4px;line-height:1.45}
+.controls{display:flex;flex-wrap:wrap;gap:8px}
+.controls button,.chip{
+  height:32px;padding:0 12px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;
+  font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+}
+.controls button.act,.chip.act{background:#fff;color:#111827;border-color:#fff}
+
+.scenario-bar{
+  display:flex;flex-wrap:wrap;gap:8px;padding:10px 16px;
+  background:rgba(255,255,255,.72);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.scenario-bar .chip{border-color:var(--line);color:var(--ink-2);background:var(--paper)}
+.scenario-bar .chip.act{background:var(--lime);color:var(--ink);border-color:var(--lime)}
+
+.shell{
+  display:grid;grid-template-columns:300px 1fr;
+  gap:0;max-width:1180px;margin:0 auto;
+  min-height:calc(100dvh - 118px);
+}
+@media (max-width:960px){
+  .shell{grid-template-columns:1fr}
+  .rail{order:-1;position:sticky;top:72px;z-index:20}
+}
+
+.rail{
+  padding:18px 16px 28px;
+  border-inline-end:1px solid var(--line);
+  background:rgba(255,255,255,.55);
+  font-size:12px;color:var(--muted);line-height:1.5;
+}
+[dir="rtl"] .rail{border-inline-end:0;border-inline-start:1px solid var(--line)}
+.rail h2{margin:0 0 6px;font-size:14px;color:var(--ink)}
+.rail h3{margin:16px 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+.rail ul{margin:0;padding-inline-start:16px}
+.rail li{margin:0 0 6px}
+.rail .rule{
+  background:#111827;color:#E5E7EB;border-radius:10px;padding:10px 12px;margin-top:10px;
+  font-size:11px;line-height:1.45;
+}
+.rail .rule b{color:var(--lime)}
+.rail .state-pill{
+  display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;
+  background:var(--lime-wash);color:#3F6B00;font-weight:700;font-size:11px;margin-bottom:8px;
+}
+
+.stage{padding:28px 16px 56px;display:flex;justify-content:center;align-items:flex-start}
+.frame{
+  width:100%;max-width:560px;
+  background:var(--paper);
+  border:1px solid rgba(13,13,13,.06);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  position:relative;
+}
+.frame::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:4px;
+  background:linear-gradient(90deg,var(--lime),#B8F000 55%,#0F4C5C);
+}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 0;gap:12px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;
+}
+.brand img{width:36px;height:36px;display:block}
+.brand .name{font-size:18px;font-weight:800;color:var(--lime-deep);letter-spacing:-.02em}
+.lang-btn{
+  height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--soft);color:var(--muted);font:inherit;font-size:12px;font-weight:700;cursor:pointer;
+}
+
+.progress{
+  display:flex;gap:6px;flex-wrap:wrap;padding:14px 20px 0;
+}
+.progress span{
+  font-size:11px;color:var(--faint);padding:4px 9px;border-radius:999px;background:var(--soft);font-weight:600;
+}
+.progress span.on{background:var(--lime-wash);color:#3F6B00;font-weight:800}
+.progress span.done{background:#E8F5D8;color:#3F6B00}
+
+.panel{padding:18px 22px 24px}
+.hero{
+  text-align:center;padding:28px 8px 8px;
+}
+.hero .mark-lg{
+  width:64px;height:64px;margin:0 auto 16px;border-radius:16px;
+  background:linear-gradient(160deg,#0D0D0D,#1F2420);
+  display:grid;place-items:center;box-shadow:0 10px 30px rgba(13,13,13,.18);
+}
+.hero .mark-lg img{width:40px;height:40px}
+.hero h1{font-size:28px;line-height:1.15;margin:0 0 8px;font-weight:800;letter-spacing:-.03em}
+.hero p{margin:0 auto;max-width:34ch;color:var(--muted);font-size:14px}
+.kicker{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--lime-deep);margin-bottom:8px}
+[dir="rtl"] .kicker{letter-spacing:0}
+
+h1.panel-title{font-size:24px;margin:4px 0 6px;font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--muted);font-size:13px;margin:0 0 16px;line-height:1.5}
+.identity{
+  background:var(--soft);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;margin-bottom:14px;font-size:13px;
+}
+.identity strong{display:block;font-size:15px;margin-bottom:2px}
+.identity code{font-family:ui-monospace,Consolas,monospace;font-weight:700}
+
+label.field{display:block;font-size:12px;font-weight:700;margin:12px 0 6px;color:var(--ink-2)}
+label .req{color:var(--danger)}
+input,textarea{
+  width:100%;height:46px;padding:0 14px;border:1px solid var(--line);border-radius:12px;
+  font:inherit;color:var(--ink);background:var(--paper);
+}
+input:focus{outline:2px solid var(--lime);outline-offset:1px;border-color:transparent}
+input.err{border-color:var(--danger)}
+input.license{font-family:ui-monospace,Consolas,monospace;letter-spacing:.04em;text-transform:uppercase;unicode-bidi:isolate;direction:ltr}
+.hint{font-size:11px;color:var(--faint);margin-top:5px;line-height:1.4}
+.field-err{font-size:11px;color:var(--danger);margin-top:4px;display:none}
+.field-err.show{display:block}
+
+.btn{
+  width:100%;height:48px;border:none;border-radius:12px;font:inherit;font-weight:800;font-size:15px;
+  cursor:pointer;margin-top:10px;
+}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-primary{background:var(--lime);color:var(--ink)}
+.btn-primary:hover:not(:disabled){background:var(--lime-deep);color:#fff}
+.btn-secondary{background:transparent;border:1px solid var(--line);color:var(--ink);height:44px;font-size:14px;font-weight:700}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid #FECACA;font-weight:800}
+.row{display:flex;gap:8px;margin-top:8px}
+.row .btn{flex:1;margin-top:0}
+
+.choice{
+  display:block;width:100%;text-align:start;border:1px solid var(--line);background:var(--paper);
+  border-radius:14px;padding:16px;margin:0 0 10px;cursor:pointer;transition:border-color .15s,box-shadow .15s;
+}
+.choice:hover{border-color:var(--lime);box-shadow:0 0 0 3px rgba(122,204,0,.12)}
+.choice h2{font-size:16px;margin:0 0 4px;font-weight:800}
+.choice p{margin:0;font-size:12px;color:var(--muted);font-weight:500;line-height:1.45}
+.choice.danger-choice{border-color:#FECACA;background:#FFFCFC}
+.choice .tag{
+  display:inline-flex;margin-bottom:8px;height:22px;padding:0 8px;border-radius:999px;
+  font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--lime-wash);color:#3F6B00;
+}
+.choice.danger-choice .tag{background:#FEE2E2;color:#991B1B}
+
+.alert{
+  margin-top:12px;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.45;display:none;
+}
+.alert.show{display:block}
+.alert.ok{background:var(--ok-bg);color:var(--ok)}
+.alert.warn{background:var(--warn-bg);color:var(--warn)}
+.alert.err{background:var(--danger-bg);color:var(--danger)}
+.alert.info{background:var(--info-bg);color:var(--info)}
+
+.review dt{font-size:11px;color:var(--faint);margin-top:10px}
+.review dd{font-size:14px;font-weight:700;margin:2px 0 0}
+.gym-code{
+  font-family:ui-monospace,Consolas,monospace;font-size:18px;font-weight:800;
+  background:var(--soft);border:1px dashed var(--line);border-radius:12px;
+  padding:14px;margin:10px 0 16px;text-align:center;letter-spacing:.08em;
+  unicode-bidi:isolate;direction:ltr;
+}
+.done-check{
+  width:56px;height:56px;border-radius:50%;margin:8px auto 14px;
+  background:var(--lime-wash);color:#3F6B00;display:grid;place-items:center;font-size:28px;font-weight:800;
+}
+.loading{
+  text-align:center;padding:48px 20px;color:var(--muted);
+}
+.spinner{
+  width:28px;height:28px;border:3px solid var(--line);border-top-color:var(--lime);
+  border-radius:50%;margin:0 auto 12px;animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-in{animation:fade .28s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hidden{display:none !important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <strong>PREVIEW ONLY — HyMotion Local first-run setup</strong>
+    <div class="note">Demo data. Does not call Local APIs, activate licenses, create gyms, reset passwords, or touch databases. Production setup is unchanged until you approve.</div>
+  </div>
+  <div class="controls">
+    <button type="button" id="btnEn" class="act">EN</button>
+    <button type="button" id="btnAr">AR</button>
+    <button type="button" id="btnReset">Reset demo</button>
+  </div>
+</div>
+
+<div class="scenario-bar" id="scenarioBar" aria-label="Demo scenarios"></div>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="state-pill" id="railState">Clean install</div>
+    <h2 data-i18n="railTitle">Review notes</h2>
+    <p data-i18n="railIntro">This preview proposes the premium journey on top of the verified Local setup rules. Nothing here weakens licensing or recovery.</p>
+    <h3 data-i18n="railJourney">Current step</h3>
+    <ul id="railSteps"></ul>
+    <h3 data-i18n="railRules">Must preserve</h3>
+    <div class="rule">
+      <b data-i18n="rule1t">License always</b><br>
+      <span data-i18n="rule1">Validate (Check) before continue. Activate only on complete. Existing may offline-match; New Gym needs online.</span>
+    </div>
+    <div class="rule">
+      <b data-i18n="rule2t">Paths stay separate</b><br>
+      <span data-i18n="rule2">Existing = restore Owner on same gym. New Gym replace = Owner JWT + START NEW GYM + verified backup.</span>
+    </div>
+    <div class="rule">
+      <b data-i18n="rule3t">Owner password recovery</b><br>
+      <span data-i18n="rule3">Still on Login (operator-approved code). Not this wizard. Missing Owner → Existing Gym first.</span>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <div class="frame" id="frame" aria-live="polite">
+      <div class="topbar">
+        <div class="brand">
+          <img src="hymotion-mark.png" alt="HyMotion" width="36" height="36">
+          <span class="name">HyMotion</span>
+        </div>
+        <button type="button" class="lang-btn" id="langToggle">EN English</button>
+      </div>
+      <div class="progress" id="progress" hidden></div>
+      <div class="panel fade-in" id="panel"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var MARK = 'hymotion-mark.png';
+  var CONFIRM = 'START NEW GYM';
+  var DEMO_KEY = 'HY-LCL-DEMO1-VALID';
+  var DEMO_BAD = 'HY-LCL-WRONG-KEY99';
+
+  var i18n = {
+    en: {
+      railTitle: 'Review notes',
+      railIntro: 'This preview proposes the premium journey on top of the verified Local setup rules. Nothing here weakens licensing or recovery.',
+      railJourney: 'Current step',
+      railRules: 'Must preserve',
+      rule1t: 'License always',
+      rule1: 'Validate (Check) before continue. Activate only on complete. Existing may offline-match; New Gym needs online.',
+      rule2t: 'Paths stay separate',
+      rule2: 'Existing = restore Owner on same gym. New Gym replace = Owner JWT + START NEW GYM + verified backup.',
+      rule3t: 'Owner password recovery',
+      rule3: 'Still on Login (operator-approved code). Not this wizard. Missing Owner → Existing Gym first.',
+      welcomeKicker: 'Local desk',
+      welcomeTitle: 'Welcome to HyMotion',
+      welcomeBody: 'Set up your gym desk in a few clear steps. Your members and sales stay on this PC.',
+      welcomeCta: 'Get started',
+      welcomeHelp: 'Already set up? You will sign in after setup finishes.',
+      stepWelcome: 'Welcome',
+      stepLicense: 'License',
+      stepPath: 'Choose path',
+      stepConfirm: 'Confirm',
+      stepBackup: 'Backup',
+      stepGym: 'Gym',
+      stepOwner: 'Owner',
+      stepReview: 'Review',
+      stepDone: 'Ready',
+      licenseTitle: 'Enter your license',
+      licenseSub: 'Your purchase unlocks this gym PC. We check the key now; the device slot is taken only when setup finishes.',
+      licenseKey: 'License key',
+      licenseHint: 'From your HyMotion purchase confirmation.',
+      licenseNext: 'Validate license',
+      licenseValidating: 'Checking license…',
+      licenseOk: 'License looks good. You can continue.',
+      licenseInvalid: 'This license key is not valid for this PC. Check the key and try again.',
+      licenseNetwork: 'We could not reach HyMotion to check this key. For a new gym, internet is required. For an existing gym, a matching offline license may still work.',
+      licenseOfflineOk: 'License matches the signed license already on this PC. You can continue while offline.',
+      licenseExistingNote: 'License validation is required even if this PC was licensed before.',
+      licenseNewNote: 'A license key is required before a new gym can be created.',
+      pathTitle: 'How should we continue?',
+      pathExistingTitle: 'Existing Gym',
+      pathExistingBody: 'Keep this gym’s members, sales, attendance, and shifts. Restore Owner access on the same gym.',
+      pathExistingTag: 'Safe recovery',
+      pathNewTitle: 'New Gym',
+      pathNewBody: 'Retire the current gym and create a new empty gym. This is a destructive reset — not ordinary setup.',
+      pathNewTag: 'Destructive',
+      pathLogin: 'Continue to sign in',
+      pathOwnerNeeded: 'Sign in as this gym’s Owner before starting a New Gym on this PC.',
+      pathOwnerMissingHint: 'Owner access is missing. Use Existing Gym to restore it. Do not start a New Gym.',
+      confirmTitle: 'Retire this gym and start a new one',
+      confirmSub: 'Members, sales, attendance, and shifts will not appear in the new gym. A backup is required first.',
+      confirmWarn: 'Type the English confirmation phrase exactly. This cannot be undone from this screen.',
+      confirmLabel: 'Type START NEW GYM to continue',
+      confirmErr: 'Type START NEW GYM exactly to confirm.',
+      confirmNext: 'I understand — continue',
+      backupTitle: 'Back up the current gym',
+      backupSub: 'A usable local backup must succeed before anything is replaced. If this fails, the current gym stays unchanged.',
+      backupHonesty: 'This backup is stored on this PC. Copy to USB with HyMotion Backup if you need an off-box copy.',
+      backupRun: 'Create backup',
+      backupCreating: 'Creating backup…',
+      backupOk: 'Backup created. You can continue.',
+      backupFail: 'A safe backup could not be created. The existing gym has not been changed.',
+      gymTitle: 'Name your gym',
+      gymSub: 'This is the name staff will see on the desk.',
+      gymName: 'Gym name',
+      gymNameErr: 'Gym name is required.',
+      phone: 'Phone (optional)',
+      ownerTitle: 'Create the Owner account',
+      ownerExisting: 'This Owner belongs to the existing gym. Business data stays.',
+      ownerNew: 'This Owner will manage the new gym.',
+      ownerName: 'Full name',
+      ownerEmail: 'Email',
+      ownerPassword: 'Password',
+      ownerPasswordHint: 'At least 8 characters.',
+      ownerPasswordConfirm: 'Confirm password',
+      ownerNameErr: 'Owner name is required.',
+      ownerEmailErr: 'A valid email is required.',
+      ownerPasswordErr: 'Password must be at least 8 characters.',
+      ownerPasswordConfirmErr: 'Passwords do not match.',
+      reviewTitle: 'Review and finish',
+      reviewExisting: 'Restore Owner access to the same gym.',
+      reviewNew: 'This retires the current gym and creates a new empty gym.',
+      reviewClean: 'Create this gym on this PC.',
+      complete: 'Complete setup',
+      completing: 'Finishing setup…',
+      doneExistingTitle: 'Owner access restored',
+      doneExisting: 'The gym identity is unchanged. Members and sales stay.',
+      doneCleanTitle: 'Your gym is ready',
+      doneClean: 'Keep this gym code. You will need it when you sign in.',
+      doneReplaceTitle: 'New gym created',
+      doneReplace: 'The previous gym was retired. Use HyMotion Backup if you need to restore it.',
+      gymCode: 'Gym code',
+      signIn: 'Enter the desk',
+      back: 'Back',
+      continue: 'Continue',
+      mode: 'Mode',
+      modeExisting: 'Existing Gym — restore Owner',
+      modeNew: 'New Gym',
+      currentGym: 'Current gym',
+      licenseLabel: 'License',
+      validated: 'Validated',
+      validatedOffline: 'Validated offline',
+      loading: 'Checking this PC…',
+      identityGym: 'Gym',
+      identityCode: 'Gym code',
+      scenarioClean: 'Clean install',
+      scenarioOwnerMissing: 'Owner missing',
+      scenarioReplace: 'Replace gym',
+      scenarioInvalid: 'Invalid license',
+      scenarioNetwork: 'Network down',
+      scenarioOffline: 'Offline Existing',
+      demoNote: 'Demo auto-fills: use HY-LCL-DEMO1-VALID for success scenarios.'
+    },
+    ar: {
+      railTitle: 'ملاحظات المراجعة',
+      railIntro: 'هذه المعاينة تقترح رحلة إعداد فاخرة فوق قواعد الإعداد المحلي الموثّقة. لا تُضعف الترخيص أو الاستعادة.',
+      railJourney: 'الخطوة الحالية',
+      railRules: 'يجب الحفاظ عليه',
+      rule1t: 'الرخصة دائماً',
+      rule1: 'التحقق (Check) قبل المتابعة. التفعيل عند الإتمام فقط. القائمة قد تطابق دون اتصال؛ الصالة الجديدة تحتاج إنترنت.',
+      rule2t: 'المساران منفصلان',
+      rule2: 'قائمة = استعادة المالك لنفس الصالة. جديدة = JWT المالك + START NEW GYM + نسخة مؤكدة.',
+      rule3t: 'استعادة كلمة مرور المالك',
+      rule3: 'تبقى في تسجيل الدخول (رمز معتمد من الدعم). ليست هذا المعالج. المالك المفقود → صالة قائمة أولاً.',
+      welcomeKicker: 'مكتب محلي',
+      welcomeTitle: 'مرحباً بك في HyMotion',
+      welcomeBody: 'جهّز مكتب صالتك بخطوات واضحة. الأعضاء والمبيعات تبقى على هذا الجهاز.',
+      welcomeCta: 'ابدأ',
+      welcomeHelp: 'سبق الإعداد؟ ستسجّل الدخول بعد انتهاء الإعداد.',
+      stepWelcome: 'ترحيب',
+      stepLicense: 'الرخصة',
+      stepPath: 'اختيار المسار',
+      stepConfirm: 'تأكيد',
+      stepBackup: 'نسخ',
+      stepGym: 'الصالة',
+      stepOwner: 'المالك',
+      stepReview: 'مراجعة',
+      stepDone: 'جاهز',
+      licenseTitle: 'أدخل رخصتك',
+      licenseSub: 'الشراء يفتح جهاز الصالة. نتحقق الآن؛ تُستهلك فتحة الجهاز عند اكتمال الإعداد فقط.',
+      licenseKey: 'مفتاح الرخصة',
+      licenseHint: 'من تأكيد شراء HyMotion.',
+      licenseNext: 'التحقق من الرخصة',
+      licenseValidating: 'جارٍ التحقق…',
+      licenseOk: 'الرخصة تبدو صالحة. يمكنك المتابعة.',
+      licenseInvalid: 'مفتاح الرخصة غير صالح لهذا الجهاز. راجع المفتاح وحاول مجدداً.',
+      licenseNetwork: 'تعذر الوصول إلى HyMotion للتحقق. للصالة الجديدة يلزم الإنترنت. للصالة القائمة قد تكفي رخصة مطابقة دون اتصال.',
+      licenseOfflineOk: 'المفتاح يطابق الرخصة الموقّعة على هذا الجهاز. يمكنك المتابعة دون اتصال.',
+      licenseExistingNote: 'التحقق مطلوب حتى لو رُخّص الجهاز سابقاً.',
+      licenseNewNote: 'مفتاح الرخصة مطلوب قبل إنشاء صالة جديدة.',
+      pathTitle: 'كيف تريد المتابعة؟',
+      pathExistingTitle: 'صالة قائمة',
+      pathExistingBody: 'أبقِ الأعضاء والمبيعات والحضور والمناوبات. استعد وصول المالك لنفس الصالة.',
+      pathExistingTag: 'استعادة آمنة',
+      pathNewTitle: 'صالة جديدة',
+      pathNewBody: 'تُحيل الصالة الحالية وتنشئ صالة فارغة. إعادة تعيين مدمّرة — ليست إعداداً عادياً.',
+      pathNewTag: 'مدمّر',
+      pathLogin: 'متابعة لتسجيل الدخول',
+      pathOwnerNeeded: 'سجّل الدخول كمالك هذه الصالة قبل بدء صالة جديدة.',
+      pathOwnerMissingHint: 'وصول المالك مفقود. استخدم صالة قائمة لاستعادته. لا تبدأ صالة جديدة.',
+      confirmTitle: 'إحالة هذه الصالة وبدء صالة جديدة',
+      confirmSub: 'الأعضاء والمبيعات والحضور والمناوبات لن تظهر في الصالة الجديدة. النسخ الاحتياطي مطلوب أولاً.',
+      confirmWarn: 'اكتب عبارة التأكيد الإنجليزية حرفياً. لا يمكن التراجع من هذه الشاشة.',
+      confirmLabel: 'اكتب START NEW GYM للمتابعة',
+      confirmErr: 'اكتب START NEW GYM حرفياً للتأكيد.',
+      confirmNext: 'أفهم — متابعة',
+      backupTitle: 'نسخ الصالة الحالية احتياطياً',
+      backupSub: 'يجب أن ينجح نسخ محلي صالح قبل أي استبدال. إذا فشل، تبقى الصالة كما هي.',
+      backupHonesty: 'النسخة على هذا الجهاز. انسخ إلى USB عبر HyMotion Backup إذا احتجت نسخة خارج الجهاز.',
+      backupRun: 'إنشاء نسخة احتياطية',
+      backupCreating: 'جارٍ إنشاء النسخة…',
+      backupOk: 'تم إنشاء النسخة. يمكنك المتابعة.',
+      backupFail: 'تعذر إنشاء نسخة آمنة. لم تُغيَّر الصالة الحالية.',
+      gymTitle: 'سمِّ صالتك',
+      gymSub: 'الاسم الذي يراه الموظفون على المكتب.',
+      gymName: 'اسم الصالة',
+      gymNameErr: 'اسم الصالة مطلوب.',
+      phone: 'الهاتف (اختياري)',
+      ownerTitle: 'إنشاء حساب المالك',
+      ownerExisting: 'هذا المالك ينتمي للصالة الحالية. بيانات العمل تبقى.',
+      ownerNew: 'هذا المالك سيدير الصالة الجديدة.',
+      ownerName: 'الاسم الكامل',
+      ownerEmail: 'البريد',
+      ownerPassword: 'كلمة المرور',
+      ownerPasswordHint: '٨ أحرف على الأقل.',
+      ownerPasswordConfirm: 'تأكيد كلمة المرور',
+      ownerNameErr: 'اسم المالك مطلوب.',
+      ownerEmailErr: 'بريد صالح مطلوب.',
+      ownerPasswordErr: 'كلمة المرور ٨ أحرف على الأقل.',
+      ownerPasswordConfirmErr: 'كلمتا المرور غير متطابقتين.',
+      reviewTitle: 'راجع وأتمم',
+      reviewExisting: 'استعد وصول المالك لنفس الصالة.',
+      reviewNew: 'هذا يُحيل الصالة الحالية وينشئ صالة فارغة.',
+      reviewClean: 'أنشئ هذه الصالة على هذا الجهاز.',
+      complete: 'إتمام الإعداد',
+      completing: 'جارٍ إنهاء الإعداد…',
+      doneExistingTitle: 'تم استعادة وصول المالك',
+      doneExisting: 'هوية الصالة لم تتغير. الأعضاء والمبيعات تبقى.',
+      doneCleanTitle: 'صالتك جاهزة',
+      doneClean: 'احتفظ برمز الصالة. ستحتاجه عند تسجيل الدخول.',
+      doneReplaceTitle: 'تم إنشاء صالة جديدة',
+      doneReplace: 'أُحيلت الصالة السابقة. استخدم HyMotion Backup إذا احتجت استعادتها.',
+      gymCode: 'رمز الصالة',
+      signIn: 'ادخل المكتب',
+      back: 'رجوع',
+      continue: 'متابعة',
+      mode: 'الوضع',
+      modeExisting: 'صالة قائمة — استعادة المالك',
+      modeNew: 'صالة جديدة',
+      currentGym: 'الصالة الحالية',
+      licenseLabel: 'الرخصة',
+      validated: 'تم التحقق',
+      validatedOffline: 'تم التحقق دون اتصال',
+      loading: 'جارٍ فحص هذا الجهاز…',
+      identityGym: 'الصالة',
+      identityCode: 'رمز الصالة',
+      scenarioClean: 'تثبيت نظيف',
+      scenarioOwnerMissing: 'مالك مفقود',
+      scenarioReplace: 'استبدال صالة',
+      scenarioInvalid: 'رخصة غير صالحة',
+      scenarioNetwork: 'انقطاع الشبكة',
+      scenarioOffline: 'قائمة دون اتصال',
+      demoNote: 'للنجاح التجريبي استخدم: HY-LCL-DEMO1-VALID'
+    }
+  };
+
+  var scenarios = [
+    { id: 'clean', labelKey: 'scenarioClean' },
+    { id: 'ownerMissing', labelKey: 'scenarioOwnerMissing' },
+    { id: 'replace', labelKey: 'scenarioReplace' },
+    { id: 'invalid', labelKey: 'scenarioInvalid' },
+    { id: 'network', labelKey: 'scenarioNetwork' },
+    { id: 'offline', labelKey: 'scenarioOffline' }
+  ];
+
+  var state = {
+    lang: 'en',
+    scenario: 'clean',
+    step: 'loading',
+    mode: null,
+    status: null,
+    licenseInfo: null,
+    backupInfo: null,
+    form: {
+      licenseKey: '',
+      confirmPhrase: '',
+      gymName: '',
+      phoneNumber: '',
+      ownerFullName: '',
+      ownerEmail: '',
+      ownerPassword: '',
+      ownerPasswordConfirm: ''
+    },
+    alert: null,
+    busy: false,
+    ownerSignedIn: false,
+    doneCode: null
+  };
+
+  function t(key) {
+    return (i18n[state.lang] && i18n[state.lang][key]) || i18n.en[key] || key;
+  }
+
+  function scenarioStatus(id) {
+    if (id === 'clean' || id === 'invalid' || id === 'network') {
+      return {
+        isCompleted: false, gymCode: null, gymName: null,
+        canRestoreExistingGym: false, canStartNewGym: true,
+        requiresOwnerForNewGym: false, ownerMissing: true,
+        license: { state: 'not_activated' }
+      };
+    }
+    if (id === 'ownerMissing' || id === 'offline') {
+      return {
+        isCompleted: false, gymCode: 'GOLD01', gymName: 'Gold Fitness',
+        canRestoreExistingGym: true, canStartNewGym: false,
+        requiresOwnerForNewGym: false, ownerMissing: true,
+        license: { state: 'offline_valid', licenseKeyMasked: 'HY-LCL-••••-••••' }
+      };
+    }
+    return {
+      isCompleted: true, gymCode: 'GOLD01', gymName: 'Gold Fitness',
+      canRestoreExistingGym: false, canStartNewGym: true,
+      requiresOwnerForNewGym: true, ownerMissing: false,
+      license: { state: 'offline_valid', licenseKeyMasked: 'HY-LCL-••••-••••' }
+    };
+  }
+
+  function applyScenario(id, keepLang) {
+    var lang = keepLang ? state.lang : state.lang;
+    state = {
+      lang: lang,
+      scenario: id,
+      step: 'loading',
+      mode: null,
+      status: scenarioStatus(id),
+      licenseInfo: null,
+      backupInfo: null,
+      form: {
+        licenseKey: (id === 'invalid') ? DEMO_BAD : (id === 'network' ? DEMO_KEY : DEMO_KEY),
+        confirmPhrase: '',
+        gymName: id === 'clean' || id === 'invalid' || id === 'network' ? 'Pulse Athletics' : '',
+        phoneNumber: '',
+        ownerFullName: 'Sara Owner',
+        ownerEmail: 'owner@demo.gym',
+        ownerPassword: 'Password1',
+        ownerPasswordConfirm: 'Password1'
+      },
+      alert: null,
+      busy: false,
+      ownerSignedIn: id === 'replace',
+      doneCode: null
+    };
+    document.getElementById('railState').textContent = t(scenarios.find(function (s) { return s.id === id; }).labelKey);
+    setTimeout(function () {
+      state.step = 'welcome';
+      if (id === 'clean' || id === 'invalid' || id === 'network') state.mode = 'newGym';
+      render();
+    }, 450);
+    render();
+  }
+
+  function setLang(lang) {
+    state.lang = lang === 'ar' ? 'ar' : 'en';
+    document.documentElement.lang = state.lang;
+    document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('btnEn').classList.toggle('act', state.lang === 'en');
+    document.getElementById('btnAr').classList.toggle('act', state.lang === 'ar');
+    render();
+  }
+
+  function isClean() { return !(state.status && state.status.gymCode); }
+  function isReplace() { return state.mode === 'newGym' && !isClean(); }
+
+  function progressLabels() {
+    if (state.step === 'welcome' || state.step === 'loading' || state.step === 'done') return [];
+    if (state.mode === 'existingGym') return ['stepLicense', 'stepOwner', 'stepReview'];
+    if (isClean()) return ['stepLicense', 'stepGym', 'stepOwner', 'stepReview'];
+    if (state.mode === 'newGym') return ['stepConfirm', 'stepBackup', 'stepLicense', 'stepGym', 'stepOwner', 'stepReview'];
+    return ['stepPath'];
+  }
+
+  function currentProgressKey() {
+    var map = {
+      path: 'stepPath', license: 'stepLicense', confirm: 'stepConfirm', backup: 'stepBackup',
+      gym: 'stepGym', owner: 'stepOwner', review: 'stepReview', done: 'stepDone'
+    };
+    return map[state.step] || '';
+  }
+
+  function escapeHtml(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+
+  function identityHtml() {
+    if (!state.status || !state.status.gymCode) return '';
+    if (state.step === 'welcome' || state.step === 'done') return '';
+    if (state.mode === 'newGym' && (state.step === 'gym' || state.step === 'owner') && isReplace()) {
+      /* still show what is being retired on early replace steps */
+    }
+    return '<div class="identity"><strong>' + escapeHtml(t('identityGym')) + ': ' + escapeHtml(state.status.gymName) +
+      '</strong>' + escapeHtml(t('identityCode')) + ': <code>' + escapeHtml(state.status.gymCode) + '</code></div>';
+  }
+
+  function alertHtml() {
+    if (!state.alert) return '';
+    return '<div class="alert show ' + escapeHtml(state.alert.kind) + '" role="alert">' + escapeHtml(state.alert.text) + '</div>';
+  }
+
+  function rowBackContinue(backStep, primaryId, primaryLabel, primaryDisabled) {
+    return '<div class="row">' +
+      '<button type="button" class="btn btn-secondary" data-go="' + backStep + '">' + escapeHtml(t('back')) + '</button>' +
+      '<button type="button" class="btn btn-primary" id="' + primaryId + '"' + (primaryDisabled ? ' disabled' : '') + '>' + escapeHtml(primaryLabel) + '</button>' +
+      '</div>';
+  }
+
+  function renderWelcome() {
+    return '<div class="hero">' +
+      '<div class="mark-lg"><img src="' + MARK + '" alt=""></div>' +
+      '<div class="kicker">' + escapeHtml(t('welcomeKicker')) + '</div>' +
+      '<h1>' + escapeHtml(t('welcomeTitle')) + '</h1>' +
+      '<p>' + escapeHtml(t('welcomeBody')) + '</p>' +
+      '<button type="button" class="btn btn-primary" id="btnStart" style="margin-top:22px;max-width:280px">' + escapeHtml(t('welcomeCta')) + '</button>' +
+      '<p class="hint" style="margin-top:14px">' + escapeHtml(t('welcomeHelp')) + '</p>' +
+      '</div>';
+  }
+
+  function renderLicense() {
+    var note = state.mode === 'existingGym' ? t('licenseExistingNote') : t('licenseNewNote');
+    return identityHtml() +
+      '<h1 class="panel-title">' + escapeHtml(t('licenseTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(t('licenseSub')) + '</p>' +
+      '<div class="alert show info">' + escapeHtml(note) + '</div>' +
+      (state.status && state.status.license && state.status.license.state === 'offline_valid'
+        ? '<div class="alert show warn">' + escapeHtml((state.lang === 'ar' ? 'هذا الجهاز لديه رخصة محلية' : 'This PC already has a local license') +
+          (state.status.license.licenseKeyMasked ? ' (' + state.status.license.licenseKeyMasked + ')' : '')) + '</div>'
+        : '') +
+      '<label class="field" for="licenseKey">' + escapeHtml(t('licenseKey')) + ' <span class="req">*</span></label>' +
+      '<input class="license" id="licenseKey" value="' + escapeHtml(state.form.licenseKey) + '" autocomplete="off" spellcheck="false" dir="ltr">' +
+      '<div class="hint">' + escapeHtml(t('licenseHint')) + ' · ' + escapeHtml(t('demoNote')) + '</div>' +
+      '<div class="field-err" id="err-licenseKey"></div>' +
+      alertHtml() +
+      rowBackContinue(isClean() ? 'welcome' : (state.mode === 'existingGym' ? 'path' : 'backup'), 'btnLicense', t('licenseNext'), state.busy);
+  }
+
+  function renderPath() {
+    var s = state.status;
+    var sub = s.ownerMissing
+      ? t('pathOwnerMissingHint')
+      : (t('pathTitle') + ' — ' + (s.gymName || '') + ' (' + (s.gymCode || '') + ')');
+    return identityHtml() +
+      '<h1 class="panel-title">' + escapeHtml(t('pathTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(sub) + '</p>' +
+      (s.canRestoreExistingGym
+        ? '<button type="button" class="choice" id="btnExisting"><span class="tag">' + escapeHtml(t('pathExistingTag')) + '</span><h2>' + escapeHtml(t('pathExistingTitle')) + '</h2><p>' + escapeHtml(t('pathExistingBody')) + '</p></button>'
+        : '') +
+      (s.canStartNewGym
+        ? '<button type="button" class="choice danger-choice" id="btnNew"><span class="tag">' + escapeHtml(t('pathNewTag')) + '</span><h2>' + escapeHtml(t('pathNewTitle')) + '</h2><p>' + escapeHtml(t('pathNewBody')) + '</p></button>'
+        : '') +
+      (s.requiresOwnerForNewGym && !state.ownerSignedIn
+        ? '<button type="button" class="btn btn-secondary" id="btnToLogin">' + escapeHtml(t('pathLogin')) + '</button>'
+        : '') +
+      alertHtml() +
+      '<button type="button" class="btn btn-secondary" data-go="welcome" style="margin-top:12px">' + escapeHtml(t('back')) + '</button>';
+  }
+
+  function renderConfirm() {
+    return identityHtml() +
+      '<h1 class="panel-title">' + escapeHtml(t('confirmTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(t('confirmSub')) + '</p>' +
+      '<div class="alert show warn">' + escapeHtml(t('confirmWarn')) + '</div>' +
+      '<label class="field" for="confirmPhrase">' + escapeHtml(t('confirmLabel')) + ' <span class="req">*</span></label>' +
+      '<input id="confirmPhrase" value="' + escapeHtml(state.form.confirmPhrase) + '" autocomplete="off" spellcheck="false" dir="ltr" style="unicode-bidi:isolate">' +
+      '<div class="field-err" id="err-confirmPhrase">' + escapeHtml(t('confirmErr')) + '</div>' +
+      alertHtml() +
+      rowBackContinue('path', 'btnConfirm', t('confirmNext'), false);
+  }
+
+  function renderBackup() {
+    return identityHtml() +
+      '<h1 class="panel-title">' + escapeHtml(t('backupTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(t('backupSub')) + '</p>' +
+      '<p class="hint">' + escapeHtml(t('backupHonesty')) + '</p>' +
+      (state.backupInfo ? '<div class="alert show ok">' + escapeHtml(t('backupOk')) + '<br><span class="hint">' + escapeHtml(state.backupInfo.backupId) + '</span></div>' : '') +
+      alertHtml() +
+      '<button type="button" class="btn btn-primary" id="btnBackupRun">' + escapeHtml(state.busy ? t('backupCreating') : t('backupRun')) + '</button>' +
+      rowBackContinue('confirm', 'btnBackupNext', t('continue'), !state.backupInfo);
+  }
+
+  function renderGym() {
+    return '<h1 class="panel-title">' + escapeHtml(t('gymTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(t('gymSub')) + '</p>' +
+      '<label class="field" for="gymName">' + escapeHtml(t('gymName')) + ' <span class="req">*</span></label>' +
+      '<input id="gymName" value="' + escapeHtml(state.form.gymName) + '" autocomplete="organization">' +
+      '<div class="field-err" id="err-gymName">' + escapeHtml(t('gymNameErr')) + '</div>' +
+      '<label class="field" for="phoneNumber">' + escapeHtml(t('phone')) + '</label>' +
+      '<input id="phoneNumber" value="' + escapeHtml(state.form.phoneNumber) + '" autocomplete="tel" dir="ltr" style="unicode-bidi:isolate">' +
+      alertHtml() +
+      rowBackContinue('license', 'btnGym', t('continue'), false);
+  }
+
+  function renderOwner() {
+    return identityHtml() +
+      '<h1 class="panel-title">' + escapeHtml(t('ownerTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(state.mode === 'existingGym' ? t('ownerExisting') : t('ownerNew')) + '</p>' +
+      '<label class="field" for="ownerFullName">' + escapeHtml(t('ownerName')) + ' <span class="req">*</span></label>' +
+      '<input id="ownerFullName" value="' + escapeHtml(state.form.ownerFullName) + '">' +
+      '<div class="field-err" id="err-ownerFullName">' + escapeHtml(t('ownerNameErr')) + '</div>' +
+      '<label class="field" for="ownerEmail">' + escapeHtml(t('ownerEmail')) + ' <span class="req">*</span></label>' +
+      '<input id="ownerEmail" type="email" value="' + escapeHtml(state.form.ownerEmail) + '" dir="ltr" style="unicode-bidi:isolate">' +
+      '<div class="field-err" id="err-ownerEmail">' + escapeHtml(t('ownerEmailErr')) + '</div>' +
+      '<label class="field" for="ownerPassword">' + escapeHtml(t('ownerPassword')) + ' <span class="req">*</span></label>' +
+      '<input id="ownerPassword" type="password" value="' + escapeHtml(state.form.ownerPassword) + '">' +
+      '<div class="hint">' + escapeHtml(t('ownerPasswordHint')) + '</div>' +
+      '<div class="field-err" id="err-ownerPassword">' + escapeHtml(t('ownerPasswordErr')) + '</div>' +
+      '<label class="field" for="ownerPasswordConfirm">' + escapeHtml(t('ownerPasswordConfirm')) + ' <span class="req">*</span></label>' +
+      '<input id="ownerPasswordConfirm" type="password" value="' + escapeHtml(state.form.ownerPasswordConfirm) + '">' +
+      '<div class="field-err" id="err-ownerPasswordConfirm">' + escapeHtml(t('ownerPasswordConfirmErr')) + '</div>' +
+      alertHtml() +
+      rowBackContinue(state.mode === 'existingGym' ? 'license' : 'gym', 'btnOwner', t('continue'), false);
+  }
+
+  function renderReview() {
+    var gymName = state.mode === 'existingGym' ? (state.status.gymName || '') : state.form.gymName;
+    var rows = [
+      [t('mode'), state.mode === 'existingGym' ? t('modeExisting') : t('modeNew')],
+      [t('identityGym'), gymName],
+      [t('licenseLabel'), state.licenseInfo && state.licenseInfo.state === 'offline_valid' ? t('validatedOffline') : t('validated')],
+      [t('ownerName'), state.form.ownerFullName],
+      [t('ownerEmail'), state.form.ownerEmail]
+    ];
+    if (isReplace() && state.backupInfo) rows.splice(1, 0, [t('stepBackup'), state.backupInfo.backupId]);
+    if (isReplace()) rows.splice(1, 0, [t('currentGym'), (state.status.gymName || '') + ' · ' + (state.status.gymCode || '')]);
+    var sub = state.mode === 'existingGym' ? t('reviewExisting') : (isReplace() ? t('reviewNew') : t('reviewClean'));
+    return identityHtml() +
+      '<h1 class="panel-title">' + escapeHtml(t('reviewTitle')) + '</h1>' +
+      '<p class="sub">' + escapeHtml(sub) + '</p>' +
+      '<dl class="review">' + rows.map(function (r) {
+        return '<dt>' + escapeHtml(r[0]) + '</dt><dd>' + escapeHtml(r[1]) + '</dd>';
+      }).join('') + '</dl>' +
+      alertHtml() +
+      rowBackContinue('owner', 'btnComplete', state.busy ? t('completing') : t('complete'), state.busy);
+  }
+
+  function renderDone() {
+    var title = state.mode === 'existingGym' ? t('doneExistingTitle') : (isReplace() ? t('doneReplaceTitle') : t('doneCleanTitle'));
+    var sub = state.mode === 'existingGym' ? t('doneExisting') : (isReplace() ? t('doneReplace') : t('doneClean'));
+    var code = state.doneCode || (state.status && state.status.gymCode) || 'PULSE1';
+    return '<div class="done-check" aria-hidden="true">✓</div>' +
+      '<h1 class="panel-title" style="text-align:center">' + escapeHtml(title) + '</h1>' +
+      '<p class="sub" style="text-align:center">' + escapeHtml(sub) + '</p>' +
+      '<label class="field" style="text-align:center">' + escapeHtml(t('gymCode')) + '</label>' +
+      '<div class="gym-code">' + escapeHtml(code) + '</div>' +
+      '<button type="button" class="btn btn-primary" id="btnEnter">' + escapeHtml(t('signIn')) + '</button>';
+  }
+
+  function renderLoading() {
+    return '<div class="loading"><div class="spinner"></div>' + escapeHtml(t('loading')) + '</div>';
+  }
+
+  function captureForm() {
+    ['licenseKey', 'confirmPhrase', 'gymName', 'phoneNumber', 'ownerFullName', 'ownerEmail', 'ownerPassword', 'ownerPasswordConfirm']
+      .forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) state.form[id] = el.value;
+      });
+  }
+
+  function validateOwner() {
+    var ok = true;
+    function err(id, show) {
+      var el = document.getElementById('err-' + id);
+      var input = document.getElementById(id);
+      if (el) el.classList.toggle('show', !!show);
+      if (input) input.classList.toggle('err', !!show);
+      if (show) ok = false;
+    }
+    err('ownerFullName', !state.form.ownerFullName.trim());
+    err('ownerEmail', !state.form.ownerEmail.trim() || state.form.ownerEmail.indexOf('@') < 0);
+    err('ownerPassword', !state.form.ownerPassword || state.form.ownerPassword.length < 8);
+    err('ownerPasswordConfirm', state.form.ownerPassword !== state.form.ownerPasswordConfirm);
+    return ok;
+  }
+
+  function demoValidateLicense() {
+    var key = state.form.licenseKey.trim().toUpperCase();
+    if (!key) {
+      state.alert = { kind: 'err', text: t('licenseInvalid') };
+      return false;
+    }
+    if (state.scenario === 'network') {
+      if (state.mode === 'existingGym' && key === DEMO_KEY) {
+        state.licenseInfo = { valid: true, state: 'offline_valid' };
+        state.alert = { kind: 'ok', text: t('licenseOfflineOk') };
+        return true;
+      }
+      state.licenseInfo = null;
+      state.alert = { kind: 'err', text: t('licenseNetwork') };
+      return false;
+    }
+    if (state.scenario === 'offline' && state.mode === 'existingGym') {
+      if (key === DEMO_KEY) {
+        state.licenseInfo = { valid: true, state: 'offline_valid' };
+        state.alert = { kind: 'ok', text: t('licenseOfflineOk') };
+        return true;
+      }
+      state.licenseInfo = null;
+      state.alert = { kind: 'err', text: t('licenseInvalid') };
+      return false;
+    }
+    if (state.scenario === 'invalid' || key === DEMO_BAD || key.indexOf('WRONG') >= 0) {
+      state.licenseInfo = null;
+      state.alert = { kind: 'err', text: t('licenseInvalid') };
+      return false;
+    }
+    if (key !== DEMO_KEY && key.indexOf('HY-LCL-') !== 0) {
+      state.licenseInfo = null;
+      state.alert = { kind: 'err', text: t('licenseInvalid') };
+      return false;
+    }
+    state.licenseInfo = { valid: true, state: 'active' };
+    state.alert = { kind: 'ok', text: t('licenseOk') };
+    return true;
+  }
+
+  function bind() {
+    document.getElementById('langToggle').onclick = function () {
+      setLang(state.lang === 'en' ? 'ar' : 'en');
+    };
+
+    var goEls = document.querySelectorAll('[data-go]');
+    goEls.forEach(function (btn) {
+      btn.onclick = function () {
+        captureForm();
+        state.alert = null;
+        state.step = btn.getAttribute('data-go');
+        render();
+      };
+    });
+
+    var start = document.getElementById('btnStart');
+    if (start) start.onclick = function () {
+      state.alert = null;
+      if (isClean()) {
+        state.mode = 'newGym';
+        state.step = 'license';
+      } else {
+        state.step = 'path';
+      }
+      render();
+    };
+
+    var existing = document.getElementById('btnExisting');
+    if (existing) existing.onclick = function () {
+      state.mode = 'existingGym';
+      state.backupInfo = null;
+      state.alert = null;
+      state.step = 'license';
+      render();
+    };
+
+    var neu = document.getElementById('btnNew');
+    if (neu) neu.onclick = function () {
+      if (state.status.requiresOwnerForNewGym && !state.ownerSignedIn) {
+        state.alert = { kind: 'err', text: t('pathOwnerNeeded') };
+        render();
+        return;
+      }
+      if (!state.status.canStartNewGym) {
+        state.alert = { kind: 'err', text: t('pathOwnerMissingHint') };
+        render();
+        return;
+      }
+      state.mode = 'newGym';
+      state.backupInfo = null;
+      state.alert = null;
+      state.step = 'confirm';
+      render();
+    };
+
+    var toLogin = document.getElementById('btnToLogin');
+    if (toLogin) toLogin.onclick = function () {
+      state.alert = { kind: 'info', text: t('pathOwnerNeeded') + ' (demo: toggle Replace gym scenario to simulate Owner signed in)' };
+      render();
+    };
+
+    var confirm = document.getElementById('btnConfirm');
+    if (confirm) confirm.onclick = function () {
+      captureForm();
+      var err = document.getElementById('err-confirmPhrase');
+      if (state.form.confirmPhrase.trim() !== CONFIRM) {
+        if (err) err.classList.add('show');
+        document.getElementById('confirmPhrase').classList.add('err');
+        state.alert = { kind: 'err', text: t('confirmErr') };
+        render();
+        return;
+      }
+      state.alert = null;
+      state.step = 'backup';
+      render();
+    };
+
+    var backupRun = document.getElementById('btnBackupRun');
+    if (backupRun) backupRun.onclick = function () {
+      state.busy = true;
+      state.alert = null;
+      render();
+      setTimeout(function () {
+        state.busy = false;
+        state.backupInfo = { backupId: 'bak-demo-20260918', backupLocation: 'C:\\\\ProgramData\\\\HyMotion\\\\Backups' };
+        state.alert = null;
+        render();
+      }, 700);
+    };
+
+    var backupNext = document.getElementById('btnBackupNext');
+    if (backupNext) backupNext.onclick = function () {
+      if (!state.backupInfo) return;
+      state.alert = null;
+      state.step = 'license';
+      render();
+    };
+
+    var license = document.getElementById('btnLicense');
+    if (license) license.onclick = function () {
+      captureForm();
+      state.busy = true;
+      state.alert = null;
+      render();
+      setTimeout(function () {
+        state.busy = false;
+        if (!demoValidateLicense()) {
+          render();
+          var err = document.getElementById('err-licenseKey');
+          if (err) { err.textContent = state.alert.text; err.classList.add('show'); }
+          return;
+        }
+        state.step = state.mode === 'existingGym' ? 'owner' : 'gym';
+        render();
+      }, 650);
+    };
+
+    var gym = document.getElementById('btnGym');
+    if (gym) gym.onclick = function () {
+      captureForm();
+      var err = document.getElementById('err-gymName');
+      if (!state.form.gymName.trim()) {
+        if (err) err.classList.add('show');
+        document.getElementById('gymName').classList.add('err');
+        return;
+      }
+      state.alert = null;
+      state.step = 'owner';
+      render();
+    };
+
+    var owner = document.getElementById('btnOwner');
+    if (owner) owner.onclick = function () {
+      captureForm();
+      if (!validateOwner()) return;
+      state.alert = null;
+      state.step = 'review';
+      render();
+    };
+
+    var complete = document.getElementById('btnComplete');
+    if (complete) complete.onclick = function () {
+      captureForm();
+      if (!validateOwner()) { state.step = 'owner'; render(); return; }
+      if (!state.licenseInfo || !state.licenseInfo.valid) {
+        state.alert = { kind: 'err', text: t('licenseInvalid') };
+        state.step = 'license';
+        render();
+        return;
+      }
+      state.busy = true;
+      render();
+      setTimeout(function () {
+        state.busy = false;
+        state.doneCode = state.mode === 'existingGym' ? state.status.gymCode : (isReplace() ? 'PULSE2' : 'PULSE1');
+        state.step = 'done';
+        state.alert = null;
+        render();
+      }, 800);
+    };
+
+    var enter = document.getElementById('btnEnter');
+    if (enter) enter.onclick = function () {
+      state.alert = { kind: 'ok', text: state.lang === 'ar' ? 'معاينة فقط — لن يتم فتح المكتب الحقيقي.' : 'Preview only — real desk is not opened.' };
+      render();
+    };
+  }
+
+  function renderScenarios() {
+    var bar = document.getElementById('scenarioBar');
+    bar.innerHTML = scenarios.map(function (s) {
+      return '<button type="button" class="chip' + (state.scenario === s.id ? ' act' : '') + '" data-scenario="' + s.id + '">' + escapeHtml(t(s.labelKey)) + '</button>';
+    }).join('');
+    bar.querySelectorAll('[data-scenario]').forEach(function (btn) {
+      btn.onclick = function () { applyScenario(btn.getAttribute('data-scenario'), true); };
+    });
+  }
+
+  function renderRailSteps() {
+    var keys = ['stepWelcome'].concat(progressLabels());
+    if (state.step === 'path') keys = ['stepWelcome', 'stepPath'];
+    if (state.step === 'done') keys = keys.concat(['stepDone']);
+    var cur = state.step === 'welcome' ? 'stepWelcome' : (state.step === 'path' ? 'stepPath' : currentProgressKey());
+    document.getElementById('railSteps').innerHTML = keys.map(function (k) {
+      return '<li' + (k === cur ? ' style="font-weight:800;color:#0D0D0D"' : '') + '>' + escapeHtml(t(k)) + '</li>';
+    }).join('');
+  }
+
+  function render() {
+    renderScenarios();
+    renderRailSteps();
+    document.getElementById('langToggle').textContent = state.lang === 'ar' ? 'AR عربي' : 'EN English';
+    document.getElementById('railState').textContent = t(scenarios.find(function (s) { return s.id === state.scenario; }).labelKey);
+
+    var progress = document.getElementById('progress');
+    var labels = progressLabels();
+    var cur = currentProgressKey();
+    if (!labels.length || state.step === 'path' || state.step === 'welcome' || state.step === 'loading') {
+      progress.hidden = true;
+      progress.innerHTML = '';
+    } else {
+      progress.hidden = false;
+      var hit = false;
+      progress.innerHTML = labels.map(function (k) {
+        var on = k === cur;
+        if (on) hit = true;
+        var cls = on ? 'on' : (!hit ? 'done' : '');
+        return '<span class="' + cls + '">' + escapeHtml(t(k)) + '</span>';
+      }).join('');
+    }
+
+    var html = '';
+    if (state.step === 'loading') html = renderLoading();
+    else if (state.step === 'welcome') html = renderWelcome();
+    else if (state.step === 'path') html = renderPath();
+    else if (state.step === 'confirm') html = renderConfirm();
+    else if (state.step === 'backup') html = renderBackup();
+    else if (state.step === 'license') html = renderLicense();
+    else if (state.step === 'gym') html = renderGym();
+    else if (state.step === 'owner') html = renderOwner();
+    else if (state.step === 'review') html = renderReview();
+    else if (state.step === 'done') html = renderDone();
+
+    var panel = document.getElementById('panel');
+    panel.className = 'panel fade-in';
+    panel.innerHTML = html;
+    bind();
+  }
+
+  document.getElementById('btnEn').onclick = function () { setLang('en'); };
+  document.getElementById('btnAr').onclick = function () { setLang('ar'); };
+  document.getElementById('btnReset').onclick = function () { applyScenario(state.scenario, true); };
+
+  applyScenario('clean', true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Staff 360 (design preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#22C55E;--suc100:#DCFCE7;--dng500:#EF4444;--dng100:#FEE2E2;
+  --ls1:#FFFEFB;--ls2:#F4F6F3;--ls3:#E4E8E2;--lbg:#F4F5F3;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:56rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.findings{margin:12px 16px 0;padding:12px 14px;border-radius:12px;background:#fff;border:1px solid var(--ls3);font-size:13px;color:var(--lts);line-height:1.55}
+.findings strong{color:var(--ltp)}
+.findings code{font-size:12px;background:var(--ls2);padding:1px 6px;border-radius:4px}
+.app{display:flex;min-height:calc(100vh - 140px);margin-top:12px}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#0D0D0D;background:var(--l500);font-weight:700}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;background:rgba(255,254,251,.92);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.stage{padding:22px 24px 48px}
+.page-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700}
+.page-sub{font-size:13px;color:var(--ltt);margin-top:6px;max-width:36rem;line-height:1.5}
+.btn{height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn.danger{background:var(--dng100);border-color:#fecaca;color:#991b1b}
+.btn.ghost{background:transparent}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.search{height:40px;flex:1;min-width:200px;border:1px solid var(--ls3);border-radius:10px;padding:0 12px;font:inherit;background:#fff}
+select.flt{height:40px;border:1px solid var(--ls3);border-radius:10px;padding:0 12px;font:inherit;background:#fff}
+.wrap{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg);overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:10px 14px;background:var(--ls2);font-size:11px;text-transform:uppercase;color:var(--ltt)}
+td{padding:12px 14px;border-top:1px solid var(--ls3);vertical-align:middle}
+.who{font-family:var(--fd);font-weight:700}
+.muted{color:var(--ltt);font-size:12px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.badge.act{background:var(--suc100);color:#166534}
+.badge.arch{background:#f3f4f6;color:#4b5563}
+.badge.own{background:#fef3c7;color:#92400e}
+.row-act{display:inline-flex;gap:6px;flex-wrap:nowrap}
+.row-act button{height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--ls3);background:#fff;font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.empty{padding:48px 24px;text-align:center;color:var(--ltt)}
+.grid360{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:16px}
+@media(max-width:960px){.grid360{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg)}
+.card-h{padding:14px 18px;border-bottom:1px solid var(--ls3);font-family:var(--fd);font-weight:700}
+.card-b{padding:16px 18px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--ls2);font-size:13px}
+.kv span:first-child{color:var(--ltt)}
+.hero{display:flex;gap:14px;align-items:center;margin-bottom:16px}
+.av{width:56px;height:56px;border-radius:50%;background:var(--l400);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:18px}
+.perms{display:flex;flex-wrap:wrap;gap:6px}
+.perm{font-size:11px;padding:4px 8px;border-radius:6px;background:var(--ls2);color:var(--lts)}
+.tl{list-style:none}
+.tl li{padding:10px 0;border-top:1px solid var(--ls3);font-size:13px}
+.form label{display:block;font-size:12px;font-weight:700;color:var(--lts);margin:12px 0 6px}
+.form input,.form select{height:40px;width:100%;max-width:360px;border:1px solid var(--ls3);border-radius:10px;padding:0 12px;font:inherit}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
+.box{background:#fff;border-radius:16px;padding:20px;max-width:420px;width:100%}
+.box h3{font-family:var(--fd);margin-bottom:8px}
+.lock{max-width:420px;margin:48px auto;text-align:center;background:#fff;border:1px solid var(--ls3);border-radius:16px;padding:32px}
+.hint{font-size:12px;color:var(--ltt);margin-top:6px;line-height:1.45}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW — wait for Product Accept. No production code from this file.
+    <div class="note">Reuses existing <code>/api/admin/staff</code> + Identity roles. No Employee table. No Branch access. No Flutter staff admin. Architecture: <code>STAFF_MANAGEMENT_ARCHITECTURE.md</code></div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-s="list">1 List</button>
+    <button type="button" data-s="add">2 Add</button>
+    <button type="button" data-s="360">3 Staff 360</button>
+    <button type="button" data-s="access">4 Access</button>
+    <button type="button" data-s="archive">5 Archive</button>
+    <button type="button" data-s="empty">Empty</button>
+    <button type="button" data-s="lock">Not owner</button>
+  </div>
+</div>
+
+<div class="findings">
+  <strong>Reuse, do not invent.</strong>
+  Staff already exists: <code>ApplicationUser</code> (login) + <code>AppUser</code> (actor). Roles are Owner / Manager / Trainer / Receptionist.
+  Archive = <code>IsActive=false</code>. Last login is not written yet — this preview shows “—” until login stamps it.
+  Nav stays <strong>Administration → Staff</strong> (Owner only). Member App never sees this.
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <div class="sb-sec">Overview</div>
+    <div class="sb-item">Dashboard</div>
+    <div class="sb-sec">Members</div>
+    <div class="sb-item">Members</div>
+    <div class="sb-sec">Front desk</div>
+    <div class="sb-item">Sale</div>
+    <div class="sb-sec">Money</div>
+    <div class="sb-item">Invoices</div>
+    <div class="sb-sec">Administration</div>
+    <div class="sb-item">Audit</div>
+    <div class="sb-item act">Staff</div>
+    <div class="sb-item">Settings</div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">Administration / Staff</div>
+      <div style="font-weight:700;font-size:13px">Fitness Hub</div>
+    </header>
+    <div class="stage" id="stage"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var screens = {
+    list: function () {
+      return hdr('Staff', 'Who can log into this gym. Role decides what they can do.') +
+        '<div class="filters"><input class="search" placeholder="Search name or email" disabled>' +
+        '<select class="flt" disabled><option>All statuses</option><option>Active</option><option>Archived</option></select>' +
+        '<select class="flt" disabled><option>All roles</option></select></div>' +
+        '<div class="wrap"><table><thead><tr><th>Staff</th><th>Role</th><th>Email</th><th>Status</th><th>Last login</th><th></th></tr></thead><tbody>' +
+        row('Ahmed Owner', 'AO', 'Owner', 'owner@gymflow.test', 'Active', '—', true) +
+        row('Mona Manager', 'MM', 'Manager', 'mona@gymflow.test', 'Active', '—', false) +
+        row('Karim Reception', 'KR', 'Receptionist', 'karim@gymflow.test', 'Active', '—', false) +
+        row('Layla Trainer', 'LT', 'Trainer', 'layla@gymflow.test', 'Archived', '—', false) +
+        '</tbody></table></div>' +
+        '<p class="hint" style="margin-top:10px">No Branch column — HyMotion has no Branch product. No phone until the staff DTO exposes <code>AppUser.PhoneNumber</code>.</p>';
+    },
+    add: function () {
+      return hdr('Add staff', 'Creates a login (Identity) and a staff actor (AppUser). Password is not stored on a profile row.') +
+        '<div class="card" style="max-width:440px"><div class="card-h">Account</div><div class="card-b form">' +
+        '<label>Full name</label><input value="" placeholder="Mona Hassan" disabled>' +
+        '<label>Email</label><input value="" placeholder="mona@gym.com" disabled>' +
+        '<label>Password</label><input type="password" placeholder="Temporary password" disabled>' +
+        '<p class="hint">API today: min 6, upper + lower + digit. No invite-email flow.</p>' +
+        '<label>Role</label><select disabled><option>Manager</option><option>Receptionist</option><option>Trainer</option></select>' +
+        '<p class="hint">Cannot create Owner. Sales / Accountant / Inventory are not Identity roles — do not add them here.</p>' +
+        '<div style="margin-top:16px;display:flex;gap:8px"><button class="btn primary" type="button">Create staff</button><button class="btn" type="button" data-s="list">Cancel</button></div>' +
+        '</div></div>';
+    },
+    '360': function () {
+      return hdr('Mona Manager', 'Staff 360 — same idea as Member 360, different lifecycle. Not a membership.') +
+        '<div class="hero"><div class="av">MM</div><div><div class="who" style="font-size:22px">Mona Manager</div>' +
+        '<div class="muted">Manager · Active</div></div>' +
+        '<div style="margin-inline-start:auto;display:flex;gap:8px;flex-wrap:wrap">' +
+        '<button class="btn" type="button" data-s="access">Manage access</button>' +
+        '<button class="btn" type="button">Reset password</button>' +
+        '<button class="btn danger" type="button" data-s="archive">Archive</button></div></div>' +
+        '<div class="grid360">' +
+        '<div class="card"><div class="card-h">Account</div><div class="card-b">' +
+        kv('Login email', 'mona@gymflow.test') + kv('Status', 'Active') + kv('Created', '12 Jul 2026') + kv('Last login', 'Not recorded yet') +
+        '<p class="hint">Last login stays hidden or “—” until login writes <code>AppUser.LastLoginAtUtc</code>. Do not show UpdatedAt as last login.</p></div></div>' +
+        '<div class="card"><div class="card-h">Access</div><div class="card-b">' +
+        kv('Role', 'Manager') + '<div class="muted" style="margin:8px 0">Inherited permissions (not edited per person)</div>' +
+        '<div class="perms"><span class="perm">members.*</span><span class="perm">sales.sell</span><span class="perm">payments.refund.approve</span><span class="perm">inventory.*</span><span class="perm">reports.financial.view</span></div>' +
+        '<p class="hint">No <code>plans.manage</code> / <code>settings.manage</code>. No branch list.</p></div></div>' +
+        '<div class="card" style="grid-column:1/-1"><div class="card-h">Activity</div><div class="card-b"><ul class="tl">' +
+        '<li>Needs <code>GET /audit</code> filtered by this staff’s <code>AppUser.Id</code> — not shipped yet.</li>' +
+        '<li class="muted">Example after Accept: Mona completed a sale · Mona approved a refund · Mona edited a member</li>' +
+        '</ul></div></div></div>';
+    },
+    access: function () {
+      return hdr('Manage access', 'Role change only. Permissions come from the role. Not a per-person ACL.') +
+        '<div class="card" style="max-width:480px"><div class="card-h">Mona Manager</div><div class="card-b form">' +
+        '<label>Role</label><select disabled><option>Manager</option><option>Receptionist</option><option>Trainer</option></select>' +
+        '<p class="hint">Changing role updates Identity + AppUser.Role and invalidates the permission cache. Their current access token can keep old perms for ~15 minutes.</p>' +
+        '<div class="muted" style="margin:12px 0 8px">This role can</div>' +
+        '<div class="perms"><span class="perm">Front desk + money + inventory</span><span class="perm">Not Settings</span><span class="perm">Not Plans</span></div>' +
+        '<p class="hint" style="margin-top:12px">Owner cannot be assigned here. Staff cannot change their own role.</p>' +
+        '<div style="margin-top:16px;display:flex;gap:8px"><button class="btn primary" type="button">Save access</button><button class="btn" type="button" data-s="360">Cancel</button></div>' +
+        '</div></div>';
+    },
+    archive: function () {
+      return '<div class="modal"><div class="box"><h3>Archive this staff login?</h3>' +
+        '<p class="page-sub">Mona will not be able to sign in. Sales, check-ins, and audit she already recorded stay on her staff actor. This is not a membership freeze.</p>' +
+        '<p class="hint">Same as today’s <code>PUT isActive: false</code> / soft DELETE. Reactivate re-checks the staff-seat cap.</p>' +
+        '<div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">' +
+        '<button class="btn" type="button" data-s="360">Cancel</button>' +
+        '<button class="btn danger" type="button" data-s="list">Archive</button></div></div></div>';
+    },
+    empty: function () {
+      return hdr('Staff', 'Who can log into this gym.') +
+        '<div class="wrap"><div class="empty"><div class="who">No staff besides you</div><div>Add a manager or receptionist. Owner is created with the gym.</div>' +
+        '<button class="btn primary" type="button" data-s="add" style="margin-top:16px">Add staff</button></div></div>';
+    },
+    lock: function () {
+      return '<div class="lock"><i class="ti ti-lock" style="font-size:32px;color:var(--ltt)"></i>' +
+        '<h2 class="page-title" style="margin-top:12px">Staff is owner-only</h2>' +
+        '<p class="page-sub" style="margin:8px auto">Managers cannot hire or change logins unless Product later adds an employees permission. Backend stays OwnerOnly.</p>' +
+        '<button class="btn" type="button" data-s="list">Back</button></div>';
+    }
+  };
+
+  function hdr(title, sub) {
+    var extra = title === 'Staff'
+      ? '<button class="btn primary" type="button" data-s="add"><i class="ti ti-plus"></i> Add staff</button>'
+      : '';
+    return '<div class="page-hdr"><div><h1 class="page-title">' + title + '</h1><p class="page-sub">' + sub + '</p></div>' + extra + '</div>';
+  }
+  function row(name, ini, role, email, status, login, owner) {
+    var st = status === 'Active' ? '<span class="badge act">Active</span>' : '<span class="badge arch">Archived</span>';
+    var rl = owner ? '<span class="badge own">Owner</span>' : role;
+    var acts = owner
+      ? '<span class="muted">Protected</span>'
+      : '<div class="row-act"><button type="button" data-s="360">View</button><button type="button" data-s="access">Access</button></div>';
+    return '<tr><td><div class="who">' + name + '</div></td><td>' + rl + '</td><td>' + email + '</td><td>' + st + '</td><td class="muted">' + login + '</td><td>' + acts + '</td></tr>';
+  }
+  function kv(k, v) {
+    return '<div class="kv"><span>' + k + '</span><strong>' + v + '</strong></div>';
+  }
+
+  var stage = document.getElementById('stage');
+  function show(id) {
+    stage.innerHTML = screens[id]();
+    document.querySelectorAll('.controls button').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-s') === id);
+    });
+  }
+  document.body.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-s]');
+    if (!b) return;
+    show(b.getAttribute('data-s'));
+  });
+  show('list');
+})();
+</script>
+</body>
+</html>

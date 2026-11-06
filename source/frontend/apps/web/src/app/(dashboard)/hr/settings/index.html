@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — HR Settings</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="settings.css?v=2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Settings" data-ar="الإعدادات">Settings</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="HR settings are available to owners and managers only." data-ar="إعدادات الموارد البشرية متاحة فقط لأصحاب الصالة والمديرين.">HR settings are available to owners and managers only.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="HR Settings" data-ar="إعدادات الموارد البشرية">HR Settings</h1>
+        <p class="page-subtitle" data-en="Add departments and job titles used when hiring employees." data-ar="أضف الأقسام والمسميات الوظيفية المستخدمة عند تعيين الموظفين.">Add departments and job titles used when hiring employees.</p>
+      </div>
+      <a href="/dashboard/hr/employees/" class="btn-secondary" style="width:auto;padding:0 14px;gap:6px;text-decoration:none"><i class="ti ti-arrow-left"></i> <span data-en="Back to Employees" data-ar="العودة للموظفين">Back to Employees</span></a>
+    </div>
+    <div class="hr-settings-grid">
+      <a class="hr-settings-card" href="/dashboard/hr/departments/">
+        <i class="ti ti-building-community" aria-hidden="true"></i>
+        <h2 data-en="Departments" data-ar="الأقسام">Departments</h2>
+        <p data-en="Create departments like Reception, Training, Sales." data-ar="أنشئ أقساماً مثل الاستقبال والتدريب والمبيعات.">Create departments like Reception, Training, Sales.</p>
+      </a>
+      <a class="hr-settings-card" href="/dashboard/hr/positions/">
+        <i class="ti ti-briefcase" aria-hidden="true"></i>
+        <h2 data-en="Positions" data-ar="المسميات الوظيفية">Positions</h2>
+        <p data-en="Create job titles used on employee records." data-ar="أنشئ المسميات الوظيفية المستخدمة في بيانات الموظفين.">Create job titles used on employee records.</p>
+      </a>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="settings-app.js?v=2"></script>
+</body>
+</html>

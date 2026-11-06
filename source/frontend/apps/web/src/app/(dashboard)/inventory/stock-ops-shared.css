@@ -1,0 +1,32 @@
+/* Shared Stock Management desk chrome (On Hand / Move / Count) */
+.stock-ops-nav{
+  display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;padding:6px;
+  background:rgba(255,254,251,.85);border:1px solid #E4E8E2;border-radius:999px;
+  width:fit-content;max-width:100%
+}
+.stock-ops-nav a{
+  display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 14px;
+  border-radius:999px;text-decoration:none;font-size:13px;font-weight:700;
+  color:#4A524C;background:transparent;border:1px solid transparent
+}
+.stock-ops-nav a:hover{background:#F4F6F3;color:#1F2420}
+.stock-ops-nav a.act{
+  background:rgba(122,204,0,.18);color:#3f6212;border-color:rgba(122,204,0,.35)
+}
+.stock-ops-nav a i{font-size:16px}
+@media(max-width:640px){
+  .stock-ops-nav{border-radius:16px;width:100%}
+  .stock-ops-nav a{flex:1;justify-content:center}
+}
+
+/* Framed inside Stock Management hub */
+html.stock-embed,html.stock-embed body{height:100%;overflow:auto;background:#F7F8F5!important}
+html.stock-embed .sidebar,
+html.stock-embed .topbar,
+html.stock-embed .stock-ops-nav,
+html.stock-embed .gfp-lang-toggle,
+html.stock-embed .sm-hub-only{display:none!important}
+html.stock-embed .main{margin-left:0!important;min-height:0}
+html.stock-embed .content{padding:14px 16px 24px!important}
+html.stock-embed .page-title{font-size:20px}
+html.stock-embed .page-subtitle{margin-bottom:12px;max-width:36rem}

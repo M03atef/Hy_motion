@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HyMotion — Font Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Production fonts only (reference). Candidates lazy-load in app JS. -->
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/dev/font-preview/font-preview.css?v=1">
+</head>
+<body class="fp-page">
+  <header class="fp-top">
+    <div class="fp-top-inner">
+      <div>
+        <h1 class="fp-title" data-i18n="fontPreview.title">HyMotion — Font Preview</h1>
+        <p class="fp-sub" data-i18n="fontPreview.subtitle">Compare typography before choosing production.</p>
+      </div>
+      <div class="fp-controls">
+        <div class="fp-lang" role="group" aria-label="Language">
+          <span class="fp-lang-label" data-i18n="fontPreview.language">Language</span>
+          <button type="button" class="fp-chip" id="fpLangEn" data-locale="en">English</button>
+          <button type="button" class="fp-chip" id="fpLangAr" data-locale="ar">العربية</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="fp-toolbar">
+    <div class="fp-toolbar-inner">
+      <strong data-i18n="fontPreview.compare">Compare</strong>
+      <div id="fpCompareChecks" class="fp-compare-checks"></div>
+      <div class="fp-toolbar-actions">
+        <button type="button" class="fp-btn ghost" id="fpSelectAll" data-i18n="fontPreview.selectAll">Select all available</button>
+        <button type="button" class="fp-btn ghost" id="fpClearCompare" data-i18n="fontPreview.clearCompare">Clear selection</button>
+      </div>
+    </div>
+  </section>
+
+  <main id="fpGrid" class="fp-grid" aria-live="polite"></main>
+
+  <footer class="fp-footer">
+    <div class="fp-footer-inner">
+      <div class="fp-prod-row">
+        <div>
+          <div class="fp-meta-label" data-i18n="fontPreview.productionFont">Current production font</div>
+          <div class="fp-meta-value" data-i18n="fontPreview.productionValue">Cairo</div>
+        </div>
+        <div>
+          <div class="fp-meta-label" data-i18n="fontPreview.previewSelection">Preview selection</div>
+          <div class="fp-meta-value" id="fpSelectionLabel">—</div>
+        </div>
+        <div class="fp-apply-wrap">
+          <button type="button" class="fp-btn primary" id="fpApply" disabled data-i18n="fontPreview.applyProduction">Apply to Production</button>
+          <p class="fp-apply-note" data-i18n="fontPreview.applyDisabled">Preview only — does not change production typography</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/shared/i18n-catalog.js"></script>
+  <script src="/shared/i18n.js?v=loc2"></script>
+  <script src="/dev/font-preview/font-preview-app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Finance / Invoices hub (design preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;
+  --suc500:#22C55E;--suc100:#DCFCE7;--dng500:#EF4444;--inf500:#3B82F6;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:10px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--lbg);color:var(--ltp);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.banner code{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:6px;font-weight:500}
+.app{display:flex;min-height:calc(100vh - 42px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;padding:20px 0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid var(--c700);margin-bottom:8px}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-item{display:block;padding:10px 20px;font-size:13px;color:var(--c300);text-decoration:none}
+.sb-item.act{color:#fff;background:rgba(122,204,0,.15);border-right:3px solid var(--l500)}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:60px;background:var(--ls1);border-bottom:1px solid var(--ls3);display:flex;align-items:center;padding:0 28px;font-family:var(--fd);font-weight:600;font-size:14px;color:var(--lts)}
+.topbar .sep{margin:0 6px;color:var(--ltt)}
+.topbar .cur{color:var(--ltp)}
+.content{padding:24px 28px;flex:1}
+.page-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700}
+.page-sub{font-size:13px;color:var(--ltt);margin-top:4px;max-width:40rem;line-height:1.5}
+.btn{height:40px;padding:0 16px;border-radius:var(--rlg);font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,var(--l500),var(--l600));color:var(--c900)}
+.btn-secondary{background:var(--ls1);border:1px solid var(--ls3);color:var(--lts)}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--ls3);padding-bottom:0}
+.tab{
+  appearance:none;background:none;border:none;font:inherit;font-size:13px;font-weight:600;
+  color:var(--ltt);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.tab:hover{color:var(--lts)}
+.tab.act{color:var(--ltp);border-bottom-color:var(--l500)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.kpis{grid-template-columns:1fr}.sidebar{display:none}}
+.kpi{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:14px 16px}
+.kpi .l{font-size:12px;color:var(--ltt);margin-bottom:4px}
+.kpi .v{font-family:var(--fd);font-size:22px;font-weight:700}
+.kpi .v.due{color:var(--dng500)}
+.card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);overflow:auto}
+.card h3{font-family:var(--fd);font-size:15px;padding:14px 16px;border-bottom:1px solid var(--ls3)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--ls3)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt);background:var(--ls2)}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.badge-ok{background:var(--suc100);color:var(--suc500)}
+.badge-due{background:#FEE2E2;color:#991B1B}
+.badge-info{background:#DBEAFE;color:#1E40AF}
+.badge-sell{background:#ECFDF5;color:#047857}
+.badge-buy{background:#FFF7ED;color:#C2410C}
+.link{background:none;border:none;color:var(--inf500);font-weight:600;cursor:pointer;font-size:12px;font-family:inherit}
+.panel{display:none}
+.panel.act{display:block}
+.hint{font-size:12px;color:var(--ltt);margin:0 0 12px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.overlay.show{display:flex}
+.modal{background:var(--ls1);border-radius:var(--rlg);width:100%;max-width:420px;padding:22px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.modal h2{font-family:var(--fd);font-size:18px;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--lts);line-height:1.55;margin-bottom:8px}
+.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.check{width:40px;height:40px;border-radius:50%;background:var(--suc100);color:var(--suc500);display:flex;align-items:center;justify-content:center;font-weight:700;margin-bottom:12px}
+.ar{direction:rtl;font-family:'IBM Plex Sans Arabic',var(--fb);font-size:12px;color:var(--ltt)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <span>DESIGN PREVIEW ONLY — not wired to the live app API</span>
+  <span>Open file: <code>previews/finance-invoices-hub.html</code></span>
+</div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <a class="sb-item" href="#">Dashboard</a>
+    <a class="sb-item" href="#">Inventory</a>
+    <a class="sb-item act" href="#">Invoices</a>
+    <a class="sb-item" href="#">Reports</a>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <span>Money</span><span class="sep">/</span><span class="cur">Invoices</span>
+    </header>
+    <div class="content">
+      <div class="page-hdr">
+        <div>
+          <h1 class="page-title">Invoices</h1>
+          <p class="page-sub">All buy and sell money documents — memberships, products, and supplier purchases after receive.</p>
+          <p class="ar">كل مستندات البيع والشراء — عضويات، منتجات، ومشتريات الموردين بعد الاستلام.</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn btn-secondary" id="btnDemoReceive">Demo: after receive</button>
+          <button type="button" class="btn btn-primary">Export</button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab act" data-tab="mem">Sell · Memberships</button>
+        <button type="button" class="tab" data-tab="prod">Sell · Products</button>
+        <button type="button" class="tab" data-tab="buy">Buy · Suppliers</button>
+        <button type="button" class="tab" data-tab="all">All</button>
+      </div>
+
+      <!-- Sell Memberships -->
+      <div class="panel act" id="panel-mem">
+        <div class="kpis">
+          <div class="kpi"><div class="l">Issued</div><div class="v">128</div></div>
+          <div class="kpi"><div class="l">Collected (EGP)</div><div class="v">186,400</div></div>
+          <div class="kpi"><div class="l">Outstanding</div><div class="v due">12,250</div></div>
+        </div>
+        <div class="card">
+          <h3>Membership invoices</h3>
+          <table>
+            <thead><tr><th>Date</th><th>Number</th><th>Member</th><th>Type</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>11 Aug 2026</td><td>INV-10482</td><td>Ahmed Hassan</td><td><span class="badge badge-sell">Membership</span></td><td>1,500</td><td><span class="badge badge-ok">Paid</span></td><td><button class="link">View</button></td></tr>
+              <tr><td>10 Aug 2026</td><td>INV-10471</td><td>Sara Ali</td><td><span class="badge badge-sell">Membership</span></td><td>2,200</td><td><span class="badge badge-due">Partial</span></td><td><button class="link">View</button></td></tr>
+              <tr><td>09 Aug 2026</td><td>INV-10460</td><td>Omar Nabil</td><td><span class="badge badge-sell">Membership</span></td><td>900</td><td><span class="badge badge-ok">Paid</span></td><td><button class="link">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sell Products -->
+      <div class="panel" id="panel-prod">
+        <div class="kpis">
+          <div class="kpi"><div class="l">Retail invoices</div><div class="v">64</div></div>
+          <div class="kpi"><div class="l">Collected (EGP)</div><div class="v">41,080</div></div>
+          <div class="kpi"><div class="l">Refunded</div><div class="v">1,120</div></div>
+        </div>
+        <div class="card">
+          <h3>Product / retail invoices</h3>
+          <table>
+            <thead><tr><th>Date</th><th>Number</th><th>Customer</th><th>Type</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>11 Aug 2026</td><td>INV-10490</td><td>Walk-in</td><td><span class="badge badge-sell">Products</span></td><td>340</td><td><span class="badge badge-ok">Paid</span></td><td><button class="link">View</button></td></tr>
+              <tr><td>11 Aug 2026</td><td>INV-10488</td><td>Mona Fathy</td><td><span class="badge badge-sell">Products</span></td><td>180</td><td><span class="badge badge-ok">Paid</span></td><td><button class="link">View</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Buy Suppliers -->
+      <div class="panel" id="panel-buy">
+        <p class="hint">Created when you receive goods — stock and supplier AP update together (PO / GRN presented as purchase invoice). No second stock-posting invoice.</p>
+        <div class="kpis">
+          <div class="kpi"><div class="l">Purchase docs</div><div class="v">18</div></div>
+          <div class="kpi"><div class="l">Paid to suppliers</div><div class="v">52,000</div></div>
+          <div class="kpi"><div class="l">Due to suppliers</div><div class="v due">6,750</div></div>
+        </div>
+        <div class="card">
+          <h3>Buy · Suppliers <span class="ar" style="font-weight:400">· فواتير الشراء</span></h3>
+          <table>
+            <thead><tr><th>Date</th><th>Doc #</th><th>Supplier</th><th>Warehouse</th><th>Total</th><th>Paid</th><th>Due</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td>11 Aug 2026</td><td>GR-1042</td><td>Cairo Nutrition</td><td>MAIN</td><td>3,000</td><td>0</td><td style="color:var(--dng500);font-weight:700">3,000</td>
+                <td><span class="badge badge-info">Received</span></td>
+                <td><button class="link">View</button> <button class="link">Statement</button></td>
+              </tr>
+              <tr>
+                <td>07 Aug 2026</td><td>GR-1039</td><td>Delta Supplements</td><td>MAIN</td><td>300</td><td>300</td><td style="color:var(--suc500);font-weight:600">0</td>
+                <td><span class="badge badge-ok">Settled</span></td>
+                <td><button class="link">View</button> <button class="link">Statement</button></td>
+              </tr>
+              <tr>
+                <td>02 Aug 2026</td><td>GR-1031</td><td>Al-Noor Trading</td><td>MAIN</td><td>4,200</td><td>1,000</td><td style="color:var(--dng500);font-weight:700">3,200</td>
+                <td><span class="badge badge-info">Partial</span></td>
+                <td><button class="link">View</button> <button class="link">Pay</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- All -->
+      <div class="panel" id="panel-all">
+        <div class="card">
+          <h3>All money documents</h3>
+          <table>
+            <thead><tr><th>Date</th><th>Direction</th><th>Number</th><th>Party</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>11 Aug</td><td><span class="badge badge-buy">Buy</span></td><td>GR-1042</td><td>Cairo Nutrition</td><td>3,000</td><td><span class="badge badge-due">Due</span></td><td><button class="link">Open</button></td></tr>
+              <tr><td>11 Aug</td><td><span class="badge badge-sell">Sell</span></td><td>INV-10490</td><td>Walk-in</td><td>340</td><td><span class="badge badge-ok">Paid</span></td><td><button class="link">Open</button></td></tr>
+              <tr><td>11 Aug</td><td><span class="badge badge-sell">Sell</span></td><td>INV-10482</td><td>Ahmed Hassan</td><td>1,500</td><td><span class="badge badge-ok">Paid</span></td><td><button class="link">Open</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="recvModal" aria-hidden="true">
+  <div class="modal">
+    <div class="check">✓</div>
+    <h2>Goods received</h2>
+    <p>Stock on hand updated via ledger. Supplier due increased on the AP ledger.</p>
+    <p class="ar">تم تحديث الرصيد. وزاد المستحق للمورد في دفتر الذمم.</p>
+    <p><strong>GR-1042</strong> · Cairo Nutrition · 3,000 EGP</p>
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" id="btnCloseRecv">Back to Buy &amp; receive</button>
+      <button type="button" class="btn btn-primary" id="btnOpenBuy">Open purchase invoice</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var tabs = document.querySelectorAll('.tab');
+  var panels = {
+    mem: document.getElementById('panel-mem'),
+    prod: document.getElementById('panel-prod'),
+    buy: document.getElementById('panel-buy'),
+    all: document.getElementById('panel-all')
+  };
+  function show(key) {
+    tabs.forEach(function (t) {
+      t.classList.toggle('act', t.getAttribute('data-tab') === key);
+    });
+    Object.keys(panels).forEach(function (k) {
+      panels[k].classList.toggle('act', k === key);
+    });
+  }
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      show(t.getAttribute('data-tab'));
+    });
+  });
+  var overlay = document.getElementById('recvModal');
+  document.getElementById('btnDemoReceive').addEventListener('click', function () {
+    overlay.classList.add('show');
+    overlay.setAttribute('aria-hidden', 'false');
+  });
+  document.getElementById('btnCloseRecv').addEventListener('click', function () {
+    overlay.classList.remove('show');
+    overlay.setAttribute('aria-hidden', 'true');
+  });
+  document.getElementById('btnOpenBuy').addEventListener('click', function () {
+    overlay.classList.remove('show');
+    show('buy');
+  });
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) {
+      overlay.classList.remove('show');
+    }
+  });
+})();
+</script>
+</body>
+</html>

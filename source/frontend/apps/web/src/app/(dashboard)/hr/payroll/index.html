@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Payroll</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="payroll.css?v=2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Payroll" data-ar="الرواتب">Payroll</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Payroll is restricted to authorized roles only." data-ar="الرواتب مقيدة للأدوار المصرح لها فقط.">Payroll is restricted to authorized roles only.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Payroll" data-ar="الرواتب">Payroll</h1>
+        <p class="page-subtitle" data-en="Basic salary, overtime, bonuses, allowances, and deductions — by month." data-ar="الراتب الأساسي والإضافي والمكافآت والبدلات والخصومات — شهرياً.">Basic salary, overtime, bonuses, allowances, and deductions — by month.</p>
+      </div>
+      <div id="manageActions" hidden>
+        <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New payroll period" data-ar="فترة رواتب جديدة">New payroll period</span></button>
+      </div>
+    </div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="periodModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="New payroll period" data-ar="فترة رواتب جديدة">New payroll period</h2>
+      <button type="button" class="modal-close" data-close="periodModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="periodForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Year *" data-ar="السنة *">Year *</span><input id="pYear" type="number" required></label>
+        <label class="fg"><span data-en="Month *" data-ar="الشهر *">Month *</span>
+          <select id="pMonth" required>
+            <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+            <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+          </select>
+        </label>
+      </div>
+      <p class="form-hint" id="periodHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="periodModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSavePeriod" data-en="Create" data-ar="إنشاء">Create</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="adjustModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="Add adjustment" data-ar="إضافة تعديل">Add adjustment</h2>
+      <button type="button" class="modal-close" data-close="adjustModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="adjustForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Employee *" data-ar="الموظف *">Employee *</span><select id="aEmployee" required></select></label>
+        <label class="fg"><span data-en="Type *" data-ar="النوع *">Type *</span>
+          <select id="aType">
+            <option value="Bonus" data-en="Bonus" data-ar="مكافأة">Bonus</option>
+            <option value="Allowance" data-en="Allowance" data-ar="بدل">Allowance</option>
+            <option value="Overtime" data-en="Overtime" data-ar="وقت إضافي">Overtime</option>
+            <option value="Deduction" data-en="Deduction" data-ar="خصم">Deduction</option>
+          </select>
+        </label>
+        <label class="fg"><span data-en="Amount (EGP) *" data-ar="المبلغ (جنيه) *">Amount (EGP) *</span><input id="aAmount" type="number" min="0.01" step="0.01" required></label>
+      </div>
+      <label class="fg"><span data-en="Reason" data-ar="السبب">Reason</span><input id="aReason" maxlength="500"></label>
+      <p class="form-hint" id="adjustHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="adjustModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveAdjust" data-en="Add" data-ar="إضافة">Add</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay" hidden>
+  <div class="drawer wide" id="drawerContent"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="payroll-app.js?v=2"></script>
+</body>
+</html>

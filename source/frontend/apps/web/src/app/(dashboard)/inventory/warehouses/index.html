@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Warehouses</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="warehouses.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Inventory" data-ar="المخزون">Inventory</span><span class="sep">/</span><span class="current" data-en="Warehouses" data-ar="المستودعات">Warehouses</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Warehouses" data-ar="المستودعات">Warehouses</h1>
+      <p class="page-subtitle" data-en="Where products are stored at your gym — not branch locations. One default warehouse." data-ar="أماكن تخزين المنتجات داخل النادي (مش الفروع). مستودع افتراضي واحد.">Where products are stored at your gym — not branch locations. One default warehouse.</p>
+    </div>
+    <div id="manageActions" hidden>
+      <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New warehouse" data-ar="مستودع جديد" data-i18n-text>New warehouse</span></button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <label class="chk"><input type="checkbox" id="filterInactive"> <span data-en="Include inactive" data-ar="إظهار غير النشط">Include inactive</span></label>
+    <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    <div class="default-chip" id="defaultChip"><span data-en="Default:" data-ar="الافتراضي:">Default:</span> …</div>
+  </div>
+  <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="whModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="whModalTitle">مستودع جديد / New warehouse</h2>
+      <button type="button" class="modal-close" data-close="whModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="whForm" class="modal-body">
+      <label>كود المستودع / Code * <span class="hint" id="codeHint">(لا يتغير بعد الإنشاء / fixed after save)</span>
+        <input id="wCode" required maxlength="32" autocomplete="off" placeholder="مثال: MAIN">
+      </label>
+      <label>الاسم بالإنجليزي / Name *<input id="wName" required maxlength="150" placeholder="Main store"></label>
+      <label>الاسم بالعربي / Name (AR)<input id="wNameAr" maxlength="150" dir="rtl" placeholder="المخزن الرئيسي"></label>
+      <label class="chk"><input type="checkbox" id="wActive" checked> نشط / Active</label>
+      <label class="chk" id="wDefaultWrap"><input type="checkbox" id="wDefault"> اجعله الافتراضي / Set as default</label>
+      <p class="form-hint" id="whHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" data-close="whModal">إلغاء / Cancel</button>
+        <button type="submit" class="btn-create" id="btnSaveWh">حفظ / Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="warehouses-app.js"></script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Products desk for Starter/Growth (design preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#22C55E;--suc100:#DCFCE7;--dng500:#EF4444;--dng100:#FEE2E2;--warn:#B45309;--warnbg:#FEF3C7;
+  --lbg:#F3F5F2;--ls1:#FFFefb;--ls2:#F4F6F3;--ls3:#E4E8E2;
+  --ltp:#1F2420;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:18px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--fb);color:var(--ltp);min-height:100vh;
+  background:radial-gradient(1000px 480px at 8% -12%,rgba(160,224,64,.14),transparent 55%),linear-gradient(180deg,#F7F8F5,#F1F3F0)
+}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:50
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:42rem;line-height:1.4}
+.banner code{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:6px;font-weight:500}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.controls button,.controls .seg{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act,.controls .seg.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;padding:20px 0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid var(--c700);margin-bottom:8px}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:12px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300);text-decoration:none}
+.sb-item.act{color:#fff;background:rgba(122,204,0,.15);border-right:3px solid var(--l500)}
+.sb-item.ghost{opacity:.35;pointer-events:none}
+.sb-upsell{
+  margin:12px 14px;padding:10px 12px;border-radius:12px;background:rgba(122,204,0,.1);
+  border:1px solid rgba(122,204,0,.25);font-size:11px;line-height:1.45;color:#d9f99d
+}
+.sb-upsell strong{display:block;color:#fff;font-size:12px;margin-bottom:2px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{
+  height:56px;background:rgba(255,254,251,.9);border-bottom:1px solid var(--ls3);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;backdrop-filter:blur(8px)
+}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.crumb .cur{color:var(--ltp)}
+.tier-pill{
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;
+  background:rgba(122,204,0,.18);color:#3f6212
+}
+.tier-pill.pro{background:#DBEAFE;color:#1E40AF}
+.content{padding:20px 24px 36px;flex:1}
+.page-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.page-title{font-family:var(--fd);font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px;letter-spacing:-.02em}
+.page-title i{color:var(--l500)}
+.page-sub{font-size:13px;color:var(--ltt);margin-top:6px;max-width:38rem;line-height:1.5}
+.ar{direction:rtl;font-family:'IBM Plex Sans Arabic',var(--fb);font-size:12px;color:var(--ltt);margin-top:4px}
+.btn{height:40px;padding:0 14px;border-radius:var(--rlg);font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(180deg,var(--l400),var(--l500));color:var(--c900);border-color:rgba(94,175,0,.35)}
+.btn-secondary{background:var(--ls1);border-color:var(--ls3);color:var(--lts)}
+.btn-dark{background:var(--c900);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.jobs{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px
+}
+@media(max-width:900px){.jobs{grid-template-columns:1fr}}
+.job{
+  background:rgba(255,254,251,.92);border:1px solid var(--ls3);border-radius:var(--rlg);
+  padding:12px 14px;display:flex;gap:10px;align-items:flex-start
+}
+.job i{font-size:18px;color:var(--l600);margin-top:2px}
+.job strong{display:block;font-size:13px;font-family:var(--fd)}
+.job span{font-size:12px;color:var(--ltt);line-height:1.4}
+.toolbar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px
+}
+.search{
+  flex:1;min-width:200px;height:42px;border:1px solid var(--ls3);border-radius:var(--rmd);
+  padding:0 12px 0 36px;font:inherit;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%7A847C' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 14 15.5l.27.28v.79l5 5L20.5 19l-5-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z'/%3E%3C/svg%3E") 12px center no-repeat
+}
+select.filter{
+  height:42px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit;background:#fff;color:var(--lts)
+}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--ls3);
+  background:var(--ls1);font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--lts)
+}
+.chip.act{background:rgba(122,204,0,.18);border-color:rgba(122,204,0,.4);color:#3f6212}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.stat{
+  padding:6px 12px;border-radius:999px;background:rgba(255,254,251,.9);border:1px solid var(--ls3);
+  font-size:12px;font-weight:700;color:var(--lts)
+}
+.stat.warn{background:var(--warnbg);color:var(--warn);border-color:#FDE68A}
+.stat.danger{background:var(--dng100);color:#991B1B;border-color:#FECACA}
+.panel{
+  background:rgba(255,254,251,.94);border:1px solid var(--ls3);border-radius:var(--rlg);
+  overflow:hidden;box-shadow:0 8px 24px rgba(20,30,20,.04)
+}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--ls3);vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt);background:var(--ls2)}
+tr:hover td{background:rgba(122,204,0,.04)}
+.prod{display:flex;align-items:center;gap:10px}
+.thumb{
+  width:40px;height:40px;border-radius:10px;background:linear-gradient(145deg,#eef2f0,#e4ebe6);
+  display:flex;align-items:center;justify-content:center;color:var(--ltt);overflow:hidden;flex-shrink:0
+}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.name{font-weight:700;font-family:var(--fd)}
+.sku{font-size:11px;color:var(--ltt);font-family:ui-monospace,monospace}
+.badge{display:inline-flex;min-width:44px;justify-content:center;padding:4px 10px;border-radius:999px;font-weight:700;font-size:12px}
+.badge-ok{background:var(--suc100);color:var(--suc500)}
+.badge-low{background:var(--warnbg);color:var(--warn)}
+.badge-out{background:var(--dng100);color:#991B1B}
+.badge-na{background:var(--ls2);color:var(--ltt)}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.row-actions button{
+  height:32px;padding:0 10px;border-radius:8px;border:1px solid var(--ls3);
+  background:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--lts)
+}
+.row-actions button.primary{background:rgba(122,204,0,.15);border-color:rgba(122,204,0,.35);color:#3f6212}
+.empty,.loading,.error{
+  padding:40px 20px;text-align:center;color:var(--ltt);font-size:13px;line-height:1.55
+}
+.empty strong,.loading strong,.error strong{display:block;color:var(--lts);font-size:15px;margin-bottom:6px;font-family:var(--fd)}
+.skeleton{background:linear-gradient(90deg,var(--ls2),#eee,var(--ls2));background-size:200% 100%;animation:sh 1.2s infinite;border-radius:8px;height:48px;margin:10px 14px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* Detail drawer */
+.drawer-bg{
+  position:fixed;inset:0;background:rgba(15,20,15,.4);display:none;align-items:stretch;justify-content:flex-end;z-index:60
+}
+.drawer-bg.show{display:flex}
+.drawer{
+  width:min(420px,100%);background:var(--ls1);padding:18px;overflow:auto;
+  box-shadow:-8px 0 30px rgba(0,0,0,.12)
+}
+.drawer h2{font-family:var(--fd);font-size:18px;margin-bottom:4px}
+.drawer .meta{font-size:12px;color:var(--ltt);margin-bottom:14px}
+.qty-hero{
+  background:linear-gradient(180deg,#fff,rgba(160,224,64,.1));border:1px solid rgba(122,204,0,.25);
+  border-radius:var(--rlg);padding:14px;margin-bottom:14px
+}
+.qty-hero .l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt)}
+.qty-hero .v{font-family:var(--fd);font-size:32px;font-weight:700;color:#3f6212;margin:2px 0}
+.qty-hero .h{font-size:12px;color:var(--lts)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--lts);margin-bottom:6px}
+.field input{
+  width:100%;height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit
+}
+.drawer .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.note-box{
+  margin-top:16px;padding:12px 14px;border-radius:var(--rmd);background:#ECFDF5;border:1px solid #A7F3D0;
+  font-size:12px;color:#065F46;line-height:1.5
+}
+.note-box strong{display:block;margin-bottom:2px}
+.pro-only{display:none}
+body.tier-pro .pro-only{display:flex}
+body.tier-pro .starter-only{display:none}
+body.tier-pro .sb-upsell{display:none}
+[hidden],.state[hidden]{display:none!important}
+@media(max-width:860px){.sidebar{display:none}}
+</style>
+</head>
+<body class="tier-starter">
+<div class="banner">
+  <div>
+    <div>DESIGN PREVIEW — Products as Starter / Growth desk · not production</div>
+    <div class="note">
+      Stock Management section is <strong>hidden</strong> for Starter &amp; Growth.
+      Products covers: catalog, sellable qty, add stock, fix qty, open Sale.
+      Pro keeps Stock Management hub (On Hand / Move / Count).
+    </div>
+  </div>
+  <div class="controls">
+    <span style="font-size:11px;opacity:.85">Plan</span>
+    <button type="button" class="seg act" data-tier="starter">Starter / Growth</button>
+    <button type="button" class="seg" data-tier="pro">Pro (compare)</button>
+    <span style="width:8px"></span>
+    <button type="button" class="act" data-state="populated">1 · Populated</button>
+    <button type="button" data-state="empty">2 · Empty</button>
+    <button type="button" data-state="loading">3 · Loading</button>
+    <button type="button" data-state="error">4 · Error</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>Fitness Hub</span></div>
+    <div class="sb-sec">Front desk</div>
+    <a class="sb-item" href="#"><i class="ti ti-shopping-cart"></i> Sale</a>
+    <a class="sb-item" href="#"><i class="ti ti-package"></i> Member Orders</a>
+
+    <div class="sb-sec starter-only">Catalog</div>
+    <a class="sb-item act starter-only" href="#"><i class="ti ti-box"></i> Products</a>
+
+    <div class="sb-sec pro-only">Stock Management</div>
+    <a class="sb-item pro-only" href="#"><i class="ti ti-stack-2"></i> Stock Management</a>
+    <div class="sb-sec pro-only">Inventory</div>
+    <a class="sb-item act pro-only" href="#"><i class="ti ti-box"></i> Products</a>
+    <a class="sb-item pro-only" href="#"><i class="ti ti-truck"></i> Suppliers</a>
+    <a class="sb-item pro-only" href="#"><i class="ti ti-building-warehouse"></i> Warehouses</a>
+    <a class="sb-item pro-only" href="#"><i class="ti ti-chart-histogram"></i> Insights</a>
+
+    <div class="sb-upsell starter-only">
+      <strong>Need Move &amp; Count?</strong>
+      Warehouse transfers and shelf counts unlock on Pro.
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">🏠 / <span class="cur">Products</span></div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <span class="tier-pill" id="tierPill">Starter desk</span>
+        <span style="font-size:13px;font-weight:600;color:var(--lts)">Fitness Hub</span>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="page-hdr">
+        <div>
+          <h1 class="page-title"><i class="ti ti-box"></i> Products</h1>
+          <p class="page-sub" id="pageSub">Your sellable items in one place — add products, see qty left, put stock in, and sell from Sale.</p>
+          <p class="ar">منتجاتك في مكان واحد — ضيف، شوف الكمية، زوّد رصيد، وبيع من شاشة البيع.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="btn btn-secondary"><i class="ti ti-folder"></i> Categories</button>
+          <button type="button" class="btn btn-primary" id="btnNew"><i class="ti ti-plus"></i> New product</button>
+        </div>
+      </div>
+
+      <div class="jobs starter-only">
+        <div class="job"><i class="ti ti-plus"></i><div><strong>1. Add product</strong><span>Name, price, photo, barcode</span></div></div>
+        <div class="job"><i class="ti ti-package-import"></i><div><strong>2. Put stock in</strong><span>Opening qty or “Add stock” on a row</span></div></div>
+        <div class="job"><i class="ti ti-shopping-cart"></i><div><strong>3. Sell</strong><span>Open Sale — same products</span></div></div>
+      </div>
+
+      <div class="toolbar">
+        <input class="search" type="search" placeholder="Search name, SKU, barcode…">
+        <select class="filter"><option>All categories</option><option>Drinks</option><option>Supplements</option></select>
+        <div class="chips">
+          <button type="button" class="chip act">All</button>
+          <button type="button" class="chip">Low</button>
+          <button type="button" class="chip">Out</button>
+        </div>
+      </div>
+
+      <div class="stats" id="statsBar">
+        <div class="stat">12 shown</div>
+        <div class="stat warn">2 low</div>
+        <div class="stat danger">1 out</div>
+      </div>
+
+      <div class="panel">
+        <div class="state" data-show="populated">
+          <table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Sell price</th>
+                <th>Qty left</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div class="prod">
+                    <div class="thumb"><i class="ti ti-bottle"></i></div>
+                    <div><div class="name">Mineral Water</div><div class="sku">DRN-WAT-500ML</div></div>
+                  </div>
+                </td>
+                <td>EGP 7.00</td>
+                <td><span class="badge badge-ok">48</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button type="button" class="primary" data-open="water">Add stock</button>
+                    <button type="button" data-open="water">Fix qty</button>
+                    <button type="button">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="prod">
+                    <div class="thumb"><i class="ti ti-barbell"></i></div>
+                    <div><div class="name">بروتين</div><div class="sku">PROT-I0EL</div></div>
+                  </div>
+                </td>
+                <td>EGP 1,000.00</td>
+                <td><span class="badge badge-low">3</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button type="button" class="primary" data-open="protein">Add stock</button>
+                    <button type="button" data-open="protein">Fix qty</button>
+                    <button type="button">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="prod">
+                    <div class="thumb"><i class="ti ti-cookie"></i></div>
+                    <div><div class="name">Protein bar</div><div class="sku">SNK-BAR-01</div></div>
+                  </div>
+                </td>
+                <td>EGP 40.00</td>
+                <td><span class="badge badge-out">0</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button type="button" class="primary" data-open="bar">Add stock</button>
+                    <button type="button" data-open="bar">Fix qty</button>
+                    <button type="button">Edit</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="prod">
+                    <div class="thumb"><i class="ti ti-coin"></i></div>
+                    <div><div class="name">Cash Back</div><div class="sku">SVC-CB</div></div>
+                  </div>
+                </td>
+                <td>EGP 30.00</td>
+                <td><span class="badge badge-na">—</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button type="button">Edit</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="state" data-show="empty" hidden>
+          <div class="empty">
+            <strong>No products yet</strong>
+            Add your first item (water, protein, snacks). You can set opening qty when you create it.
+            <div style="margin-top:14px"><button type="button" class="btn btn-primary"><i class="ti ti-plus"></i> New product</button></div>
+          </div>
+        </div>
+
+        <div class="state" data-show="loading" hidden>
+          <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+
+        <div class="state" data-show="error" hidden>
+          <div class="error">
+            <strong>Couldn’t load products</strong>
+            Check the connection, then retry. Your catalog was not changed.
+            <div style="margin-top:14px"><button type="button" class="btn btn-secondary"><i class="ti ti-refresh"></i> Retry</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>Preview intent</strong>
+        Starter/Growth: <code>Products</code> is the only inventory home — no Stock Management sidebar.
+        Pro: Stock Management hub stays for Move / Count / advanced On Hand board.
+        Engines stay in the backend; this preview is audience packaging only.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-bg" id="drawer">
+  <aside class="drawer" role="dialog" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px">
+      <div>
+        <h2 id="dTitle">Mineral Water</h2>
+        <div class="meta" id="dSku">DRN-WAT-500ML · Drinks</div>
+      </div>
+      <button type="button" class="btn btn-secondary" id="btnCloseDrawer" style="height:34px;padding:0 10px"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="qty-hero">
+      <div class="l">Qty left (sellable)</div>
+      <div class="v" id="dQty">48</div>
+      <div class="h">Same number Sale uses when you sell this item</div>
+    </div>
+    <div class="field">
+      <label>Add stock</label>
+      <input type="number" id="dAdd" min="1" step="1" placeholder="e.g. 24" value="24">
+    </div>
+    <div class="actions">
+      <button type="button" class="btn btn-primary"><i class="ti ti-package-import"></i> Put stock in</button>
+      <button type="button" class="btn btn-secondary"><i class="ti ti-adjustments"></i> Fix qty</button>
+      <button type="button" class="btn btn-dark"><i class="ti ti-shopping-cart"></i> Sell</button>
+    </div>
+    <p style="margin-top:14px;font-size:12px;color:var(--ltt);line-height:1.45">
+      Starter desk uses simple stock only (no batch/expiry theatre). Move between warehouses and formal Count stay on Pro → Stock Management.
+    </p>
+  </aside>
+</div>
+
+<script>
+(function () {
+  var body = document.body;
+  var tierPill = document.getElementById('tierPill');
+  var pageSub = document.getElementById('pageSub');
+  var drawer = document.getElementById('drawer');
+  var stateEls = document.querySelectorAll('[data-show]');
+  var catalog = {
+    water: { title: 'Mineral Water', sku: 'DRN-WAT-500ML · Drinks', qty: '48' },
+    protein: { title: 'بروتين', sku: 'PROT-I0EL · Supplements', qty: '3' },
+    bar: { title: 'Protein bar', sku: 'SNK-BAR-01 · Snacks', qty: '0' }
+  };
+
+  function setTier(tier) {
+    body.classList.toggle('tier-pro', tier === 'pro');
+    body.classList.toggle('tier-starter', tier !== 'pro');
+    document.querySelectorAll('[data-tier]').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-tier') === tier);
+    });
+    if (tier === 'pro') {
+      tierPill.textContent = 'Pro · full inventory';
+      tierPill.classList.add('pro');
+      pageSub.textContent = 'Catalog admin. Use Stock Management for On Hand board, Move, and Count.';
+    } else {
+      tierPill.textContent = 'Starter / Growth desk';
+      tierPill.classList.remove('pro');
+      pageSub.textContent = 'Your sellable items in one place — add products, see qty left, put stock in, and sell from Sale.';
+    }
+  }
+
+  function setState(name) {
+    document.querySelectorAll('[data-state]').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-state') === name);
+    });
+    stateEls.forEach(function (el) {
+      el.hidden = el.getAttribute('data-show') !== name;
+    });
+    document.getElementById('statsBar').style.display = name === 'populated' ? '' : 'none';
+  }
+
+  document.querySelectorAll('[data-tier]').forEach(function (b) {
+    b.addEventListener('click', function () { setTier(b.getAttribute('data-tier')); });
+  });
+  document.querySelectorAll('[data-state]').forEach(function (b) {
+    b.addEventListener('click', function () { setState(b.getAttribute('data-state')); });
+  });
+  document.querySelectorAll('[data-open]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var key = b.getAttribute('data-open');
+      var row = catalog[key] || catalog.water;
+      document.getElementById('dTitle').textContent = row.title;
+      document.getElementById('dSku').textContent = row.sku;
+      document.getElementById('dQty').textContent = row.qty;
+      drawer.classList.add('show');
+    });
+  });
+  document.getElementById('btnCloseDrawer').onclick = function () {
+    drawer.classList.remove('show');
+  };
+  drawer.addEventListener('click', function (e) {
+    if (e.target === drawer) drawer.classList.remove('show');
+  });
+
+  setTier('starter');
+  setState('populated');
+})();
+</script>
+</body>
+</html>

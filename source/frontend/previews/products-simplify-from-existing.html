@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Products simplify (from existing desk)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+/* Tokens + chrome copied from apps/web inventory products.css + pos.css — not a new system */
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c400:#6B6B6B;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;
+  --suc500:#22C55E;--suc100:#DCFCE7;--wrn100:#FEF3C7;--dng500:#EF4444;--dng100:#FEE2E2;
+  --inf500:#3B82F6;--inf100:#DBEAFE;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:10px;--rlg:16px;--sidebar-w:220px;--tf:180ms ease;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);background:var(--lbg);color:var(--ltp);line-height:1.5}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:200
+}
+.banner .note{font-weight:500;font-size:12px;opacity:.92;max-width:48rem;line-height:1.45}
+.banner code{background:rgba(255,255,255,.15);padding:2px 6px;border-radius:4px}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d}
+.app{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:var(--sidebar-w);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{padding:20px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--c700)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:13px;font-weight:500;color:var(--c300);border:none;background:transparent;width:100%;text-align:left;font:inherit;cursor:pointer;border-left:3px solid transparent}
+.sb-item.act{background:rgba(160,224,64,.08);color:var(--l400);border-left-color:var(--l500)}
+.sb-item.ghost{opacity:.35;text-decoration:line-through;cursor:default}
+.main{flex:1;min-width:0}
+.topbar{height:60px;background:var(--ls1);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.tb-breadcrumb{font-family:var(--fd);font-size:14px;font-weight:600;color:var(--lts)}
+.tb-breadcrumb .sep{color:var(--ltt);margin:0 6px}.tb-breadcrumb .current{color:var(--ltp)}
+.content{padding:28px 32px;max-width:1180px}
+.page-header{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700}
+.page-subtitle{font-size:13px;color:var(--ltt);margin-top:4px;max-width:38rem;line-height:1.5}
+.ph-right{display:flex;gap:10px;flex-wrap:wrap}
+.btn-create,.btn-secondary{height:40px;padding:0 18px;border-radius:var(--rlg);font:inherit;font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border:none}
+.btn-create{background:linear-gradient(135deg,var(--l500),var(--l600));color:var(--c900)}
+.btn-secondary{background:var(--ls1);border:1px solid var(--ls3);color:var(--lts)}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.search-box{flex:1;min-width:200px;display:flex;align-items:center;gap:8px;background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;height:40px}
+.search-box input{border:none;outline:none;flex:1;font:inherit;background:transparent}
+select.filter{height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;background:var(--ls1);font:inherit}
+.chips{display:flex;gap:6px}
+.chip{height:36px;padding:0 12px;border-radius:999px;border:1px solid var(--ls3);background:var(--ls1);font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--lts)}
+.chip.act{background:rgba(122,204,0,.18);border-color:rgba(122,204,0,.4);color:#3f6212}
+.stats-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stat-pill{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--ls3);background:var(--ls1);font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:6px;color:var(--lts)}
+.stat-pill.warn{background:var(--wrn100);color:#92400e}
+.stat-pill.danger{background:var(--dng100);color:#991B1B}
+.table-wrap{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);overflow:auto}
+table.inv{width:100%;border-collapse:collapse;min-width:720px}
+.inv th,.inv td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--ls3);font-size:13px;vertical-align:middle}
+.inv th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt);background:var(--ls2);font-weight:700}
+.inv tr:last-child td{border-bottom:none}
+.inv tr.clickable{cursor:pointer}
+.inv tr.clickable:hover td{background:#fafafa}
+.prod-cell{display:flex;align-items:center;gap:10px}
+.thumb-ph,.thumb{width:48px;height:48px;border-radius:50%;background:var(--ls2);display:flex;align-items:center;justify-content:center;color:var(--ltt);border:2px solid var(--ls3);font-size:18px;flex-shrink:0}
+.sku{font-size:11px;color:var(--ltt);font-family:ui-monospace,monospace;margin-top:2px}
+.prod-link{background:none;border:none;padding:0;font:inherit;font-weight:700;color:var(--inf500);cursor:pointer}
+.price-sell{color:#166534;font-weight:700}
+.stock-badge{display:inline-flex;min-width:36px;justify-content:center;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.stock-ok{background:var(--suc100);color:#166534}
+.stock-low{background:var(--wrn100);color:#92400E}
+.stock-out{background:var(--dng100);color:#991B1B}
+.badge{display:inline-flex;height:22px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:700;align-items:center}
+.badge-ok{background:var(--suc100);color:#166534}
+.badge-off{background:var(--ls2);color:var(--ltt)}
+.badge-received{background:var(--suc100);color:#166534}
+.badge-approved{background:var(--inf100);color:#1E40AF}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.row-actions button,.row-actions a{
+  height:32px;padding:0 10px;border-radius:8px;border:1px solid var(--ls3);
+  background:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--lts);text-decoration:none;display:inline-flex;align-items:center
+}
+.row-actions button.primary{background:rgba(122,204,0,.15);border-color:rgba(122,204,0,.35);color:#3f6212}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:220;display:flex;justify-content:flex-end}
+.drawer{width:min(420px,100%);height:100%;background:var(--ls1);display:flex;flex-direction:column}
+.drawer-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--ls3)}
+.drawer-hdr h2{font-family:var(--fd);font-size:18px}
+.drawer-body{padding:18px;overflow:auto;flex:1}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--ltt)}
+.qty-hero{background:linear-gradient(180deg,#fff,rgba(160,224,64,.1));border:1px solid rgba(122,204,0,.25);border-radius:var(--rlg);padding:14px;margin-bottom:14px}
+.qty-hero-l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt)}
+.qty-hero-v{font-family:var(--fd);font-size:32px;font-weight:700;color:#3f6212}
+.qty-hero-h{font-size:12px;color:var(--lts)}
+.detail-kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv{background:var(--ls2);border-radius:var(--rmd);padding:10px 12px}
+.kv .k{font-size:11px;color:var(--ltt);font-weight:600}
+.kv .v{font-size:15px;font-weight:700;margin-top:2px}
+.detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.ef-field{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--lts);margin-bottom:12px}
+.ef-field input,.ef-field select{height:38px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 10px;font:inherit}
+.field-hint{font-size:11px;color:var(--ltt);margin:0 0 12px}
+.buy-money-box{background:var(--ls2);border:1px solid var(--ls3);border-radius:var(--rmd);padding:12px;margin-bottom:12px}
+.buy-money-row{display:flex;justify-content:space-between;font-size:13px}
+.layout-split{display:grid;grid-template-columns:1fr 1.15fr;gap:16px}
+@media(max-width:960px){.layout-split,.detail-kv{grid-template-columns:1fr}}
+.detail-card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:16px 18px}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.kpi-card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:14px 16px}
+.kpi-card .label{font-size:12px;color:var(--ltt)}
+.kpi-card .value{font-family:var(--fd);font-size:22px;font-weight:700}
+.kpi-card .value.due{color:var(--dng500)}
+.found{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:16px;margin-bottom:16px;font-size:13px;line-height:1.55;color:var(--lts)}
+.found h3{font-family:var(--fd);font-size:15px;margin-bottom:8px;color:var(--ltp)}
+.found pre{background:var(--c900);color:#d9f99d;padding:12px;border-radius:12px;font-size:11px;overflow:auto;margin:10px 0}
+.found .ok{color:#166534;font-weight:700}
+.found .hide{color:#991B1B;font-weight:700}
+.stop{margin-top:16px;padding:14px;border-radius:14px;background:rgba(122,204,0,.12);border:1px solid rgba(122,204,0,.3);font-size:13px;line-height:1.5}
+.chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--lts)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <div>PREVIEW — simplified UX using the <strong>existing</strong> Products desk</div>
+    <div class="note">Inspected live files under <code>apps/web/.../inventory/products</code>, <code>suppliers</code>, <code>purchase-orders</code>, <code>pos</code>. Same chrome, tables, drawers, badges. Preview only — no production change in this step.</div>
+  </div>
+  <div class="controls" id="tabs">
+    <button type="button" class="act" data-v="found">What exists</button>
+    <button type="button" data-v="products">Products</button>
+    <button type="button" data-v="detail">Product drawer</button>
+    <button type="button" data-v="buy">Buy drawer</button>
+    <button type="button" data-v="suppliers">Suppliers</button>
+    <button type="button" data-v="po">Purchases</button>
+    <button type="button" data-v="flow">Keep / hide</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><svg width="32" height="32" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#7ACC00"/></svg><span>HyMotion</span></div>
+    <div class="sb-sec">Catalog</div>
+    <button type="button" class="sb-item" data-v="products"><i class="ti ti-package"></i> Plans</button>
+    <button type="button" class="sb-item act" data-nav="products"><i class="ti ti-box"></i> Products</button>
+    <button type="button" class="sb-item" data-nav="suppliers"><i class="ti ti-truck"></i> Suppliers</button>
+    <button type="button" class="sb-item" data-nav="po"><i class="ti ti-shopping-bag"></i> Purchases</button>
+    <div class="sb-sec">Money</div>
+    <div class="sb-item"><i class="ti ti-discount-2"></i> Offers &amp; Promotions</div>
+    <div class="sb-sec">Hidden from owner (engines stay)</div>
+    <div class="sb-item ghost">Stock Management</div>
+    <div class="sb-item ghost">Warehouses</div>
+    <div class="sb-item ghost">Transfers</div>
+    <div class="sb-item ghost">Counts</div>
+    <div class="sb-item ghost">Insights</div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-breadcrumb">Catalog <span class="sep">/</span> <span class="current" id="crumb">Products</span></div>
+      <div style="font-family:var(--fd);font-size:13px;font-weight:600">Fitness Hub</div>
+    </header>
+
+    <!-- FOUND -->
+    <div class="content" id="v-found">
+      <h1 class="page-title">Inspected in the real app</h1>
+      <p class="page-subtitle">Source of truth is the current staff web desk, not a new shop mock.</p>
+      <div class="found">
+        <h3>Pages already in <code>apps/web</code></h3>
+        <p><span class="ok">Keep as foundation:</span> Products list + create modal + detail drawer + Add stock / Fix qty / Buy drawers. Suppliers list + pay + statement. Purchase orders (create → approve → receive). POS retail sale. Refunds restore stock. Offers desk at <code>/dashboard/offers/</code>. Promo codes API still used by POS validate-promo.</p>
+        <p style="margin-top:8px"><span class="hide">Hide from owner nav (do not delete APIs):</span> <code>stock-management/</code>, <code>warehouses/</code>, <code>transfers/</code>, <code>counts/</code>, <code>reports/</code> (insights), inventory overview. Default warehouse is still required internally for PO receive and POS deduct.</p>
+      </div>
+      <div class="found">
+        <h3>How stock actually moves today</h3>
+        <pre>Create Product (POST /inventory/products)
+        optional opening qty → adjustment/opening
+Buy drawer / PO receive → purchase_receipt ledger → qty ↑
+POS sale (retail line) → sale movement → qty ↓
+Refund approve (full) → sale_refund → qty restored
+Fix qty → adjustment</pre>
+        <p>Owner already buys without picking a warehouse: Buy drawer auto-uses default WH. PO warehouse field is already hidden; JS still sends <code>warehouseId</code>.</p>
+      </div>
+      <div class="found">
+        <h3>POS / Member App / Offers (must not break)</h3>
+        <p><strong>POS</strong> <code>pos/pos-app.js</code> — retail lines deduct via sale API; promo via hidden <code>#promoCode</code> + <code>/sales/validate-promo</code> (staff). Same Product id.</p>
+        <p><strong>Member App</strong> — no web store page. Flutter uses <code>/api/member-store/products</code> + orders. Product flag in create form: <code>visibleToMembers</code> / <code>isSellable</code>.</p>
+        <p><strong>Offers</strong> — staff Offers wizard (local until Offers API). Promo code redemption can sync to <code>/api/promo-codes</code>. Do not invent a second product catalog.</p>
+      </div>
+      <div class="found">
+        <h3>What this preview changes visually</h3>
+        <p>Same table, same drawers, same <code>btn-create</code> / chips / stock-badge. Proposed: Catalog nav = Products + Suppliers + Purchases; qty as a product column; Buy stays the existing drawer. No Unsplash lifestyle cards.</p>
+      </div>
+    </div>
+
+    <!-- PRODUCTS (existing simple-desk table) -->
+    <div class="content" id="v-products" hidden>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Products</h1>
+          <p class="page-subtitle">What you sell, the price, and how many you have. Same desk as today — warehouse screens stay out of the sidebar.</p>
+        </div>
+        <div class="ph-right">
+          <button type="button" class="btn-secondary" data-v="buy"><i class="ti ti-shopping-bag"></i> Buy</button>
+          <button type="button" class="btn-secondary"><i class="ti ti-folder"></i> Categories</button>
+          <button type="button" class="btn-create"><i class="ti ti-plus"></i> New product</button>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box"><i class="ti ti-search"></i><input placeholder="Search name, SKU, barcode…"></div>
+        <select class="filter"><option>All categories</option><option>Supplements</option></select>
+        <div class="chips">
+          <button type="button" class="chip act">All</button>
+          <button type="button" class="chip">Low</button>
+          <button type="button" class="chip">Out</button>
+        </div>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-pill"><i class="ti ti-box"></i> 5 shown</div>
+        <div class="stat-pill warn">1 low</div>
+        <div class="stat-pill danger">1 out</div>
+      </div>
+      <div class="table-wrap">
+        <table class="inv">
+          <thead><tr><th>Product</th><th>Sell price</th><th>Qty left</th><th>Member App</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr class="clickable" data-v="detail">
+              <td><div class="prod-cell"><span class="thumb-ph"><i class="ti ti-bottle"></i></span><div><button type="button" class="prod-link">Protein Shake</button><div class="sku">PROT-SHK-01</div></div></div></td>
+              <td class="price-sell">EGP 120.00</td>
+              <td><span class="stock-badge stock-ok">18</span> <span class="badge badge-ok">In stock</span></td>
+              <td><span class="badge badge-ok">ON</span></td>
+              <td><div class="row-actions"><button type="button" class="primary">Add stock</button><button type="button" data-v="buy">Buy</button><button type="button">Edit</button><a href="#">Sell</a></div></td>
+            </tr>
+            <tr class="clickable" data-v="detail">
+              <td><div class="prod-cell"><span class="thumb-ph"><i class="ti ti-candy"></i></span><div><button type="button" class="prod-link">Protein Bar</button><div class="sku">PROT-BAR-01</div></div></div></td>
+              <td class="price-sell">EGP 70.00</td>
+              <td><span class="stock-badge stock-low">4</span> <span class="badge" style="background:var(--wrn100);color:#92400E">Low stock</span></td>
+              <td><span class="badge badge-ok">ON</span></td>
+              <td><div class="row-actions"><button type="button" class="primary">Add stock</button><button type="button" data-v="buy">Buy</button><button type="button">Edit</button><a href="#">Sell</a></div></td>
+            </tr>
+            <tr>
+              <td><div class="prod-cell"><span class="thumb-ph"><i class="ti ti-flask"></i></span><div><button type="button" class="prod-link">Pre-Workout</button><div class="sku">PRE-01</div></div></div></td>
+              <td class="price-sell">EGP 180.00</td>
+              <td><span class="stock-badge stock-ok">12</span></td>
+              <td><span class="badge badge-off">OFF</span></td>
+              <td><div class="row-actions"><button type="button" class="primary">Add stock</button><button type="button">Buy</button><button type="button">Edit</button></div></td>
+            </tr>
+            <tr>
+              <td><div class="prod-cell"><span class="thumb-ph"><i class="ti ti-shirt"></i></span><div><button type="button" class="prod-link">Gym T-Shirt</button><div class="sku">TEE-01</div></div></div></td>
+              <td class="price-sell">EGP 350.00</td>
+              <td><span class="stock-badge stock-ok">25</span></td>
+              <td><span class="badge badge-ok">ON</span></td>
+              <td><div class="row-actions"><button type="button">Buy</button><button type="button">Edit</button><a href="#">Sell</a></div></td>
+            </tr>
+            <tr>
+              <td><div class="prod-cell"><span class="thumb-ph"><i class="ti ti-droplet"></i></span><div><button type="button" class="prod-link">Water Bottle</button><div class="sku">BTL-01</div></div></div></td>
+              <td class="price-sell">EGP 90.00</td>
+              <td><span class="stock-badge stock-out">0</span> <span class="badge" style="background:var(--dng100);color:#991B1B">Out of stock</span></td>
+              <td><span class="badge badge-ok">ON</span></td>
+              <td><div class="row-actions"><button type="button" class="primary">Add stock</button><button type="button">Buy</button><button type="button">Edit</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="field-hint" style="margin-top:12px">This is the existing simple-desk table (<code>Product · Sell price · Qty left · Actions</code>) plus Member App column from the create form’s <code>visibleToMembers</code>. Image is the existing 48px thumb, not a photo mosaic.</p>
+    </div>
+
+    <!-- DETAIL DRAWER as page mock -->
+    <div class="content" id="v-detail" hidden>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Product detail (existing drawer)</h1>
+          <p class="page-subtitle">Same <code>#detailDrawer</code> layout: hero thumb, kv grid, Add stock / Fix qty / Buy / Edit / Sell.</p>
+        </div>
+        <button type="button" class="btn-secondary" data-v="products">Back to list</button>
+      </div>
+      <div class="layout-split">
+        <aside class="drawer" style="position:relative;height:auto;border:1px solid var(--ls3);border-radius:var(--rlg);width:100%">
+          <div class="drawer-hdr"><h2>Protein Shake</h2><button type="button" class="modal-close">×</button></div>
+          <div class="drawer-body">
+            <div class="qty-hero">
+              <div class="qty-hero-l">Qty left (sellable)</div>
+              <div class="qty-hero-v">18</div>
+              <div class="qty-hero-h">Same number Sale uses when you sell this item</div>
+            </div>
+            <div class="detail-kv">
+              <div class="kv"><div class="k">SKU</div><div class="v">PROT-SHK-01</div></div>
+              <div class="kv"><div class="k">Barcode</div><div class="v">6223001234567</div></div>
+              <div class="kv"><div class="k">Category</div><div class="v">Supplements</div></div>
+              <div class="kv"><div class="k">Sell price</div><div class="v">EGP 120</div></div>
+              <div class="kv"><div class="k">Cost</div><div class="v">EGP 80</div></div>
+              <div class="kv"><div class="k">Low stock at</div><div class="v">5</div></div>
+              <div class="kv"><div class="k">POS</div><div class="v">Sellable</div></div>
+              <div class="kv"><div class="k">Member App</div><div class="v">Visible</div></div>
+            </div>
+            <p class="field-hint" style="margin-top:12px">Offer (if any) is a link to Offers — not a second price field. Protein Bar would show “Buy 2 Get 1” as a badge only.</p>
+            <div class="detail-actions">
+              <button type="button" class="btn-create"><i class="ti ti-package-import"></i> Add stock</button>
+              <button type="button" class="btn-secondary">Fix qty</button>
+              <button type="button" class="btn-secondary" data-v="buy">Buy</button>
+              <a class="btn-secondary" href="#">Sell</a>
+            </div>
+          </div>
+        </aside>
+        <div class="found">
+          <h3>Already implemented</h3>
+          <p>Add stock / Fix qty post adjustments. Buy drawer: create PO → approve → receive on default warehouse → optional supplier payment. POS Sell is <code>/dashboard/pos/</code>.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUY DRAWER -->
+    <div class="content" id="v-buy" hidden>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Buy (existing drawer)</h1>
+          <p class="page-subtitle">Already in <code>products/index.html</code> <code>#buyDrawer</code>. This is the owner purchase path — not a warehouse GRN screen.</p>
+        </div>
+        <button type="button" class="btn-secondary" data-v="products">Back</button>
+      </div>
+      <div class="layout-split">
+        <aside class="drawer" style="position:relative;height:auto;border:1px solid var(--ls3);border-radius:var(--rlg);width:100%">
+          <div class="drawer-hdr"><h2>Buy</h2><button type="button" class="modal-close">×</button></div>
+          <div class="drawer-body">
+            <p class="field-hint">Buys stock from a supplier and puts it on the shelf in one step. No warehouse pick.</p>
+            <label class="ef-field"><span>Supplier *</span><select><option>ABC Nutrition</option><option>Fit Supply</option></select></label>
+            <label class="ef-field"><span>Qty bought *</span><input type="number" value="20"></label>
+            <label class="ef-field"><span>Unit cost *</span><input type="number" value="80"></label>
+            <div class="buy-money-box"><div class="buy-money-row"><span>Purchase total</span><strong>EGP 1,600</strong></div></div>
+            <label class="ef-field"><span>Paid now</span><input type="number" value="0"></label>
+            <button type="button" class="btn-create" style="width:100%;justify-content:center">Receive purchase</button>
+            <p class="field-hint" style="margin-top:12px">Result in real app: qty 18 → 38, optional payable on supplier.</p>
+          </div>
+        </aside>
+        <div class="found">
+          <h3>Purchases list still exists</h3>
+          <p><code>/dashboard/inventory/purchase-orders/</code> is the same engine (draft / approved / received). Proposed owner nav label: <strong>Purchases</strong>. Warehouse column stays off the form; <code>warehouseId</code> still sent as default.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPLIERS existing table -->
+    <div class="content" id="v-suppliers" hidden>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Suppliers</h1>
+          <p class="page-subtitle">Existing suppliers desk: contact, dues, statement, pay. Not a new people-photo module.</p>
+        </div>
+        <button type="button" class="btn-create"><i class="ti ti-plus"></i> New supplier</button>
+      </div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="label">Total suppliers</div><div class="value">3</div></div>
+        <div class="kpi-card"><div class="label">Active</div><div class="value">3</div></div>
+        <div class="kpi-card"><div class="label">Total dues</div><div class="value due">EGP 4,200</div></div>
+      </div>
+      <div class="table-wrap">
+        <table class="inv">
+          <thead><tr><th>Name</th><th>Phone</th><th>Purchases</th><th>Paid</th><th>Due</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>ABC Nutrition</td><td>0100 111 2222</td><td>EGP 8,200</td><td>EGP 5,250</td>
+              <td style="color:var(--dng500);font-weight:700">EGP 2,950</td>
+              <td><div class="row-actions"><button type="button">Edit</button><button type="button">Statement</button><button type="button">Pay</button></div></td>
+            </tr>
+            <tr>
+              <td>Fit Supply</td><td>0122 333 4444</td><td>EGP 1,250</td><td>EGP 0</td>
+              <td style="color:var(--dng500);font-weight:700">EGP 1,250</td>
+              <td><div class="row-actions"><button type="button">Edit</button><button type="button">Pay</button></div></td>
+            </tr>
+            <tr>
+              <td>Local Sports Supplier</td><td>0111 555 6666</td><td>EGP 3,300</td><td>EGP 3,300</td>
+              <td>EGP 0</td>
+              <td><div class="row-actions"><button type="button">Edit</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PO existing split -->
+    <div class="content" id="v-po" hidden>
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Purchases</h1>
+          <p class="page-subtitle">Existing purchase-orders split: list + detail. Status badges already in <code>purchase-orders.css</code>.</p>
+        </div>
+        <button type="button" class="btn-create"><i class="ti ti-plus"></i> New purchase</button>
+      </div>
+      <div class="layout-split">
+        <div class="table-wrap">
+          <table class="inv">
+            <thead><tr><th>Date</th><th>Supplier</th><th>Status</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr class="clickable"><td>12 Aug 2026</td><td>ABC Nutrition</td><td><span class="badge badge-received">Received</span></td><td>EGP 2,950</td></tr>
+              <tr class="clickable"><td>28 Jul 2026</td><td>ABC Nutrition</td><td><span class="badge badge-received">Received</span></td><td>EGP 1,100</td></tr>
+              <tr class="clickable"><td>20 Aug 2026</td><td>Fit Supply</td><td><span class="badge badge-approved">Approved</span></td><td>EGP 1,250</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="detail-card">
+          <h2 style="font-family:var(--fd);font-size:16px;margin-bottom:8px">PO-1042 · ABC Nutrition</h2>
+          <p class="field-hint">Received · default shelf (warehouse not shown)</p>
+          <p>Protein Shake × 20 @ 80<br>Protein Bar × 30 @ 45</p>
+          <p style="font-family:var(--fd);font-weight:700;margin:10px 0">EGP 2,950</p>
+          <div class="detail-actions">
+            <button type="button" class="btn-secondary" disabled>Receive</button>
+          </div>
+          <p class="field-hint">After receive, real copy: “Goods received — stock updated.”</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEEP / HIDE -->
+    <div class="content" id="v-flow" hidden>
+      <h1 class="page-title">What to hide vs what must stay</h1>
+      <div class="found">
+        <h3>Hide from owner UI</h3>
+        <p>Stock Management hub, On Hand board, Move (transfers), Count sessions, Warehouses page, Inventory overview, Insights reports, batch/expiry flags in the easy create form (already behind “advanced”).</p>
+        <h3 style="margin-top:12px">Must remain internally</h3>
+        <p>Default warehouse id on PO receive and POS sale. Stock ledger. Refund restore. Supplier ledger / pay. <code>visibleToMembers</code> for Flutter store. Promo validate on POS. Offers local store until Offers API.</p>
+        <h3 style="margin-top:12px">Do not rebuild</h3>
+        <p>POS two-column desk, refunds, invoices, member-store API, Offers wizard.</p>
+      </div>
+      <div class="stop">
+        <strong>Stop for Product Approve.</strong> File: <code>previews/products-simplify-from-existing.html</code>.
+        This replaces the Unsplash “photo shop” preview as the visual SoT.
+        Live desk already hid warehouse nav from the last go — do not implement further until you accept <em>this</em> direction.
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  var labels = { found:'What exists', products:'Products', detail:'Product', buy:'Buy', suppliers:'Suppliers', po:'Purchases', flow:'Keep / hide' };
+  function go(v) {
+    ['found','products','detail','buy','suppliers','po','flow'].forEach(function (id) {
+      document.getElementById('v-' + id).hidden = id !== v;
+    });
+    document.querySelectorAll('#tabs button').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-v') === v);
+    });
+    document.querySelectorAll('.sb-item[data-nav]').forEach(function (b) {
+      var n = b.getAttribute('data-nav');
+      b.classList.toggle('act', n === v || (v === 'detail' && n === 'products') || (v === 'buy' && n === 'products'));
+    });
+    document.getElementById('crumb').textContent = labels[v] || v;
+  }
+  document.body.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-v]');
+    if (b) go(b.getAttribute('data-v'));
+    var n = e.target.closest('[data-nav]');
+    if (n) go(n.getAttribute('data-nav'));
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coming Soon — HyMotion</title>
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0e0f11;--s1:#16171b;--s2:#1e2025;--s3:#282a2f;--lt:#f1f1f1;--lts:#999;--ltt:#555;--l500:#a3e635;--l600:#84cc16;--rmd:8px;--rlg:12px;--ff:'Inter',system-ui,sans-serif;--sh2:0 1px 3px rgba(0,0,0,.3)}
+@import url('/shared/vendor/fonts/inter.css');
+body{font-family:var(--ff);background:var(--bg);color:var(--lt);min-height:100vh;display:flex}
+
+/* Sidebar */
+.sidebar{width:220px;background:var(--s1);border-right:1px solid var(--s3);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:10}
+.sb-brand{padding:20px 16px;display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700;border-bottom:1px solid var(--s3)}
+.sb-brand .icon{width:32px;height:32px;border-radius:8px;background:var(--l500);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--bg)}
+.sb-brand span{color:var(--l500)}
+.sb-nav{padding:12px 8px;flex:1;overflow-y:auto}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--rmd);color:var(--lts);font-size:13px;font-weight:500;text-decoration:none;transition:all .15s;margin-bottom:2px}
+.sb-item:hover{background:var(--s2);color:var(--lt)}
+.sb-item.act{background:linear-gradient(135deg,rgba(163,230,53,.12),rgba(132,204,22,.06));color:var(--l500);font-weight:600}
+.sb-item i{font-size:18px;width:20px;text-align:center}
+.sb-user{padding:14px 16px;border-top:1px solid var(--s3);display:flex;align-items:center;gap:10px;font-size:13px}
+.sb-user .avatar{width:32px;height:32px;border-radius:50%;background:var(--l600);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--bg)}
+
+/* Main */
+.main{margin-left:220px;flex:1;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:40px}
+.cs-card{text-align:center;max-width:480px}
+.cs-icon{width:96px;height:96px;border-radius:24px;background:linear-gradient(135deg,rgba(163,230,53,.12),rgba(132,204,22,.06));display:flex;align-items:center;justify-content:center;margin:0 auto 28px;border:1px solid rgba(163,230,53,.15)}
+.cs-icon i{font-size:44px;color:var(--l500)}
+.cs-title{font-size:28px;font-weight:700;margin-bottom:8px}
+.cs-subtitle{font-size:14px;color:var(--lts);margin-bottom:32px;line-height:1.6}
+.cs-module{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:20px;background:var(--s2);border:1px solid var(--s3);font-size:13px;font-weight:600;color:var(--l500);margin-bottom:32px}
+.cs-back{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;border-radius:var(--rmd);background:var(--l500);color:var(--bg);font-weight:600;font-size:13px;text-decoration:none;transition:all .15s}
+.cs-back:hover{background:var(--l600);transform:translateY(-1px);box-shadow:0 4px 16px rgba(163,230,53,.25)}
+</style>
+<script>
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();
+if(!user) window.location.href='/auth/login/';
+</script>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-brand"><div class="icon">A</div>Gym<span>FlowPro</span></div>
+  <nav class="sb-nav">
+    <a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a>
+    <a class="sb-item" href="/dashboard/members/"><i class="ti ti-users"></i>Members</a>
+    <a class="sb-item" href="/dashboard/plans/"><i class="ti ti-package"></i>Plans</a>
+    <a class="sb-item" href="/dashboard/attendance/"><i class="ti ti-door-enter"></i>Attendance</a>
+    <a class="sb-item" href="/dashboard/shifts/"><i class="ti ti-cash"></i>Shifts</a>
+<a class="sb-item" href="/dashboard/pos/"><i class="ti ti-shopping-cart"></i>POS</a>
+<a class="sb-item" href="/dashboard/promo-codes/"><i class="ti ti-discount-2"></i>Promo codes</a>
+    <a class="sb-item" href="/dashboard/settings/"><i class="ti ti-settings"></i>Settings</a>
+  </nav>
+  <div class="sb-user">
+    <div class="avatar" id="uAvatar">?</div>
+    <div><div id="uName" style="font-weight:600;color:var(--lt)">—</div><div style="color:var(--ltt);font-size:11px" id="uRole">—</div></div>
+  </div>
+</aside>
+<main class="main">
+  <div class="cs-card">
+    <div class="cs-icon"><i class="ti" id="csIcon"></i></div>
+    <div class="cs-module" id="csModule"></div>
+    <h1 class="cs-title">Coming Soon</h1>
+    <p class="cs-subtitle">This module is currently under development and will be available in an upcoming release. Stay tuned!</p>
+    <a class="cs-back" href="/dashboard/"><i class="ti ti-arrow-left"></i> Back to Dashboard</a>
+  </div>
+</main>
+<script>
+if(user){
+  document.getElementById('uAvatar').textContent=(user.fullName||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('uName').textContent=user.fullName||'User';
+  document.getElementById('uRole').textContent=user.role||'Staff';
+}
+const params=new URLSearchParams(window.location.search);
+const mod=params.get('module')||'Module';
+const iconMap={Memberships:'ti-id-badge',Reports:'ti-chart-bar',Notifications:'ti-bell',Staff:'ti-user-shield'};
+document.getElementById('csModule').innerHTML=`<i class="ti ${iconMap[mod]||'ti-puzzle'}"></i>${mod}`;
+document.getElementById('csIcon').className='ti '+(iconMap[mod]||'ti-puzzle');
+document.title=mod+' — Coming Soon — HyMotion';
+</script>
+</body>
+</html>

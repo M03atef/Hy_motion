@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Roles (preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --gold:#D97706;--blue:#3B82F6;--teal:#0D9488;--pur:#7C3AED;
+  --suc500:#22C55E;--lbg:#F4F5F3;--ls1:#FFFEFB;--ls2:#F3F5F2;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:54rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 72px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#0D0D0D;background:var(--l500);font-weight:700}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;background:rgba(255,254,251,.92);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.content{padding:22px 28px 56px;flex:1}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700}
+.page-sub{font-size:14px;color:var(--lts);margin-top:6px;max-width:40rem;line-height:1.5}
+.table-wrap{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden;margin-top:18px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ltt);background:var(--ls2)}
+td{padding:14px 16px;border-top:1px solid var(--ls3);vertical-align:middle;font-size:14px}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:#F7F8F6}
+.who{display:flex;align-items:center;gap:12px}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:13px;flex-shrink:0}
+.av.owner{background:rgba(217,119,6,.12);color:var(--gold)}
+.av.manager{background:rgba(59,130,246,.12);color:var(--blue)}
+.av.trainer{background:rgba(13,148,136,.12);color:var(--teal)}
+.av.rec{background:rgba(139,92,246,.12);color:var(--pur)}
+.nm{font-family:var(--fd);font-weight:700}
+.meta{font-size:13px;color:var(--lts)}
+.sys{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+.muted{color:var(--ltt);font-size:13px}
+.overlay{position:fixed;inset:0;background:rgba(13,13,13,.42);z-index:40;display:flex;justify-content:flex-end}
+.drawer{width:min(480px,100%);background:#fff;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.12);max-height:100vh}
+.dh{padding:18px 20px;border-bottom:1px solid var(--ls3);display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.dh h2{font-family:var(--fd);font-size:18px}
+.db{padding:18px 20px;overflow:auto;flex:1}
+.icon-btn{width:32px;height:32px;border:1px solid var(--ls3);border-radius:8px;background:#fff;cursor:pointer;color:var(--c300)}
+.grp{margin-bottom:16px}
+.grp h3{font-size:12px;font-weight:700;color:var(--ltt);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--ls3);font-size:13px}
+.row span:last-child{font-weight:600}
+.yes{color:#166534}
+.no{color:var(--ltt)}
+.warn{background:var(--ls2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--lts);line-height:1.45;margin-bottom:14px}
+.doc{max-width:760px;padding:22px 28px 56px}
+.doc h2{font-family:var(--fd);font-size:22px;margin:0 0 8px}
+.doc h3{font-family:var(--fd);font-size:15px;margin:20px 0 8px}
+.doc p,.doc li{font-size:14px;color:var(--lts);line-height:1.55}
+.doc ul{padding-left:18px}
+.verdict{background:#fff;border:1px solid var(--ls3);border-radius:var(--rmd);padding:16px 18px;margin:12px 0 20px}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW — aligned with live desk
+    <div class="note">Option B is live at <code>/dashboard/roles/</code>. Owner ticks tasks for Manager / Receptionist / Trainer. Overlay: <code>Tenant.Settings.role_permissions</code>. Owner locked. Takes effect on next login or ~15 minutes. Not custom roles. Not per-person PermissionsOverride.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-view="desk">Roles desk</button>
+    <button type="button" data-view="arch">Recommendation</button>
+  </div>
+</div>
+
+<div class="app" id="viewDesk">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <div class="sb-sec">Administration</div>
+    <div class="sb-item">Import</div>
+    <div class="sb-item">Staff</div>
+    <div class="sb-item act">Roles</div>
+    <div class="sb-item">Settings</div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb">Administration / Roles</div>
+      <span class="muted">Owner only · view access</span>
+    </div>
+    <div class="content">
+      <h1 class="page-title">Roles</h1>
+      <p class="page-sub">What each job can do in this gym. People are assigned a role in Staff. Access is fixed — it is not edited here.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Description</th>
+              <th>Permissions</th>
+              <th>Type</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="doc" id="viewArch" hidden>
+  <div class="verdict">
+    <b>Recommended: Option A — Role Viewer</b>
+    <p style="margin-top:8px">Keep the hardcoded Role → permissions map. Show it to the Owner. Do not add RolePermissions, custom roles, or PermissionsOverride. Full write-up: <code>ROLES_PERMISSIONS_ARCHITECTURE.md</code></p>
+  </div>
+  <h2>Why not B or C</h2>
+  <p>Authorization is already hybrid: JWT <code>perm</code> claims plus role policies (<code>OwnerOnly</code>, <code>AnyStaff</code>). Toggling permissions would not change Settings (OwnerOnly) or memberships current (AnyStaff excludes Receptionist). Custom roles would rewrite Identity and Staff.</p>
+  <h3>Staff vs Roles</h3>
+  <ul>
+    <li>Staff — who works here</li>
+    <li>Roles — what that job can do</li>
+  </ul>
+  <p class="muted">Member is an Identity role for the Member App only. It does not belong on this desk.</p>
+</div>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="drawer">
+    <div class="dh">
+      <div>
+        <h2 id="dTitle">Role</h2>
+        <div class="muted" id="dSub"></div>
+      </div>
+      <button type="button" class="icon-btn" id="btnClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="db">
+      <div class="warn" id="dWarn"></div>
+      <div id="dBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var GROUPS = [
+    { name:'Members', keys:[['members.view','View'],['members.create','Create'],['members.edit','Edit']] },
+    { name:'Attendance', keys:[['checkin.manual','Manual check-in']] },
+    { name:'Sales', keys:[['sales.sell','Sell'],['sales.discount.apply','Apply discount'],['sales.discount.override','Override discount']] },
+    { name:'Payments', keys:[['payments.cash.accept','Accept cash'],['payments.refund.request','Request refund'],['payments.refund.approve','Approve refund']] },
+    { name:'Shifts', keys:[['shift.open','Open'],['shift.close','Close'],['shift.reconcile.approve','Approve reconcile']] },
+    { name:'Memberships', keys:[['memberships.freeze','Freeze']] },
+    { name:'Plans', keys:[['plans.manage','Manage plans']] },
+    { name:'Reports', keys:[['reports.financial.view','View financial reports']] },
+    { name:'Settings', keys:[['settings.manage','Manage gym settings']] },
+    { name:'Inventory', keys:[['inventory.view','View'],['inventory.manage','Manage catalog'],['inventory.adjust','Adjust stock'],['inventory.purchase','Buy / pay supplier'],['inventory.transfer','Transfer stock']] },
+    { name:'Member App orders', keys:[['member_orders.view','View inbox'],['member_orders.manage','Accept / complete']] }
+  ];
+  var ALL = [];
+  GROUPS.forEach(function(g){ g.keys.forEach(function(k){ ALL.push(k[0]); }); });
+  var ROLE_PERMS = {
+    Owner: ALL.slice(),
+    Manager: ALL.filter(function(p){ return p !== 'plans.manage' && p !== 'settings.manage'; }),
+    Receptionist: [
+      'members.view','members.create','members.edit','checkin.manual',
+      'sales.sell','sales.discount.apply','payments.cash.accept','payments.refund.request',
+      'shift.open','shift.close','inventory.view','member_orders.view','member_orders.manage'
+    ],
+    Trainer: ['checkin.manual']
+  };
+  var ROLES = [
+    { id:'Owner', icon:'ti-crown', cls:'owner', blurb:'Full access. System role — cannot be edited or assigned in Staff.', system:true },
+    { id:'Manager', icon:'ti-briefcase', cls:'manager', blurb:'Everything except plans and gym settings.', system:false },
+    { id:'Receptionist', icon:'ti-desk', cls:'rec', blurb:'Front desk: members, sale, shifts, app orders. Cannot approve refunds or buy stock.', system:false },
+    { id:'Trainer', icon:'ti-barbell', cls:'trainer', blurb:'Manual check-in. Other trainer access is role-based (not a permission toggle).', system:false }
+  ];
+
+  function has(role, key){
+    return ROLE_PERMS[role].indexOf(key) !== -1;
+  }
+
+  function renderList(){
+    document.getElementById('tbody').innerHTML = ROLES.map(function(r){
+      var n = ROLE_PERMS[r.id].length;
+      return '<tr data-id="'+r.id+'"><td><div class="who"><div class="av '+r.cls+'"><i class="ti '+r.icon+'"></i></div><div><div class="nm">'+r.id+'</div>'+(r.system?'<div class="sys">System</div>':'<div class="meta">Staff can assign this</div>')+'</div></div></td><td class="meta">'+r.blurb+'</td><td>'+n+' of '+ALL.length+'</td><td class="sys">System</td><td class="muted">View</td></tr>';
+    }).join('');
+  }
+
+  function openRole(id){
+    var r = ROLES.filter(function(x){ return x.id === id; })[0];
+    document.getElementById('dTitle').textContent = r.id;
+    document.getElementById('dSub').textContent = ROLE_PERMS[id].length + ' of ' + ALL.length + ' permissions';
+    document.getElementById('dWarn').textContent = r.system
+      ? 'System role. Full access cannot be changed. The gym owner is protected in Staff Management.'
+      : 'Read-only. To change what this job can do later would be a product change to the gym’s access map — not a per-employee toggle. Assign people in Staff.';
+    document.getElementById('dBody').innerHTML = GROUPS.filter(function(g){
+      return g.keys.some(function(k){ return has(id, k[0]); });
+    }).map(function(g){
+      var rows = g.keys.map(function(k){
+        var ok = has(id, k[0]);
+        return '<div class="row"><span>'+k[1]+'</span><span class="'+(ok?'yes':'no')+'">'+(ok?'Allowed':'Not included')+'</span></div>';
+      }).join('');
+      return '<div class="grp"><h3>'+g.name+'</h3>'+rows+'</div>';
+    }).join('');
+    document.getElementById('overlay').hidden = false;
+  }
+
+  document.getElementById('tbody').addEventListener('click', function(e){
+    var tr = e.target.closest('tr'); if(!tr) return;
+    openRole(tr.getAttribute('data-id'));
+  });
+  document.getElementById('btnClose').addEventListener('click', function(){
+    document.getElementById('overlay').hidden = true;
+  });
+  document.querySelector('.banner .controls').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var v = b.getAttribute('data-view');
+    document.querySelectorAll('.banner .controls button').forEach(function(x){ x.classList.toggle('act', x===b); });
+    document.getElementById('viewDesk').hidden = v !== 'desk';
+    document.getElementById('viewArch').hidden = v !== 'arch';
+  });
+  renderList();
+})();
+</script>
+</body>
+</html>

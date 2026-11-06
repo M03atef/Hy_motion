@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Biometric Staff Attendance (Preview only · mock data)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c600:#3A3A3A;--c400:#6B6B6B;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l100:#EDFCD8;
+  --teal:#0D9488;--teal-bg:rgba(13,148,136,.08);
+  --suc500:#22C55E;--suc100:#DCFCE7;--wrn500:#F59E0B;--wrn100:#FEF3C7;
+  --dng500:#EF4444;--dng100:#FEE2E2;--inf500:#3B82F6;--inf100:#DBEAFE;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:Cairo,sans-serif;--rsm:6px;--rmd:10px;--rlg:16px;--rpl:9999px;
+  --sh1:0 1px 3px rgba(0,0,0,.06);--sh2:0 4px 12px rgba(0,0,0,.08);
+  --sidebar-w:220px;--banner-h:0px;
+}
+html[data-theme="dark"] {
+  --lbg:#101010;--ls1:#1a1a1a;--ls2:#222;--ls3:#2e2e2e;
+  --ltp:#f3f3f0;--lts:#9c9c96;--ltt:#6e6e68;
+  --suc100:rgba(34,197,94,.18);--wrn100:rgba(245,158,11,.18);
+  --dng100:rgba(239,68,68,.18);--inf100:rgba(59,130,246,.18);--l100:rgba(122,204,0,.14);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%}
+body{
+  font-family:var(--fd);background:
+    radial-gradient(900px 420px at 0% 0%, rgba(122,204,0,.07), transparent 55%),
+    radial-gradient(700px 360px at 100% 0%, rgba(13,148,136,.06), transparent 50%),
+    var(--lbg);
+  color:var(--ltp);font-size:14px;line-height:1.5;
+}
+html[data-theme="dark"] body{
+  background:
+    radial-gradient(1000px 500px at 8% -5%, rgba(122,204,0,.1), transparent 50%),
+    radial-gradient(800px 400px at 100% 0%, rgba(13,148,136,.12), transparent 48%),
+    var(--lbg);
+}
+
+.banner{
+  position:sticky;top:0;z-index:200;
+  display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between;
+  padding:12px 18px;background:rgba(13,13,13,.94);color:#f0f0f0;
+  border-bottom:1px solid #2a2a2a;backdrop-filter:blur(10px);
+}
+.banner strong{color:var(--l500);display:block;font-size:13px}
+.banner .note{font-size:12px;opacity:.9;max-width:52rem;margin-top:4px;line-height:1.45;color:#d4d4d4}
+.controls{display:flex;flex-wrap:wrap;gap:8px}
+.controls button{
+  height:32px;padding:0 12px;border-radius:var(--rpl);
+  border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;
+  font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+}
+.controls button.act{background:#fff;color:#111;border-color:#fff}
+
+.scenario-bar{
+  display:flex;flex-wrap:wrap;gap:8px;padding:10px 18px;
+  background:var(--ls1);border-bottom:1px solid var(--ls3);align-items:center;
+}
+.scenario-bar .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt);margin-inline-end:4px}
+.chip{
+  height:30px;padding:0 12px;border-radius:var(--rpl);border:1px solid var(--ls3);
+  background:var(--ls2);color:var(--lts);font:inherit;font-size:12px;font-weight:600;cursor:pointer;
+}
+.chip.act{background:var(--l500);color:#0d0d0d;border-color:var(--l500)}
+
+.app{display:flex;min-height:calc(100dvh - 110px)}
+.sidebar{
+  width:var(--sidebar-w);background:var(--c900);color:#F0F0F0;
+  display:flex;flex-direction:column;flex-shrink:0;
+}
+.sb-hdr{padding:18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--c700)}
+.sb-hdr svg{width:32px;height:32px}
+.sb-hdr span{font-weight:700;font-size:16px;color:var(--l400)}
+.sb-nav{padding:10px 0;flex:1}
+.sb-item{
+  display:flex;align-items:center;gap:10px;width:100%;padding:10px 18px;
+  border:none;background:transparent;color:var(--c300);font:inherit;font-size:13px;font-weight:500;
+  cursor:pointer;text-align:start;border-inline-start:3px solid transparent;
+}
+.sb-item:hover{background:var(--c700)}
+.sb-item.act{background:rgba(160,224,64,.08);color:var(--l400);border-inline-start-color:var(--l500)}
+.sb-item .ico{width:18px;opacity:.75;text-align:center}
+.sb-ft{padding:14px 16px;border-top:1px solid var(--c700);font-size:11px;color:var(--c400)}
+.sb-ft b{color:#ddd;display:block;font-size:12px;margin-bottom:2px}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  height:56px;background:var(--ls1);border-bottom:1px solid var(--ls3);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:12px;
+}
+.crumb{font-size:13px;font-weight:600;color:var(--lts)}
+.crumb .sep{color:var(--ltt);margin:0 6px}
+.crumb .cur{color:var(--ltp)}
+.gym{text-align:end;font-size:13px;font-weight:600}
+.gym small{display:block;font-size:11px;color:var(--ltt);font-weight:500}
+.content{padding:22px 24px 48px;flex:1}
+
+.demo-tag{
+  display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 8px;
+  border-radius:var(--rpl);background:var(--wrn100);color:var(--wrn500);
+  font-size:11px;font-weight:700;letter-spacing:.02em;
+}
+
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.page-title{margin:0;font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-sub{margin:4px 0 0;font-size:13px;color:var(--ltt);max-width:40rem}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.btn{
+  height:40px;padding:0 14px;border-radius:var(--rmd);border:1px solid transparent;
+  font:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary{background:linear-gradient(135deg,var(--l500),var(--l600));color:#0d0d0d;box-shadow:0 2px 8px rgba(122,204,0,.28)}
+.btn-secondary{background:var(--ls1);border-color:var(--ls3);color:var(--lts)}
+.btn-ghost{background:transparent;border-color:var(--ls3);color:var(--ltt)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-sm{height:32px;padding:0 10px;font-size:12px}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+@media (max-width:980px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.kpi-row{grid-template-columns:1fr}}
+.kpi{
+  background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);
+  padding:14px 16px;box-shadow:var(--sh1);
+}
+.kpi .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt)}
+.kpi .v{font-size:28px;font-weight:700;margin-top:4px;line-height:1.1}
+.kpi .h{font-size:12px;color:var(--ltt);margin-top:4px}
+.kpi.late .v{color:var(--wrn500)}
+.kpi.absent .v{color:var(--dng500)}
+.kpi.ok .v{color:var(--suc500)}
+
+.panel{
+  background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);
+  box-shadow:var(--sh1);overflow:hidden;margin-bottom:14px;
+}
+.panel-h{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 16px;border-bottom:1px solid var(--ls3);background:var(--ls2);
+}
+.panel-h h2{margin:0;font-size:13px;font-weight:700}
+.panel-b{padding:14px 16px}
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media (max-width:960px){.grid2,.grid3{grid-template-columns:1fr}}
+
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{
+  padding:10px 14px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--ltt);text-align:start;border-bottom:1px solid var(--ls3);background:var(--ls2);white-space:nowrap;
+}
+td{padding:12px 14px;border-bottom:1px solid var(--ls3);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr.row{cursor:pointer;transition:background .15s}
+tbody tr.row:hover,tbody tr.row.on{background:rgba(122,204,0,.05)}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+.badge{
+  display:inline-flex;align-items:center;gap:4px;height:22px;padding:0 8px;
+  border-radius:var(--rpl);font-size:11px;font-weight:700;white-space:nowrap;
+}
+.b-ok{background:var(--suc100);color:var(--suc500)}
+.b-warn{background:var(--wrn100);color:var(--wrn500)}
+.b-danger{background:var(--dng100);color:var(--dng500)}
+.b-info{background:var(--inf100);color:var(--inf500)}
+.b-muted{background:var(--ls2);color:var(--ltt);border:1px solid var(--ls3)}
+.b-device{background:var(--l100);color:var(--l600)}
+
+.person{display:flex;align-items:center;gap:10px}
+.av{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:12px;background:var(--l100);color:var(--l600);flex-shrink:0;
+}
+.pname{font-weight:700;font-size:13px}
+.psub{font-size:11px;color:var(--ltt)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;align-items:center}
+.toolbar select,.toolbar input,label.field input,label.field select,label.field textarea{
+  height:38px;padding:0 12px;border:1px solid var(--ls3);border-radius:var(--rmd);
+  background:var(--ls1);color:var(--ltp);font:inherit;
+}
+label.field{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600;color:var(--lts)}
+label.field textarea{height:auto;padding:10px 12px;resize:vertical}
+label.field .hint{font-weight:500;color:var(--ltt);font-size:11px}
+
+.state-box{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  padding:40px 20px;text-align:center;color:var(--ltt);
+}
+.state-box h3{margin:0;color:var(--ltp);font-size:16px}
+.loader{
+  width:28px;height:28px;border:3px solid var(--ls3);border-top-color:var(--l500);
+  border-radius:50%;animation:spin .7s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.health{
+  display:flex;align-items:flex-start;gap:12px;padding:12px;border-radius:var(--rmd);
+  border:1px solid var(--ls3);background:var(--ls2);margin-bottom:10px;
+}
+.health .dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.dot.ok{background:var(--suc500)}.dot.warn{background:var(--wrn500)}.dot.danger{background:var(--dng500)}
+.health strong{display:block;font-size:13px}
+.health span{font-size:12px;color:var(--ltt)}
+
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--ls3);margin:-14px -16px 14px;padding:0 8px;overflow:auto}
+.tab{
+  height:42px;padding:0 14px;border:none;background:transparent;color:var(--ltt);
+  font:inherit;font-weight:700;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;
+}
+.tab.act{color:var(--ltp);border-bottom-color:var(--l500)}
+
+.wizard-steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.wstep{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--rmd);
+  border:1px solid var(--ls3);background:var(--ls2);font-size:12px;font-weight:600;color:var(--ltt);
+}
+.wstep.on{border-color:var(--l500);background:var(--l100);color:var(--l600)}
+.wstep.done{border-color:var(--suc500);color:var(--suc500)}
+.wnum{
+  width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:var(--ls1);border:1px solid currentColor;font-size:11px;
+}
+.vendor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:720px){.vendor-grid{grid-template-columns:1fr}}
+.vendor{
+  border:1px solid var(--ls3);border-radius:var(--rmd);padding:14px;cursor:pointer;background:var(--ls1);
+  text-align:start;font:inherit;color:inherit;
+}
+.vendor:hover{border-color:var(--teal)}
+.vendor.on{border-color:var(--teal);background:var(--teal-bg)}
+.vendor .name{font-weight:700;display:block}
+.vendor .meta{font-size:12px;color:var(--ltt);margin-top:4px}
+.vendor.unsupported{opacity:.7}
+.alert{
+  padding:12px 14px;border-radius:var(--rmd);font-size:13px;margin:10px 0;
+  border:1px solid var(--ls3);background:var(--ls2);
+}
+.alert.warn{border-color:rgba(245,158,11,.35);background:var(--wrn100);color:var(--ltp)}
+.alert.danger{border-color:rgba(239,68,68,.35);background:var(--dng100)}
+.alert.info{border-color:rgba(59,130,246,.35);background:var(--inf100)}
+.alert.ok{border-color:rgba(34,197,94,.35);background:var(--suc100)}
+
+.split{display:grid;grid-template-columns:1fr 340px;gap:14px}
+@media (max-width:980px){.split{grid-template-columns:1fr}}
+.detail-empty{padding:28px;text-align:center;color:var(--ltt);font-size:13px}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:8px 12px;font-size:13px}
+.kv dt{color:var(--ltt);font-weight:600}
+.kv dd{margin:0;font-weight:600}
+.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.raw-box{
+  background:var(--c900);color:#d4d4d4;border-radius:var(--rmd);padding:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;
+  white-space:pre-wrap;overflow:auto;max-height:220px;direction:ltr;text-align:left;
+}
+.toast{
+  position:fixed;bottom:20px;inset-inline-end:20px;z-index:300;
+  background:var(--c900);color:#fff;padding:12px 16px;border-radius:var(--rmd);
+  box-shadow:var(--sh2);font-size:13px;font-weight:600;display:none;max-width:360px;
+}
+.toast.on{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+@media (max-width:860px){
+  .app{flex-direction:column}
+  .sidebar{width:100%;flex-direction:row;overflow:auto}
+  .sb-nav{display:flex;padding:0;flex:1}
+  .sb-item{border-inline-start:none;border-bottom:3px solid transparent;white-space:nowrap}
+  .sb-item.act{border-bottom-color:var(--l500)}
+  .sb-hdr,.sb-ft{display:none}
+  .content{padding:16px}
+}
+
+.view[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <strong data-en="PREVIEW ONLY — mock data · no biometric hardware" data-ar="معاينة فقط — بيانات تجريبية · لا يوجد اتصال بأجهزة البصمة">PREVIEW ONLY — mock data · no biometric hardware</strong>
+    <div class="note" data-en="This screen explores how fingerprint attendance could fit HyMotion Local HR. Simulated actions never talk to devices, APIs, or databases. Existing QR / reception / payroll behavior is unchanged." data-ar="تستكشف هذه الشاشة كيف يمكن لحضور البصمة أن يندمج مع موارد بشرية HyMotion المحلي. الإجراءات المحاكية لا تتصل بالأجهزة أو واجهات البرمجة أو قواعد البيانات. سلوك QR / الاستقبال / الرواتب الحالي لم يتغير.">This screen explores how fingerprint attendance could fit HyMotion Local HR. Simulated actions never talk to devices, APIs, or databases. Existing QR / reception / payroll behavior is unchanged.</div>
+  </div>
+  <div class="controls">
+    <button type="button" id="btnEn" class="act">EN</button>
+    <button type="button" id="btnAr">AR</button>
+    <button type="button" id="btnTheme" data-en="Dark" data-ar="داكن">Dark</button>
+  </div>
+</div>
+
+<div class="scenario-bar">
+  <span class="label" data-en="Demo state" data-ar="حالة العرض">Demo state</span>
+  <button type="button" class="chip act" data-scenario="healthy" data-en="Healthy sync" data-ar="مزامنة سليمة">Healthy sync</button>
+  <button type="button" class="chip" data-scenario="disconnected" data-en="Disconnected" data-ar="غير متصل">Disconnected</button>
+  <button type="button" class="chip" data-scenario="clock" data-en="Clock warning" data-ar="تحذير الساعة">Clock warning</button>
+  <button type="button" class="chip" data-scenario="unmapped" data-en="Unmapped punch" data-ar="بصمة بلا ربط">Unmapped punch</button>
+  <button type="button" class="chip" data-scenario="duplicate" data-en="Duplicate event" data-ar="حدث مكرر">Duplicate event</button>
+  <button type="button" class="chip" data-scenario="loading" data-en="Loading" data-ar="تحميل">Loading</button>
+  <button type="button" class="chip" data-scenario="empty" data-en="Empty" data-ar="فارغ">Empty</button>
+  <button type="button" class="chip" data-scenario="error" data-en="Load error" data-ar="خطأ تحميل">Load error</button>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr">
+      <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>HyMotion</span>
+    </div>
+    <nav class="sb-nav">
+      <button type="button" class="sb-item act" data-nav="overview"><span class="ico">◎</span><span data-en="Attendance" data-ar="الحضور">Attendance</span></button>
+      <button type="button" class="sb-item" data-nav="devices"><span class="ico">▣</span><span data-en="Biometric devices" data-ar="أجهزة البصمة">Biometric devices</span></button>
+      <button type="button" class="sb-item" data-nav="mapping"><span class="ico">⇄</span><span data-en="Employee mapping" data-ar="ربط الموظفين">Employee mapping</span></button>
+      <button type="button" class="sb-item" data-nav="events"><span class="ico">☰</span><span data-en="Device events" data-ar="أحداث الأجهزة">Device events</span></button>
+      <button type="button" class="sb-item" data-nav="add"><span class="ico">＋</span><span data-en="Add device" data-ar="إضافة جهاز">Add device</span></button>
+    </nav>
+    <div class="sb-ft">
+      <b data-en="Role preview: Owner" data-ar="معاينة الدور: المالك">Role preview: Owner</b>
+      <span data-en="Requires hr.attendance.manage (proposed)" data-ar="يتطلب hr.attendance.manage (مقترح)">Requires hr.attendance.manage (proposed)</span>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">
+        <span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="cur" id="crumbCur" data-en="Attendance" data-ar="الحضور">Attendance</span>
+      </div>
+      <div class="gym">Gold Gym Maadi<small data-en="Local Edition · demo tenant" data-ar="النسخة المحلية · مستأجر تجريبي">Local Edition · demo tenant</small></div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var locale = 'en';
+  var theme = 'light';
+  var view = 'overview';
+  var scenario = 'healthy';
+  var selectedDeviceId = 'dev-front';
+  var selectedEventId = 'ev-1';
+  var deviceTab = 'overview';
+  var wizardStep = 1;
+  var wizard = {
+    vendor: null,
+    connection: 'lan',
+    host: '192.168.1.50',
+    port: '4370',
+    name: 'Front desk reader',
+    location: 'Main entrance',
+    tested: false,
+    testResult: null
+  };
+
+  var employees = [
+    { id: 'e1', number: 'EMP-0001', name: 'Sara Hassan', nameAr: 'سارة حسن', status: 'Active', deviceUserId: '1001', mapped: true },
+    { id: 'e2', number: 'EMP-0002', name: 'Omar Ali', nameAr: 'عمر علي', status: 'Active', deviceUserId: '1002', mapped: true },
+    { id: 'e3', number: 'EMP-0003', name: 'Nour Adel', nameAr: 'نور عادل', status: 'Active', deviceUserId: '', mapped: false },
+    { id: 'e4', number: 'EMP-0004', name: 'Mona Fathy', nameAr: 'منى فتحي', status: 'Suspended', deviceUserId: '1004', mapped: true },
+    { id: 'e5', number: 'EMP-0005', name: 'Karim Said', nameAr: 'كريم سعيد', status: 'Terminated', deviceUserId: '1005', mapped: true }
+  ];
+
+  var devicesBase = [
+    {
+      id: 'dev-front', name: 'Front desk reader', vendor: 'ZKTeco', model: 'K40 (demo)',
+      connection: 'LAN / TCP', host: '192.168.1.50', status: 'connected', lastSync: '2026-09-19T18:42:00Z',
+      location: 'Main entrance', mappedCount: 18, error: null, clockSkewSec: 0
+    },
+    {
+      id: 'dev-locker', name: 'Locker room', vendor: 'Hikvision', model: 'DS-K1T (demo)',
+      connection: 'LAN / vendor middleware', host: '192.168.1.61', status: 'connected', lastSync: '2026-09-19T18:40:00Z',
+      location: 'Locker corridor', mappedCount: 12, error: null, clockSkewSec: 0
+    },
+    {
+      id: 'dev-staff', name: 'Staff only door', vendor: 'Generic push log', model: 'Adapter (demo)',
+      connection: 'Device push → local service', host: 'push://local-agent', status: 'pending', lastSync: '2026-09-19T17:10:00Z',
+      location: 'Back office', mappedCount: 6, error: 'Last sync delayed 92 minutes (demo)', clockSkewSec: 0
+    }
+  ];
+
+  var eventsBase = [
+    {
+      id: 'ev-1', employeeId: 'e1', deviceId: 'dev-front', at: '2026-09-19T06:58:12Z', source: 'Fingerprint',
+      punchType: 'Unknown', status: 'Applied', sync: 'Synced', attendanceId: 'att-1',
+      raw: { vendorEventId: 'ZK-88421', deviceUserId: '1001', deviceTime: '2026-09-19T08:58:12+02:00', verifyMode: 'FP' }
+    },
+    {
+      id: 'ev-2', employeeId: 'e2', deviceId: 'dev-front', at: '2026-09-19T07:12:40Z', source: 'Fingerprint',
+      punchType: 'Unknown', status: 'Applied', sync: 'Synced', attendanceId: 'att-2',
+      raw: { vendorEventId: 'ZK-88430', deviceUserId: '1002', deviceTime: '2026-09-19T09:12:40+02:00', verifyMode: 'FP' }
+    },
+    {
+      id: 'ev-3', employeeId: 'e1', deviceId: 'dev-locker', at: '2026-09-19T16:05:03Z', source: 'Fingerprint',
+      punchType: 'Unknown', status: 'Pending review', sync: 'Synced', attendanceId: 'att-1',
+      raw: { vendorEventId: 'HK-2291', deviceUserId: '1001', deviceTime: '2026-09-19T18:05:03+02:00', verifyMode: 'FP' }
+    },
+    {
+      id: 'ev-4', employeeId: 'e3', deviceId: null, at: '2026-09-19T08:01:00Z', source: 'QR',
+      punchType: 'Check-in', status: 'Applied', sync: 'N/A', attendanceId: 'att-3',
+      raw: { path: 'POST /api/hr/employee-attendance/me/qr-check-in', note: 'Existing QR flow — not device' }
+    },
+    {
+      id: 'ev-5', employeeId: 'e2', deviceId: null, at: '2026-09-19T07:05:00Z', source: 'Manual',
+      punchType: 'Correction', status: 'Applied', sync: 'N/A', attendanceId: 'att-2',
+      raw: { path: 'PUT /api/hr/employee-attendance/{id}', actor: 'Reception · demo' }
+    }
+  ];
+
+  var attendanceBase = [
+    { id: 'att-1', employeeId: 'e1', status: 'Present', source: 'Fingerprint', in: '2026-09-19T06:58:12Z', out: null, late: 0 },
+    { id: 'att-2', employeeId: 'e2', status: 'Late', source: 'Fingerprint', in: '2026-09-19T07:12:40Z', out: null, late: 12 },
+    { id: 'att-3', employeeId: 'e3', status: 'Present', source: 'QR', in: '2026-09-19T08:01:00Z', out: null, late: 0 },
+    { id: 'att-4', employeeId: 'e4', status: 'Absent', source: '—', in: null, out: null, late: 0 }
+  ];
+
+  function t(en, ar) { return locale === 'ar' ? ar : en; }
+  function applyLocaleNodes() {
+    document.querySelectorAll('[data-en]').forEach(function (el) {
+      var v = locale === 'ar' ? el.getAttribute('data-ar') : el.getAttribute('data-en');
+      if (v != null) el.textContent = v;
+    });
+    document.documentElement.lang = locale === 'ar' ? 'ar' : 'en';
+    document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr';
+  }
+  function toast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('on');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { el.classList.remove('on'); }, 2600);
+  }
+  function emp(id) { return employees.find(function (e) { return e.id === id; }); }
+  function empName(id) {
+    var e = emp(id);
+    if (!e) return '—';
+    return locale === 'ar' ? e.nameAr : e.name;
+  }
+  function fmtTime(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    return d.toLocaleTimeString(locale === 'ar' ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Cairo' });
+  }
+  function fmtDateTime(iso) {
+    if (!iso) return '—';
+    var d = new Date(iso);
+    return d.toLocaleString(locale === 'ar' ? 'ar-EG' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Cairo' });
+  }
+  function sourceBadge(src) {
+    if (src === 'Fingerprint') return '<span class="badge b-device">' + t('Fingerprint', 'بصمة') + '</span>';
+    if (src === 'QR') return '<span class="badge b-info">' + t('QR', 'QR') + '</span>';
+    if (src === 'Manual') return '<span class="badge b-muted">' + t('Manual', 'يدوي') + '</span>';
+    if (src === 'Barcode') return '<span class="badge b-info">' + t('Barcode', 'باركود') + '</span>';
+    return '<span class="badge b-muted">' + (src || '—') + '</span>';
+  }
+  function statusBadge(s) {
+    if (s === 'Present' || s === 'connected' || s === 'Applied' || s === 'Synced' || s === 'Mapped') return '<span class="badge b-ok">' + labelStatus(s) + '</span>';
+    if (s === 'Late' || s === 'pending' || s === 'Pending review' || s === 'clock') return '<span class="badge b-warn">' + labelStatus(s) + '</span>';
+    if (s === 'Absent' || s === 'disconnected' || s === 'Duplicate' || s === 'Unmapped' || s === 'failed') return '<span class="badge b-danger">' + labelStatus(s) + '</span>';
+    return '<span class="badge b-muted">' + labelStatus(s) + '</span>';
+  }
+  function labelStatus(s) {
+    var map = {
+      Present: ['Present', 'حاضر'], Late: ['Late', 'متأخر'], Absent: ['Absent', 'غائب'],
+      connected: ['Connected', 'متصل'], disconnected: ['Disconnected', 'غير متصل'], pending: ['Sync pending', 'مزامنة معلّقة'],
+      Applied: ['Applied', 'مطبّق'], 'Pending review': ['Pending review', 'بانتظار المراجعة'],
+      Synced: ['Synced', 'تمت المزامنة'], Duplicate: ['Duplicate', 'مكرر'], Unmapped: ['Unmapped', 'غير مربوط'],
+      Mapped: ['Mapped', 'مربوط'], failed: ['Sync failed', 'فشلت المزامنة'], clock: ['Clock warning', 'تحذير الساعة']
+    };
+    var p = map[s];
+    return p ? t(p[0], p[1]) : s;
+  }
+
+  function scenarioDevices() {
+    var list = JSON.parse(JSON.stringify(devicesBase));
+    if (scenario === 'disconnected') {
+      list[0].status = 'disconnected';
+      list[0].error = t('TCP timeout after reconnect (demo)', 'انتهت مهلة TCP بعد إعادة الاتصال (تجريبي)');
+      list[0].lastSync = '2026-09-19T16:02:00Z';
+    }
+    if (scenario === 'clock') {
+      list[0].clockSkewSec = 420;
+      list[0].error = t('Device clock is ~7 minutes ahead of gym server (demo)', 'ساعة الجهاز متقدمة ~7 دقائق عن خادم الصالة (تجريبي)');
+    }
+    if (scenario === 'healthy') {
+      list[2].status = 'connected';
+      list[2].error = null;
+      list[2].lastSync = '2026-09-19T18:41:00Z';
+    }
+    return list;
+  }
+
+  function scenarioEvents() {
+    var list = JSON.parse(JSON.stringify(eventsBase));
+    if (scenario === 'unmapped') {
+      list.unshift({
+        id: 'ev-u', employeeId: null, deviceId: 'dev-front', at: '2026-09-19T18:55:00Z', source: 'Fingerprint',
+        punchType: 'Unknown', status: 'Unmapped', sync: 'Held', attendanceId: null,
+        raw: { vendorEventId: 'ZK-90001', deviceUserId: '1999', deviceTime: '2026-09-19T20:55:00+02:00', note: 'No HyMotion employee mapping' }
+      });
+      selectedEventId = 'ev-u';
+    }
+    if (scenario === 'duplicate') {
+      list.unshift({
+        id: 'ev-d', employeeId: 'e1', deviceId: 'dev-front', at: '2026-09-19T06:58:12Z', source: 'Fingerprint',
+        punchType: 'Unknown', status: 'Duplicate', sync: 'Ignored', attendanceId: 'att-1',
+        raw: { vendorEventId: 'ZK-88421', deviceUserId: '1001', note: 'Same vendorEventId already applied' }
+      });
+      selectedEventId = 'ev-d';
+    }
+    return list;
+  }
+
+  function scenarioAttendance() {
+    if (scenario === 'empty') return [];
+    return attendanceBase.slice();
+  }
+
+  function setView(v) {
+    view = v;
+    document.querySelectorAll('.sb-item').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-nav') === v);
+    });
+    var titles = {
+      overview: ['Attendance', 'الحضور'],
+      devices: ['Biometric devices', 'أجهزة البصمة'],
+      mapping: ['Employee mapping', 'ربط الموظفين'],
+      events: ['Device events', 'أحداث الأجهزة'],
+      add: ['Add device', 'إضافة جهاز'],
+      detail: ['Device detail', 'تفاصيل الجهاز']
+    };
+    var cur = document.getElementById('crumbCur');
+    var pair = titles[v] || titles.overview;
+    cur.setAttribute('data-en', pair[0]);
+    cur.setAttribute('data-ar', pair[1]);
+    cur.textContent = t(pair[0], pair[1]);
+    render();
+  }
+
+  function render() {
+    var host = document.getElementById('content');
+    if (scenario === 'loading') {
+      host.innerHTML = '<div class="panel"><div class="state-box"><div class="loader"></div><p>' + t('Loading attendance…', 'جاري تحميل الحضور…') + '</p></div></div>';
+      applyLocaleNodes();
+      return;
+    }
+    if (scenario === 'error' && (view === 'overview' || view === 'events' || view === 'devices')) {
+      host.innerHTML = '<div class="panel"><div class="state-box"><h3>' + t("We couldn't load this page.", 'تعذر تحميل هذه الصفحة.') + '</h3><p>' + t('Demo error state — no real API call was made.', 'حالة خطأ تجريبية — لم يُجرَ أي طلب حقيقي.') + '</p><button type="button" class="btn btn-secondary" id="btnRetryDemo">' + t('Retry (simulated)', 'إعادة المحاولة (محاكاة)') + '</button></div></div>';
+      document.getElementById('btnRetryDemo').onclick = function () {
+        scenario = 'healthy';
+        syncScenarioChips();
+        toast(t('Simulated retry succeeded', 'نجحت إعادة المحاولة المحاكاة'));
+        render();
+      };
+      applyLocaleNodes();
+      return;
+    }
+    if (view === 'overview') renderOverview(host);
+    else if (view === 'devices') renderDevices(host);
+    else if (view === 'detail') renderDeviceDetail(host);
+    else if (view === 'mapping') renderMapping(host);
+    else if (view === 'events') renderEvents(host);
+    else if (view === 'add') renderWizard(host);
+    applyLocaleNodes();
+  }
+
+  function renderOverview(host) {
+    var rows = scenarioAttendance();
+    var devices = scenarioDevices();
+    var present = rows.filter(function (r) { return r.status === 'Present' || r.status === 'Late'; }).length;
+    var late = rows.filter(function (r) { return r.status === 'Late'; }).length;
+    var absent = rows.filter(function (r) { return r.status === 'Absent'; }).length;
+    var pending = employees.filter(function (e) { return e.status === 'Active' && !rows.some(function (r) { return r.employeeId === e.id; }); }).length;
+    if (scenario === 'empty') { present = late = absent = 0; pending = 0; }
+
+    var healthHtml = devices.map(function (d) {
+      var cls = d.status === 'connected' ? 'ok' : (d.status === 'pending' ? 'warn' : 'danger');
+      return '<div class="health"><span class="dot ' + cls + '"></span><div><strong>' + d.name + '</strong><span>' +
+        labelStatus(d.status) + ' · ' + t('Last sync', 'آخر مزامنة') + ' ' + fmtDateTime(d.lastSync) +
+        (d.error ? ' · ' + d.error : '') + '</span></div></div>';
+    }).join('');
+
+    var table;
+    if (!rows.length) {
+      table = '<div class="state-box"><h3>' + t('No attendance yet today', 'لا يوجد حضور اليوم بعد') + '</h3><p>' + t('When staff punch a device or check in via QR / reception, activity appears here.', 'عند تسجيل الموظفين عبر الجهاز أو QR / الاستقبال، يظهر النشاط هنا.') + '</p></div>';
+    } else {
+      table = '<div class="table-wrap"><table><thead><tr>' +
+        '<th>' + t('Employee', 'الموظف') + '</th><th>' + t('Status', 'الحالة') + '</th><th>' + t('Source', 'المصدر') + '</th>' +
+        '<th>' + t('Check-in', 'الحضور') + '</th><th>' + t('Check-out', 'الانصراف') + '</th><th>' + t('Late', 'التأخير') + '</th></tr></thead><tbody>' +
+        rows.map(function (r) {
+          return '<tr><td><div class="person"><div class="av">' + empName(r.employeeId).slice(0, 1) + '</div><div><div class="pname">' + empName(r.employeeId) + '</div><div class="psub">' + (emp(r.employeeId) || {}).number + '</div></div></div></td>' +
+            '<td>' + statusBadge(r.status) + '</td><td>' + sourceBadge(r.source) + '</td>' +
+            '<td class="ltr">' + fmtTime(r.in) + '</td><td class="ltr">' + fmtTime(r.out) + '</td>' +
+            '<td>' + (r.late ? r.late + ' ' + t('min', 'د') : '—') + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+
+    host.innerHTML =
+      '<div class="page-header"><div><div class="demo-tag">' + t('Demo data', 'بيانات تجريبية') + '</div>' +
+      '<h1 class="page-title" style="margin-top:8px">' + t('Staff attendance today', 'حضور الموظفين اليوم') + '</h1>' +
+      '<p class="page-sub">' + t('Fingerprint punches are evidence first. Final attendance still follows HyMotion HR rules (one day row, schedule, lateness).', 'بصمات الأجهزة دليل أولاً. الحضور النهائي يتبع قواعد HR في HyMotion (سجل يومي واحد، جدول، تأخير).') + '</p></div>' +
+      '<div class="actions"><button type="button" class="btn btn-secondary" id="goDevices">' + t('Devices', 'الأجهزة') + '</button>' +
+      '<button type="button" class="btn btn-primary" id="goAdd">' + t('Add device', 'إضافة جهاز') + '</button></div></div>' +
+      '<div class="kpi-row">' +
+      '<div class="kpi ok"><div class="k">' + t('Present', 'حاضر') + '</div><div class="v">' + present + '</div><div class="h">' + t('Including late', 'يشمل المتأخرين') + '</div></div>' +
+      '<div class="kpi late"><div class="k">' + t('Late', 'متأخر') + '</div><div class="v">' + late + '</div><div class="h">' + t('Past grace minutes', 'بعد دقائق السماح') + '</div></div>' +
+      '<div class="kpi absent"><div class="k">' + t('Absent', 'غائب') + '</div><div class="v">' + absent + '</div><div class="h">' + t('Marked / not auto-job yet', 'معلّم / لا وظيفة غياب تلقائية بعد') + '</div></div>' +
+      '<div class="kpi"><div class="k">' + t('Not checked in', 'لم يسجّل بعد') + '</div><div class="v">' + pending + '</div><div class="h">' + t('Active employees without a row', 'موظفون نشطون بلا سجل') + '</div></div>' +
+      '</div>' +
+      '<div class="grid2">' +
+      '<div class="panel"><div class="panel-h"><h2>' + t('Recent activity', 'النشاط الأخير') + '</h2><span class="demo-tag">' + t('Mock', 'تجريبي') + '</span></div>' + table + '</div>' +
+      '<div class="panel"><div class="panel-h"><h2>' + t('Device sync health', 'صحة مزامنة الأجهزة') + '</h2></div><div class="panel-b">' + healthHtml +
+      '<div class="alert info">' + t('Raw device events stay separate from finalized EmployeeAttendance records in the proposed design.', 'في التصميم المقترح تبقى أحداث الجهاز الخام منفصلة عن سجلات EmployeeAttendance النهائية.') + '</div>' +
+      '<button type="button" class="btn btn-secondary btn-sm" id="simRetry">' + t('Retry sync (simulated)', 'إعادة المزامنة (محاكاة)') + '</button>' +
+      '</div></div></div>';
+
+    document.getElementById('goDevices').onclick = function () { setView('devices'); };
+    document.getElementById('goAdd').onclick = function () { setView('add'); };
+    document.getElementById('simRetry').onclick = function () {
+      toast(t('Simulated sync only — no hardware contacted', 'مزامنة محاكاة فقط — لم يتم الاتصال بأي جهاز'));
+    };
+  }
+
+  function renderDevices(host) {
+    var devices = scenarioDevices();
+    host.innerHTML =
+      '<div class="page-header"><div><div class="demo-tag">' + t('Demo devices · compatibility not verified', 'أجهزة تجريبية · التوافق غير مُتحقق') + '</div>' +
+      '<h1 class="page-title" style="margin-top:8px">' + t('Biometric devices', 'أجهزة البصمة') + '</h1>' +
+      '<p class="page-sub">' + t('Register LAN / middleware / push adapters without coupling attendance rules to one vendor.', 'سجّل محولات LAN / برمجيات وسيطة / دفع أحداث دون ربط قواعد الحضور بمورّد واحد.') + '</p></div>' +
+      '<button type="button" class="btn btn-primary" id="goAdd2">' + t('Add device', 'إضافة جهاز') + '</button></div>' +
+      '<div class="panel"><div class="table-wrap"><table><thead><tr>' +
+      '<th>' + t('Device', 'الجهاز') + '</th><th>' + t('Vendor / model', 'المورّد / الطراز') + '</th><th>' + t('Connection', 'الاتصال') + '</th>' +
+      '<th>' + t('Address', 'العنوان') + '</th><th>' + t('Status', 'الحالة') + '</th><th>' + t('Last sync', 'آخر مزامنة') + '</th>' +
+      '<th>' + t('Location', 'الموقع') + '</th><th>' + t('Mapped', 'مربوطون') + '</th></tr></thead><tbody>' +
+      devices.map(function (d) {
+        return '<tr class="row" data-id="' + d.id + '"><td><div class="pname">' + d.name + '</div>' +
+          (d.error ? '<div class="psub" style="color:var(--dng500)">' + d.error + '</div>' : '') + '</td>' +
+          '<td>' + d.vendor + '<div class="psub">' + d.model + '</div></td>' +
+          '<td>' + d.connection + '</td><td class="ltr mono">' + d.host + '</td>' +
+          '<td>' + statusBadge(d.status) + (d.clockSkewSec ? ' ' + statusBadge('clock') : '') + '</td>' +
+          '<td class="ltr">' + fmtDateTime(d.lastSync) + '</td><td>' + d.location + '</td><td>' + d.mappedCount + '</td></tr>';
+      }).join('') + '</tbody></table></div></div>';
+
+    document.getElementById('goAdd2').onclick = function () { setView('add'); };
+    host.querySelectorAll('tr.row').forEach(function (tr) {
+      tr.onclick = function () {
+        selectedDeviceId = tr.getAttribute('data-id');
+        deviceTab = 'overview';
+        setView('detail');
+      };
+    });
+  }
+
+  function renderDeviceDetail(host) {
+    var d = scenarioDevices().find(function (x) { return x.id === selectedDeviceId; }) || scenarioDevices()[0];
+    var mapped = employees.filter(function (e) { return e.mapped; });
+    var syncRows = [
+      { at: '2026-09-19T18:42:00Z', result: 'ok', detail: t('12 events ingested, 0 duplicates', 'تم استيعاب 12 حدثاً، 0 مكرر') },
+      { at: '2026-09-19T18:12:00Z', result: 'ok', detail: t('8 events ingested', 'تم استيعاب 8 أحداث') },
+      { at: '2026-09-19T17:10:00Z', result: 'warn', detail: d.error || t('Partial sync (demo)', 'مزامنة جزئية (تجريبي)') }
+    ];
+    var audit = [
+      { at: '2026-09-18T11:00:00Z', who: 'Owner', what: t('Renamed device', 'إعادة تسمية الجهاز') },
+      { at: '2026-09-17T09:20:00Z', who: 'Owner', what: t('Mapped EMP-0002 → device user 1002', 'ربط EMP-0002 ← مستخدم الجهاز 1002') }
+    ];
+
+    var body = '';
+    if (deviceTab === 'overview') {
+      body = '<dl class="kv">' +
+        '<dt>' + t('Vendor', 'المورّد') + '</dt><dd>' + d.vendor + '</dd>' +
+        '<dt>' + t('Model', 'الطراز') + '</dt><dd>' + d.model + ' <span class="demo-tag">' + t('unverified', 'غير مُتحقق') + '</span></dd>' +
+        '<dt>' + t('Connection', 'الاتصال') + '</dt><dd>' + d.connection + '</dd>' +
+        '<dt>' + t('Address', 'العنوان') + '</dt><dd class="ltr mono">' + d.host + '</dd>' +
+        '<dt>' + t('Status', 'الحالة') + '</dt><dd>' + statusBadge(d.status) + '</dd>' +
+        '<dt>' + t('Location', 'الموقع') + '</dt><dd>' + d.location + '</dd>' +
+        '<dt>' + t('Mapped staff', 'موظفون مربوطون') + '</dt><dd>' + d.mappedCount + '</dd>' +
+        '<dt>' + t('Last sync', 'آخر مزامنة') + '</dt><dd class="ltr">' + fmtDateTime(d.lastSync) + '</dd></dl>' +
+        (d.error ? '<div class="alert warn">' + d.error + '</div>' : '') +
+        '<div class="actions" style="margin-top:14px">' +
+        '<button type="button" class="btn btn-secondary" id="simTest">' + t('Test connection (simulated)', 'اختبار الاتصال (محاكاة)') + '</button>' +
+        '<button type="button" class="btn btn-ghost" id="simSync">' + t('Sync now (simulated)', 'مزامنة الآن (محاكاة)') + '</button></div>';
+    } else if (deviceTab === 'mappings') {
+      body = '<div class="table-wrap"><table><thead><tr><th>' + t('Employee', 'الموظف') + '</th><th>' + t('Device user ID', 'معرّف مستخدم الجهاز') + '</th><th>' + t('Status', 'الحالة') + '</th></tr></thead><tbody>' +
+        mapped.map(function (e) {
+          var st = e.status === 'Active' ? 'Mapped' : e.status;
+          return '<tr><td>' + empName(e.id) + '<div class="psub">' + e.number + '</div></td><td class="ltr mono">' + (e.deviceUserId || '—') + '</td><td>' + statusBadge(st === 'Mapped' ? 'Mapped' : 'Unmapped') + ' <span class="psub">' + e.status + '</span></td></tr>';
+        }).join('') + '</tbody></table></div>' +
+        '<div class="alert info">' + t('Device user ID ≠ HyMotion Employee.Id. Mapping is explicit.', 'معرّف مستخدم الجهاز ≠ Employee.Id في HyMotion. الربط صريح.') + '</div>';
+    } else if (deviceTab === 'sync') {
+      body = '<div class="table-wrap"><table><thead><tr><th>' + t('When', 'الوقت') + '</th><th>' + t('Result', 'النتيجة') + '</th><th>' + t('Detail', 'التفاصيل') + '</th></tr></thead><tbody>' +
+        syncRows.map(function (r) {
+          return '<tr><td class="ltr">' + fmtDateTime(r.at) + '</td><td>' + statusBadge(r.result === 'ok' ? 'Synced' : 'pending') + '</td><td>' + r.detail + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    } else if (deviceTab === 'config') {
+      body = '<div class="grid3"><label class="field"><span>' + t('Display name', 'الاسم المعروض') + '</span><input value="' + d.name + '" disabled></label>' +
+        '<label class="field"><span>' + t('Location / entrance', 'الموقع / المدخل') + '</span><input value="' + d.location + '" disabled></label>' +
+        '<label class="field"><span>' + t('Timezone note', 'ملاحظة المنطقة الزمنية') + '</span><input value="Africa/Cairo (gym server)" disabled></label></div>' +
+        '<div class="alert warn">' + t('Configuration saves are disabled in this preview. Production would store credentials encrypted and never fingerprint templates by default.', 'حفظ الإعدادات معطّل في هذه المعاينة. في الإنتاج تُخزَّن بيانات الاعتماد مشفّرة ولا تُخزَّن قوالب البصمة افتراضياً.') + '</div>';
+    } else {
+      body = '<div class="table-wrap"><table><thead><tr><th>' + t('When', 'الوقت') + '</th><th>' + t('Who', 'من') + '</th><th>' + t('Action', 'الإجراء') + '</th></tr></thead><tbody>' +
+        audit.map(function (a) {
+          return '<tr><td class="ltr">' + fmtDateTime(a.at) + '</td><td>' + a.who + '</td><td>' + a.what + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+    }
+
+    host.innerHTML =
+      '<div class="page-header"><div><button type="button" class="btn btn-ghost btn-sm" id="backDev">← ' + t('Devices', 'الأجهزة') + '</button>' +
+      '<h1 class="page-title" style="margin-top:8px">' + d.name + '</h1>' +
+      '<p class="page-sub">' + d.vendor + ' · ' + d.model + ' · <span class="demo-tag">' + t('Demo data', 'بيانات تجريبية') + '</span></p></div></div>' +
+      '<div class="panel"><div class="panel-b">' +
+      '<div class="tabs">' +
+      ['overview','mappings','sync','config','audit'].map(function (tab) {
+        var labels = { overview: ['Overview','نظرة عامة'], mappings: ['Employee mappings','ربط الموظفين'], sync: ['Sync history','سجل المزامنة'], config: ['Configuration','الإعدادات'], audit: ['Activity / audit','النشاط / التدقيق'] };
+        return '<button type="button" class="tab' + (deviceTab === tab ? ' act' : '') + '" data-tab="' + tab + '">' + t(labels[tab][0], labels[tab][1]) + '</button>';
+      }).join('') +
+      '</div>' + body + '</div></div>';
+
+    document.getElementById('backDev').onclick = function () { setView('devices'); };
+    host.querySelectorAll('.tab').forEach(function (btn) {
+      btn.onclick = function () { deviceTab = btn.getAttribute('data-tab'); render(); };
+    });
+    var st = document.getElementById('simTest');
+    var ss = document.getElementById('simSync');
+    if (st) st.onclick = function () { toast(t('Simulated test only — no TCP/SDK call', 'اختبار محاكى فقط — لا استدعاء TCP/SDK')); };
+    if (ss) ss.onclick = function () { toast(t('Simulated sync only — no hardware contacted', 'مزامنة محاكاة فقط — لم يتم الاتصال بأي جهاز')); };
+  }
+
+  function renderMapping(host) {
+    var dup = false;
+    var ids = {};
+    employees.forEach(function (e) {
+      if (e.deviceUserId) {
+        if (ids[e.deviceUserId]) dup = true;
+        ids[e.deviceUserId] = (ids[e.deviceUserId] || 0) + 1;
+      }
+    });
+    host.innerHTML =
+      '<div class="page-header"><div><div class="demo-tag">' + t('Demo mapping', 'ربط تجريبي') + '</div>' +
+      '<h1 class="page-title" style="margin-top:8px">' + t('Employee ↔ device user mapping', 'ربط الموظف ↔ مستخدم الجهاز') + '</h1>' +
+      '<p class="page-sub">' + t('Keep HyMotion Employee.Id separate from the biometric terminal user number.', 'أبقِ Employee.Id في HyMotion منفصلاً عن رقم مستخدم جهاز البصمة.') + '</p></div>' +
+      '<button type="button" class="btn btn-secondary" id="bulkPreview">' + t('Preview bulk validate', 'معاينة التحقق الجماعي') + '</button></div>' +
+      (dup ? '<div class="alert danger">' + t('Duplicate device user IDs detected in demo set.', 'اكتُشفت معرّفات مستخدم جهاز مكررة في مجموعة العرض.') + '</div>' : '') +
+      '<div class="panel"><div class="table-wrap"><table><thead><tr>' +
+      '<th>' + t('Employee', 'الموظف') + '</th><th>' + t('HR status', 'حالة HR') + '</th>' +
+      '<th>' + t('Device user ID', 'معرّف مستخدم الجهاز') + '</th><th>' + t('Mapping', 'الربط') + '</th><th></th></tr></thead><tbody>' +
+      employees.map(function (e) {
+        var mapLabel = e.mapped && e.deviceUserId ? 'Mapped' : 'Unmapped';
+        var warn = e.status !== 'Active' ? '<div class="psub" style="color:var(--wrn500)">' + t('Should be disabled on device when Suspended/Terminated', 'يُفضَّل تعطيله على الجهاز عند الإيقاف/الإنهاء') + '</div>' : '';
+        return '<tr><td><div class="pname">' + empName(e.id) + '</div><div class="psub">' + e.number + '</div></td>' +
+          '<td>' + e.status + '</td>' +
+          '<td><input class="ltr mono map-input" data-id="' + e.id + '" value="' + (e.deviceUserId || '') + '" placeholder="e.g. 1007" style="width:120px"></td>' +
+          '<td>' + statusBadge(mapLabel) + warn + '</td>' +
+          '<td><button type="button" class="btn btn-ghost btn-sm save-map" data-id="' + e.id + '">' + t('Save (sim)', 'حفظ (محاكاة)') + '</button></td></tr>';
+      }).join('') + '</tbody></table></div></div>' +
+      '<div class="alert info" id="bulkOut" hidden></div>';
+
+    document.getElementById('bulkPreview').onclick = function () {
+      var unmapped = employees.filter(function (e) { return e.status === 'Active' && !e.deviceUserId; }).length;
+      var box = document.getElementById('bulkOut');
+      box.hidden = false;
+      box.textContent = t(
+        'Bulk validation (simulated): ' + unmapped + ' active unmapped · 0 duplicate collisions · terminated mappings flagged for device cleanup.',
+        'التحقق الجماعي (محاكاة): ' + unmapped + ' نشطون بلا ربط · 0 تضارب مكرر · رُبطت حسابات منتهية للتنظيف على الجهاز.'
+      );
+    };
+    host.querySelectorAll('.save-map').forEach(function (btn) {
+      btn.onclick = function () {
+        var id = btn.getAttribute('data-id');
+        var input = host.querySelector('.map-input[data-id="' + id + '"]');
+        var e = emp(id);
+        e.deviceUserId = (input.value || '').trim();
+        e.mapped = !!e.deviceUserId;
+        toast(t('Mapping saved in preview memory only', 'تم حفظ الربط في ذاكرة المعاينة فقط'));
+        render();
+      };
+    });
+  }
+
+  function renderEvents(host) {
+    var events = scenarioEvents();
+    var selected = events.find(function (e) { return e.id === selectedEventId; }) || events[0];
+    var filterSource = document.getElementById('fltSource') ? document.getElementById('fltSource').value : '';
+    // filters recreated each render — keep simple client filter via dataset after paint
+
+    host.innerHTML =
+      '<div class="page-header"><div><div class="demo-tag">' + t('Raw events ≠ attendance decisions', 'الأحداث الخام ≠ قرارات الحضور') + '</div>' +
+      '<h1 class="page-title" style="margin-top:8px">' + t('Attendance event review', 'مراجعة أحداث الحضور') + '</h1>' +
+      '<p class="page-sub">' + t('Inspect device evidence separately from the resulting EmployeeAttendance day row.', 'افحص دليل الجهاز منفصلاً عن سجل EmployeeAttendance اليومي الناتج.') + '</p></div></div>' +
+      '<div class="toolbar">' +
+      '<select id="fltEmployee"><option value="">' + t('All employees', 'كل الموظفين') + '</option>' +
+      employees.map(function (e) { return '<option value="' + e.id + '">' + empName(e.id) + '</option>'; }).join('') + '</select>' +
+      '<select id="fltDevice"><option value="">' + t('All devices', 'كل الأجهزة') + '</option>' +
+      devicesBase.map(function (d) { return '<option value="' + d.id + '">' + d.name + '</option>'; }).join('') + '</select>' +
+      '<select id="fltSource"><option value="">' + t('All sources', 'كل المصادر') + '</option>' +
+      '<option value="Fingerprint">' + t('Fingerprint', 'بصمة') + '</option><option value="QR">QR</option><option value="Manual">' + t('Manual', 'يدوي') + '</option></select>' +
+      '<select id="fltStatus"><option value="">' + t('All statuses', 'كل الحالات') + '</option>' +
+      '<option value="Applied">' + t('Applied', 'مطبّق') + '</option><option value="Pending review">' + t('Pending review', 'بانتظار المراجعة') + '</option>' +
+      '<option value="Unmapped">' + t('Unmapped', 'غير مربوط') + '</option><option value="Duplicate">' + t('Duplicate', 'مكرر') + '</option></select>' +
+      '<input type="date" id="fltDate" value="2026-09-19" class="ltr">' +
+      '</div>' +
+      '<div class="split">' +
+      '<div class="panel"><div class="table-wrap"><table><thead><tr>' +
+      '<th>' + t('When', 'الوقت') + '</th><th>' + t('Employee', 'الموظف') + '</th><th>' + t('Device', 'الجهاز') + '</th>' +
+      '<th>' + t('Source', 'المصدر') + '</th><th>' + t('Punch', 'النوع') + '</th><th>' + t('Event', 'الحدث') + '</th><th>' + t('Sync', 'المزامنة') + '</th></tr></thead><tbody id="evBody"></tbody></table></div></div>' +
+      '<div class="panel"><div class="panel-h"><h2>' + t('Event detail', 'تفاصيل الحدث') + '</h2></div><div class="panel-b" id="evDetail"></div></div>' +
+      '</div>';
+
+    function filtered() {
+      var fe = document.getElementById('fltEmployee').value;
+      var fd = document.getElementById('fltDevice').value;
+      var fs = document.getElementById('fltSource').value;
+      var fst = document.getElementById('fltStatus').value;
+      return events.filter(function (e) {
+        if (fe && e.employeeId !== fe) return false;
+        if (fd && e.deviceId !== fd) return false;
+        if (fs && e.source !== fs) return false;
+        if (fst && e.status !== fst) return false;
+        return true;
+      });
+    }
+
+    function paint() {
+      var list = filtered();
+      var body = document.getElementById('evBody');
+      if (!list.length) {
+        body.innerHTML = '<tr><td colspan="7"><div class="state-box"><p>' + t('No events match these filters.', 'لا توجد أحداث مطابقة لهذه المرشحات.') + '</p></div></td></tr>';
+      } else {
+        body.innerHTML = list.map(function (e) {
+          var dev = devicesBase.find(function (d) { return d.id === e.deviceId; });
+          return '<tr class="row' + (e.id === selectedEventId ? ' on' : '') + '" data-id="' + e.id + '">' +
+            '<td class="ltr">' + fmtDateTime(e.at) + '</td>' +
+            '<td>' + (e.employeeId ? empName(e.employeeId) : '—') + '</td>' +
+            '<td>' + (dev ? dev.name : '—') + '</td>' +
+            '<td>' + sourceBadge(e.source) + '</td>' +
+            '<td>' + (e.punchType === 'Unknown' ? t('Unknown (needs rule)', 'غير معروف (يحتاج قاعدة)') : e.punchType) + '</td>' +
+            '<td>' + statusBadge(e.status) + '</td>' +
+            '<td>' + statusBadge(e.sync === 'Synced' ? 'Synced' : (e.sync === 'Ignored' ? 'Duplicate' : 'pending')) + '</td></tr>';
+        }).join('');
+      }
+      body.querySelectorAll('tr.row').forEach(function (tr) {
+        tr.onclick = function () { selectedEventId = tr.getAttribute('data-id'); paintDetail(); paint(); };
+      });
+      paintDetail();
+    }
+
+    function paintDetail() {
+      var e = events.find(function (x) { return x.id === selectedEventId; }) || filtered()[0];
+      var box = document.getElementById('evDetail');
+      if (!e) { box.innerHTML = '<div class="detail-empty">' + t('Select an event', 'اختر حدثاً') + '</div>'; return; }
+      var att = attendanceBase.find(function (a) { return a.id === e.attendanceId; });
+      box.innerHTML =
+        '<p style="margin:0 0 10px;font-size:12px;color:var(--ltt)">' + t('Raw device / source evidence', 'دليل الجهاز / المصدر الخام') + '</p>' +
+        '<div class="raw-box">' + JSON.stringify(e.raw, null, 2) + '</div>' +
+        '<p style="margin:14px 0 8px;font-size:12px;color:var(--ltt)">' + t('Resulting attendance record (if any)', 'سجل الحضور الناتج (إن وُجد)') + '</p>' +
+        (att
+          ? '<dl class="kv"><dt>' + t('Record', 'السجل') + '</dt><dd class="mono">' + att.id + '</dd>' +
+            '<dt>' + t('Status', 'الحالة') + '</dt><dd>' + statusBadge(att.status) + '</dd>' +
+            '<dt>' + t('Check-in', 'الحضور') + '</dt><dd class="ltr">' + fmtDateTime(att.in) + '</dd>' +
+            '<dt>' + t('Source on row', 'المصدر على السجل') + '</dt><dd>' + sourceBadge(att.source) + '</dd></dl>'
+          : '<div class="alert warn">' + t('No attendance row yet — held for mapping or review.', 'لا يوجد سجل حضور بعد — معلّق للربط أو المراجعة.') + '</div>') +
+        '<div class="actions"><button type="button" class="btn btn-secondary btn-sm" id="simResolve">' + t('Resolve (simulated)', 'معالجة (محاكاة)') + '</button></div>';
+      var br = document.getElementById('simResolve');
+      if (br) br.onclick = function () { toast(t('Resolution simulated in preview only', 'المعالجة محاكاة في المعاينة فقط')); };
+    }
+
+    ['fltEmployee','fltDevice','fltSource','fltStatus','fltDate'].forEach(function (id) {
+      document.getElementById(id).onchange = paint;
+    });
+    paint();
+  }
+
+  function renderWizard(host) {
+    var steps = [
+      ['Vendor', 'المورّد'], ['Connection', 'الاتصال'], ['Details', 'التفاصيل'],
+      ['Identity', 'الهوية'], ['Test', 'اختبار'], ['Mapping', 'الربط'], ['Confirm', 'تأكيد']
+    ];
+    var stepHtml = steps.map(function (s, i) {
+      var n = i + 1;
+      var cls = n === wizardStep ? 'on' : (n < wizardStep ? 'done' : '');
+      return '<div class="wstep ' + cls + '"><span class="wnum">' + n + '</span>' + t(s[0], s[1]) + '</div>';
+    }).join('');
+
+    var body = '';
+    if (wizardStep === 1) {
+      body = '<div class="vendor-grid">' +
+        vendorCard('zkteco', 'ZKTeco', t('LAN pull / common in gyms — model SDK must be verified', 'سحب LAN / شائع في الصالات — يجب التحقق من SDK للطراز'), false) +
+        vendorCard('hikvision', 'Hikvision', t('Often needs vendor middleware — not assumed plug-and-play', 'غالباً يحتاج برمجية وسيطة — لا يُفترض التوصيل المباشر'), false) +
+        vendorCard('suprema', 'Suprema', t('Capability unverified for this preview', 'القدرة غير مُتحققة لهذه المعاينة'), false) +
+        vendorCard('generic-push', t('Generic push log', 'سجل دفع عام'), t('Device/agent posts attendance events to a local HyMotion service', 'الجهاز/الوكيل يرسل أحداث الحضور إلى خدمة HyMotion محلية'), false) +
+        vendorCard('usb', t('USB reader', 'قارئ USB'), t('Not realistic for always-on Local service without a host agent — marked unsupported for v1', 'غير واقعي لخدمة Local الدائمة بدون وكيل مضيف — غير مدعوم في v1'), true) +
+        '</div>';
+    } else if (wizardStep === 2) {
+      if (wizard.vendor === 'usb') {
+        body = '<div class="alert danger">' + t('USB-connected fingerprint readers are not proposed for HyMotion Local v1. Prefer LAN or a vendor/agent that can push logs to a local service.', 'قارئات البصمة عبر USB غير مقترحة لـ HyMotion Local v1. يُفضَّل LAN أو وكيل/مورّد يدفع السجلات إلى خدمة محلية.') + '</div>';
+      } else {
+        body = '<div class="grid2"><label class="field"><span>' + t('Connection method', 'طريقة الاتصال') + '</span>' +
+          '<select id="wConn"><option value="lan"' + (wizard.connection==='lan'?' selected':'') + '>' + t('LAN / TCP-IP', 'LAN / TCP-IP') + '</option>' +
+          '<option value="middleware"' + (wizard.connection==='middleware'?' selected':'') + '>' + t('Vendor middleware / SDK bridge', 'برمجية وسيطة / جسر SDK') + '</option>' +
+          '<option value="push"' + (wizard.connection==='push'?' selected':'') + '>' + t('Device push to local service', 'دفع الجهاز إلى خدمة محلية') + '</option></select>' +
+          '<span class="hint">' + t('Exact protocol depends on verified model — not claimed here.', 'البروتوكول الدقيق يعتمد على طراز مُتحقق — لا يُدّعى هنا.') + '</span></label></div>';
+      }
+    } else if (wizardStep === 3) {
+      body = '<div class="grid2">' +
+        '<label class="field"><span>' + t('IP / host', 'IP / المضيف') + '</span><input id="wHost" class="ltr" value="' + wizard.host + '"></label>' +
+        '<label class="field"><span>' + t('Port', 'المنفذ') + '</span><input id="wPort" class="ltr" value="' + wizard.port + '"></label></div>' +
+        '<div class="alert info">' + t('Credentials fields omitted in preview. Production must encrypt device secrets and restrict firewall to LAN.', 'حقول الاعتماد محذوفة في المعاينة. في الإنتاج يجب تشفير أسرار الجهاز وتقييد الجدار الناري على LAN.') + '</div>';
+    } else if (wizardStep === 4) {
+      body = '<div class="grid2">' +
+        '<label class="field"><span>' + t('Device name', 'اسم الجهاز') + '</span><input id="wName" value="' + wizard.name + '"></label>' +
+        '<label class="field"><span>' + t('Location / entrance', 'الموقع / المدخل') + '</span><input id="wLoc" value="' + wizard.location + '"></label></div>';
+    } else if (wizardStep === 5) {
+      body = '<div class="alert warn">' + t('This test is simulated. It does not open a socket or load a vendor SDK.', 'هذا الاختبار محاكى. لا يفتح مأخذاً ولا يحمّل SDK مورّد.') + '</div>' +
+        '<button type="button" class="btn btn-secondary" id="runTest">' + t('Run simulated test', 'تشغيل اختبار محاكى') + '</button>' +
+        (wizard.testResult ? '<div class="alert ' + (wizard.testResult.ok ? 'ok' : 'danger') + '" style="margin-top:12px">' + wizard.testResult.msg + '</div>' : '');
+    } else if (wizardStep === 6) {
+      body = '<p class="page-sub" style="margin-top:0">' + t('Preview of who still needs a device user ID after this device is added.', 'معاينة من لا يزال يحتاج معرّف مستخدم جهاز بعد إضافة هذا الجهاز.') + '</p>' +
+        '<ul>' + employees.filter(function (e) { return e.status === 'Active' && !e.mapped; }).map(function (e) {
+          return '<li>' + empName(e.id) + ' <span class="psub">(' + e.number + ')</span></li>';
+        }).join('') + '</ul>';
+    } else {
+      body = '<dl class="kv">' +
+        '<dt>' + t('Vendor', 'المورّد') + '</dt><dd>' + (wizard.vendor || '—') + '</dd>' +
+        '<dt>' + t('Connection', 'الاتصال') + '</dt><dd>' + wizard.connection + '</dd>' +
+        '<dt>' + t('Host', 'المضيف') + '</dt><dd class="ltr mono">' + wizard.host + ':' + wizard.port + '</dd>' +
+        '<dt>' + t('Name', 'الاسم') + '</dt><dd>' + wizard.name + '</dd>' +
+        '<dt>' + t('Location', 'الموقع') + '</dt><dd>' + wizard.location + '</dd></dl>' +
+        '<div class="alert info">' + t('Confirm does not create a real device. No database write occurs.', 'التأكيد لا ينشئ جهازاً حقيقياً. لا تُكتب قاعدة البيانات.') + '</div>';
+    }
+
+    host.innerHTML =
+      '<div class="page-header"><div><div class="demo-tag">' + t('Guided setup · mock', 'إعداد موجَّه · تجريبي') + '</div>' +
+      '<h1 class="page-title" style="margin-top:8px">' + t('Add biometric device', 'إضافة جهاز بصمة') + '</h1></div></div>' +
+      '<div class="panel"><div class="panel-b">' +
+      '<div class="wizard-steps">' + stepHtml + '</div>' + body +
+      '<div class="actions">' +
+      '<button type="button" class="btn btn-ghost" id="wBack"' + (wizardStep===1?' disabled':'') + '>' + t('Back', 'رجوع') + '</button>' +
+      (wizardStep < 7
+        ? '<button type="button" class="btn btn-primary" id="wNext"' + ((wizardStep===1 && !wizard.vendor) || (wizardStep===2 && wizard.vendor==='usb') ? ' disabled' : '') + '>' + t('Continue', 'متابعة') + '</button>'
+        : '<button type="button" class="btn btn-primary" id="wConfirm">' + t('Confirm in mock UI', 'تأكيد في واجهة العرض') + '</button>') +
+      '</div></div></div>';
+
+    function vendorCard(id, name, meta, unsupported) {
+      return '<button type="button" class="vendor' + (wizard.vendor===id?' on':'') + (unsupported?' unsupported':'') + '" data-v="' + id + '">' +
+        '<span class="name">' + name + '</span><span class="meta">' + meta + '</span>' +
+        (unsupported ? '<span class="badge b-danger" style="margin-top:8px">' + t('Unsupported in v1 proposal', 'غير مدعوم في اقتراح v1') + '</span>' : '') +
+        '</button>';
+    }
+
+    host.querySelectorAll('.vendor').forEach(function (btn) {
+      btn.onclick = function () {
+        wizard.vendor = btn.getAttribute('data-v');
+        wizard.tested = false; wizard.testResult = null;
+        render();
+      };
+    });
+    var conn = document.getElementById('wConn');
+    if (conn) conn.onchange = function () { wizard.connection = conn.value; };
+    ['wHost','wPort','wName','wLoc'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.oninput = function () {
+        if (id === 'wHost') wizard.host = el.value;
+        if (id === 'wPort') wizard.port = el.value;
+        if (id === 'wName') wizard.name = el.value;
+        if (id === 'wLoc') wizard.location = el.value;
+      };
+    });
+    var rt = document.getElementById('runTest');
+    if (rt) rt.onclick = function () {
+      wizard.tested = true;
+      if (wizard.vendor === 'suprema') {
+        wizard.testResult = { ok: false, msg: t('Simulated result: Suprema model/SDK not verified in HyMotion — connection not claimed.', 'نتيجة محاكاة: طراز/SDK Suprema غير مُتحقق في HyMotion — لا يُدّعى الاتصال.') };
+      } else {
+        wizard.testResult = { ok: true, msg: t('Simulated result: adapter accepted settings. This is NOT a real device handshake.', 'نتيجة محاكاة: قبل المحوّل الإعدادات. هذا ليس مصافحة جهاز حقيقية.') };
+      }
+      render();
+    };
+    document.getElementById('wBack').onclick = function () { if (wizardStep > 1) { wizardStep--; render(); } };
+    var nx = document.getElementById('wNext');
+    if (nx) nx.onclick = function () {
+      if (wizardStep === 5 && !wizard.tested) {
+        toast(t('Run the simulated test before continuing', 'شغّل الاختبار المحاكى قبل المتابعة'));
+        return;
+      }
+      wizardStep++; render();
+    };
+    var cf = document.getElementById('wConfirm');
+    if (cf) cf.onclick = function () {
+      toast(t('Mock device confirmed in preview only', 'تم تأكيد الجهاز التجريبي في المعاينة فقط'));
+      wizardStep = 1; wizard.vendor = null; wizard.tested = false; wizard.testResult = null;
+      setView('devices');
+    };
+  }
+
+  function syncScenarioChips() {
+    document.querySelectorAll('.scenario-bar .chip').forEach(function (c) {
+      c.classList.toggle('act', c.getAttribute('data-scenario') === scenario);
+    });
+  }
+
+  document.getElementById('btnEn').onclick = function () {
+    locale = 'en'; document.getElementById('btnEn').classList.add('act'); document.getElementById('btnAr').classList.remove('act'); render();
+  };
+  document.getElementById('btnAr').onclick = function () {
+    locale = 'ar'; document.getElementById('btnAr').classList.add('act'); document.getElementById('btnEn').classList.remove('act'); render();
+  };
+  document.getElementById('btnTheme').onclick = function () {
+    theme = theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('btnTheme').setAttribute('data-en', theme === 'light' ? 'Dark' : 'Light');
+    document.getElementById('btnTheme').setAttribute('data-ar', theme === 'light' ? 'داكن' : 'فاتح');
+    applyLocaleNodes();
+  };
+  document.querySelectorAll('.sb-item').forEach(function (b) {
+    b.onclick = function () { setView(b.getAttribute('data-nav')); };
+  });
+  document.querySelectorAll('.scenario-bar .chip').forEach(function (c) {
+    c.onclick = function () {
+      scenario = c.getAttribute('data-scenario');
+      syncScenarioChips();
+      if (view === 'detail') setView('devices');
+      else render();
+    };
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

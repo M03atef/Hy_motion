@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Biometric Events</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../hr.css">
+<link rel="stylesheet" href="../biometric-devices/biometric-devices.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Biometric events" data-ar="أحداث البصمة">Biometric events</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Biometric events are not available for your role." data-ar="أحداث البصمة غير متاحة لدورك.">Biometric events are not available for your role.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Biometric event review" data-ar="مراجعة أحداث البصمة">Biometric event review</h1>
+        <p class="page-subtitle" data-en="Raw device evidence is separate from finalized attendance. Needs review items are not applied to payroll automatically." data-ar="دليل الجهاز الخام منفصل عن الحضور النهائي. عناصر بانتظار المراجعة لا تُطبَّق على الرواتب تلقائياً.">Raw device evidence is separate from finalized attendance. Needs review items are not applied to payroll automatically.</p>
+      </div>
+      <a class="btn-secondary-link" href="/dashboard/hr/biometric-devices/"><i class="ti ti-fingerprint"></i> <span data-en="Devices" data-ar="الأجهزة">Devices</span></a>
+    </div>
+    <div class="toolbar">
+      <select id="filterStatus">
+        <option value="" data-en="All statuses" data-ar="كل الحالات">All statuses</option>
+        <option value="NeedsReview" data-en="Needs review" data-ar="بانتظار المراجعة">Needs review</option>
+        <option value="Applied" data-en="Applied" data-ar="مطبّق">Applied</option>
+        <option value="Duplicate" data-en="Duplicate" data-ar="مكرر">Duplicate</option>
+        <option value="Rejected" data-en="Rejected" data-ar="مرفوض">Rejected</option>
+        <option value="Pending" data-en="Pending" data-ar="معلّق">Pending</option>
+      </select>
+      <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="split-events">
+      <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+      <div class="table-wrap detail-panel" id="detailHost"><div class="empty-state"><p data-en="Select an event" data-ar="اختر حدثاً">Select an event</p></div></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<style>
+.split-events{display:grid;grid-template-columns:1.4fr .9fr;gap:14px}
+@media(max-width:960px){.split-events{grid-template-columns:1fr}}
+.detail-panel{padding:16px;min-height:280px}
+.raw-box{background:var(--c900);color:#d4d4d4;border-radius:var(--rmd);padding:12px;font-size:11px;white-space:pre-wrap;direction:ltr;text-align:left;max-height:240px;overflow:auto}
+tr.row-on{background:rgba(122,204,0,.06)}
+</style>
+<script src="biometric-events-app.js?v=1"></script>
+</body>
+</html>

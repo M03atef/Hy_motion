@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>HyMotion — Set Up Your Gym</title>
+  <link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0D0D0D;
+      --ink-2: #1A1A1A;
+      --muted: #5C5C5C;
+      --faint: #8C8C8C;
+      --line: #E2E4E1;
+      --paper: #FFFFFF;
+      --soft: #F4F6F2;
+      --lime: #7ACC00;
+      --lime-deep: #5EA300;
+      --lime-wash: #EDFCD8;
+      --ok: #166534;
+      --ok-bg: #F0FDF4;
+      --warn: #92400E;
+      --warn-bg: #FFFBEB;
+      --danger: #B91C1C;
+      --danger-bg: #FEF2F2;
+      --info: #0F4C5C;
+      --info-bg: #ECFEFF;
+      --font: Cairo, system-ui, sans-serif;
+      --shadow: 0 18px 50px rgba(13, 13, 13, .10);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: var(--font);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(1200px 500px at 10% -10%, rgba(122, 204, 0, .18), transparent 55%),
+        radial-gradient(900px 420px at 100% 0%, rgba(15, 76, 92, .10), transparent 50%),
+        linear-gradient(180deg, #EEF1EB 0%, #F7F8F5 40%, #F3F4F1 100%);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .frame {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+      background: var(--paper);
+      border: 1px solid rgba(13, 13, 13, .06);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .frame::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--lime), #B8F000 55%, #0F4C5C);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 0;
+      gap: 12px
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .brand img {
+      width: 36px;
+      height: 36px;
+      display: block
+    }
+
+    .brand .name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--lime-deep);
+      letter-spacing: -.02em
+    }
+
+    .lang-btn {
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .progress {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 14px 20px 0
+    }
+
+    .progress span {
+      font-size: 11px;
+      color: var(--faint);
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: var(--soft);
+      font-weight: 600
+    }
+
+    .progress span.on {
+      background: var(--lime-wash);
+      color: #3F6B00;
+      font-weight: 800
+    }
+
+    .progress span.done {
+      background: #E8F5D8;
+      color: #3F6B00
+    }
+
+    .panel {
+      padding: 18px 22px 24px
+    }
+
+    .hero {
+      text-align: center;
+      padding: 28px 8px 8px
+    }
+
+    .hero .mark-lg {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      border-radius: 16px;
+      background: linear-gradient(160deg, #0D0D0D, #1F2420);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 10px 30px rgba(13, 13, 13, .18);
+    }
+
+    .hero .mark-lg img {
+      width: 40px;
+      height: 40px
+    }
+
+    .kicker {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--lime-deep);
+      margin-bottom: 8px
+    }
+
+    [dir="rtl"] .kicker {
+      letter-spacing: 0
+    }
+
+    .hero h1,
+    .panel-title {
+      font-size: 26px;
+      line-height: 1.15;
+      margin: 0 0 8px;
+      font-weight: 800;
+      letter-spacing: -.02em
+    }
+
+    .hero p,
+    .sub {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5
+    }
+
+    .hero p {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 34ch;
+      font-size: 14px
+    }
+
+    .identity {
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+
+    .identity strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 2px
+    }
+
+    .identity code {
+      font-family: ui-monospace, Consolas, monospace;
+      font-weight: 700
+    }
+
+    .support-meta {
+      font-size: 11px;
+      color: var(--faint);
+      margin: -4px 0 12px;
+      line-height: 1.4;
+      display: none
+    }
+
+    .support-meta.show {
+      display: block
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin: 12px 0 6px;
+      color: var(--ink-2)
+    }
+
+    label .req {
+      color: var(--danger)
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      height: 46px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font: inherit;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    textarea {
+      height: auto;
+      padding: 10px 14px;
+      resize: vertical
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: 2px solid var(--lime);
+      outline-offset: 1px;
+      border-color: transparent
+    }
+
+    input.err,
+    textarea.err {
+      border-color: var(--danger)
+    }
+
+    input.license,
+    input.ltr-iso,
+    #confirmPhrase,
+    #ownerEmail,
+    #phoneNumber,
+    #gymCodeOut {
+      unicode-bidi: isolate;
+      direction: ltr;
+    }
+
+    input.license {
+      font-family: ui-monospace, Consolas, monospace;
+      letter-spacing: .04em;
+      text-transform: uppercase
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 5px;
+      line-height: 1.4
+    }
+
+    .field-err {
+      font-size: 11px;
+      color: var(--danger);
+      margin-top: 4px;
+      display: none
+    }
+
+    .field-err.show {
+      display: block
+    }
+
+    .btn,
+    .primary,
+    .secondary,
+    .danger {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      font: inherit;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-family: var(--font);
+    }
+
+    .btn:disabled,
+    .primary:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    .primary {
+      background: var(--lime);
+      color: var(--ink)
+    }
+
+    .primary:hover:not(:disabled) {
+      background: var(--lime-deep);
+      color: #fff
+    }
+
+    .secondary {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      height: 44px;
+      font-size: 14px;
+      font-weight: 700
+    }
+
+    .danger {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid #FECACA
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .row .btn,
+    .row .primary,
+    .row .secondary,
+    .row .danger {
+      flex: 1;
+      margin-top: 0
+    }
+
+    .choice {
+      display: block;
+      width: 100%;
+      text-align: start;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: 14px;
+      padding: 16px;
+      margin: 0 0 10px;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s;
+      font: inherit;
+      color: inherit;
+    }
+
+    .choice:hover {
+      border-color: var(--lime);
+      box-shadow: 0 0 0 3px rgba(122, 204, 0, .12)
+    }
+
+    .choice h2 {
+      font-size: 16px;
+      margin: 0 0 4px;
+      font-weight: 800
+    }
+
+    .choice p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.45
+    }
+
+    .choice.danger-choice {
+      border-color: #FECACA;
+      background: #FFFCFC
+    }
+
+    .choice .tag {
+      display: inline-flex;
+      margin-bottom: 8px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: var(--lime-wash);
+      color: #3F6B00;
+    }
+
+    [dir="rtl"] .choice .tag {
+      letter-spacing: 0
+    }
+
+    .choice.danger-choice .tag {
+      background: #FEE2E2;
+      color: #991B1B
+    }
+
+    .alert {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      display: none
+    }
+
+    .alert.show {
+      display: block
+    }
+
+    .alert.ok {
+      background: var(--ok-bg);
+      color: var(--ok)
+    }
+
+    .alert.warn {
+      background: var(--warn-bg);
+      color: var(--warn)
+    }
+
+    .alert.err {
+      background: var(--danger-bg);
+      color: var(--danger)
+    }
+
+    .alert.info {
+      background: var(--info-bg);
+      color: var(--info)
+    }
+
+    .review dt,
+    .done-meta dt {
+      font-size: 11px;
+      color: var(--faint);
+      margin-top: 10px
+    }
+
+    .review dd,
+    .done-meta dd {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 2px 0 0
+    }
+
+    .gym-code {
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 18px;
+      font-weight: 800;
+      background: var(--soft);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin: 10px 0 16px;
+      text-align: center;
+      letter-spacing: .08em;
+      unicode-bidi: isolate;
+      direction: ltr;
+    }
+
+    .done-check {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      margin: 8px auto 14px;
+      background: var(--lime-wash);
+      color: #3F6B00;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .loading-state {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px 20px
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid var(--line);
+      border-top-color: var(--lime);
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .linkish {
+      display: inline;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      color: var(--lime-deep);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      width: auto;
+      height: auto
+    }
+
+    html[data-theme="dark"] body {
+      background:
+        radial-gradient(1000px 420px at 10% -10%, rgba(122, 204, 0, .12), transparent 55%),
+        linear-gradient(180deg, #121412 0%, #151716 100%);
+      color: #E8EBE6;
+    }
+
+    html[data-theme="dark"] .frame {
+      background: #1C201D;
+      border-color: #2E342F
+    }
+
+    html[data-theme="dark"] .brand .name {
+      color: var(--lime)
+    }
+
+    html[data-theme="dark"] .lang-btn,
+    html[data-theme="dark"] .progress span,
+    html[data-theme="dark"] .identity,
+    html[data-theme="dark"] .gym-code {
+      background: #222722;
+      border-color: #2E342F;
+      color: #C9CFC6;
+    }
+
+    html[data-theme="dark"] input,
+    html[data-theme="dark"] textarea {
+      background: #1C201D;
+      border-color: #2E342F;
+      color: #E8EBE6
+    }
+
+    html[data-theme="dark"] .choice {
+      background: #1C201D;
+      border-color: #2E342F;
+      color: #E8EBE6
+    }
+
+    html[data-theme="dark"] .secondary {
+      border-color: #2E342F;
+      color: #E8EBE6
+    }
+
+    html[data-theme="dark"] .sub,
+    .hero p,
+    .hint,
+    .support-meta {
+      color: #A3A9A0
+    }
+  </style>
+</head>
+
+<body>
+  <div class="frame" id="card">
+    <div class="topbar">
+      <div class="brand">
+        <img src="/shared/hymotion-mark.png" alt="HyMotion" width="36" height="36">
+        <span class="name">HyMotion</span>
+      </div>
+      <button type="button" class="lang-btn" id="langToggle"><span id="langLabel">EN English</span></button>
+    </div>
+    <div class="loading-state" id="loadingState">
+      <div class="spinner" aria-hidden="true"></div>
+      <span data-setup-i18n="loading">Checking this PC…</span>
+    </div>
+    <div id="wizard" class="hidden">
+      <div class="progress" id="stepper" hidden></div>
+      <div class="panel">
+        <div class="identity hidden" id="gymIdentity"></div>
+        <p class="support-meta" id="runtimeDb"></p>
+
+        <div id="panelWelcome" class="hidden">
+          <div class="hero">
+            <div class="mark-lg"><img src="/shared/hymotion-mark.png" alt=""></div>
+            <div class="kicker" data-setup-i18n="welcomeKicker">Local desk</div>
+            <h1 data-setup-i18n="welcomeTitle">Welcome to HyMotion</h1>
+            <p data-setup-i18n="welcomeBody">Set up your gym desk in a few clear steps. Your members and sales stay on
+              this PC.</p>
+            <button type="button" class="primary" id="btnWelcomeNext"
+              style="max-width:280px;margin-left:auto;margin-right:auto" data-setup-i18n="welcomeCta">Get
+              started</button>
+            <p class="hint" style="margin-top:14px" data-setup-i18n="welcomeHelp">Already set up? You will sign in after
+              setup finishes.</p>
+          </div>
+        </div>
+
+        <div id="panelChooser" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="chooserTitle">How should we continue?</h1>
+          <p class="sub" id="chooserSub"></p>
+          <button type="button" class="choice" id="btnExisting">
+            <span class="tag" data-setup-i18n="existingTag">Safe recovery</span>
+            <h2 data-setup-i18n="existingTitle">Existing Gym</h2>
+            <p data-setup-i18n="existingBody">Keep this gym’s members, sales, attendance, and shifts. Restore Owner
+              access on the same gym.</p>
+          </button>
+          <button type="button" class="choice danger-choice" id="btnNewFromChooser">
+            <span class="tag" data-setup-i18n="newTag">Destructive</span>
+            <h2 data-setup-i18n="newTitle">New Gym</h2>
+            <p data-setup-i18n="newBody">Retire the current gym and create a new empty gym. This is a destructive reset
+              — not ordinary setup.</p>
+          </button>
+          <p class="hint" id="chooserRecoveryHint"></p>
+          <button type="button" class="secondary hidden" id="btnChooserLogin" data-setup-i18n="signIn">Continue to sign
+            in</button>
+          <button type="button" class="secondary" id="btnChooserBack" data-setup-i18n="back">Back</button>
+        </div>
+
+        <div id="panelConfirm" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="confirmTitle">Retire this gym and start a new one</h1>
+          <p class="sub" data-setup-i18n="confirmSub">Members, sales, attendance, and shifts will not appear in the new
+            gym. A backup is required first.</p>
+          <div class="alert warn show" data-setup-i18n="confirmWarn">Type the English confirmation phrase exactly. This
+            cannot be undone from this screen.</div>
+          <label for="confirmPhrase"><span data-setup-i18n="confirmLabel">Type START NEW GYM to continue</span> <span
+              class="req">*</span></label>
+          <input id="confirmPhrase" class="ltr-iso" autocomplete="off" spellcheck="false">
+          <div class="field-err" id="err-confirmPhrase" data-setup-i18n="confirmErr">Type START NEW GYM exactly to
+            confirm.</div>
+          <div class="row">
+            <button type="button" class="secondary" id="btnConfirmBack" data-setup-i18n="back">Back</button>
+            <button type="button" class="danger" id="btnConfirmNext" data-setup-i18n="confirmNext">I understand —
+              continue</button>
+          </div>
+        </div>
+
+        <div id="panelBackup" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="backupTitle">Back up the current gym</h1>
+          <p class="sub" data-setup-i18n="backupSub">A usable local backup must succeed before anything is replaced. If
+            this fails, the current gym stays unchanged.</p>
+          <p class="hint" data-setup-i18n="backupHonesty">This backup is stored on this PC. Copy to USB with HyMotion
+            Backup if you need an off-box copy.</p>
+          <p class="hint" id="backupLocation"></p>
+          <button type="button" class="primary" id="btnRunBackup" data-setup-i18n="backupRun">Create backup</button>
+          <div class="row">
+            <button type="button" class="secondary" id="btnBackupBack" data-setup-i18n="back">Back</button>
+            <button type="button" class="primary" id="btnBackupNext" data-setup-i18n="continue"
+              disabled>Continue</button>
+          </div>
+        </div>
+
+        <div id="panelLicense" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="licenseTitle">Enter your license</h1>
+          <p class="sub" id="licenseSub"></p>
+          <div class="alert warn" id="licenseState"></div>
+          <label for="licenseKey"><span data-setup-i18n="licenseKey">License key</span> <span
+              class="req">*</span></label>
+          <input id="licenseKey" class="license" autocomplete="off" placeholder="HY-LCL-XXXXX-XXXXX" spellcheck="false">
+          <div class="hint" data-setup-i18n="licenseHint">From your HyMotion purchase confirmation.</div>
+          <div class="field-err" id="err-licenseKey" data-setup-i18n="licenseErr">A valid license key is required.</div>
+          <div class="row">
+            <button type="button" class="secondary" id="btnLicenseBack" data-setup-i18n="back">Back</button>
+            <button type="button" class="primary" id="btnLicenseNext" data-setup-i18n="licenseNext">Validate
+              license</button>
+          </div>
+        </div>
+
+        <div id="panelGym" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="gymTitle">Name your gym</h1>
+          <p class="sub" data-setup-i18n="gymSub">This is the name staff will see on the desk.</p>
+          <label for="gymName"><span data-setup-i18n="gymName">Gym name</span> <span class="req">*</span></label>
+          <input id="gymName" autocomplete="organization">
+          <div class="field-err" id="err-gymName" data-setup-i18n="gymNameErr">Gym name is required.</div>
+          <label for="phoneNumber" data-setup-i18n="phone">Phone (optional)</label>
+          <input id="phoneNumber" class="ltr-iso" autocomplete="tel">
+          <div class="row">
+            <button type="button" class="secondary" id="btnGymBack" data-setup-i18n="back">Back</button>
+            <button type="button" class="primary" id="btnGymNext" data-setup-i18n="continue">Continue</button>
+          </div>
+        </div>
+
+        <div id="panelOwner" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="ownerTitle">Create the Owner account</h1>
+          <p class="sub" id="ownerSub"></p>
+          <label for="ownerFullName"><span data-setup-i18n="ownerName">Full name</span> <span
+              class="req">*</span></label>
+          <input id="ownerFullName" autocomplete="name">
+          <div class="field-err" id="err-ownerFullName" data-setup-i18n="ownerNameErr">Owner name is required.</div>
+          <label for="ownerEmail"><span data-setup-i18n="ownerEmail">Email</span> <span class="req">*</span></label>
+          <input id="ownerEmail" type="email" autocomplete="email">
+          <div class="field-err" id="err-ownerEmail" data-setup-i18n="ownerEmailErr">A valid email is required.</div>
+          <label for="ownerPassword"><span data-setup-i18n="ownerPassword">Password</span> <span
+              class="req">*</span></label>
+          <input id="ownerPassword" type="password" autocomplete="new-password" minlength="8">
+          <div class="hint" data-setup-i18n="ownerPasswordHint">At least 8 characters.</div>
+          <div class="field-err" id="err-ownerPassword" data-setup-i18n="ownerPasswordErr">Password must be at least 8
+            characters.</div>
+          <label for="ownerPasswordConfirm"><span data-setup-i18n="ownerPasswordConfirm">Confirm password</span> <span
+              class="req">*</span></label>
+          <input id="ownerPasswordConfirm" type="password" autocomplete="new-password">
+          <div class="field-err" id="err-ownerPasswordConfirm" data-setup-i18n="ownerPasswordConfirmErr">Passwords do
+            not match.</div>
+          <div class="row">
+            <button type="button" class="secondary" id="btnOwnerBack" data-setup-i18n="back">Back</button>
+            <button type="button" class="primary" id="btnOwnerNext" data-setup-i18n="continue">Continue</button>
+          </div>
+        </div>
+
+        <div id="panelReview" class="hidden">
+          <h1 class="panel-title" data-setup-i18n="reviewTitle">Review and finish</h1>
+          <p class="sub" id="reviewSub"></p>
+          <dl class="review" id="reviewDl"></dl>
+          <div class="row">
+            <button type="button" class="secondary" id="btnReviewBack" data-setup-i18n="back">Back</button>
+            <button type="button" class="primary" id="btnComplete" data-setup-i18n="complete">Complete setup</button>
+          </div>
+        </div>
+
+        <div id="panelDone" class="hidden">
+          <div class="done-check" aria-hidden="true">✓</div>
+          <h1 class="panel-title" id="doneTitle" style="text-align:center"></h1>
+          <p class="sub" id="doneSub" style="text-align:center"></p>
+          <dl class="done-meta" id="doneMeta"></dl>
+          <label data-setup-i18n="gymCode" style="text-align:center">Gym code</label>
+          <div class="gym-code" id="gymCodeOut"></div>
+          <button type="button" class="primary" id="btnGoLogin" data-setup-i18n="enterDesk">Enter the desk</button>
+        </div>
+
+        <p class="alert" id="alert" role="alert" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var CONFIRM = 'START NEW GYM';
+      var supportMode = false;
+      try { supportMode = /(?:\?|&)support=1(?:&|$)/.test(location.search); } catch (e) { }
+
+      var translations = {
+        en: {
+          loading: 'Checking this PC…',
+          welcomeKicker: 'Local desk',
+          welcomeTitle: 'Welcome to HyMotion',
+          welcomeBody: 'Set up your gym desk in a few clear steps. Your members and sales stay on this PC.',
+          welcomeCta: 'Get started',
+          welcomeHelp: 'Already set up? You will sign in after setup finishes.',
+          chooserTitle: 'How should we continue?',
+          chooserHasGym: 'This PC already has Gym {name} ({code}). Missing Owner is restored with Existing Gym — not New Gym.',
+          chooserCompleted: 'Gym {name} ({code}) is live on this PC. New Gym retires it and creates a new empty gym. Sign in as Owner first.',
+          existingTag: 'Safe recovery',
+          existingTitle: 'Existing Gym',
+          existingBody: 'Keep this gym’s members, sales, attendance, and shifts. Restore Owner access on the same gym.',
+          newTag: 'Destructive',
+          newTitle: 'New Gym',
+          newBody: 'Retire the current gym and create a new empty gym. This is a destructive reset — not ordinary setup.',
+          recoveryHintMissing: 'Forgot the Owner password but the Owner account still exists? Use Forgot password on the sign-in page after Owner access is restored.',
+          recoveryHintCompleted: 'Only need a new Owner password? Use Forgot password on the sign-in page — not New Gym.',
+          signIn: 'Continue to sign in',
+          enterDesk: 'Enter the desk',
+          confirmTitle: 'Retire this gym and start a new one',
+          confirmSub: 'Members, sales, attendance, and shifts will not appear in the new gym. A backup is required first.',
+          confirmWarn: 'Type the English confirmation phrase exactly. This cannot be undone from this screen.',
+          confirmLabel: 'Type START NEW GYM to continue',
+          confirmErr: 'Type START NEW GYM exactly to confirm.',
+          confirmNext: 'I understand — continue',
+          backupTitle: 'Back up the current gym',
+          backupSub: 'A usable local backup must succeed before anything is replaced. If this fails, the current gym stays unchanged.',
+          backupHonesty: 'This backup is stored on this PC. Copy to USB with HyMotion Backup if you need an off-box copy.',
+          backupRun: 'Create backup',
+          backupCreating: 'Creating backup…',
+          backupOk: 'Backup created. You can continue.',
+          backupFail: 'A safe backup could not be created. The existing gym has not been changed.',
+          licenseTitle: 'Enter your license',
+          licenseKey: 'License key',
+          licenseHint: 'From your HyMotion purchase confirmation.',
+          licenseErr: 'A valid license key is required.',
+          licenseNext: 'Validate license',
+          licenseValidating: 'Checking license…',
+          licenseOk: 'License looks good. You can continue.',
+          licenseInvalid: 'This license key is not valid for this PC. Check the key and try again.',
+          licenseNetwork: 'We could not reach HyMotion to check this key. A new gym needs internet. An existing gym may continue if this key matches the license already on this PC.',
+          licenseExpired: 'This license is past its offline validity period. Connect to the internet or contact HyMotion support.',
+          licenseExisting: 'We check your license now. Your PC is fully unlocked only when setup finishes — even if this PC was licensed before.',
+          licenseNew: 'A license key is required. We check it now; your PC is fully unlocked only when the gym is created.',
+          gymTitle: 'Name your gym',
+          gymSub: 'This is the name staff will see on the desk.',
+          gymName: 'Gym name',
+          gymNameErr: 'Gym name is required.',
+          phone: 'Phone (optional)',
+          ownerTitle: 'Create the Owner account',
+          ownerExisting: 'This Owner belongs to the existing gym. Business data stays.',
+          ownerNew: 'This Owner will manage the new gym.',
+          ownerName: 'Full name',
+          ownerNameErr: 'Owner name is required.',
+          ownerEmail: 'Email',
+          ownerEmailErr: 'A valid email is required.',
+          ownerPassword: 'Password',
+          ownerPasswordHint: 'At least 8 characters.',
+          ownerPasswordErr: 'Password must be at least 8 characters.',
+          ownerPasswordConfirm: 'Confirm password',
+          ownerPasswordConfirmErr: 'Passwords do not match.',
+          reviewTitle: 'Review and finish',
+          reviewExisting: 'Restore Owner access to the same gym.',
+          reviewNew: 'This retires the current gym and creates a new empty gym.',
+          reviewClean: 'Create this gym on this PC.',
+          complete: 'Complete setup',
+          completing: 'Finishing setup…',
+          back: 'Back',
+          continue: 'Continue',
+          gymCode: 'Gym code',
+          mode: 'Mode',
+          modeExisting: 'Existing Gym — restore Owner',
+          modeNew: 'New Gym',
+          currentGym: 'Current gym',
+          newGymName: 'New gym name',
+          newGymCode: 'New gym code',
+          oldGymCode: 'Old gym code',
+          oldGymState: 'Old gym state',
+          retired: 'Retired (soft). Data remains until restored with HyMotion Backup.',
+          backup: 'Local backup',
+          assignedLater: '(assigned after setup)',
+          ownerRequired: 'Sign in as this gym’s Owner to start a new gym on this PC.',
+          useExisting: 'This PC already has a gym. Restore the Owner with Existing Gym. Do not start a new gym.',
+          doneExistingTitle: 'Owner access restored',
+          doneExisting: 'The gym identity is unchanged. Members and sales stay.',
+          doneCleanTitle: 'Your gym is ready',
+          doneClean: 'Keep this gym code. You will need it when you sign in.',
+          doneReplaceTitle: 'New gym created',
+          doneReplace: 'The previous gym was retired. Use HyMotion Backup if you need to restore it.',
+          recovery: 'Recovery',
+          recoveryHint: 'Open HyMotion Backup and restore the backup shown above if you need the retired gym.',
+          runtime: 'Support: this setup process is using database',
+          stepLicense: 'License',
+          stepBackup: 'Backup',
+          stepConfirm: 'Confirm',
+          stepGym: 'Gym',
+          stepOwner: 'Owner',
+          stepReview: 'Review',
+          identityGym: 'Gym',
+          identityCode: 'Gym code',
+          shellFail: 'Could not load the app shell. Hard-refresh (Ctrl+Shift+R) and try again.',
+          setupFail: 'Setup failed. Please check the fields and try again.',
+          serverFail: 'Unable to reach the server. Please check the HyMotion service is running.',
+          backupLocation: 'Backup location',
+          licenseLabel: 'License',
+          validated: 'Validated',
+          validatedOffline: 'Validated offline',
+          pcHasLicense: 'This PC already has a local license'
+        },
+        ar: {
+          loading: 'جارٍ فحص هذا الجهاز…',
+          welcomeKicker: 'مكتب محلي',
+          welcomeTitle: 'مرحباً بك في HyMotion',
+          welcomeBody: 'جهّز مكتب صالتك بخطوات واضحة. الأعضاء والمبيعات تبقى على هذا الجهاز.',
+          welcomeCta: 'ابدأ',
+          welcomeHelp: 'سبق الإعداد؟ ستسجّل الدخول بعد انتهاء الإعداد.',
+          chooserTitle: 'كيف تريد المتابعة؟',
+          chooserHasGym: 'هذا الجهاز يحتوي بالفعل على الصالة {name} ({code}). المالك المفقود يُستعاد عبر «صالة قائمة» — وليس «صالة جديدة».',
+          chooserCompleted: 'الصالة {name} ({code}) تعمل على هذا الجهاز. «صالة جديدة» تُحيلها وتنشئ صالة فارغة. سجّل الدخول كمالك أولاً.',
+          existingTag: 'استعادة آمنة',
+          existingTitle: 'صالة قائمة',
+          existingBody: 'أبقِ الأعضاء والمبيعات والحضور والمناوبات. استعد وصول المالك لنفس الصالة.',
+          newTag: 'مدمّر',
+          newTitle: 'صالة جديدة',
+          newBody: 'تُحيل الصالة الحالية وتنشئ صالة فارغة. إعادة تعيين مدمّرة — ليست إعداداً عادياً.',
+          recoveryHintMissing: 'نسيت كلمة مرور المالك والحساب ما زال موجوداً؟ استخدم «نسيت كلمة المرور» في صفحة الدخول بعد استعادة وصول المالك.',
+          recoveryHintCompleted: 'تحتاج كلمة مرور مالك جديدة فقط؟ استخدم «نسيت كلمة المرور» في صفحة الدخول — وليس صالة جديدة.',
+          signIn: 'متابعة لتسجيل الدخول',
+          enterDesk: 'ادخل المكتب',
+          confirmTitle: 'إحالة هذه الصالة وبدء صالة جديدة',
+          confirmSub: 'الأعضاء والمبيعات والحضور والمناوبات لن تظهر في الصالة الجديدة. النسخ الاحتياطي مطلوب أولاً.',
+          confirmWarn: 'اكتب عبارة التأكيد الإنجليزية حرفياً. لا يمكن التراجع من هذه الشاشة.',
+          confirmLabel: 'اكتب START NEW GYM للمتابعة',
+          confirmErr: 'اكتب START NEW GYM حرفياً للتأكيد.',
+          confirmNext: 'أفهم — متابعة',
+          backupTitle: 'نسخ الصالة الحالية احتياطياً',
+          backupSub: 'يجب أن ينجح نسخ محلي صالح قبل أي استبدال. إذا فشل، تبقى الصالة كما هي.',
+          backupHonesty: 'النسخة على هذا الجهاز. انسخ إلى USB عبر HyMotion Backup إذا احتجت نسخة خارج الجهاز.',
+          backupRun: 'إنشاء نسخة احتياطية',
+          backupCreating: 'جارٍ إنشاء النسخة…',
+          backupOk: 'تم إنشاء النسخة. يمكنك المتابعة.',
+          backupFail: 'تعذر إنشاء نسخة آمنة. لم تُغيَّر الصالة الحالية.',
+          licenseTitle: 'أدخل رخصتك',
+          licenseKey: 'مفتاح الرخصة',
+          licenseHint: 'من تأكيد شراء HyMotion.',
+          licenseErr: 'مفتاح رخصة صالح مطلوب.',
+          licenseNext: 'التحقق من الرخصة',
+          licenseValidating: 'جارٍ التحقق…',
+          licenseOk: 'الرخصة تبدو صالحة. يمكنك المتابعة.',
+          licenseInvalid: 'مفتاح الرخصة غير صالح لهذا الجهاز. راجع المفتاح وحاول مجدداً.',
+          licenseNetwork: 'تعذر الوصول إلى HyMotion للتحقق. الصالة الجديدة تحتاج إنترنت. الصالة القائمة قد تكمل إذا طابق المفتاح الرخصة على هذا الجهاز.',
+          licenseExpired: 'انتهت صلاحية الرخصة دون اتصال. اتصل بالإنترنت أو بدعم HyMotion.',
+          licenseExisting: 'نتحقق من الرخصة الآن. يُفتح الجهاز بالكامل عند اكتمال الإعداد فقط — حتى لو رُخّص سابقاً.',
+          licenseNew: 'مفتاح الرخصة مطلوب. نتحقق الآن؛ يُفتح الجهاز بالكامل عند إنشاء الصالة فقط.',
+          gymTitle: 'سمِّ صالتك',
+          gymSub: 'الاسم الذي يراه الموظفون على المكتب.',
+          gymName: 'اسم الصالة',
+          gymNameErr: 'اسم الصالة مطلوب.',
+          phone: 'الهاتف (اختياري)',
+          ownerTitle: 'إنشاء حساب المالك',
+          ownerExisting: 'هذا المالك ينتمي للصالة الحالية. بيانات العمل تبقى.',
+          ownerNew: 'هذا المالك سيدير الصالة الجديدة.',
+          ownerName: 'الاسم الكامل',
+          ownerNameErr: 'اسم المالك مطلوب.',
+          ownerEmail: 'البريد',
+          ownerEmailErr: 'بريد صالح مطلوب.',
+          ownerPassword: 'كلمة المرور',
+          ownerPasswordHint: '٨ أحرف على الأقل.',
+          ownerPasswordErr: 'كلمة المرور ٨ أحرف على الأقل.',
+          ownerPasswordConfirm: 'تأكيد كلمة المرور',
+          ownerPasswordConfirmErr: 'كلمتا المرور غير متطابقتين.',
+          reviewTitle: 'راجع وأتمم',
+          reviewExisting: 'استعد وصول المالك لنفس الصالة.',
+          reviewNew: 'هذا يُحيل الصالة الحالية وينشئ صالة فارغة.',
+          reviewClean: 'أنشئ هذه الصالة على هذا الجهاز.',
+          complete: 'إتمام الإعداد',
+          completing: 'جارٍ إنهاء الإعداد…',
+          back: 'رجوع',
+          continue: 'متابعة',
+          gymCode: 'رمز الصالة',
+          mode: 'الوضع',
+          modeExisting: 'صالة قائمة — استعادة المالك',
+          modeNew: 'صالة جديدة',
+          currentGym: 'الصالة الحالية',
+          newGymName: 'اسم الصالة الجديدة',
+          newGymCode: 'رمز الصالة الجديدة',
+          oldGymCode: 'رمز الصالة القديمة',
+          oldGymState: 'حالة الصالة القديمة',
+          retired: 'مُحالة (حذف ناعم). البيانات تبقى حتى الاستعادة عبر HyMotion Backup.',
+          backup: 'نسخة محلية',
+          assignedLater: '(يُعيَّن بعد الإعداد)',
+          ownerRequired: 'سجّل الدخول كمالك هذه الصالة لبدء صالة جديدة على هذا الجهاز.',
+          useExisting: 'هذا الجهاز يحتوي على صالة. استعد المالك عبر «صالة قائمة». لا تبدأ صالة جديدة.',
+          doneExistingTitle: 'تم استعادة وصول المالك',
+          doneExisting: 'هوية الصالة لم تتغير. الأعضاء والمبيعات تبقى.',
+          doneCleanTitle: 'صالتك جاهزة',
+          doneClean: 'احتفظ برمز الصالة. ستحتاجه عند تسجيل الدخول.',
+          doneReplaceTitle: 'تم إنشاء صالة جديدة',
+          doneReplace: 'أُحيلت الصالة السابقة. استخدم HyMotion Backup إذا احتجت استعادتها.',
+          recovery: 'الاستعادة',
+          recoveryHint: 'افتح HyMotion Backup واستعد النسخة أعلاه إذا احتجت الصالة المُحالة.',
+          runtime: 'للدعم: عملية الإعداد تستخدم قاعدة البيانات',
+          stepLicense: 'الرخصة',
+          stepBackup: 'النسخ',
+          stepConfirm: 'تأكيد',
+          stepGym: 'الصالة',
+          stepOwner: 'المالك',
+          stepReview: 'المراجعة',
+          identityGym: 'الصالة',
+          identityCode: 'رمز الصالة',
+          shellFail: 'تعذر تحميل واجهة التطبيق. حدّث الصفحة بقوة (Ctrl+Shift+R) ثم أعد المحاولة.',
+          setupFail: 'فشل الإعداد. راجع الحقول ثم أعد المحاولة.',
+          serverFail: 'تعذر الوصول إلى الخادم. تحقق أن خدمة HyMotion تعمل.',
+          backupLocation: 'موقع النسخة',
+          licenseLabel: 'الرخصة',
+          validated: 'تم التحقق',
+          validatedOffline: 'تم التحقق دون اتصال',
+          pcHasLicense: 'هذا الجهاز لديه رخصة محلية'
+        }
+      };
+
+      var currentLang = 'en';
+      var loadingState = document.getElementById('loadingState');
+      var wizard = document.getElementById('wizard');
+      var alertEl = document.getElementById('alert');
+      var status = null;
+      var mode = null;
+      var step = 'welcome';
+      var backupInfo = null;
+      var licenseInfo = null;
+      var oldGym = null;
+      var lastDone = null;
+
+      function t(key) {
+        var pack = translations[currentLang] || translations.en;
+        return pack[key] || translations.en[key] || key;
+      }
+      function getApi() { return window.GfpApi || null; }
+      function hasOwnerToken() {
+        try { return !!(getApi() && getApi().tokens && getApi().tokens.getAccess()); }
+        catch (e) { return false; }
+      }
+      function applyChrome() {
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        document.getElementById('langLabel').textContent = currentLang === 'ar' ? 'AR عربي' : 'EN English';
+        document.querySelectorAll('[data-setup-i18n]').forEach(function (el) {
+          var key = el.getAttribute('data-setup-i18n');
+          if (translations.en[key] !== undefined) el.textContent = t(key);
+        });
+        try {
+          if (window.GfpI18n && typeof window.GfpI18n.setLocale === 'function') {
+            if (window.GfpI18n.getLocale() !== currentLang) window.GfpI18n.setLocale(currentLang);
+          } else {
+            localStorage.setItem('gfp_locale', currentLang);
+          }
+        } catch (e) { /* ignore */ }
+      }
+
+      function showAlert(text, kind) {
+        alertEl.textContent = text || '';
+        alertEl.className = 'alert' + (text ? ' show ' + (kind || 'err') : '');
+      }
+
+      function clearErrors() {
+        wizard.querySelectorAll('.field-err').forEach(function (e) { e.classList.remove('show'); });
+        wizard.querySelectorAll('input').forEach(function (i) { i.classList.remove('err'); });
+      }
+
+      function fieldError(id) {
+        var input = document.getElementById(id);
+        if (input) input.classList.add('err');
+        var err = document.getElementById('err-' + id);
+        if (err) err.classList.add('show');
+      }
+
+      function gymExists() { return !!(status && status.gymCode); }
+      function isCleanInstall() { return !gymExists(); }
+      function isReplace() { return mode === 'newGym' && gymExists(); }
+
+      function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, function (c) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+        });
+      }
+
+      function paintIdentity() {
+        var box = document.getElementById('gymIdentity');
+        var showExisting = gymExists() && step !== 'done' && step !== 'welcome' &&
+          (mode !== 'newGym' || step === 'chooser' || step === 'confirm' || step === 'backup' || step === 'license' || step === 'review');
+        if (!showExisting) {
+          box.classList.add('hidden');
+          return;
+        }
+        box.classList.remove('hidden');
+        box.innerHTML = '<strong>' + escapeHtml(t('identityGym')) + ': ' + escapeHtml(status.gymName || '') + '</strong>' +
+          escapeHtml(t('identityCode')) + ': <code>' + escapeHtml(status.gymCode) + '</code>';
+      }
+
+      function paintRuntime() {
+        var el = document.getElementById('runtimeDb');
+        if (supportMode && status && status.runtimeDatabase) {
+          el.classList.add('show');
+          el.textContent = t('runtime') + ': ' + status.runtimeDatabase;
+        } else {
+          el.classList.remove('show');
+          el.textContent = '';
+        }
+      }
+
+      function stepsForMode() {
+        if (mode === 'existingGym') return ['stepLicense', 'stepOwner', 'stepReview'];
+        if (isCleanInstall()) return ['stepLicense', 'stepGym', 'stepOwner', 'stepReview'];
+        return ['stepConfirm', 'stepBackup', 'stepLicense', 'stepGym', 'stepOwner', 'stepReview'];
+      }
+
+      function currentStepKey() {
+        if (step === 'license') return 'stepLicense';
+        if (step === 'backup') return 'stepBackup';
+        if (step === 'confirm') return 'stepConfirm';
+        if (step === 'gym') return 'stepGym';
+        if (step === 'owner') return 'stepOwner';
+        if (step === 'review') return 'stepReview';
+        return '';
+      }
+
+      function paintStepper() {
+        var el = document.getElementById('stepper');
+        if (step === 'chooser' || step === 'welcome' || step === 'done' || !mode) {
+          el.hidden = true;
+          el.innerHTML = '';
+          return;
+        }
+        el.hidden = false;
+        var keys = stepsForMode();
+        var current = currentStepKey();
+        var hit = false;
+        el.innerHTML = keys.map(function (key) {
+          var on = key === current;
+          if (on) hit = true;
+          var cls = on ? 'on' : (!hit ? 'done' : '');
+          return '<span class="' + cls + '">' + escapeHtml(t(key)) + '</span>';
+        }).join('');
+      }
+
+      function showPanel(id) {
+        ['panelWelcome', 'panelChooser', 'panelConfirm', 'panelBackup', 'panelLicense', 'panelGym', 'panelOwner', 'panelReview', 'panelDone']
+          .forEach(function (pid) { document.getElementById(pid).classList.add('hidden'); });
+        document.getElementById(id).classList.remove('hidden');
+      }
+
+      function go(next) {
+        step = next;
+        showAlert('');
+        clearErrors();
+        paintIdentity();
+        paintRuntime();
+        paintStepper();
+        if (next === 'welcome') showPanel('panelWelcome');
+        else if (next === 'chooser') { paintChooser(); showPanel('panelChooser'); }
+        else if (next === 'confirm') showPanel('panelConfirm');
+        else if (next === 'backup') showPanel('panelBackup');
+        else if (next === 'license') {
+          document.getElementById('btnLicenseBack').classList.toggle('hidden', false);
+          paintLicenseState();
+          showPanel('panelLicense');
+        }
+        else if (next === 'gym') showPanel('panelGym');
+        else if (next === 'owner') {
+          document.getElementById('ownerSub').textContent = mode === 'existingGym' ? t('ownerExisting') : t('ownerNew');
+          showPanel('panelOwner');
+        }
+        else if (next === 'review') { paintReview(); showPanel('panelReview'); }
+        else if (next === 'done') { paintDone(lastDone); showPanel('panelDone'); }
+        applyChrome();
+        if (next === 'owner') document.getElementById('ownerSub').textContent = mode === 'existingGym' ? t('ownerExisting') : t('ownerNew');
+        if (next === 'license') paintLicenseState();
+        if (next === 'review') paintReview();
+        if (next === 'done') paintDone(lastDone);
+        if (next === 'chooser') paintChooser();
+      }
+
+      function paintChooser() {
+        var name = (status && status.gymName) || '';
+        var code = (status && status.gymCode) || '';
+        var key = status && status.isCompleted ? 'chooserCompleted' : 'chooserHasGym';
+        document.getElementById('chooserSub').textContent = t(key).replace('{name}', name).replace('{code}', code);
+        document.getElementById('btnExisting').style.display = status && status.canRestoreExistingGym ? '' : 'none';
+        document.getElementById('btnNewFromChooser').style.display = status && status.canStartNewGym ? '' : 'none';
+        document.getElementById('btnChooserLogin').classList.toggle('hidden', !(status && status.requiresOwnerForNewGym && !hasOwnerToken()));
+        var hint = document.getElementById('chooserRecoveryHint');
+        if (status && status.ownerMissing) hint.textContent = t('recoveryHintMissing');
+        else if (status && status.isCompleted) hint.textContent = t('recoveryHintCompleted');
+        else hint.textContent = '';
+      }
+
+      function paintLicenseState() {
+        var banner = document.getElementById('licenseState');
+        var info = status && status.license;
+        var state = info && info.state;
+        var parts = [];
+        if (state === 'offline_valid') parts.push(t('pcHasLicense') + (info.licenseKeyMasked ? ' (' + info.licenseKeyMasked + ')' : ''));
+        else if (state === 'expired') parts.push(t('licenseExpired'));
+        else if (state === 'invalid_license') parts.push(t('licenseInvalid'));
+        else if (state === 'not_activated') parts.push(currentLang === 'ar' ? 'هذا التثبيت غير مفعّل بعد.' : 'This installation is not activated yet.');
+        else if (state === 'not_registered') parts.push(currentLang === 'ar' ? 'هذا التثبيت غير مسجّل لرخصة بعد.' : 'This installation is not registered for a license yet.');
+        banner.textContent = parts.join(' ');
+        banner.className = 'alert' + (parts.length ? ' show warn' : '');
+        document.getElementById('licenseSub').textContent = mode === 'existingGym' ? t('licenseExisting') : t('licenseNew');
+      }
+
+      function friendlyLicenseMessage(data) {
+        var state = (data && data.state) || '';
+        if (state === 'server_unavailable') return t('licenseNetwork');
+        if (state === 'expired') return t('licenseExpired');
+        if (state === 'invalid_license' || state === 'not_activated' || state === 'not_registered') return t('licenseInvalid');
+        var msg = (data && data.message) || '';
+        if (!msg || /server_unavailable|invalid_license|not_activated|not_registered|expired/i.test(msg)) {
+          if (/server_unavailable/i.test(msg)) return t('licenseNetwork');
+          return t('licenseInvalid');
+        }
+        return msg;
+      }
+
+      function paintReview() {
+        document.getElementById('reviewSub').textContent = mode === 'existingGym' ? t('reviewExisting') : (isReplace() ? t('reviewNew') : t('reviewClean'));
+        var gymName = mode === 'existingGym' ? (status.gymName || '') : document.getElementById('gymName').value.trim();
+        var rows = [[t('mode'), mode === 'existingGym' ? t('modeExisting') : t('modeNew')]];
+        if (isReplace()) {
+          rows.push([t('currentGym'), (status.gymName || '') + ' · ' + (status.gymCode || '')]);
+          rows.push([t('newGymName'), gymName]);
+          rows.push([t('newGymCode'), t('assignedLater')]);
+        } else {
+          rows.push([t('identityGym'), gymName]);
+          rows.push([t('gymCode'), mode === 'existingGym' ? (status.gymCode || '') : t('assignedLater')]);
+        }
+        if (backupInfo && backupInfo.backupId) {
+          rows.splice(1, 0, [t('backup'), backupInfo.backupId + (backupInfo.backupLocation ? ' — ' + backupInfo.backupLocation : '')]);
+        }
+        rows.push([t('licenseLabel'), licenseInfo && licenseInfo.state === 'offline_valid' ? t('validatedOffline') : t('validated')]);
+        rows.push([t('ownerName'), document.getElementById('ownerFullName').value.trim()]);
+        rows.push([t('ownerEmail'), document.getElementById('ownerEmail').value.trim()]);
+        document.getElementById('reviewDl').innerHTML = rows.map(function (r) {
+          return '<dt>' + escapeHtml(r[0]) + '</dt><dd>' + escapeHtml(r[1]) + '</dd>';
+        }).join('');
+      }
+
+      function paintDone(result) {
+        var data = result || {};
+        var replacing = isReplace();
+        document.getElementById('doneTitle').textContent = mode === 'existingGym' ? t('doneExistingTitle') : (replacing ? t('doneReplaceTitle') : t('doneCleanTitle'));
+        document.getElementById('doneSub').textContent = mode === 'existingGym' ? t('doneExisting') : (replacing ? t('doneReplace') : t('doneClean'));
+        var rows = [];
+        if (replacing && oldGym) {
+          rows.push([t('oldGymCode'), oldGym.code || '']);
+          rows.push([t('oldGymState'), t('retired')]);
+        }
+        rows.push([t('newGymCode'), data.gymCode || document.getElementById('gymCodeOut').textContent || '']);
+        if (data.backupId || (backupInfo && backupInfo.backupId)) {
+          rows.push([t('backup'), (data.backupId || backupInfo.backupId) + (data.backupLocation || (backupInfo && backupInfo.backupLocation) ? ' — ' + (data.backupLocation || backupInfo.backupLocation) : '')]);
+        }
+        if (replacing) rows.push([t('recovery'), t('recoveryHint')]);
+        document.getElementById('doneMeta').innerHTML = rows.map(function (r) {
+          return '<dt>' + escapeHtml(r[0]) + '</dt><dd>' + escapeHtml(r[1]) + '</dd>';
+        }).join('');
+      }
+
+      function ownerValid() {
+        clearErrors();
+        var name = document.getElementById('ownerFullName').value.trim();
+        var email = document.getElementById('ownerEmail').value.trim();
+        var password = document.getElementById('ownerPassword').value;
+        var confirm = document.getElementById('ownerPasswordConfirm').value;
+        var ok = true;
+        if (!name) { fieldError('ownerFullName'); ok = false; }
+        if (!email || email.indexOf('@') === -1) { fieldError('ownerEmail'); ok = false; }
+        if (!password || password.length < 8) { fieldError('ownerPassword'); ok = false; }
+        if (password !== confirm) { fieldError('ownerPasswordConfirm'); ok = false; }
+        return ok;
+      }
+
+      async function checkStatus() {
+        try {
+          var Gfp = getApi();
+          if (!Gfp) {
+            loadingState.textContent = t('shellFail');
+            return;
+          }
+          var r = await Gfp.get('/local-setup/status', { auth: false });
+          if (!r.ok) {
+            loadingState.textContent = t('serverFail');
+            showAlert((r.error && r.error.message) || t('serverFail'));
+            return;
+          }
+          status = r.data || {};
+          oldGym = { name: status.gymName || '', code: status.gymCode || '' };
+          loadingState.style.display = 'none';
+          wizard.classList.remove('hidden');
+          document.getElementById('backupLocation').textContent = '';
+          document.getElementById('btnBackupNext').disabled = true;
+          if (isCleanInstall()) mode = 'newGym';
+          go('welcome');
+        } catch (e) {
+          loadingState.textContent = t('serverFail');
+          showAlert(t('serverFail'));
+        }
+      }
+
+      document.getElementById('langToggle').addEventListener('click', function () {
+        currentLang = currentLang === 'en' ? 'ar' : 'en';
+        applyChrome();
+        if (step === 'chooser') paintChooser();
+        else if (step === 'license') paintLicenseState();
+        else if (step === 'review') paintReview();
+        else if (step === 'done') paintDone();
+        else if (step === 'owner') document.getElementById('ownerSub').textContent = mode === 'existingGym' ? t('ownerExisting') : t('ownerNew');
+        paintIdentity();
+        paintRuntime();
+        paintStepper();
+      });
+      window.addEventListener('gfp:locale', function () {
+        var loc = 'en';
+        try {
+          loc = (window.GfpI18n && window.GfpI18n.getLocale) ? window.GfpI18n.getLocale() : (localStorage.getItem('gfp_locale') || 'en');
+        } catch (e) { }
+        if (loc !== currentLang) {
+          currentLang = loc === 'ar' ? 'ar' : 'en';
+          applyChrome();
+        }
+      });
+
+      document.getElementById('btnWelcomeNext').addEventListener('click', function () {
+        if (isCleanInstall()) {
+          mode = 'newGym';
+          go('license');
+        } else {
+          go('chooser');
+        }
+      });
+      document.getElementById('btnChooserBack').addEventListener('click', function () { go('welcome'); });
+      document.getElementById('btnExisting').addEventListener('click', function () {
+        mode = 'existingGym';
+        backupInfo = null;
+        go('license');
+      });
+      document.getElementById('btnNewFromChooser').addEventListener('click', function () {
+        if (status && status.requiresOwnerForNewGym && !hasOwnerToken()) {
+          showAlert(t('ownerRequired'));
+          return;
+        }
+        mode = 'newGym';
+        backupInfo = null;
+        document.getElementById('btnBackupNext').disabled = true;
+        go('confirm');
+      });
+      document.getElementById('btnChooserLogin').addEventListener('click', function () {
+        window.location.href = '/auth/login/';
+      });
+      document.getElementById('btnConfirmBack').addEventListener('click', function () { go('chooser'); });
+      document.getElementById('btnConfirmNext').addEventListener('click', function () {
+        clearErrors();
+        if (document.getElementById('confirmPhrase').value.trim() !== CONFIRM) {
+          fieldError('confirmPhrase');
+          showAlert(t('confirmErr'));
+          return;
+        }
+        go('backup');
+      });
+      document.getElementById('btnBackupBack').addEventListener('click', function () { go('confirm'); });
+      document.getElementById('btnRunBackup').addEventListener('click', async function () {
+        var Gfp = getApi();
+        var btn = document.getElementById('btnRunBackup');
+        btn.disabled = true;
+        btn.textContent = t('backupCreating');
+        showAlert('');
+        try {
+          var r = await Gfp.post('/local-setup/prepare-backup', {}, { auth: false });
+          if (r.ok && r.data && r.data.success) {
+            backupInfo = r.data;
+            document.getElementById('backupLocation').textContent = t('backupLocation') + ': ' + (r.data.backupLocation || '') + (r.data.backupId ? '  ·  ' + r.data.backupId : '');
+            document.getElementById('btnBackupNext').disabled = false;
+            showAlert(r.data.message || t('backupOk'), 'ok');
+          } else {
+            backupInfo = null;
+            document.getElementById('btnBackupNext').disabled = true;
+            showAlert((r.error && r.error.message) || (r.data && r.data.message) || t('backupFail'));
+          }
+        } catch (e) {
+          showAlert(t('backupFail'));
+        }
+        btn.disabled = false;
+        btn.textContent = t('backupRun');
+      });
+      document.getElementById('btnBackupNext').addEventListener('click', function () {
+        if (document.getElementById('btnBackupNext').disabled) return;
+        go('license');
+      });
+      document.getElementById('btnLicenseBack').addEventListener('click', function () {
+        if (isCleanInstall()) { go('welcome'); return; }
+        go(mode === 'existingGym' ? 'chooser' : 'backup');
+      });
+      document.getElementById('btnLicenseNext').addEventListener('click', async function () {
+        clearErrors();
+        var key = document.getElementById('licenseKey').value.trim();
+        if (!key) { fieldError('licenseKey'); return; }
+        var Gfp = getApi();
+        var btn = document.getElementById('btnLicenseNext');
+        btn.disabled = true;
+        btn.textContent = t('licenseValidating');
+        showAlert('');
+        try {
+          var r = await Gfp.post('/local-setup/validate-license', { mode: mode, licenseKey: key }, { auth: false });
+          var data = r.data || {};
+          if (r.ok && data.valid) {
+            licenseInfo = data;
+            showAlert(data.message || t('licenseOk'), 'ok');
+            go(mode === 'existingGym' ? 'owner' : 'gym');
+          } else {
+            licenseInfo = null;
+            fieldError('licenseKey');
+            var msg = friendlyLicenseMessage(data);
+            if (r.error && r.error.message && !data.state) msg = r.error.message;
+            var err = document.getElementById('err-licenseKey');
+            if (err) err.textContent = msg;
+            showAlert(msg);
+          }
+        } catch (e) {
+          showAlert(t('serverFail'));
+        }
+        btn.disabled = false;
+        btn.textContent = t('licenseNext');
+      });
+      document.getElementById('btnGymBack').addEventListener('click', function () { go('license'); });
+      document.getElementById('btnGymNext').addEventListener('click', function () {
+        clearErrors();
+        if (!document.getElementById('gymName').value.trim()) { fieldError('gymName'); return; }
+        go('owner');
+      });
+      document.getElementById('btnOwnerBack').addEventListener('click', function () {
+        go(mode === 'existingGym' ? 'license' : 'gym');
+      });
+      document.getElementById('btnOwnerNext').addEventListener('click', function () {
+        if (!ownerValid()) return;
+        go('review');
+      });
+      document.getElementById('btnReviewBack').addEventListener('click', function () { go('owner'); });
+      document.getElementById('btnComplete').addEventListener('click', async function () {
+        if (!ownerValid()) { go('owner'); return; }
+        var Gfp = getApi();
+        var btn = document.getElementById('btnComplete');
+        btn.disabled = true;
+        btn.textContent = t('completing');
+        showAlert('');
+        var body = {
+          mode: mode,
+          licenseKey: document.getElementById('licenseKey').value.trim(),
+          gymName: mode === 'existingGym' ? (status.gymName || document.getElementById('gymName').value.trim()) : document.getElementById('gymName').value.trim(),
+          phoneNumber: document.getElementById('phoneNumber').value.trim() || undefined,
+          ownerFullName: document.getElementById('ownerFullName').value.trim(),
+          ownerEmail: document.getElementById('ownerEmail').value.trim(),
+          ownerPassword: document.getElementById('ownerPassword').value,
+          confirmPhrase: mode === 'newGym' && gymExists() ? document.getElementById('confirmPhrase').value.trim() : undefined
+        };
+        try {
+          var sendAuth = !!(status && status.requiresOwnerForNewGym && mode === 'newGym');
+          var r = await Gfp.post('/local-setup/complete', body, { auth: sendAuth });
+          if (r.ok && r.data && r.data.isCompleted) {
+            lastDone = r.data;
+            document.getElementById('gymCodeOut').textContent = r.data.gymCode || '';
+            go('done');
+          } else {
+            var code = (r.error && r.error.code) || (r.data && r.data.error);
+            if (r.status === 401 || code === 'owner_required') showAlert(t('ownerRequired'));
+            else if (code === 'use_existing_gym') showAlert(t('useExisting'));
+            else showAlert((r.error && r.error.message) || t('setupFail'));
+          }
+        } catch (e) {
+          showAlert(t('serverFail'));
+        }
+        btn.disabled = false;
+        btn.textContent = t('complete');
+      });
+      document.getElementById('btnGoLogin').addEventListener('click', function () {
+        window.location.href = '/auth/login/';
+      });
+
+      try {
+        currentLang = (window.GfpI18n && window.GfpI18n.getLocale)
+          ? window.GfpI18n.getLocale()
+          : (localStorage.getItem('gfp_locale') || 'en');
+      } catch (e) { currentLang = 'en'; }
+      currentLang = currentLang === 'ar' ? 'ar' : 'en';
+      applyChrome();
+      checkStatus();
+    })();
+  </script>
+</body>
+
+</html>

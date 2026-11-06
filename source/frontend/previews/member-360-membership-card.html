@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Membership card (preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#22C55E;--dng500:#EF4444;
+  --wrn100:#FEF3C7;--wrn700:#92400E;
+  --frz100:#CFFAFE;--frz700:#155E75;
+  --lbg:#F4F5F3;--ls1:#FFFEFB;--ls2:#F3F5F2;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:56rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.content{padding:22px 28px 64px;max-width:1120px;margin:0 auto}
+.page-tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+.page-tabs button{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--ls3);background:#fff;font:inherit;font-size:12px;font-weight:600;color:var(--lts);cursor:pointer}
+.page-tabs button.act{border-color:#C5D6B8;color:var(--ltp);background:#F7FAF4}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.col-h{font-family:var(--fd);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ltt);margin-bottom:10px}
+.muted{color:var(--ltt);font-size:13px;line-height:1.5}
+.doc h2{font-family:var(--fd);font-size:22px;margin:8px 0 8px}
+.doc h3{font-family:var(--fd);font-size:15px;margin:20px 0 8px}
+.doc p,.doc li{font-size:14px;color:var(--lts);line-height:1.55}
+.doc ul{padding-left:18px;margin:6px 0 12px}
+.box{background:#fff;border:1px solid var(--ls3);border-radius:var(--rmd);padding:14px 16px;margin:12px 0;font-size:13px;color:var(--lts);line-height:1.5}
+.box strong{color:var(--ltp)}
+
+/* Current (broken) */
+.old{background:linear-gradient(135deg,#1A1A1A,#2A2A2A);border-radius:16px;padding:24px;min-height:280px;position:relative;overflow:hidden}
+.old::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(160,224,64,.06)}
+.old .plan{font-family:var(--fd);font-size:20px;font-weight:700;color:#F0F0F0;margin-bottom:6px}
+.old .badge{display:inline-flex;background:rgba(160,224,64,.15);color:#A0E040;font-family:var(--fd);font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;text-transform:uppercase;margin-bottom:16px}
+.old .ghost{color:#1A1A1A;font-size:12px;margin:28px 0;line-height:1.45}
+.old .bar{height:6px;background:rgba(255,255,255,.1);border-radius:999px;margin:8px 0 16px;overflow:hidden}
+.old .fill{height:100%;width:93%;background:linear-gradient(90deg,#7ACC00,#A0E040)}
+.old .dates{display:flex;justify-content:space-between;font-size:11px;color:#B0B0B0}
+.old .meta{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.old .cell{background:rgba(255,255,255,.05);border-radius:6px;padding:10px 12px}
+.old .lbl{font-size:10px;color:#6B6B6B;text-transform:uppercase;letter-spacing:.5px}
+.old .val{font-family:var(--fd);font-size:14px;font-weight:600;color:#F0F0F0}
+.old-actions{display:flex;gap:10px;margin-top:14px}
+.btn{height:38px;padding:0 16px;border-radius:10px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn.refresh{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);background:#fff}
+
+.layout-hint{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg);padding:8px 8px 16px}
+.rtabs{display:flex;gap:16px;padding:8px 12px 10px;border-bottom:1px solid var(--ls3);margin-bottom:14px}
+.rtabs span{font-size:13px;font-weight:600;color:var(--ltt)}
+.rtabs span.act{color:var(--ltp);border-bottom:2px solid var(--ltp);padding-bottom:8px;margin-bottom:-11px}
+
+/* Proposed — recessed, not another white tile */
+.card{
+  background:#EEF1EC;
+  border:none;
+  border-radius:14px;
+  padding:16px 18px 14px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.65);
+  border-left:4px solid #8F9A86;
+}
+.card.pending{border-left-color:#D97706}
+.card.active{border-left-color:#5EAF00}
+.card.frozen{border-left-color:#0E7490}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.plan{font-family:var(--fd);font-size:18px;font-weight:700}
+.sub{font-size:12px;color:var(--ltt);margin-top:3px;text-transform:capitalize}
+.st{font-family:var(--fd);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.st.pending{background:var(--wrn100);color:var(--wrn700)}
+.st.active{background:#DCFCE7;color:#166534}
+.st.frozen{background:var(--frz100);color:var(--frz700)}
+.warn{background:rgba(217,119,6,.12);color:var(--wrn700);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;margin-bottom:12px}
+.warn strong{display:block;font-family:var(--fd);margin-bottom:2px}
+.hero-num{font-family:var(--fd);font-size:26px;font-weight:700;letter-spacing:-.03em}
+.hero-lbl{font-size:13px;color:var(--lts);margin-top:2px}
+.pbar{height:5px;background:rgba(13,13,13,.08);border-radius:999px;overflow:hidden;margin:10px 0 6px}
+.pfill{height:100%;background:var(--l600);border-radius:999px}
+.pcap{display:flex;justify-content:space-between;font-size:12px;color:var(--ltt)}
+.facts{display:flex;flex-wrap:wrap;gap:6px 20px;margin:12px 0 2px;padding-top:10px;border-top:1px solid rgba(13,13,13,.08)}
+.fact{border:none;border-radius:0;padding:0;background:transparent;min-width:0}
+.fact b{display:inline;font-family:var(--fd);font-size:13px;margin:0 0 0 6px;font-weight:700}
+.fact span{font-size:12px;color:var(--ltt);text-transform:none;letter-spacing:0;font-weight:500}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.actions .btn{width:auto;background:#fff}
+.actions .btn.primary{background:var(--l500);border-color:var(--l500)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW ONLY — Member 360 membership card
+    <div class="note">Not live. Wait for Product Accept. White-on-white rejected as crowded. Proposed card is recessed sage, not another white tile, not the unreadable dark hero.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-view="cards">Cards</button>
+    <button type="button" data-view="rules">Rules</button>
+  </div>
+</div>
+
+<div class="content" id="viewCards">
+  <div class="page-tabs" id="scenarios">
+    <button type="button" class="act" data-sc="pending">Pending Fawry (live bug)</button>
+    <button type="button" data-sc="active">Active + invitations</button>
+    <button type="button" data-sc="pack">Session pack</button>
+    <button type="button" data-sc="frozen">Frozen</button>
+  </div>
+  <div class="split">
+    <div>
+      <div class="col-h">Today (errors)</div>
+      <div class="old" id="oldCard"></div>
+      <div class="old-actions" id="oldActions"></div>
+    </div>
+    <div>
+      <div class="col-h">Proposed — recessed (not white)</div>
+      <div class="layout-hint">
+        <div class="rtabs"><span class="act">Membership</span><span>Invitations</span><span>Attendance</span></div>
+        <div class="card" id="newCard"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content doc" id="viewRules" hidden>
+  <h2>Verdict</h2>
+  <p><strong>Yes — redesign this card.</strong> White-on-white was rejected as crowded (profile card + tab pane + another white tile). Do not go back to the dark hero either.</p>
+  <div class="box">
+    <strong>Surface</strong> Recessed sage panel on the white Membership tab, status color on a left rail. Facts are one quiet line, not a grid of mini-cards. Lime only on the primary action.
+  </div>
+  <div class="box">
+    <strong>What is actually wrong (from code, not taste)</strong>
+    <ul>
+      <li><strong>Progress bar is inverted.</strong> Width = days remaining ÷ duration. Day 3 of a 30-day plan fills ~93%. Staff read a full bar as “almost over.” It is not a streak. Streak belongs in the Member App if ever — not on the desk.</li>
+      <li><strong>“Waiting for payment” is nearly invisible.</strong> Banner uses <code>--wrn100</code> / <code>--wrn500</code>, which are not defined on Member 360. Invalid CSS → dark text on a dark card.</li>
+      <li><strong>Pending has no badge style.</strong> <code>.ms-st-badge.pending</code> does not exist. Gateway pending looks like a quiet active membership.</li>
+      <li><strong>Refresh status floats in empty space</strong> because the warning block collapsed. Duplicate Refresh also sits under Renew.</li>
+      <li><strong>Amount paid EGP 0 + Fawry is true</strong> for an unpaid gateway membership. The card never says that first. Dates are baked before payment, so the bar still runs.</li>
+      <li><strong>Invitation quota is not on this card.</strong> Quota is a <em>covering membership</em> fact (<code>Plan.ReferralInviteQuota</code> minus creates on that Id). The profile chip is a glance only; the Invitations tab is the work surface. The membership card should show remaining / total for this period.</li>
+    </ul>
+  </div>
+  <h3>What the redesigned card is</h3>
+  <p>The operational answer to: <em>What plan is this person on, can they train, how long is left, what is still unpaid, how many invitations does this period have?</em></p>
+  <ul>
+    <li>Recessed sage card on the white tab — not a second white tile, not a dark island.</li>
+    <li>Status in human words: Waiting for payment / Active / Frozen / Expired / Cancelled.</li>
+    <li>Pending: amber strip with contrast, one Refresh status. No period bar. No “days remaining” until covering starts.</li>
+    <li>Active: <strong>N days left</strong> as the number. Bar = time used (elapsed), labeled “used X of Y days.”</li>
+    <li>Facts: Invitations remaining / total on this covering plan. Sessions left if session pack. Paid + method. Frozen until if frozen.</li>
+    <li>Do not copy Invitation CRUD here. Do not add a second quota. Do not treat Amount Paid as “paid in full” after Collect Payment (that snapshot stays first payment).</li>
+    <li>Lime only on the primary action for the state (Refresh when pending, Renew when covering).</li>
+  </ul>
+  <h3>Do not</h3>
+  <ul>
+    <li>Gamify with a streak / fire icon.</li>
+    <li>Put Collect Payment on this card (that is member outstanding on the profile).</li>
+    <li>Show Guest Pass / Referral Code.</li>
+    <li>Use Plan.InvitationQuota (retired guest-visit column).</li>
+  </ul>
+  <p class="muted">Implemented on Member 360. Cache <code>member-detail.js?v=mscard1</code> / <code>member-detail.css?v=mscard1</code>. Collect Payment stays on the profile Financial block.</p>
+</div>
+
+<script>
+(function(){
+  var sc='pending';
+  var data={
+    pending:{
+      plan:'Family Zone', type:'Family', method:'Fawry', paid:0,
+      start:'16 Aug 2026', end:'15 Sep 2026', status:'pending',
+      daysLeft:28, used:2, total:30, usedPct:7,
+      invites:'0 · starts when paid', sessions:null, frozen:null
+    },
+    active:{
+      plan:'Family Zone', type:'Family', method:'Cash', paid:800,
+      start:'16 Aug 2026', end:'15 Sep 2026', status:'active',
+      daysLeft:28, used:2, total:30, usedPct:7,
+      invites:'2 of 3', sessions:null, frozen:null
+    },
+    pack:{
+      plan:'Session Pack 20', type:'Session pack', method:'Cash', paid:200,
+      start:'18 Aug 2026', end:'16 Nov 2026', status:'active',
+      daysLeft:90, used:0, total:90, usedPct:2,
+      invites:'0 of 0', sessions:'18 of 20', frozen:null
+    },
+    frozen:{
+      plan:'Family Zone', type:'Family', method:'Cash', paid:800,
+      start:'16 Aug 2026', end:'15 Sep 2026', status:'frozen',
+      daysLeft:28, used:2, total:30, usedPct:7,
+      invites:'2 of 3', sessions:null, frozen:'Until 25 Aug 2026'
+    }
+  };
+
+  function render(){
+    var d=data[sc];
+    var pending=d.status==='pending';
+    document.getElementById('oldCard').innerHTML=
+      '<div class="plan">'+d.plan+'</div>'+
+      '<div class="badge">'+d.type+'</div>'+
+      (pending?'<button type="button" class="btn refresh"><i class="ti ti-refresh"></i> Refresh status</button><p class="ghost"><strong>Waiting for payment</strong><br>Your membership will start as soon as payment is confirmed.</p>':'')+
+      '<div class="dates"><span>'+d.start+'</span><span>'+d.end+'</span></div>'+
+      '<div class="bar"><div class="fill"></div></div>'+
+      '<div class="meta"><div class="cell"><div class="lbl">Amount paid</div><div class="val">EGP '+d.paid+'</div></div><div class="cell"><div class="lbl">Payment</div><div class="val">'+d.method+'</div></div></div>';
+    document.getElementById('oldActions').innerHTML=
+      '<button type="button" class="btn primary"><i class="ti ti-refresh"></i> Renew</button>'+
+      (pending?'<button type="button" class="btn"><i class="ti ti-refresh"></i> Refresh</button>':'<button type="button" class="btn">Freeze</button>');
+
+    var stLabel={pending:'Waiting for payment',active:'Active',frozen:'Frozen'}[d.status];
+    var facts='<div class="fact"><span>Invitations</span><b>'+d.invites+'</b></div>'+
+      '<div class="fact"><span>Paid</span><b>EGP '+d.paid.toLocaleString()+' · '+d.method+'</b></div>'+
+      (d.sessions?'<div class="fact"><span>Sessions</span><b>'+d.sessions+'</b></div>':'')+
+      (d.frozen?'<div class="fact"><span>Hold</span><b>'+d.frozen+'</b></div>':'');
+
+    var body;
+    if(pending){
+      body='<div class="warn"><strong>Waiting for Fawry</strong>Check-in and invitations stay closed until this payment confirms. No live push — refresh after the member pays.</div>'+
+        '<div class="muted">Reserved period '+d.start+' – '+d.end+'</div>';
+    } else {
+      body='<div class="hero-num">'+d.daysLeft+' days left</div>'+
+        '<div class="hero-lbl">Ends '+d.end+'</div>'+
+        '<div class="pbar"><div class="pfill" style="width:'+d.usedPct+'%"></div></div>'+
+        '<div class="pcap"><span>Used '+d.used+' of '+d.total+' days</span><span>'+d.start+'</span></div>';
+    }
+
+    var actions=pending
+      ? '<button type="button" class="btn primary"><i class="ti ti-refresh"></i> Refresh status</button><button type="button" class="btn">Renew anyway</button>'
+      : '<button type="button" class="btn primary"><i class="ti ti-refresh"></i> Renew</button>'+(d.status==='frozen'?'<button type="button" class="btn">Unfreeze</button>':'<button type="button" class="btn">Freeze</button>');
+
+    document.getElementById('newCard').innerHTML=
+      '<div class="top"><div><div class="plan">'+d.plan+'</div><div class="sub">'+d.type+'</div></div><span class="st '+d.status+'">'+stLabel+'</span></div>'+
+      body+'<div class="facts">'+facts+'</div><div class="actions">'+actions+'</div>';
+    var card=document.getElementById('newCard');
+    card.className='card '+d.status;
+  }
+
+  document.getElementById('scenarios').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    sc=b.getAttribute('data-sc');
+    document.querySelectorAll('#scenarios button').forEach(function(x){ x.classList.toggle('act', x===b); });
+    render();
+  });
+  document.querySelectorAll('.controls button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.controls button').forEach(function(x){ x.classList.remove('act'); });
+      b.classList.add('act');
+      var v=b.getAttribute('data-view');
+      document.getElementById('viewCards').hidden=v!=='cards';
+      document.getElementById('viewRules').hidden=v!=='rules';
+    });
+  });
+  render();
+})();
+</script>
+</body>
+</html>

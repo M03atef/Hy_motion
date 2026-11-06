@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Offers & Promotions (design preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;--l300:#BEEC73;--l100:#EDFCD8;
+  --suc500:#22C55E;--suc100:#DCFCE7;--dng500:#EF4444;--dng100:#FEE2E2;
+  --warn:#B45309;--warnbg:#FEF3C7;--inf:#1E40AF;--infbg:#DBEAFE;
+  --lbg:#F3F5F2;--ls1:#FFFefb;--ls2:#F4F6F3;--ls3:#E4E8E2;
+  --ltp:#1F2420;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:18px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--fb);color:var(--ltp);min-height:100vh;
+  background:radial-gradient(1100px 520px at 6% -10%,rgba(160,224,64,.16),transparent 55%),linear-gradient(180deg,#F7F8F5,#F0F2EE)
+}
+[hidden]{display:none!important}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:48rem;line-height:1.45}
+.banner code{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:6px;font-weight:500}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;padding:20px 0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid var(--c700);margin-bottom:8px}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#fff;background:rgba(122,204,0,.15);border-right:3px solid var(--l500)}
+.sb-item.ghost{opacity:.4}
+.sb-item .old{text-decoration:line-through;opacity:.55;margin-inline-start:4px;font-size:11px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{
+  height:56px;background:rgba(255,254,251,.92);border-bottom:1px solid var(--ls3);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;backdrop-filter:blur(8px)
+}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.crumb .cur{color:var(--ltp)}
+.content{padding:20px 24px 48px;flex:1}
+.page-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700;display:flex;align-items:center;gap:10px;letter-spacing:-.02em}
+.page-title i{color:var(--l500)}
+.page-sub{font-size:13px;color:var(--ltt);margin-top:6px;max-width:42rem;line-height:1.5}
+.model-chip{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 10px;border-radius:999px;
+  background:rgba(122,204,0,.14);border:1px solid rgba(122,204,0,.28);font-size:11px;font-weight:600;color:#3f6212
+}
+.btn{height:40px;padding:0 14px;border-radius:var(--rlg);font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:1px solid transparent;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(180deg,var(--l400),var(--l500));color:var(--c900);border-color:rgba(94,175,0,.35)}
+.btn-secondary{background:var(--ls1);border-color:var(--ls3);color:var(--lts)}
+.btn-dark{background:var(--c900);color:#fff}
+.btn-ghost{background:transparent;border-color:var(--ls3);color:var(--lts)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.search{
+  flex:1;min-width:220px;height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;
+  background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rmd)
+}
+.search input{border:none;outline:none;flex:1;font:inherit;background:transparent}
+select.filter, .filter-select{
+  height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;background:var(--ls1);font:inherit;color:var(--lts)
+}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{
+  height:34px;padding:0 14px;border-radius:999px;border:1px solid var(--ls3);background:var(--ls1);
+  font:inherit;font-size:12px;font-weight:700;color:var(--ltt);cursor:pointer
+}
+.tab.act{background:var(--c900);color:#fff;border-color:var(--c900)}
+.tab .n{margin-inline-start:6px;opacity:.7}
+.table-wrap{
+  background:rgba(255,254,251,.95);border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden;box-shadow:0 8px 24px rgba(15,23,15,.04)
+}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px 16px;text-align:left;border-bottom:1px solid var(--ls3);font-size:13px;vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ltt);background:var(--ls2);font-weight:700}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(160,224,64,.05)}
+.offer-name{font-family:var(--fd);font-weight:700;font-size:14px}
+.offer-desc{font-size:12px;color:var(--ltt);margin-top:2px}
+.badge{
+  display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 10px;border-radius:999px;
+  font-size:11px;font-weight:700
+}
+.badge.act{background:var(--suc100);color:#166534}
+.badge.sched{background:var(--infbg);color:var(--inf)}
+.badge.exp{background:var(--dng100);color:#991B1B}
+.badge.draft{background:var(--ls2);color:var(--lts)}
+.badge.app{background:var(--l100);color:#3f6212}
+.badge.off{background:#F3F4F6;color:#6B7280}
+.pill{display:inline-flex;padding:3px 8px;border-radius:6px;background:var(--ls2);font-size:11px;font-weight:600;color:var(--lts);margin:2px 2px 0 0}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap}
+.row-actions button{
+  height:30px;padding:0 10px;border-radius:8px;border:1px solid var(--ls3);background:#fff;
+  font:inherit;font-size:11px;font-weight:700;color:var(--lts);cursor:pointer
+}
+.empty{
+  padding:48px 24px;text-align:center;color:var(--ltt)
+}
+.empty i{font-size:36px;color:var(--l400);display:block;margin-bottom:8px}
+.concept{
+  margin-bottom:16px;padding:14px 16px;border-radius:var(--rlg);border:1px dashed rgba(94,175,0,.45);
+  background:rgba(237,252,216,.55);display:grid;grid-template-columns:1.2fr .8fr;gap:16px
+}
+@media(max-width:900px){.concept{grid-template-columns:1fr}}
+.concept h3{font-family:var(--fd);font-size:14px;margin-bottom:8px}
+.concept pre{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.55;
+  background:var(--c900);color:#d9f99d;padding:12px;border-radius:12px;overflow:auto
+}
+.concept p{font-size:13px;color:var(--lts);line-height:1.55}
+.concept strong{color:var(--ltp)}
+
+/* Wizard */
+.wiz-shell{display:grid;grid-template-columns:240px 1fr 300px;gap:16px;align-items:start}
+@media(max-width:1100px){.wiz-shell{grid-template-columns:1fr}}
+.wiz-steps{
+  background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:14px;position:sticky;top:72px
+}
+.wiz-step{
+  display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:12px;cursor:pointer;margin-bottom:4px
+}
+.wiz-step.act{background:rgba(122,204,0,.12)}
+.wiz-step.done .num{background:var(--l500);color:var(--c900)}
+.wiz-step .num{
+  width:24px;height:24px;border-radius:50%;background:var(--ls2);border:1px solid var(--ls3);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0
+}
+.wiz-step.act .num{background:var(--c900);color:#fff;border-color:var(--c900)}
+.wiz-step .lab{font-size:12px;font-weight:700}
+.wiz-step .sub{font-size:11px;color:var(--ltt);margin-top:2px}
+.wiz-panel{
+  background:rgba(255,254,251,.96);border:1px solid var(--ls3);border-radius:var(--rlg);padding:20px;min-height:520px
+}
+.wiz-panel h2{font-family:var(--fd);font-size:20px;margin-bottom:4px}
+.wiz-panel .hint{font-size:13px;color:var(--ltt);margin-bottom:18px;line-height:1.45}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.form-grid{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:6px}
+.field.span2{grid-column:1/-1}
+.field label{font-size:12px;font-weight:700;color:var(--lts)}
+.field input,.field textarea,.field select{
+  height:40px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit;background:#fff
+}
+.field textarea{height:88px;padding:10px 12px;resize:vertical}
+.field .err{font-size:11px;color:var(--dng500);display:none}
+.field.invalid input,.field.invalid textarea{border-color:var(--dng500);background:#FEF2F2}
+.field.invalid .err{display:block}
+.seg{display:flex;gap:8px;flex-wrap:wrap}
+.seg button{
+  height:38px;padding:0 14px;border-radius:999px;border:1px solid var(--ls3);background:#fff;
+  font:inherit;font-size:12px;font-weight:700;cursor:pointer;color:var(--lts)
+}
+.seg button.act{background:var(--c900);color:#fff;border-color:var(--c900)}
+.check-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:700px){.check-list{grid-template-columns:1fr}}
+.check{
+  display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--ls3);border-radius:12px;
+  background:#fff;cursor:pointer;user-select:none
+}
+.check.on{border-color:rgba(122,204,0,.55);background:rgba(237,252,216,.55)}
+.check input{accent-color:var(--l500);width:16px;height:16px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--ls3)}
+.toggle-row:last-child{border-bottom:none}
+.switch{
+  width:44px;height:26px;border-radius:999px;background:#D1D5DB;position:relative;cursor:pointer;flex-shrink:0;border:none
+}
+.switch.on{background:var(--l500)}
+.switch::after{
+  content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;
+  transition:transform .18s ease;box-shadow:0 1px 3px rgba(0,0,0,.2)
+}
+.switch.on::after{transform:translateX(18px)}
+.wiz-actions{display:flex;justify-content:space-between;gap:10px;margin-top:22px;flex-wrap:wrap}
+.live-preview{
+  background:var(--c900);color:#fff;border-radius:var(--rlg);padding:16px;position:sticky;top:72px
+}
+.live-preview h3{font-family:var(--fd);font-size:13px;color:var(--l400);margin-bottom:12px}
+.phone{
+  width:100%;max-width:260px;margin:0 auto;background:#111;border-radius:28px;padding:12px 10px 18px;
+  border:2px solid #333;box-shadow:0 16px 40px rgba(0,0,0,.35)
+}
+.phone-notch{width:86px;height:8px;border-radius:999px;background:#222;margin:0 auto 12px}
+.phone-screen{background:#F7F8F5;border-radius:18px;padding:12px;color:var(--ltp);min-height:420px}
+.app-offer-card{
+  background:linear-gradient(145deg,#1a2e05,#0D0D0D);color:#fff;border-radius:16px;padding:14px;margin-bottom:10px;
+  border:1px solid rgba(160,224,64,.35)
+}
+.app-offer-card .fire{font-size:12px;font-weight:800;color:var(--l400);letter-spacing:.04em;margin-bottom:6px}
+.app-offer-card h4{font-family:var(--fd);font-size:18px;margin-bottom:4px}
+.app-offer-card p{font-size:12px;opacity:.8;line-height:1.4;margin-bottom:10px}
+.app-offer-card .cta{
+  display:inline-flex;height:32px;align-items:center;padding:0 12px;border-radius:999px;
+  background:var(--l500);color:var(--c900);font-size:12px;font-weight:800
+}
+.summary-box{background:var(--ls2);border:1px solid var(--ls3);border-radius:14px;padding:14px}
+.summary-box .k{font-size:11px;color:var(--ltt);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+.summary-box .v{font-size:14px;font-weight:700;margin:2px 0 10px;font-family:var(--fd)}
+.toast{
+  position:fixed;bottom:20px;right:20px;background:var(--c900);color:#fff;padding:12px 16px;border-radius:12px;
+  font-size:13px;font-weight:600;z-index:100;transform:translateY(120px);opacity:0;transition:.25s ease
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{box-shadow:0 0 0 1px rgba(122,204,0,.4)}
+
+/* Member app section */
+.member-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:1100px){.member-grid{grid-template-columns:1fr}}
+.device-col h3{font-family:var(--fd);font-size:14px;margin-bottom:10px}
+.device{
+  width:100%;max-width:300px;margin:0 auto;background:#0D0D0D;border-radius:36px;padding:14px 12px 20px;
+  border:3px solid #2A2A2A
+}
+.device .bar{width:100px;height:5px;background:#333;border-radius:999px;margin:0 auto 12px}
+.screen{background:#F6F7F4;border-radius:24px;overflow:hidden;min-height:560px}
+.screen-hdr{
+  padding:16px 14px 10px;background:#fff;border-bottom:1px solid var(--ls3);
+  font-family:var(--fd);font-weight:700;font-size:16px
+}
+.screen-body{padding:12px 14px 18px}
+.m-card{
+  background:#fff;border:1px solid var(--ls3);border-radius:16px;padding:12px;margin-bottom:10px
+}
+.m-card.featured{
+  background:linear-gradient(160deg,#1f3308,#0D0D0D);color:#fff;border-color:rgba(160,224,64,.4)
+}
+.m-card .tag{font-size:11px;font-weight:800;color:var(--l500);margin-bottom:4px}
+.m-card.featured .tag{color:var(--l400)}
+.m-card h4{font-family:var(--fd);font-size:16px;margin-bottom:4px}
+.m-card p{font-size:12px;color:var(--ltt);line-height:1.4}
+.m-card.featured p{color:rgba(255,255,255,.75)}
+.m-card .btn-m{
+  margin-top:10px;height:34px;padding:0 12px;border-radius:999px;border:none;
+  background:var(--l500);color:var(--c900);font:inherit;font-size:12px;font-weight:800;cursor:pointer
+}
+.price-row{display:flex;justify-content:space-between;font-size:13px;margin:6px 0;color:var(--lts)}
+.price-row strong{color:var(--ltp);font-family:var(--fd)}
+.price-row.save{color:#166534;font-weight:700}
+.strike{text-decoration:line-through;color:var(--ltt);font-weight:500}
+.special{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;
+  background:rgba(122,204,0,.16);color:#3f6212;font-size:11px;font-weight:800;margin-bottom:10px
+}
+.cart-line{display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--ls3)}
+.cart-promo{background:var(--suc100);color:#166534;border-radius:10px;padding:10px;font-size:12px;font-weight:700;margin:10px 0}
+.cart-total{display:flex;justify-content:space-between;font-family:var(--fd);font-size:18px;font-weight:700;margin-top:10px}
+
+/* Flow */
+.flow{
+  background:rgba(255,254,251,.96);border:1px solid var(--ls3);border-radius:var(--rlg);padding:24px;max-width:760px
+}
+.flow h2{font-family:var(--fd);font-size:22px;margin-bottom:8px}
+.flow .lead{font-size:13px;color:var(--ltt);margin-bottom:18px;line-height:1.5}
+.flow-steps{display:flex;flex-direction:column;gap:0}
+.flow-step{
+  display:grid;grid-template-columns:28px 1fr;gap:12px;align-items:start
+}
+.flow-step .dot{
+  width:28px;height:28px;border-radius:50%;background:var(--l500);color:var(--c900);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;position:relative;z-index:1
+}
+.flow-step:not(:last-child) .dot::after{
+  content:'';position:absolute;top:28px;left:50%;width:2px;height:28px;background:rgba(122,204,0,.45);transform:translateX(-50%)
+}
+.flow-step .box{
+  background:var(--ls2);border:1px solid var(--ls3);border-radius:12px;padding:12px 14px;margin-bottom:16px
+}
+.flow-step .box strong{display:block;font-family:var(--fd);font-size:14px;margin-bottom:2px}
+.flow-step .box span{font-size:12px;color:var(--ltt)}
+.review-q{margin-top:20px;padding-top:16px;border-top:1px solid var(--ls3)}
+.review-q li{margin:8px 0 8px 18px;font-size:13px;color:var(--lts);line-height:1.45}
+.approve-box{
+  margin-top:18px;padding:14px;border-radius:14px;background:rgba(122,204,0,.12);border:1px solid rgba(122,204,0,.3)
+}
+.approve-box p{font-size:13px;line-height:1.5;color:var(--lts)}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <div>DESIGN PREVIEW ONLY — Offers & Promotions</div>
+    <div class="note">No APIs, DB, or production code. Promo Codes stay in the real app until Product Approve. Review UX, then stop.</div>
+  </div>
+  <div class="controls" id="viewTabs">
+    <button type="button" class="act" data-view="admin">Admin · List</button>
+    <button type="button" data-view="create">Admin · Create Offer</button>
+    <button type="button" data-view="member">Member App</button>
+    <button type="button" data-view="flow">Product Flow</button>
+  </div>
+</div>
+
+<div class="app" id="adminShell">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <div class="sb-sec">Money</div>
+    <div class="sb-item ghost">Shifts</div>
+    <div class="sb-item ghost">Refunds</div>
+    <div class="sb-item act"><i class="ti ti-discount-2"></i> Offers & Promotions</div>
+    <div class="sb-item ghost">Promo codes <span class="old">legacy</span></div>
+    <div class="sb-item ghost">Invoices</div>
+    <div class="sb-sec">Catalog</div>
+    <div class="sb-item ghost">Plans</div>
+    <div class="sb-item ghost">Products</div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">Money / <span class="cur" id="crumbCur">Offers & Promotions</span></div>
+      <div style="font-size:13px;font-weight:600;color:var(--lts)">Fitness Hub</div>
+    </header>
+
+    <!-- ADMIN LIST -->
+    <div class="content" id="viewAdmin">
+      <div class="page-hdr">
+        <div>
+          <h1 class="page-title"><i class="ti ti-discount-2"></i> Offers & Promotions</h1>
+          <p class="page-sub">One place for membership and product deals. A promo code is only an optional way to redeem an offer — not a separate product.</p>
+          <div class="model-chip"><i class="ti ti-hierarchy-2"></i> Offer → rules → visibility → redemption (auto or code)</div>
+        </div>
+        <button type="button" class="btn btn-primary" id="btnCreateOffer"><i class="ti ti-plus"></i> Create Offer</button>
+      </div>
+
+      <div class="concept">
+        <div>
+          <h3>Conceptual model (preview)</h3>
+          <p>Owners manage <strong>Offers</strong>. Promo codes are nested under redemption — so you never maintain two promotion systems for memberships vs products.</p>
+        </div>
+        <pre>Offer
+ ├── Details / Schedule
+ ├── Applies To (Memberships · Products)
+ ├── Discount Rules
+ ├── Eligibility & Limits
+ ├── Member App Visibility
+ └── Redemption
+      ├── Automatic
+      └── Promo Code</pre>
+      </div>
+
+      <div class="toolbar">
+        <div class="search"><i class="ti ti-search"></i><input id="searchQ" placeholder="Search offers…" autocomplete="off"></div>
+        <select class="filter-select" id="filterType">
+          <option value="">All types</option>
+          <option value="percentage">Percentage</option>
+          <option value="fixed">Fixed amount</option>
+          <option value="bxgy">Buy X Get Y</option>
+        </select>
+        <select class="filter-select" id="filterApplies">
+          <option value="">Applies to</option>
+          <option value="memberships">Memberships</option>
+          <option value="products">Products</option>
+          <option value="both">Both</option>
+        </select>
+        <select class="filter-select" id="filterStatus">
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="expired">Expired</option>
+        </select>
+      </div>
+
+      <div class="tabs" id="statusTabs">
+        <button type="button" class="tab act" data-tab="all">All <span class="n">4</span></button>
+        <button type="button" class="tab" data-tab="active">Active <span class="n">2</span></button>
+        <button type="button" class="tab" data-tab="scheduled">Scheduled <span class="n">1</span></button>
+        <button type="button" class="tab" data-tab="expired">Expired <span class="n">1</span></button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Offer</th>
+              <th>Type</th>
+              <th>Applies to</th>
+              <th>Discount</th>
+              <th>Validity</th>
+              <th>Usage</th>
+              <th>Member App</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="offersBody"></tbody>
+        </table>
+        <div class="empty" id="offersEmpty" hidden>
+          <i class="ti ti-discount-off"></i>
+          <div style="font-family:var(--fd);font-weight:700;color:var(--ltp);margin-bottom:4px">No offers match</div>
+          <div>Try clearing filters — or create your first offer.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATE WIZARD -->
+    <div class="content" id="viewCreate" hidden>
+      <div class="page-hdr">
+        <div>
+          <h1 class="page-title"><i class="ti ti-plus"></i> Create Offer</h1>
+          <p class="page-sub">Preview wizard only — Save Draft / Create Offer show confirmation states, no real data is stored.</p>
+        </div>
+        <button type="button" class="btn btn-secondary" data-view="admin"><i class="ti ti-arrow-left"></i> Back to list</button>
+      </div>
+
+      <div class="wiz-shell">
+        <nav class="wiz-steps" id="wizNav">
+          <div class="wiz-step act" data-step="1"><div class="num">1</div><div><div class="lab">Offer details</div><div class="sub">Name, copy, dates</div></div></div>
+          <div class="wiz-step" data-step="2"><div class="num">2</div><div><div class="lab">Applies to</div><div class="sub">Memberships / products</div></div></div>
+          <div class="wiz-step" data-step="3"><div class="num">3</div><div><div class="lab">Discount</div><div class="sub">% · amount · BXGY</div></div></div>
+          <div class="wiz-step" data-step="4"><div class="num">4</div><div><div class="lab">Eligibility</div><div class="sub">Who & limits</div></div></div>
+          <div class="wiz-step" data-step="5"><div class="num">5</div><div><div class="lab">Member App</div><div class="sub">Visibility & banner</div></div></div>
+          <div class="wiz-step" data-step="6"><div class="num">6</div><div><div class="lab">Redemption</div><div class="sub">Auto or promo code</div></div></div>
+          <div class="wiz-step" data-step="7"><div class="num">7</div><div><div class="lab">Review</div><div class="sub">Confirm & publish</div></div></div>
+        </nav>
+
+        <div class="wiz-panel" id="wizPanel"></div>
+
+        <aside class="live-preview">
+          <h3><i class="ti ti-device-mobile"></i> Member App live preview</h3>
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen" id="livePhone">
+              <div class="app-offer-card">
+                <div class="fire">🔥 SUMMER OFFER</div>
+                <h4>20% OFF</h4>
+                <p>3-Month Membership — Save more this summer.</p>
+                <span class="cta">View Offer</span>
+              </div>
+              <div style="font-size:11px;color:var(--ltt);line-height:1.4">Updates as you configure visibility & discount. Preview-only.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER APP VIEW -->
+<div class="content" id="viewMember" hidden style="padding:24px">
+  <div class="page-hdr" style="max-width:1100px;margin:0 auto 16px">
+    <div>
+      <h1 class="page-title"><i class="ti ti-device-mobile"></i> Member App — Offers experience</h1>
+      <p class="page-sub">Mobile frames only. Shows offers list, membership pricing with offer, and product cart promotion — no real pricing engine.</p>
+    </div>
+    <button type="button" class="btn btn-secondary" data-view="admin">Back to Admin</button>
+  </div>
+  <div class="member-grid" style="max-width:1100px;margin:0 auto">
+    <div class="device-col">
+      <h3>1 · Special Offers</h3>
+      <div class="device"><div class="bar"></div><div class="screen">
+        <div class="screen-hdr">Special Offers</div>
+        <div class="screen-body">
+          <div class="m-card featured">
+            <div class="tag">🔥 FEATURED</div>
+            <h4>Summer Offer</h4>
+            <p>20% OFF · 3-Month Membership</p>
+            <button type="button" class="btn-m">View Offer</button>
+          </div>
+          <div class="m-card">
+            <div class="tag">PRODUCTS</div>
+            <h4>Buy 2 Get 1</h4>
+            <p>Protein Bars — limited time</p>
+            <button type="button" class="btn-m">Add to Cart</button>
+          </div>
+          <div class="m-card" style="opacity:.7">
+            <div class="tag">NOT SHOWN IN APP</div>
+            <h4>Welcome Discount</h4>
+            <p>Admin-only automatic offer — Member App visibility OFF</p>
+          </div>
+        </div>
+      </div></div>
+    </div>
+    <div class="device-col">
+      <h3>2 · Membership detail</h3>
+      <div class="device"><div class="bar"></div><div class="screen">
+        <div class="screen-hdr">3-Month Membership</div>
+        <div class="screen-body">
+          <div class="special">🔥 Special Offer · 20% OFF</div>
+          <div class="m-card">
+            <div class="price-row"><span>Original</span><strong class="strike">EGP 1,500</strong></div>
+            <div class="price-row"><span>Offer</span><strong>20% OFF</strong></div>
+            <div class="price-row save"><span>You save</span><strong>EGP 300</strong></div>
+            <div class="price-row" style="border-top:1px solid var(--ls3);padding-top:10px;margin-top:8px">
+              <span>Final price</span><strong style="font-size:20px;color:#3f6212">EGP 1,200</strong>
+            </div>
+            <button type="button" class="btn-m" style="width:100%;justify-content:center;display:inline-flex">Continue</button>
+          </div>
+          <p style="font-size:11px;color:var(--ltt);line-height:1.4">Visual demo — numbers are static mock data.</p>
+        </div>
+      </div></div>
+    </div>
+    <div class="device-col">
+      <h3>3 · Product & cart</h3>
+      <div class="device"><div class="bar"></div><div class="screen">
+        <div class="screen-hdr">Cart</div>
+        <div class="screen-body">
+          <div class="m-card">
+            <div class="special">Buy 2 Get 1</div>
+            <h4 style="font-family:var(--fd);font-size:15px">Protein Bar</h4>
+            <p style="font-size:12px;color:var(--ltt)">EGP 80 each</p>
+            <div class="cart-line"><span>Protein Bar × 3</span><strong>EGP 240</strong></div>
+            <div class="cart-promo">Promotion · Buy 2 Get 1<br>− EGP 80</div>
+            <div class="cart-total"><span>Total</span><span>EGP 160</span></div>
+            <button type="button" class="btn-m" style="width:100%;margin-top:12px;justify-content:center;display:inline-flex">Checkout</button>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOW -->
+<div class="content" id="viewFlow" hidden style="padding:28px 24px">
+  <div class="flow">
+    <h2>Product Flow Overview</h2>
+    <p class="lead">End-to-end concept for Product review. No implementation until you approve Offers & Promotions as the replacement for Promo Codes.</p>
+    <div class="flow-steps">
+      <div class="flow-step"><div class="dot">1</div><div class="box"><strong>Admin creates Offer</strong><span>Single creation path — not a separate promo-code module</span></div></div>
+      <div class="flow-step"><div class="dot">2</div><div class="box"><strong>Select Memberships / Products</strong><span>One offer can target plans, retail SKUs, or both</span></div></div>
+      <div class="flow-step"><div class="dot">3</div><div class="box"><strong>Configure Discount</strong><span>Percentage · Fixed · Buy X Get Y</span></div></div>
+      <div class="flow-step"><div class="dot">4</div><div class="box"><strong>Configure Rules</strong><span>Eligibility, usage caps, schedule</span></div></div>
+      <div class="flow-step"><div class="dot">5</div><div class="box"><strong>Member App Visibility</strong><span>Featured / banner / order — or keep admin-only</span></div></div>
+      <div class="flow-step"><div class="dot">6</div><div class="box"><strong>Choose Redemption</strong><span>Automatic or Promo Code (optional method on the Offer)</span></div></div>
+      <div class="flow-step"><div class="dot">7</div><div class="box"><strong>Offer Published</strong><span>Active / Scheduled / Expired states</span></div></div>
+      <div class="flow-step"><div class="dot">8</div><div class="box"><strong>Member sees Offer</strong><span>In Member App when visibility is ON</span></div></div>
+      <div class="flow-step"><div class="dot">9</div><div class="box"><strong>Member selects Membership / Product</strong><span>Offer surfaces in pricing or cart</span></div></div>
+      <div class="flow-step"><div class="dot">10</div><div class="box"><strong>Checkout</strong><span>Preview only — no real checkout in this prototype</span></div></div>
+    </div>
+    <div class="review-q">
+      <h3 style="font-family:var(--fd);font-size:16px;margin-bottom:8px">Evaluate before implementation</h3>
+      <ol>
+        <li>Is <strong>Offers & Promotions</strong> the right replacement for Promo Codes?</li>
+        <li>Is the Admin creation flow intuitive for a gym owner?</li>
+        <li>Are Membership vs Product offers clear?</li>
+        <li>Is Member App presentation compelling?</li>
+        <li>Is Automatic vs Promo Code redemption understandable?</li>
+        <li>Does the UX fit HyMotion (lime / charcoal)?</li>
+      </ol>
+    </div>
+    <div class="approve-box">
+      <p><strong>Stop here.</strong> Do not implement APIs, DB, or remove Promo Codes until Product Accept. Open this file: <code>previews/offers-promotions.html</code></p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var OFFERS = [
+    {
+      id: '1', name: 'Summer Membership Offer', desc: 'Save on selected membership plans this summer.',
+      type: 'percentage', typeLabel: 'Percentage', discount: '20% OFF',
+      applies: 'memberships', appliesLabel: 'Memberships · 3 Months',
+      validity: 'Aug 15 → Sep 15', usage: '12 / 100', app: true, featured: true,
+      status: 'active', redemption: 'code', code: 'SUMMER20'
+    },
+    {
+      id: '2', name: 'Protein Bundle', desc: 'Protein Bars promotion.',
+      type: 'bxgy', typeLabel: 'Buy X Get Y', discount: 'Buy 2 Get 1',
+      applies: 'products', appliesLabel: 'Products · Protein Bars',
+      validity: 'Aug 20 → Sep 10', usage: '0 / 200', app: true, featured: false,
+      status: 'scheduled', redemption: 'auto'
+    },
+    {
+      id: '3', name: 'New Member Welcome', desc: 'Automatic welcome discount.',
+      type: 'percentage', typeLabel: 'Percentage', discount: '15% OFF',
+      applies: 'memberships', appliesLabel: 'Memberships · New members',
+      validity: 'Ongoing', usage: '48 / ∞', app: false, featured: false,
+      status: 'active', redemption: 'auto'
+    },
+    {
+      id: '4', name: 'Gym Merchandise Sale', desc: 'Retail apparel sale.',
+      type: 'percentage', typeLabel: 'Percentage', discount: '10% OFF',
+      applies: 'products', appliesLabel: 'Products · Merch',
+      validity: 'Jul 1 → Jul 31', usage: '90 / 90', app: true, featured: false,
+      status: 'expired', redemption: 'code', code: 'MERCH10'
+    }
+  ];
+
+  var state = {
+    view: 'admin',
+    tab: 'all',
+    step: 1,
+    form: {
+      name: 'Summer Membership Offer',
+      short: 'Save 20% on selected membership plans this summer.',
+      desc: 'Limited summer campaign for Fitness Hub members.',
+      start: '2026-08-15',
+      end: '2026-09-15',
+      applies: 'memberships',
+      plans: { m1: false, m3: true, m6: false },
+      products: { shake: true, bar: true, shirt: false },
+      discountType: 'percentage',
+      value: '20',
+      maxDiscount: '',
+      buy: '2',
+      get: '1',
+      allMembers: true,
+      newOnly: false,
+      usageLimit: '100',
+      perMember: '1',
+      showApp: true,
+      featured: true,
+      banner: true,
+      order: '1',
+      redemption: 'code',
+      code: 'SUMMER20'
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+  function toast(msg) {
+    var el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show', 'ok');
+    setTimeout(function () { el.classList.remove('show'); }, 2800);
+  }
+
+  function statusBadge(s) {
+    if (s === 'active') return '<span class="badge act">Active</span>';
+    if (s === 'scheduled') return '<span class="badge sched">Scheduled</span>';
+    if (s === 'expired') return '<span class="badge exp">Expired</span>';
+    return '<span class="badge draft">Draft</span>';
+  }
+
+  function filteredOffers() {
+    var q = ($('searchQ').value || '').toLowerCase();
+    var type = $('filterType').value;
+    var applies = $('filterApplies').value;
+    var status = $('filterStatus').value || (state.tab === 'all' ? '' : state.tab);
+    return OFFERS.filter(function (o) {
+      if (q && (o.name + o.desc + o.discount).toLowerCase().indexOf(q) < 0) return false;
+      if (type && o.type !== type) return false;
+      if (applies && o.applies !== applies) return false;
+      if (status && o.status !== status) return false;
+      return true;
+    });
+  }
+
+  function renderList() {
+    var rows = filteredOffers();
+    var body = $('offersBody');
+    var empty = $('offersEmpty');
+    if (!rows.length) {
+      body.innerHTML = '';
+      empty.hidden = false;
+      return;
+    }
+    empty.hidden = true;
+    body.innerHTML = rows.map(function (o) {
+      return '<tr>' +
+        '<td><div class="offer-name">' + o.name + '</div><div class="offer-desc">' + o.desc + '</div></td>' +
+        '<td>' + o.typeLabel + '</td>' +
+        '<td><span class="pill">' + o.appliesLabel + '</span></td>' +
+        '<td><strong>' + o.discount + '</strong></td>' +
+        '<td>' + o.validity + '</td>' +
+        '<td>' + o.usage + '</td>' +
+        '<td>' + (o.app
+          ? '<span class="badge app">' + (o.featured ? 'Featured' : 'Shown') + '</span>'
+          : '<span class="badge off">Hidden</span>') + '</td>' +
+        '<td>' + statusBadge(o.status) + '</td>' +
+        '<td><div class="row-actions">' +
+          '<button type="button" data-preview-create>Edit</button>' +
+          '<button type="button" data-dup>Duplicate</button>' +
+        '</div></td></tr>';
+    }).join('');
+  }
+
+  function setView(view) {
+    state.view = view;
+    document.querySelectorAll('#viewTabs button').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-view') === view);
+    });
+    var adminShell = document.getElementById('adminShell');
+    $('viewAdmin').hidden = view !== 'admin';
+    $('viewCreate').hidden = view !== 'create';
+    $('viewMember').hidden = view !== 'member';
+    $('viewFlow').hidden = view !== 'flow';
+    adminShell.hidden = view === 'member' || view === 'flow';
+    $('crumbCur').textContent = view === 'create' ? 'Create Offer' : 'Offers & Promotions';
+    if (view === 'create') renderWizard();
+    if (view === 'admin') renderList();
+  }
+
+  function updateLivePhone() {
+    var f = state.form;
+    var title = f.discountType === 'bxgy' ? ('Buy ' + f.buy + ' Get ' + f.get) : ((f.value || '0') + '% OFF');
+    if (f.discountType === 'fixed') title = 'EGP ' + (f.value || '0') + ' OFF';
+    var el = $('livePhone');
+    if (!f.showApp) {
+      el.innerHTML = '<div style="padding:24px 8px;text-align:center;color:var(--ltt);font-size:12px;line-height:1.5"><i class="ti ti-eye-off" style="font-size:28px;color:var(--l300);display:block;margin-bottom:8px"></i>Hidden from Member App.<br>Offer can still redeem automatically or via code at desk/POS.</div>';
+      return;
+    }
+    el.innerHTML =
+      '<div class="app-offer-card">' +
+        '<div class="fire">' + (f.featured ? '🔥 FEATURED OFFER' : 'SPECIAL OFFER') + '</div>' +
+        '<h4>' + title + '</h4>' +
+        '<p>' + (f.short || f.name || 'Your offer copy appears here.') + '</p>' +
+        '<span class="cta">View Offer</span>' +
+      '</div>' +
+      (f.banner ? '<div style="margin-top:8px;padding:10px;border-radius:12px;background:#fff;border:1px dashed #c5d4b8;font-size:11px;color:var(--lts)">Banner slot · display order #' + (f.order || '1') + '</div>' : '');
+  }
+
+  function renderWizard() {
+    var f = state.form;
+    var step = state.step;
+    document.querySelectorAll('#wizNav .wiz-step').forEach(function (el) {
+      var s = Number(el.getAttribute('data-step'));
+      el.classList.toggle('act', s === step);
+      el.classList.toggle('done', s < step);
+    });
+
+    var html = '';
+    if (step === 1) {
+      html =
+        '<h2>Offer details</h2><p class="hint">Name and schedule gym owners will recognize at a glance.</p>' +
+        '<div class="form-grid">' +
+          field('name', 'Offer Name', f.name, false) +
+          field('short', 'Short Description', f.short, false) +
+          '<div class="field span2"><label>Description</label><textarea data-k="desc">' + esc(f.desc) + '</textarea></div>' +
+          '<div class="field span2"><label>Offer Image / Banner</label><div style="height:88px;border:1px dashed var(--ls3);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ltt);font-size:13px;background:#fff"><i class="ti ti-photo" style="margin-inline-end:6px"></i> Drop banner (preview mock)</div></div>' +
+          field('start', 'Start Date', f.start, true, 'date') +
+          field('end', 'End Date', f.end, true, 'date') +
+        '</div>';
+    } else if (step === 2) {
+      html =
+        '<h2>Applies to</h2><p class="hint">Memberships, products, or both — one offer model.</p>' +
+        '<div class="seg" id="appliesSeg">' +
+          segBtn('memberships', 'Memberships', f.applies) +
+          segBtn('products', 'Products', f.applies) +
+          segBtn('both', 'Both', f.applies) +
+        '</div>' +
+        ((f.applies === 'memberships' || f.applies === 'both')
+          ? '<h3 style="margin:18px 0 8px;font-family:var(--fd);font-size:14px">Memberships</h3><div class="check-list">' +
+            check('plans.m1', '1 Month', f.plans.m1) + check('plans.m3', '3 Months', f.plans.m3) + check('plans.m6', '6 Months', f.plans.m6) +
+            '</div>'
+          : '') +
+        ((f.applies === 'products' || f.applies === 'both')
+          ? '<h3 style="margin:18px 0 8px;font-family:var(--fd);font-size:14px">Products</h3><div class="check-list">' +
+            check('products.shake', 'Protein Shake', f.products.shake) +
+            check('products.bar', 'Protein Bar', f.products.bar) +
+            check('products.shirt', 'Gym T-Shirt', f.products.shirt) +
+            '</div>'
+          : '');
+    } else if (step === 3) {
+      html =
+        '<h2>Discount configuration</h2><p class="hint">UI changes with discount type — no real pricing math in this preview.</p>' +
+        '<div class="seg" id="discSeg">' +
+          segBtn('percentage', 'Percentage', f.discountType) +
+          segBtn('fixed', 'Fixed Amount', f.discountType) +
+          segBtn('bxgy', 'Buy X Get Y', f.discountType) +
+        '</div>' +
+        '<div class="form-grid" style="margin-top:16px">' +
+          (f.discountType === 'bxgy'
+            ? field('buy', 'Buy', f.buy, true, 'number') + field('get', 'Get', f.get, true, 'number')
+            : field('value', f.discountType === 'fixed' ? 'Amount (EGP)' : 'Value (%)', f.value, true, 'number') +
+              field('maxDiscount', 'Maximum Discount (optional)', f.maxDiscount, true, 'number')) +
+        '</div>';
+    } else if (step === 4) {
+      html =
+        '<h2>Eligibility & rules</h2><p class="hint">Plain language for gym owners — not ERP jargon.</p>' +
+        '<div class="toggle-row"><div><strong>Available to all members</strong><div style="font-size:12px;color:var(--ltt)">Everyone with an active account</div></div>' +
+          switchBtn('allMembers', f.allMembers) + '</div>' +
+        '<div class="toggle-row"><div><strong>New members only</strong><div style="font-size:12px;color:var(--ltt)">First membership purchase</div></div>' +
+          switchBtn('newOnly', f.newOnly) + '</div>' +
+        '<div class="form-grid" style="margin-top:14px">' +
+          field('usageLimit', 'Usage limit (total redemptions)', f.usageLimit, true, 'number') +
+          field('perMember', 'Per member limit', f.perMember, true, 'number') +
+        '</div>';
+    } else if (step === 5) {
+      html =
+        '<h2>Member App visibility</h2><p class="hint">Control whether members discover this offer in the app.</p>' +
+        '<div class="toggle-row"><div><strong>Show on Member App</strong></div>' + switchBtn('showApp', f.showApp) + '</div>' +
+        '<div class="toggle-row"><div><strong>Display as Featured Offer</strong></div>' + switchBtn('featured', f.featured) + '</div>' +
+        '<div class="toggle-row"><div><strong>Show Banner</strong></div>' + switchBtn('banner', f.banner) + '</div>' +
+        '<div class="form-grid" style="margin-top:12px">' + field('order', 'Display Order', f.order, true, 'number') + '</div>';
+    } else if (step === 6) {
+      html =
+        '<h2>Redemption</h2><p class="hint">Promo Code is only one way to redeem an Offer — not a separate module.</p>' +
+        '<div class="seg" id="redSeg">' +
+          segBtn('auto', 'Automatic', f.redemption === 'auto' ? 'auto' : '') +
+          segBtn('code', 'Promo Code', f.redemption === 'code' ? 'code' : '') +
+        '</div>' +
+        (f.redemption === 'code'
+          ? '<div class="form-grid" style="margin-top:16px">' +
+              field('code', 'Promo Code', f.code, false) +
+              field('usageLimit', 'Usage Limit', f.usageLimit, true, 'number') +
+              field('perMember', 'Per Member', f.perMember, true, 'number') +
+            '</div><p style="margin-top:12px;font-size:12px;color:var(--lts);background:var(--l100);padding:10px 12px;border-radius:10px"><i class="ti ti-info-circle"></i> Members enter this code at checkout / cart. The offer still owns the discount rules.</p>'
+          : '<p style="margin-top:16px;font-size:13px;color:var(--lts);line-height:1.5">Automatic — eligible members see the discount applied without typing a code (desk, POS, or Member App).</p>');
+    } else {
+      var disc = f.discountType === 'bxgy' ? ('Buy ' + f.buy + ' Get ' + f.get) : (f.discountType === 'fixed' ? ('EGP ' + f.value + ' OFF') : (f.value + '% OFF'));
+      html =
+        '<h2>Review & create</h2><p class="hint">Final summary before publish (preview actions only).</p>' +
+        '<div class="summary-box">' +
+          '<div class="k">Offer</div><div class="v">' + esc(f.name) + '</div>' +
+          '<div class="k">Discount</div><div class="v">' + esc(disc) + '</div>' +
+          '<div class="k">Applies to</div><div class="v">' + esc(f.applies) + '</div>' +
+          '<div class="k">Valid</div><div class="v">' + esc(f.start) + ' → ' + esc(f.end) + '</div>' +
+          '<div class="k">Eligibility</div><div class="v">' + (f.newOnly ? 'New members only' : 'All members') + '</div>' +
+          '<div class="k">Redemption</div><div class="v">' + (f.redemption === 'code' ? ('Promo code · ' + esc(f.code)) : 'Automatic') + '</div>' +
+          '<div class="k">Member App</div><div class="v">' + (f.showApp ? (f.featured ? 'Featured' : 'Shown') : 'Hidden') + '</div>' +
+          '<div class="k">Usage</div><div class="v">' + esc(f.usageLimit) + ' total · ' + esc(f.perMember) + ' per member</div>' +
+        '</div>';
+    }
+
+    html += '<div class="wiz-actions">' +
+      '<button type="button" class="btn btn-ghost" id="wizBack"' + (step === 1 ? ' disabled' : '') + '>Back</button>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
+        (step === 7
+          ? '<button type="button" class="btn btn-secondary" id="wizDraft">Save Draft</button><button type="button" class="btn btn-primary" id="wizCreate">Create Offer</button>'
+          : '<button type="button" class="btn btn-primary" id="wizNext">Continue</button>') +
+      '</div></div>';
+
+    $('wizPanel').innerHTML = html;
+    updateLivePhone();
+    bindWizard();
+  }
+
+  function field(key, label, val, half, type) {
+    type = type || 'text';
+    return '<div class="field' + (half ? '' : ' span2') + '"><label>' + label + '</label>' +
+      '<input type="' + type + '" data-k="' + key + '" value="' + esc(val) + '"><div class="err">Required for preview validation demo</div></div>';
+  }
+  function segBtn(val, label, cur) {
+    return '<button type="button" data-seg="' + val + '" class="' + (cur === val ? 'act' : '') + '">' + label + '</button>';
+  }
+  function check(path, label, on) {
+    return '<label class="check' + (on ? ' on' : '') + '"><input type="checkbox" data-path="' + path + '"' + (on ? ' checked' : '') + '> ' + label + '</label>';
+  }
+  function switchBtn(key, on) {
+    return '<button type="button" class="switch' + (on ? ' on' : '') + '" data-switch="' + key + '" aria-label="Toggle"></button>';
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  }
+
+  function bindWizard() {
+    $('wizPanel').querySelectorAll('[data-k]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        state.form[el.getAttribute('data-k')] = el.value;
+        updateLivePhone();
+      });
+    });
+    var applies = $('appliesSeg');
+    if (applies) applies.querySelectorAll('[data-seg]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.form.applies = b.getAttribute('data-seg');
+        renderWizard();
+      });
+    });
+    var disc = $('discSeg');
+    if (disc) disc.querySelectorAll('[data-seg]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.form.discountType = b.getAttribute('data-seg');
+        renderWizard();
+      });
+    });
+    var red = $('redSeg');
+    if (red) red.querySelectorAll('[data-seg]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.form.redemption = b.getAttribute('data-seg');
+        renderWizard();
+      });
+    });
+    $('wizPanel').querySelectorAll('[data-path]').forEach(function (cb) {
+      cb.addEventListener('change', function () {
+        var parts = cb.getAttribute('data-path').split('.');
+        state.form[parts[0]][parts[1]] = cb.checked;
+        cb.closest('.check').classList.toggle('on', cb.checked);
+      });
+    });
+    $('wizPanel').querySelectorAll('[data-switch]').forEach(function (sw) {
+      sw.addEventListener('click', function () {
+        var k = sw.getAttribute('data-switch');
+        state.form[k] = !state.form[k];
+        if (k === 'allMembers' && state.form.allMembers) state.form.newOnly = false;
+        if (k === 'newOnly' && state.form.newOnly) state.form.allMembers = false;
+        renderWizard();
+      });
+    });
+    var back = $('wizBack');
+    if (back) back.addEventListener('click', function () {
+      if (state.step > 1) { state.step--; renderWizard(); }
+    });
+    var next = $('wizNext');
+    if (next) next.addEventListener('click', function () {
+      if (state.step === 1 && !state.form.name.trim()) {
+        toast('Add an offer name (preview validation)');
+        return;
+      }
+      state.step++;
+      renderWizard();
+    });
+    var draft = $('wizDraft');
+    if (draft) draft.addEventListener('click', function () {
+      toast('Saved as draft (preview only — nothing written)');
+    });
+    var create = $('wizCreate');
+    if (create) create.addEventListener('click', function () {
+      toast('Offer created (preview confirmation) — await Product Approve before build');
+      setTimeout(function () { setView('admin'); }, 600);
+    });
+  }
+
+  document.querySelectorAll('#viewTabs button, [data-view]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var v = b.getAttribute('data-view');
+      if (v) setView(v);
+    });
+  });
+  $('btnCreateOffer').addEventListener('click', function () {
+    state.step = 1;
+    setView('create');
+  });
+  document.querySelectorAll('#statusTabs .tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      document.querySelectorAll('#statusTabs .tab').forEach(function (x) { x.classList.remove('act'); });
+      t.classList.add('act');
+      state.tab = t.getAttribute('data-tab');
+      renderList();
+    });
+  });
+  ['searchQ', 'filterType', 'filterApplies', 'filterStatus'].forEach(function (id) {
+    $(id).addEventListener('input', renderList);
+    $(id).addEventListener('change', renderList);
+  });
+  document.querySelectorAll('#wizNav .wiz-step').forEach(function (el) {
+    el.addEventListener('click', function () {
+      state.step = Number(el.getAttribute('data-step'));
+      renderWizard();
+    });
+  });
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-preview-create]')) {
+      state.step = 1;
+      setView('create');
+    }
+    if (e.target.closest('[data-dup]')) toast('Duplicate (preview only)');
+  });
+
+  renderList();
+})();
+</script>
+</body>
+</html>

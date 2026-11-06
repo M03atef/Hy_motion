@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Sale / POS redesign (design preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#22C55E;--suc100:#DCFCE7;--dng500:#EF4444;--dng100:#FEE2E2;--warn:#B45309;--warnbg:#FEF3C7;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:10px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--lbg);color:var(--ltp);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:40
+}
+.banner code{background:rgba(255,255,255,.15);padding:2px 8px;border-radius:6px;font-weight:500}
+.banner .note{font-weight:500;opacity:.92;font-size:12px}
+.state-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.state-tabs button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.state-tabs button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 44px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;padding:20px 0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:0 16px 20px;border-bottom:1px solid var(--c700);margin-bottom:8px}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:12px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300);text-decoration:none}
+.sb-item.act{color:#fff;background:rgba(122,204,0,.15);border-right:3px solid var(--l500)}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:56px;background:var(--ls1);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.crumb .cur{color:var(--ltp)}
+.gym{font-size:13px;font-weight:600;color:var(--lts)}
+.content{padding:20px 24px 32px;flex:1}
+.page-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.page-title{font-family:var(--fd);font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-title i{color:var(--l500)}
+.page-sub{font-size:13px;color:var(--ltt);margin-top:4px;max-width:36rem;line-height:1.45}
+.btn{height:40px;padding:0 14px;border-radius:var(--rlg);font:inherit;font-weight:700;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,var(--l500),var(--l600));color:var(--c900)}
+.btn-secondary{background:var(--ls1);border:1px solid var(--ls3);color:var(--lts)}
+.btn-dark{background:var(--c900);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.status-strip{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  padding:10px 14px;border-radius:var(--rmd);background:var(--ls1);border:1px solid var(--ls3);
+  margin-bottom:14px;font-size:12px;color:var(--lts)
+}
+.status-strip .chip{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.status-strip .ok{color:#166534}
+.status-strip .warn{color:var(--warn)}
+.status-strip a{color:var(--l600);font-weight:700;text-decoration:none}
+.alert{
+  display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--rmd);
+  margin-bottom:14px;border:1px solid transparent
+}
+.alert.danger{background:var(--dng100);border-color:#FECACA;color:#991B1B}
+.alert.warn{background:var(--warnbg);border-color:#FDE68A;color:#92400E}
+.alert strong{display:block;font-size:13px;margin-bottom:2px}
+.alert p{font-size:12px;line-height:1.45;opacity:.95}
+.alert a{font-weight:700;color:inherit}
+
+/* Two-column desk — no left “collect balance” rail */
+.desk{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(300px,380px);
+  gap:14px;align-items:start
+}
+@media(max-width:980px){.desk{grid-template-columns:1fr}.sidebar{display:none}}
+
+.panel{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden}
+.panel-h{padding:12px 14px;border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.panel-h h2{font-family:var(--fd);font-size:15px;font-weight:700}
+.panel-b{padding:14px}
+.wh{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--lts)}
+.wh select{height:36px;border:1px solid var(--ls3);border-radius:8px;padding:0 10px;font:inherit;font-size:13px;background:#fff}
+.scan-row{display:flex;gap:8px;margin-bottom:10px}
+.scan-row input,.search{
+  flex:1;height:44px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;font:inherit;font-size:14px
+}
+.search{width:100%;margin-bottom:12px;height:40px}
+.quick-h{font-family:var(--fd);font-weight:700;font-size:12px;color:var(--lts);margin:4px 0 10px}
+.quick{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px
+}
+@media(max-width:720px){.quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  min-height:100px;padding:12px 8px;border:2px solid var(--ls3);border-radius:var(--rlg);
+  background:#fff;text-align:center;cursor:pointer
+}
+.tile:hover{border-color:var(--l500);background:rgba(160,224,64,.1)}
+.tile .ph{width:40px;height:40px;border-radius:10px;background:var(--ls2);display:flex;align-items:center;justify-content:center;color:var(--l600);font-size:18px}
+.tile .ph.img{background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0369a1}
+.tile .n{font-weight:700;font-size:12px;line-height:1.25}
+.tile .p{font-family:var(--fd);font-weight:700;font-size:13px;color:var(--l600)}
+
+.checkout{display:flex;flex-direction:column;gap:12px;position:sticky;top:56px}
+.cart-h{display:flex;align-items:center;justify-content:space-between}
+.cart-count{
+  min-width:24px;height:24px;border-radius:999px;background:var(--l500);color:var(--c900);
+  font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;padding:0 7px
+}
+.line{
+  display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--ls2)
+}
+.line:last-child{border-bottom:0}
+.thumb{width:44px;height:44px;border-radius:8px;background:var(--ls2);object-fit:cover}
+.line .sku{font-size:11px;color:var(--ltt)}
+.line .nm{font-weight:700;font-size:13px}
+.qty{display:inline-flex;align-items:center;gap:6px;margin-top:4px}
+.qty button{width:26px;height:26px;border-radius:8px;border:1px solid var(--ls3);background:#fff;cursor:pointer;font-weight:700}
+.amt{font-family:var(--fd);font-weight:700;font-size:14px}
+.rm{background:none;border:none;color:var(--dng500);cursor:pointer;font-size:16px;padding:4px}
+.empty{
+  padding:28px 12px;text-align:center;color:var(--ltt);font-size:13px;line-height:1.5
+}
+.empty strong{display:block;color:var(--lts);font-size:14px;margin-bottom:4px}
+
+.pay-box{
+  border:2px solid rgba(122,204,0,.35);
+  background:linear-gradient(180deg,#fff 0%,rgba(160,224,64,.08) 100%);
+  border-radius:var(--rlg);padding:14px
+}
+.pay-box h3{font-family:var(--fd);font-size:14px;margin-bottom:10px}
+.qp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.qp .btn{height:48px;justify-content:center;font-size:14px}
+.total-row{display:flex;justify-content:space-between;align-items:baseline;margin:10px 0 12px;font-size:13px;color:var(--lts)}
+.total-row strong{font-family:var(--fd);font-size:22px;color:var(--l600)}
+.more{font-size:12px;color:var(--l600);font-weight:600;cursor:pointer;margin-top:8px}
+.shift{font-size:12px;color:var(--ltt);margin-bottom:8px}
+.skeleton{background:linear-gradient(90deg,var(--ls2),#eee,var(--ls2));background-size:200% 100%;animation:sh 1.2s infinite;border-radius:8px}
+@keyframes sh{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.sk-tile{height:100px}
+.sk-line{height:52px;margin-bottom:8px}
+.gone-note{
+  margin-top:18px;padding:12px 14px;border-radius:var(--rmd);background:#ECFDF5;border:1px solid #A7F3D0;
+  font-size:12px;color:#065F46;line-height:1.5
+}
+.gone-note strong{display:block;margin-bottom:2px}
+.ar{direction:rtl;font-family:'IBM Plex Sans Arabic',var(--fb);font-size:12px;color:var(--ltt);margin-top:2px}
+.panel[hidden],.state[hidden],.alert[hidden],#statusOk[hidden],#statusWarn[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <div>DESIGN PREVIEW — Sale / POS redesign · not wired to production</div>
+    <div class="note">Removed entirely: <code>Collect balance on an older sale</code> · balance API kept for Debtors / future ownership</div>
+  </div>
+  <div class="state-tabs" id="stateTabs" role="tablist">
+    <button type="button" class="act" data-state="populated">1 · Populated</button>
+    <button type="button" data-state="empty">2 · Empty</button>
+    <button type="button" data-state="loading">3 · Loading</button>
+    <button type="button" data-state="error">4 · Error</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar" aria-hidden="true">
+    <div class="sb-hdr"><div class="mark"></div><span>Fitness Hub</span></div>
+    <div class="sb-sec">Front desk</div>
+    <a class="sb-item act" href="#"><i class="ti ti-shopping-cart"></i> Sale</a>
+    <a class="sb-item" href="#"><i class="ti ti-package"></i> Member Orders</a>
+    <a class="sb-item" href="#"><i class="ti ti-cash-off"></i> Debtors</a>
+    <a class="sb-item" href="#"><i class="ti ti-phone-call"></i> Call sheet</a>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">🏠 <span class="sep">/</span> <span class="cur">Sale</span></div>
+      <div class="gym">Fitness Hub · عربي</div>
+    </header>
+
+    <div class="content">
+      <div class="page-hdr">
+        <div>
+          <h1 class="page-title"><i class="ti ti-shopping-cart"></i> Sale</h1>
+          <p class="page-sub">Sell retail products at the desk — scan or tap, pay, print receipt. Memberships stay in Members.</p>
+          <p class="ar">بيع منتجات من المكتب — امسح أو اضغط، ادفع، اطبع الإيصال. الاشتراكات من الأعضاء.</p>
+        </div>
+        <button type="button" class="btn btn-secondary" id="btnNew"><i class="ti ti-refresh"></i> New sale</button>
+      </div>
+
+      <div class="status-strip" id="statusOk">
+        <span class="chip ok"><i class="ti ti-cash"></i> Shift open · Reception A</span>
+        <span class="chip"><i class="ti ti-building-warehouse"></i> Water Warehouse</span>
+        <span class="chip"><a href="/dashboard/debtors/">Outstanding balances → Debtors</a></span>
+      </div>
+      <div class="status-strip" id="statusWarn" hidden>
+        <span class="chip warn"><i class="ti ti-alert-triangle"></i> Shift status unknown — check Shifts if taking cash</span>
+      </div>
+
+      <div class="alert danger" id="alertShift" hidden>
+        <i class="ti ti-lock" style="font-size:20px"></i>
+        <div>
+          <strong>Open a cash shift first</strong>
+          <p>Cash sales need an open drawer. <a href="/dashboard/shifts/">Open shift</a>, then come back here.</p>
+        </div>
+      </div>
+      <div class="alert warn" id="alertSales" hidden>
+        <i class="ti ti-flag-off" style="font-size:20px"></i>
+        <div>
+          <strong>Sales are turned off for this gym</strong>
+          <p>Ask the owner to enable Sales on the subscription. You cannot complete POS sales until then.</p>
+        </div>
+      </div>
+      <div class="alert danger" id="alertStock" hidden>
+        <i class="ti ti-package-off" style="font-size:20px"></i>
+        <div>
+          <strong>Out of stock</strong>
+          <p>Mineral Water — only 0 left in Water Warehouse. Remove it from the cart or pick another warehouse.</p>
+        </div>
+      </div>
+
+      <div class="desk">
+        <!-- Catalog -->
+        <section class="panel">
+          <div class="panel-h">
+            <h2>Products</h2>
+            <label class="wh">Warehouse
+              <select aria-label="Warehouse">
+                <option>33333 — Water Warehouse</option>
+              </select>
+            </label>
+          </div>
+          <div class="panel-b">
+            <div class="state" data-show="populated empty error">
+              <div class="scan-row">
+                <input placeholder="Scan barcode or search…" dir="ltr">
+                <button type="button" class="btn btn-secondary">Add</button>
+              </div>
+              <input class="search" type="search" placeholder="Water, creatine, SKU…">
+              <div class="quick-h">Quick add</div>
+              <div class="quick" id="quickPopulated">
+                <button type="button" class="tile"><div class="ph"><i class="ti ti-bottle"></i></div><div class="n">Mineral Water</div><div class="p">EGP 7.00</div></button>
+                <button type="button" class="tile"><div class="ph img"><i class="ti ti-coin"></i></div><div class="n">Cash Back</div><div class="p">EGP 30.00</div></button>
+                <button type="button" class="tile"><div class="ph"><i class="ti ti-box"></i></div><div class="n">pro</div><div class="p">EGP 45.00</div></button>
+                <button type="button" class="tile"><div class="ph"><i class="ti ti-barbell"></i></div><div class="n">بروتين</div><div class="p">EGP 1,000.00</div></button>
+                <button type="button" class="tile"><div class="ph"><i class="ti ti-droplet"></i></div><div class="n">Electrolyte</div><div class="p">EGP 25.00</div></button>
+                <button type="button" class="tile"><div class="ph"><i class="ti ti-cookie"></i></div><div class="n">Protein bar</div><div class="p">EGP 40.00</div></button>
+              </div>
+            </div>
+            <div class="state" data-show="loading" hidden>
+              <div class="scan-row"><div class="skeleton" style="flex:1;height:44px"></div><div class="skeleton" style="width:72px;height:44px"></div></div>
+              <div class="skeleton" style="height:40px;margin-bottom:12px"></div>
+              <div class="quick-h">Quick add</div>
+              <div class="quick">
+                <div class="skeleton sk-tile"></div><div class="skeleton sk-tile"></div><div class="skeleton sk-tile"></div>
+                <div class="skeleton sk-tile"></div><div class="skeleton sk-tile"></div><div class="skeleton sk-tile"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Checkout rail -->
+        <aside class="checkout">
+          <section class="panel">
+            <div class="panel-h cart-h">
+              <h2>Cart</h2>
+              <span class="cart-count" id="cartCount">3</span>
+            </div>
+            <div class="panel-b">
+              <div class="state" data-show="populated error" id="cartLines">
+                <div class="line">
+                  <div class="thumb" style="background:#e0f2fe"></div>
+                  <div>
+                    <div class="nm">Mineral Water</div>
+                    <div class="sku">DRN-WAT-500ML</div>
+                    <div class="qty"><button type="button">−</button><span>2</span><button type="button">+</button></div>
+                  </div>
+                  <div style="text-align:right">
+                    <div class="amt">14</div>
+                    <button type="button" class="rm" aria-label="Remove">×</button>
+                  </div>
+                </div>
+                <div class="line">
+                  <div class="thumb"></div>
+                  <div>
+                    <div class="nm">Cash Back</div>
+                    <div class="sku">fjnjnf</div>
+                    <div class="qty"><button type="button">−</button><span>1</span><button type="button">+</button></div>
+                  </div>
+                  <div style="text-align:right">
+                    <div class="amt">30</div>
+                    <button type="button" class="rm" aria-label="Remove">×</button>
+                  </div>
+                </div>
+                <div class="line">
+                  <div class="thumb"></div>
+                  <div>
+                    <div class="nm">pro</div>
+                    <div class="sku">hgfdsa</div>
+                    <div class="qty"><button type="button">−</button><span>1</span><button type="button">+</button></div>
+                  </div>
+                  <div style="text-align:right">
+                    <div class="amt">45</div>
+                    <button type="button" class="rm" aria-label="Remove">×</button>
+                  </div>
+                </div>
+              </div>
+              <div class="state" data-show="empty" hidden>
+                <div class="empty">
+                  <strong>Cart is empty</strong>
+                  Scan a barcode or tap a product to start this sale.
+                </div>
+              </div>
+              <div class="state" data-show="loading" hidden>
+                <div class="skeleton sk-line"></div>
+                <div class="skeleton sk-line"></div>
+              </div>
+            </div>
+          </section>
+
+          <div class="pay-box">
+            <h3>Pay &amp; finish</h3>
+            <div class="shift" id="payShift">Shift · Reception A</div>
+            <div class="total-row"><span>Cart total</span><strong id="cartTotal">EGP 89.00</strong></div>
+            <div class="qp">
+              <button type="button" class="btn btn-primary" id="btnCash"><i class="ti ti-cash"></i> Cash</button>
+              <button type="button" class="btn btn-dark" id="btnCard"><i class="ti ti-credit-card"></i> Card</button>
+            </div>
+            <button type="button" class="btn btn-primary" style="width:100%;justify-content:center" id="btnComplete" disabled>
+              <i class="ti ti-check"></i> Complete sale
+            </button>
+            <div class="more">Split payment / other methods</div>
+            <p style="font-size:11px;color:var(--ltt);margin-top:8px;line-height:1.4">Partial pay on <em>this</em> sale stays under “other methods”. Collecting an older balance is not on this page.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="gone-note">
+        <strong>Intentionally gone from this page</strong>
+        No “Collect balance on an older sale” card, form, or left column. Staff use <strong>Debtors</strong> for outstanding lists; recording follow-up payments stays on the existing API (`POST /api/sales/{id}/payments`) for a future Debtors/Invoices home — not re-added to Sale.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var tabs = document.querySelectorAll('#stateTabs button');
+  var showEls = document.querySelectorAll('[data-show]');
+
+  function setState(name) {
+    tabs.forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-state') === name);
+    });
+    showEls.forEach(function (el) {
+      var list = (el.getAttribute('data-show') || '').split(/\s+/);
+      el.hidden = list.indexOf(name) < 0;
+    });
+
+    var statusOk = document.getElementById('statusOk');
+    var statusWarn = document.getElementById('statusWarn');
+    var alertShift = document.getElementById('alertShift');
+    var alertSales = document.getElementById('alertSales');
+    var alertStock = document.getElementById('alertStock');
+    var cartCount = document.getElementById('cartCount');
+    var cartTotal = document.getElementById('cartTotal');
+    var btnCash = document.getElementById('btnCash');
+    var btnCard = document.getElementById('btnCard');
+    var btnComplete = document.getElementById('btnComplete');
+
+    alertShift.hidden = true;
+    alertSales.hidden = true;
+    alertStock.hidden = true;
+    statusOk.hidden = false;
+    statusWarn.hidden = true;
+
+    if (name === 'populated') {
+      cartCount.textContent = '3';
+      cartTotal.textContent = 'EGP 89.00';
+      btnCash.disabled = false;
+      btnCard.disabled = false;
+      btnComplete.disabled = false;
+    } else if (name === 'empty') {
+      cartCount.textContent = '0';
+      cartTotal.textContent = '—';
+      btnCash.disabled = true;
+      btnCard.disabled = true;
+      btnComplete.disabled = true;
+    } else if (name === 'loading') {
+      cartCount.textContent = '…';
+      cartTotal.textContent = '…';
+      btnCash.disabled = true;
+      btnCard.disabled = true;
+      btnComplete.disabled = true;
+      statusOk.hidden = true;
+      statusWarn.hidden = false;
+    } else if (name === 'error') {
+      cartCount.textContent = '3';
+      cartTotal.textContent = 'EGP 89.00';
+      btnCash.disabled = true;
+      btnCard.disabled = false;
+      btnComplete.disabled = true;
+      statusOk.hidden = true;
+      alertShift.hidden = false;
+      alertStock.hidden = false;
+    }
+  }
+
+  tabs.forEach(function (b) {
+    b.addEventListener('click', function () {
+      setState(b.getAttribute('data-state'));
+    });
+  });
+  setState('populated');
+})();
+</script>
+</body>
+</html>

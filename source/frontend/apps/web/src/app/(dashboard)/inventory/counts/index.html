@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Count stock</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../stock-ops-shared.css?v=2">
+<link rel="stylesheet" href="counts.css?v=sm3">
+<script src="../stock-ops-embed.js?v=1"></script>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Stock Management" data-ar="إدارة المخزون">Stock Management</span><span class="sep">/</span><span class="current" data-en="Count stock" data-ar="جرد">Count stock</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div class="page-header">
+    <div>
+      <h1 class="page-title" data-en="Count stock" data-ar="جرد المخزون">Count stock</h1>
+      <p class="page-subtitle" data-en="Count shelves, then approve to fix the system numbers." data-ar="عُدّ الرف، وبعدين وافق عشان النظام يتظبط على العدد الحقيقي.">Count shelves, then approve to fix the system numbers.</p>
+    </div>
+    <div>
+      <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New count" data-ar="جرد جديد" data-i18n-text>New count</span></button>
+    </div>
+  </div>
+  <div class="layout-split">
+    <div>
+      <div class="toolbar">
+        <label><span data-en="Status" data-ar="الحالة">Status</span>
+          <select id="filterStatus">
+            <option value="" data-en="All" data-ar="الكل">All</option>
+            <option value="draft" data-en="Draft" data-ar="مسودة">Draft</option>
+            <option value="submitted" data-en="Waiting approval" data-ar="في انتظار الموافقة">Waiting approval</option>
+            <option value="approved" data-en="Approved" data-ar="تمت الموافقة">Approved</option>
+            <option value="cancelled" data-en="Cancelled" data-ar="ملغي">Cancelled</option>
+          </select>
+        </label>
+        <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+      </div>
+      <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+    </div>
+    <div class="detail-card" id="detailHost"><p class="muted" data-en="Pick a count on the left to enter numbers or approve." data-ar="اختار جرد من الشمال عشان تدخل الأعداد أو توافق.">Pick a count on the left to enter numbers or approve.</p></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="ctModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="New stock count" data-ar="جرد جديد">New stock count</h2>
+      <button type="button" class="modal-close" data-close="ctModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="ctForm" class="modal-body">
+      <label><span data-en="Warehouse *" data-ar="المستودع *">Warehouse *</span>
+        <select id="ctWarehouse" required><option value="">…</option></select>
+      </label>
+      <label><span data-en="Note" data-ar="ملاحظة">Note</span><textarea id="ctNote" rows="2" maxlength="500"></textarea></label>
+      <p class="muted" data-en="Starts a list of every tracked product in that warehouse so you can type the real shelf count." data-ar="بيجهّز قائمة بكل المنتجات المتتبعة في المستودع عشان تكتب العدد الحقيقي على الرف.">Starts a list of every tracked product in that warehouse so you can type the real shelf count.</p>
+      <p class="form-hint" id="ctHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" data-close="ctModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-create" data-en="Create draft" data-ar="إنشاء مسودة">Create draft</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="counts-app.js?v=sm2"></script>
+</body>
+</html>

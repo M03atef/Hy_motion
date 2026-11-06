@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Notifications</title>
+<meta name="description" content="Staff notification inbox and member messaging.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="notifications.css?v=staff3">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current" data-en="Notifications" data-ar="الإشعارات">Notifications</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div class="page-header notif-page-hdr">
+    <div>
+      <h1 class="page-title"><i class="ti ti-bell"></i> <span data-en="Notifications" data-ar="الإشعارات">Notifications</span>
+        <span class="inbox-unread-pill" id="inboxUnreadPill" hidden>0</span>
+      </h1>
+      <p class="page-subtitle" data-en="Actionable alerts for your desk — not an audit log." data-ar="تنبيهات قابلة للتنفيذ لمكتبك — وليست سجل تدقيق.">Actionable alerts for your desk — not an audit log.</p>
+    </div>
+    <div class="notif-tabs" role="tablist">
+      <button type="button" class="notif-tab act" data-tab="inbox" id="tabInbox"><i class="ti ti-inbox"></i> <span data-en="Inbox" data-ar="الوارد">Inbox</span></button>
+      <button type="button" class="notif-tab" data-tab="compose" id="tabCompose" hidden><i class="ti ti-send"></i> <span data-en="Send to members" data-ar="إرسال للأعضاء">Send to members</span></button>
+    </div>
+  </div>
+
+  <!-- Staff inbox -->
+  <section class="card inbox-card" id="inboxView">
+    <div class="card-hdr inbox-toolbar">
+      <div class="inbox-filters">
+        <button type="button" class="chip act" data-filter="all" id="filterAll" data-en="All" data-ar="الكل">All</button>
+        <button type="button" class="chip" data-filter="unread" id="filterUnread" data-en="Unread" data-ar="غير مقروء">Unread</button>
+      </div>
+      <button type="button" class="btn-secondary" id="btnMarkAllRead"><i class="ti ti-checks"></i> <span data-en="Mark all as read" data-ar="تعليم الكل كمقروء">Mark all as read</span></button>
+    </div>
+    <div class="inbox-list" id="inboxList">
+      <div class="loading-state"><div class="loader"></div><span data-en="Loading…" data-ar="جاري التحميل…">Loading…</span></div>
+    </div>
+    <div class="inbox-pager" id="inboxPager" hidden></div>
+  </section>
+
+  <!-- Member compose (Manager+) — existing tool -->
+  <div class="admin-view" id="composeView" hidden>
+    <div class="split-layout">
+      <div class="compose-panel">
+        <div class="card">
+          <div class="card-hdr">
+            <h2><i class="ti ti-send"></i> <span data-en="Send Notification" data-ar="إرسال إشعار">Send Notification</span></h2>
+          </div>
+          <div class="card-body">
+            <div class="section-label" data-en="Target Audience" data-ar="الجمهور المستهدف">Target Audience</div>
+            <div class="target-radios">
+              <label class="target-radio selected"><input type="radio" name="target" value="all" checked><i class="ti ti-users-group"></i><span data-en="All active members" data-ar="كل الأعضاء النشطين">All active members</span></label>
+              <label class="target-radio"><input type="radio" name="target" value="specific"><i class="ti ti-user-search"></i><span data-en="Specific members" data-ar="أعضاء محددون">Specific members</span></label>
+            </div>
+            <div class="member-search-section" id="memberSearchSection" style="display:none">
+              <div class="search-box">
+                <i class="ti ti-search search-icon"></i>
+                <input type="text" id="memberSearch" placeholder="Search members..." autocomplete="off">
+                <span class="chip-count" id="chipCount">0 / 50</span>
+              </div>
+              <div class="search-results" id="searchResults"></div>
+              <div class="selected-chips" id="selectedChips"></div>
+            </div>
+            <div class="section-label" style="margin-top:18px" data-en="Message Content" data-ar="محتوى الرسالة">Message Content</div>
+            <div class="fg">
+              <label>Title (English) <span class="req">*</span></label>
+              <input id="titleEn" placeholder="e.g. New Summer Schedule!" maxlength="100">
+              <span class="char-count"><span id="titleEnCount">0</span>/100</span>
+            </div>
+            <div class="fg">
+              <label>Title (Arabic) <span class="req">*</span></label>
+              <input id="titleAr" placeholder="مثال: جدول الصيف الجديد!" dir="rtl" style="font-family:var(--fa)" maxlength="100">
+              <span class="char-count"><span id="titleArCount">0</span>/100</span>
+            </div>
+            <div class="fg">
+              <label>Body (English) <span class="req">*</span></label>
+              <textarea id="bodyEn" placeholder="Write your message..." maxlength="500" rows="3"></textarea>
+              <span class="char-count"><span id="bodyEnCount">0</span>/500</span>
+            </div>
+            <div class="fg">
+              <label>Body (Arabic) <span class="req">*</span></label>
+              <textarea id="bodyAr" placeholder="اكتب رسالتك..." dir="rtl" style="font-family:var(--fa)" maxlength="500" rows="3"></textarea>
+              <span class="char-count"><span id="bodyArCount">0</span>/500</span>
+            </div>
+            <div class="section-label" data-en="Delivery Channel" data-ar="قناة الإرسال">Delivery Channel</div>
+            <div class="channel-selector">
+              <label class="channel-card selected"><input type="radio" name="channel" value="push" checked><i class="ti ti-bell-ringing"></i><span>Push</span></label>
+              <label class="channel-card"><input type="radio" name="channel" value="whatsapp"><i class="ti ti-brand-whatsapp"></i><span>WhatsApp</span></label>
+            </div>
+            <button class="btn-send" id="btnSend"><i class="ti ti-send"></i> <span data-en="Send Now" data-ar="إرسال الآن">Send Now</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="history-panel">
+        <div class="card">
+          <div class="card-hdr">
+            <h2><i class="ti ti-history"></i> <span data-en="Sent History" data-ar="سجل الإرسال">Sent History</span></h2>
+            <span class="history-count" id="historyCount">0</span>
+          </div>
+          <div class="history-list" id="historyList">
+            <div class="loading-state"><div class="loader"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/shared/vendor/signalr/signalr.min.js"></script>
+<script src="notifications-app.js?v=staff3"></script>
+</body>
+</html>

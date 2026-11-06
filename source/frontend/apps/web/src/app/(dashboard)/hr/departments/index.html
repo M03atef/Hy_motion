@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Departments</title>
+<script src="../hr-ops-embed.js?v=4"></script>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="departments.css?v=deptdel1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Departments" data-ar="الأقسام">Departments</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Departments are available to owners and managers only." data-ar="الأقسام متاحة فقط لأصحاب الصالة والمديرين.">Departments are available to owners and managers only.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Departments" data-ar="الأقسام">Departments</h1>
+        <p class="page-subtitle" data-en="Organize your team into departments (Reception, Sales, Training, ...)." data-ar="نظّم فريقك في أقسام (استقبال، مبيعات، تدريب، ...).">Organize your team into departments (Reception, Sales, Training, ...).</p>
+      </div>
+      <div id="manageActions" hidden>
+        <button type="button" class="btn-create" id="btnCreate"><i class="ti ti-plus"></i> <span data-en="New department" data-ar="قسم جديد">New department</span></button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <label class="chk"><input type="checkbox" id="filterInactive"> <span data-en="Include inactive" data-ar="إظهار غير النشط">Include inactive</span></label>
+      <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="deptModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 id="deptModalTitle" data-en="New department" data-ar="قسم جديد">New department</h2>
+      <button type="button" class="modal-close" data-close="deptModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="deptForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Name *" data-ar="الاسم *">Name *</span><input id="dName" required maxlength="80"></label>
+        <label class="fg"><span data-en="Name (AR)" data-ar="الاسم (عربي)">Name (AR)</span><input id="dNameAr" maxlength="80" dir="rtl"></label>
+      </div>
+      <label class="chk"><input type="checkbox" id="dActive" checked> <span data-en="Active" data-ar="نشط">Active</span></label>
+      <p class="form-hint" id="deptHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="deptModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveDept" data-en="Save" data-ar="حفظ">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deptDeleteModal" hidden>
+  <div class="modal" style="max-width:420px">
+    <div class="modal-hdr">
+      <h2 data-en="Delete department" data-ar="حذف القسم">Delete department</h2>
+      <button type="button" class="modal-close" id="btnDeptDelCancelX"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <p id="deptDelMessage" style="font-size:14px;font-weight:600;margin:0 0 8px;line-height:1.45"></p>
+      <p style="font-size:12px;color:var(--ltt);margin:0 0 4px;line-height:1.45" data-en="This permanently deletes the department. Employees and positions keep working with no department linked." data-ar="هيتشال القسم نهائي. الموظفين والمناصب هتفضل شغالة من غير قسم.">This permanently deletes the department. Employees and positions keep working with no department linked.</p>
+      <div class="modal-actions" style="padding-left:0;padding-right:0;border:0">
+        <button type="button" class="btn-cancel" id="btnDeptDelCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="button" class="btn-danger" id="btnDeptDelConfirm" data-en="Delete" data-ar="حذف">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="departments-app.js?v=deptdel2"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Backup &amp; Recovery</title>
+<meta name="description" content="Save a copy of this gym on this PC, copy it to USB, and restore if something goes wrong.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="backup.css?v=owner2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">O</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">Owner</div><div class="sb-ft-role" id="userRole">Owner</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-breadcrumb">
+      <span data-en="Administration" data-ar="الإدارة">Administration</span>
+      <span class="sep">/</span>
+      <span class="current" data-en="Backup &amp; Recovery" data-ar="النسخ الاحتياطي والاسترداد">Backup &amp; Recovery</span>
+    </div>
+  </div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div id="editionGate" hidden class="card empty-state">
+    <i class="ti ti-server-off"></i>
+    <span data-en="Backup is only on HyMotion Local — not on the cloud edition." data-ar="النسخ الاحتياطي موجود في نسخة HyMotion المحلية بس — مش على السحابة.">Backup is only on HyMotion Local — not on the cloud edition.</span>
+  </div>
+
+  <div id="mainContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title"><i class="ti ti-database-export"></i> <span data-en="Backup of your gym" data-ar="نسخة النادي">Backup of your gym</span></h1>
+        <p class="page-subtitle" data-en="Save a copy, put it on a USB, restore only if this PC loses the gym." data-ar="احفظ نسخة، حطّها على USB، واستعيد بس لو الجهاز ضيّع بيانات النادي.">Save a copy, put it on a USB, restore only if this PC loses the gym.</p>
+      </div>
+      <div class="hdr-actions">
+        <button type="button" class="btn primary" id="btnBackupNow"><i class="ti ti-database-export"></i> <span data-en="Save a copy now" data-ar="احفظ نسخة دلوقتي">Save a copy now</span></button>
+        <button type="button" class="btn secondary" id="btnRefresh"><i class="ti ti-refresh"></i> <span data-en="Refresh" data-ar="تحديث">Refresh</span></button>
+      </div>
+    </div>
+
+    <div id="bkBanner" class="bk-banner" hidden></div>
+
+    <section class="bk-hero" id="heroCard" aria-live="polite">
+      <div class="bk-skel" style="width:40%"></div>
+      <div class="bk-skel" style="width:70%;margin-top:10px"></div>
+    </section>
+
+    <section class="bk-steps" aria-label="How backup works">
+      <article class="bk-step">
+        <div class="bk-step-num">1</div>
+        <h2 data-en="Save a copy" data-ar="احفظ نسخة">Save a copy</h2>
+        <p data-en="Click Save a copy now. Wait on this page — it usually finishes in about a minute." data-ar="اضغط «احفظ نسخة دلوقتي». استنى على الصفحة — عادةً بتخلّص في حوالي دقيقة.">Click Save a copy now. Wait on this page — it usually finishes in about a minute.</p>
+      </article>
+      <article class="bk-step">
+        <div class="bk-step-num">2</div>
+        <h2 data-en="Copy to a USB" data-ar="انسخ على USB">Copy to a USB</h2>
+        <p data-en="A copy only on this PC is lost if the PC dies. Plug in a USB and click Save to USB." data-ar="النسخة على الجهاز ده تضيع لو الجهاز عطل. وصل USB واضغط احفظ على USB.">A copy only on this PC is lost if the PC dies. Plug in a USB and click Save to USB.</p>
+        <div class="bk-usb" id="usbRow">
+          <button type="button" class="btn primary" id="btnSaveUsb"><i class="ti ti-device-usb"></i> <span data-en="Save to USB" data-ar="احفظ على USB">Save to USB</span></button>
+        </div>
+      </article>
+      <article class="bk-step">
+        <div class="bk-step-num">3</div>
+        <h2 data-en="Restore if something breaks" data-ar="استعيد لو حصل عطل">Restore if something breaks</h2>
+        <p data-en="Pick a copy marked Looks good. Restore replaces today’s gym and takes the desk offline for a few minutes." data-ar="اختار نسخة مكتوب عليها تمام. الاستعادة بتمسح بيانات النهارده وبتوقّف المكتب دقايق.">Pick a copy marked Looks good. Restore replaces today’s gym and takes the desk offline for a few minutes.</p>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="card-h">
+        <h2 data-en="Saved copies" data-ar="النسخ المحفوظة">Saved copies</h2>
+      </div>
+      <div class="table-wrap">
+        <table class="bk-hist">
+          <thead>
+            <tr>
+              <th data-en="When" data-ar="متى">When</th>
+              <th data-en="How" data-ar="إزاي">How</th>
+              <th data-en="Result" data-ar="النتيجة">Result</th>
+              <th data-en="What was saved" data-ar="إيه اللي اتحفظ">What was saved</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="5" class="muted" data-en="Loading…" data-ar="جاري التحميل…">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <details class="bk-support">
+      <summary data-en="Details for HyMotion support" data-ar="تفاصيل لفريق HyMotion">Details for HyMotion support</summary>
+      <div id="supportDetails" class="bk-support-body"></div>
+    </details>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="bk-ov" id="restoreModal" hidden>
+  <div class="bk-ov-card" role="dialog" aria-modal="true" aria-labelledby="restoreTitle">
+    <div class="bk-ov-h">
+      <h2 id="restoreTitle" data-en="Restore this copy" data-ar="استعادة النسخة دي">Restore this copy</h2>
+      <button type="button" class="btn ghost" id="btnRestoreClose" aria-label="Close"><i class="ti ti-x"></i></button>
+    </div>
+    <p class="bk-ov-lead" id="restoreLead"></p>
+    <ol class="bk-ov-steps">
+      <li data-en="Tell the desk to stop selling and checking in. This PC will be offline for a few minutes." data-ar="قول للاستقبال يوقف البيع وتسجيل الحضور. الجهاز هيقف دقايق.">Tell the desk to stop selling and checking in. This PC will be offline for a few minutes.</li>
+      <li data-en="Click Open Restore. Allow Windows if it asks." data-ar="اضغط افتح الاستعادة. اسمح لويندوز لو طلب.">Click Open Restore. Allow Windows if it asks.</li>
+      <li data-en="In HyMotion Backup, type RESTORE and wait. HyMotion opens again when it finishes." data-ar="في HyMotion Backup اكتب RESTORE واستنى. HyMotion هيفتح تاني لما يخلّص.">In HyMotion Backup, type RESTORE and wait. HyMotion opens again when it finishes.</li>
+    </ol>
+    <label class="bk-check">
+      <input type="checkbox" id="restoreAck">
+      <span data-en="I understand this replaces today’s gym data with the chosen copy." data-ar="فاهم إن ده هيبدّل بيانات النهارده بالنسخة المختارة.">I understand this replaces today’s gym data with the chosen copy.</span>
+    </label>
+    <p class="bk-ov-fallback" id="restoreFallback" hidden data-en="If nothing opens: Start menu → HyMotion Backup." data-ar="لو ما فتحش حاجة: قائمة ابدأ ← HyMotion Backup.">If nothing opens: Start menu → HyMotion Backup.</p>
+    <div class="bk-ov-actions">
+      <button type="button" class="btn secondary" id="btnRestoreCancel" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+      <button type="button" class="btn primary" id="btnOpenRestore" disabled><i class="ti ti-restore"></i> <span data-en="Open Restore" data-ar="افتح الاستعادة">Open Restore</span></button>
+    </div>
+  </div>
+</div>
+
+<script src="/shared/gfp-deployment.js"></script>
+<script src="backup-app.js?v=owner2"></script>
+</body>
+</html>

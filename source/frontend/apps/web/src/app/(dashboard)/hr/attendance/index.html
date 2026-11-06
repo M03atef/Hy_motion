@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Attendance</title>
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="attendance.css?v=1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">—</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout"><i class="ti ti-logout"></i></button></div>
+</aside>
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="HR" data-ar="الموارد البشرية">HR</span><span class="sep">/</span><span class="current" data-en="Attendance" data-ar="الحضور">Attendance</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">HyMotion</div><div class="gym-name-ar" id="gymNameAr"></div></div>
+</header>
+<div class="content">
+  <div id="ownerGuard" class="owner-guard" hidden>
+    <div class="guard-icon"><i class="ti ti-lock"></i></div>
+    <h2 data-en="Access Restricted" data-ar="الوصول مقيد">Access Restricted</h2>
+    <p data-en="Attendance is not available for your role." data-ar="الحضور غير متاح لدورك.">Attendance is not available for your role.</p>
+    <a href="/dashboard/" class="guard-btn" data-en="Back to Dashboard" data-ar="العودة للوحة التحكم">Back to Dashboard</a>
+  </div>
+  <div id="pageContent">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-en="Attendance" data-ar="الحضور">Attendance</h1>
+        <p class="page-subtitle" data-en="Check employees in and out, and review their working hours." data-ar="سجّل حضور وانصراف الموظفين، وراجع ساعات عملهم.">Check employees in and out, and review their working hours.</p>
+      </div>
+      <div id="manageActions" hidden>
+        <select id="ciEmployee" style="height:44px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 12px;min-width:220px"><option value="" data-en="Select employee to check in…" data-ar="اختر موظفاً للحضور…">Select employee to check in…</option></select>
+        <button type="button" class="btn-create" id="btnCheckIn"><i class="ti ti-login-2"></i> <span data-en="Check In" data-ar="تسجيل حضور">Check In</span></button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <div class="chk-group" id="dateChips">
+        <button type="button" class="date-chip act" data-mode="today" data-en="Today" data-ar="اليوم">Today</button>
+        <button type="button" class="date-chip" data-mode="week" data-en="This week" data-ar="هذا الأسبوع">This week</button>
+        <button type="button" class="date-chip" data-mode="custom" data-en="Custom" data-ar="مخصص">Custom</button>
+      </div>
+      <input type="date" id="customFrom" class="date-input" hidden>
+      <span class="date-sep" id="customSep" hidden>→</span>
+      <input type="date" id="customTo" class="date-input" hidden>
+      <select id="filterEmployee" aria-label="Employee"><option value="" data-en="All employees" data-ar="كل الموظفين">All employees</option></select>
+      <select id="filterStatus" aria-label="Status">
+        <option value="" data-en="All statuses" data-ar="كل الحالات">All statuses</option>
+        <option value="Present" data-en="Present" data-ar="حاضر">Present</option>
+        <option value="Late" data-en="Late" data-ar="متأخر">Late</option>
+        <option value="Absent" data-en="Absent" data-ar="غائب">Absent</option>
+        <option value="HalfDay" data-en="Half day" data-ar="نصف يوم">Half day</option>
+        <option value="OnLeave" data-en="On leave" data-ar="إجازة">On leave</option>
+      </select>
+      <button type="button" class="btn-secondary" id="btnRefresh"><i class="ti ti-refresh"></i></button>
+    </div>
+    <div class="table-wrap" id="tableHost"><div class="loading-state"><div class="loader"></div><p data-en="Loading…" data-ar="جاري التحميل…">Loading…</p></div></div>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay" id="correctModal" hidden>
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 data-en="Correct attendance" data-ar="تصحيح الحضور">Correct attendance</h2>
+      <button type="button" class="modal-close" data-close="correctModal"><i class="ti ti-x"></i></button>
+    </div>
+    <form id="correctForm" class="modal-body">
+      <div class="form-grid">
+        <label class="fg"><span data-en="Status" data-ar="الحالة">Status</span>
+          <select id="corStatus">
+            <option value="Present" data-en="Present" data-ar="حاضر">Present</option>
+            <option value="Late" data-en="Late" data-ar="متأخر">Late</option>
+            <option value="Absent" data-en="Absent" data-ar="غائب">Absent</option>
+            <option value="HalfDay" data-en="Half day" data-ar="نصف يوم">Half day</option>
+            <option value="OnLeave" data-en="On leave" data-ar="إجازة">On leave</option>
+          </select>
+        </label>
+      </div>
+      <div class="form-grid">
+        <label class="fg"><span data-en="Check-in (local)" data-ar="الحضور (محلي)">Check-in (local)</span><input id="corCheckIn" type="datetime-local"></label>
+        <label class="fg"><span data-en="Check-out (local)" data-ar="الانصراف (محلي)">Check-out (local)</span><input id="corCheckOut" type="datetime-local"></label>
+      </div>
+      <label class="fg"><span data-en="Notes" data-ar="ملاحظات">Notes</span><textarea id="corNotes" rows="2" maxlength="500"></textarea></label>
+      <p class="form-hint" id="correctHint"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" data-close="correctModal" data-en="Cancel" data-ar="إلغاء">Cancel</button>
+        <button type="submit" class="btn-primary" id="btnSaveCorrect" data-en="Save" data-ar="حفظ">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="attendance-app.js?v=2"></script>
+</body>
+</html>

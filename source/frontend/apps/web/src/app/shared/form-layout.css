@@ -1,0 +1,269 @@
+/**
+ * HyMotion — responsive forms, filters, and search (Task 6).
+ * Injected after table-layout.css. Visual chrome stays in page CSS.
+ * Layout only: columns, shrink, wrap, actions.
+ */
+
+.form-row,
+.form-grid,
+.form-stack,
+.mdl-form-row,
+.mdl-form-group,
+.easy-form,
+.promo-grid,
+.gfp-refund-form,
+.gfp-refund-kpis,
+.cat-form,
+.buy-pair,
+.flags,
+.fg,
+.flt,
+.filter-field,
+.filter-field-staff,
+.field,
+.reason-grid,
+.kind-selector,
+.book-entry-choice,
+.phone-input-wrap,
+.offers-toolbar,
+.offers-search,
+.inv-toolbar,
+.rpt-toolbar,
+.range-wrap,
+.range-pop,
+.filter-pop,
+.filter-bar,
+.filter-chips,
+.hub-tabs,
+#salesFilters,
+.modal-actions,
+.drawer-footer,
+.mdl-footer,
+.confirm-actions,
+.form-actions,
+.inline-act-row {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.toolbar,
+.controls,
+.filters,
+.filter-bar,
+.filter-chips,
+.staff-toolbar,
+.cs-toolbar,
+.inv-toolbar,
+.offers-toolbar,
+.rpt-toolbar,
+.hdr-actions,
+#salesFilters,
+.action-bar,
+.modal-actions,
+.drawer-footer,
+.mdl-footer,
+.confirm-actions,
+.form-actions,
+.inline-act-row,
+.row-inline,
+.role-selector {
+  flex-wrap: wrap;
+}
+
+.search-box,
+.staff-search,
+.cs-search,
+.inv-search,
+.search-wrap,
+.offers-search {
+  flex: 1 1 12rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.search-box input,
+.staff-search input,
+.cs-search input,
+.inv-search input,
+.offers-search input,
+.search-wrap input {
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 auto;
+}
+
+.filter-field,
+.toolbar .field,
+.filters .field,
+.flt,
+.filter-field-staff {
+  min-width: 0;
+  flex: 1 1 10rem;
+}
+
+.filters select,
+.toolbar select,
+.filter-select,
+.offers-toolbar select,
+.staff-toolbar select,
+.inv-toolbar select {
+  min-width: 0;
+  max-width: 100%;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']),
+select,
+textarea {
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+input[type='date'],
+input[type='time'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='week'] {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.form-grid input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.form-grid select,
+.form-grid textarea,
+.form-row input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.form-row select,
+.form-row textarea,
+.mdl-form-row input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.mdl-form-row select,
+.mdl-form-row textarea,
+.easy-form input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.easy-form select,
+.easy-form textarea,
+.fg input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.fg select,
+.fg textarea,
+.flt input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.flt select,
+.filter-field input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.filter-field select,
+.promo-grid input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='hidden']),
+.promo-grid select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.form-grid label,
+.form-row label,
+.fg label,
+.flt,
+.filter-label,
+.mdl-form-group label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.filter-bar,
+.hub-tabs,
+.filter-chips {
+  max-width: 100%;
+}
+
+.modal-actions > *,
+.drawer-footer > *,
+.mdl-footer > *,
+.confirm-actions > *,
+.form-actions > * {
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.phone-input-wrap,
+.row-inline {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.row-inline input {
+  min-width: 0;
+}
+
+.range-pop,
+.filter-pop {
+  max-width: min(360px, calc(100vw - 32px));
+}
+
+/* Tablet: keep 2-column forms; shrink fields so the row can wrap. */
+@media (max-width: 1023px) {
+  .filter-field,
+  .toolbar .field,
+  .filters .field,
+  .flt,
+  .filter-field-staff {
+    flex: 1 1 9rem;
+  }
+}
+
+/* Mobile: stack fields; search uses the full row. */
+@media (max-width: 767.98px) {
+  .form-row,
+  .form-grid,
+  .mdl-form-row,
+  .easy-form,
+  .promo-grid,
+  .gfp-refund-form,
+  .gfp-refund-kpis,
+  .cat-form,
+  .buy-pair,
+  .flags,
+  .reason-grid,
+  .kind-selector,
+  .book-entry-choice,
+  .ent-card-controls,
+  .seed-grid,
+  .detail-kv,
+  .mov-form,
+  .pay-leg,
+  .recv-line,
+  .po-item,
+  .plan-spec,
+  .line-row,
+  .map-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .search-box,
+  .staff-search,
+  .cs-search,
+  .inv-search,
+  .search-wrap,
+  .offers-search,
+  .filter-field,
+  .toolbar .field,
+  .filters .field,
+  .flt,
+  .filter-field-staff {
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .filters select,
+  .toolbar select,
+  .filter-select,
+  .offers-toolbar select,
+  .staff-toolbar select,
+  .inv-toolbar select,
+  .date-pick {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .form-grid .span-2,
+  .form-grid .span2,
+  .fg.span2,
+  .easy-form .span-2 {
+    grid-column: 1 / -1;
+  }
+}

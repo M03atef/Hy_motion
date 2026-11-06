@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Cancel membership (preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--l600:#5EAF00;--l500:#7ACC00;
+  --wrn100:#FEF3C7;--wrn700:#92400E;
+  --lbg:#F4F5F3;--ls1:#FFFEFB;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:56rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button,.page-tabs button{height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.content{padding:22px 28px 64px;max-width:1080px;margin:0 auto}
+.page-tabs{display:flex;gap:8px;margin:0 0 18px;flex-wrap:wrap}
+.page-tabs button{border:1px solid var(--ls3);background:#fff;color:var(--lts)}
+.page-tabs button.act{border-color:#C5D6B8;color:var(--ltp);background:#F7FAF4}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.split{grid-template-columns:1fr}}
+.col-h{font-family:var(--fd);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ltt);margin-bottom:10px}
+.tab-pane{background:#fff;border:1px solid var(--ls3);border-radius:16px;padding:8px 8px 16px}
+.rtabs{display:flex;gap:16px;padding:8px 12px 10px;border-bottom:1px solid var(--ls3);margin-bottom:14px}
+.rtabs span{font-size:13px;font-weight:600;color:var(--ltt)}
+.rtabs span.act{color:var(--ltp);border-bottom:2px solid var(--ltp);padding-bottom:8px;margin-bottom:-11px}
+.card{background:#EEF1EC;border-radius:14px;padding:16px 18px 14px;border-left:4px solid #5EAF00}
+.card.cancelled{border-left-color:#EF4444}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.plan{font-family:var(--fd);font-size:18px;font-weight:700}
+.sub{font-size:12px;color:var(--ltt);margin-top:3px}
+.st{font-family:var(--fd);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px}
+.st.active{background:#DCFCE7;color:#166534}
+.st.cancelled{background:#FEE2E2;color:#991B1B}
+.hero{font-family:var(--fd);font-size:26px;font-weight:700}
+.hero-lbl{font-size:13px;color:var(--lts);margin-top:2px}
+.pbar{height:5px;background:rgba(13,13,13,.08);border-radius:999px;overflow:hidden;margin:10px 0 6px}
+.pfill{height:100%;width:3%;background:var(--l600)}
+.pcap{display:flex;justify-content:space-between;font-size:12px;color:var(--ltt)}
+.facts{display:flex;flex-wrap:wrap;gap:6px 20px;margin:12px 0 2px;padding-top:10px;border-top:1px solid rgba(13,13,13,.08);font-size:12px;color:var(--ltt)}
+.facts b{font-family:var(--fd);font-size:13px;color:var(--ltp);margin-left:6px}
+.note{background:#FEE2E2;color:#991B1B;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.45;margin-bottom:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{height:38px;padding:0 16px;border-radius:10px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn.danger{color:#991B1B;border-color:#FECACA;background:#fff}
+.doc h2{font-family:var(--fd);font-size:22px;margin:8px 0}
+.doc h3{font-family:var(--fd);font-size:15px;margin:20px 0 8px}
+.doc p,.doc li{font-size:14px;color:var(--lts);line-height:1.55}
+.doc ul{padding-left:18px;margin:6px 0 12px}
+.box{background:#fff;border:1px solid var(--ls3);border-radius:12px;padding:14px 16px;margin:12px 0;font-size:13px;color:var(--lts);line-height:1.5}
+.box strong{color:var(--ltp)}
+.overlay{position:fixed;inset:0;background:rgba(13,13,13,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:90}
+.overlay[hidden]{display:none!important}
+.modal{background:#fff;border-radius:16px;max-width:420px;width:100%;padding:20px}
+.modal h3{font-family:var(--fd);font-size:18px;margin-bottom:6px}
+.modal p{font-size:13px;color:var(--lts);line-height:1.5;margin-bottom:10px}
+.warn{background:var(--wrn100);color:var(--wrn700);border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.45;margin:12px 0}
+.foot{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.muted{color:var(--ltt);font-size:13px}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW ONLY — Cancel membership
+    <div class="note">Not live. Wait for Product Accept. Cancel stops the plan. It is not a refund and not the person Active toggle.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-view="cards">Cards</button>
+    <button type="button" data-view="rules">Rules</button>
+  </div>
+</div>
+
+<div class="content" id="viewCards">
+  <div class="page-tabs" id="scenarios">
+    <button type="button" class="act" data-sc="active">Active (paid 100 of 300)</button>
+    <button type="button" data-sc="done">After cancel</button>
+  </div>
+  <div class="split">
+    <div>
+      <div class="col-h">Today</div>
+      <div class="tab-pane">
+        <div class="rtabs"><span class="act">Membership</span><span>Invitations</span></div>
+        <div class="card" id="oldCard"></div>
+      </div>
+    </div>
+    <div>
+      <div class="col-h">Proposed</div>
+      <div class="tab-pane">
+        <div class="rtabs"><span class="act">Membership</span><span>Invitations</span></div>
+        <div class="card" id="newCard"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content doc" id="viewRules" hidden>
+  <h2>Verdict</h2>
+  <p><strong>Yes — add Cancel on the membership card.</strong> There is no cancel API today. The only way a plan becomes cancelled is a <em>full sale refund</em>. That is money. Desk also needs “this person should not train on this plan anymore.”</p>
+  <div class="box">
+    <strong>Cancel is not Refund.</strong> Cancel stops check-in and invitations on this covering period. Cash already taken stays in the gym. Remaining unpaid on this plan is not collected. If they should get money back, use Refund on the sale (existing).
+  </div>
+  <div class="box">
+    <strong>Cancel is not Archive.</strong> The left-column Active toggle is the person account. Leave it alone. A cancelled plan can still belong to an Active person (Renew / Assign next).
+  </div>
+  <div class="box">
+    <strong>Cancel is not Freeze.</strong> Freeze is a hold with a return date. Cancel is historical. Do not resurrect the cancelled row. Renew or Assign starts a new membership — same as after a full refund.
+  </div>
+  <h3>What happens</h3>
+  <ul>
+    <li>Membership.Status = cancelled. Dates stay. History keeps the row.</li>
+    <li>Check-in and invitation remaining on this period = 0 (covering is gone).</li>
+    <li>If this plan’s sale is still outstanding (paid 100 of 300), remaining is no longer collected. That is not a refund and not a write-off screen. Sale is not marked refunded.</li>
+    <li>Pending Fawry: cancel the pending membership. No gateway refund (unsupported).</li>
+    <li>Lime stays on Renew. Cancel is a quiet danger control. Confirm in a dialog.</li>
+    <li>Who: Manager or above (same as Assign / Renew). Do not add a new role. Do not reuse payments.refund.*</li>
+  </ul>
+  <h3>Do not</h3>
+  <ul>
+    <li>Put Collect Payment on this card.</li>
+    <li>Auto-refund cash or create a credit note.</li>
+    <li>Restore Refunds as a nav desk.</li>
+    <li>Add Member.DebtAmount.</li>
+    <li>Treat person Archive as membership cancel.</li>
+  </ul>
+  <p class="muted">Implemented on Member 360. <code>POST /api/memberships/{memberId}/cancel</code>. Cache <code>member-detail.js?v=ms-cancel1</code>. Not a refund.</p>
+</div>
+
+<div class="overlay" id="dlg" hidden>
+  <div class="modal">
+    <h3>Cancel this membership?</h3>
+    <p>عرض الصحاب stops today. Check-in and invitations close. This plan stays in history.</p>
+    <div class="warn"><strong>Not a refund.</strong> EGP 100 cash stays with the gym. EGP 200 outstanding on this plan will not be collected. Refund the sale separately if they should get money back.</div>
+    <div class="foot">
+      <button type="button" class="btn" id="dlgNo">Keep plan</button>
+      <button type="button" class="btn danger" id="dlgYes">Cancel membership</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var sc='active';
+  function oldHtml(){
+    return '<div class="top"><div><div class="plan">عرض الصحاب</div><div class="sub">Monthly unlimited</div></div><span class="st active">Active</span></div>'+
+      '<div class="hero">30 days left</div><div class="hero-lbl">Ends 17 Sep 2026</div>'+
+      '<div class="pbar"><div class="pfill"></div></div>'+
+      '<div class="pcap"><span>Used 0 of 30 days</span><span>18 Aug 2026</span></div>'+
+      '<div class="facts"><span>Invitations<b>3 of 3</b></span><span>Paid<b>EGP 100 · Cash</b></span></div>'+
+      '<div class="actions"><button type="button" class="btn primary"><i class="ti ti-refresh"></i> Renew</button><button type="button" class="btn"><i class="ti ti-snowflake"></i> Freeze</button></div>';
+  }
+  function newHtml(){
+    if(sc==='done'){
+      return '<div class="top"><div><div class="plan">عرض الصحاب</div><div class="sub">Monthly unlimited</div></div><span class="st cancelled">Cancelled</span></div>'+
+        '<div class="note">This membership is historical. Renew or Assign to start a new current membership — invitations use the new period.</div>'+
+        '<div class="facts"><span>Invitations<b>0 of 3</b></span><span>Paid<b>EGP 100 · Cash</b></span></div>'+
+        '<div class="actions"><button type="button" class="btn primary"><i class="ti ti-refresh"></i> Renew</button><button type="button" class="btn"><i class="ti ti-plus"></i> Assign</button></div>';
+    }
+    return '<div class="top"><div><div class="plan">عرض الصحاب</div><div class="sub">Monthly unlimited</div></div><span class="st active">Active</span></div>'+
+      '<div class="hero">30 days left</div><div class="hero-lbl">Ends 17 Sep 2026</div>'+
+      '<div class="pbar"><div class="pfill"></div></div>'+
+      '<div class="pcap"><span>Used 0 of 30 days</span><span>18 Aug 2026</span></div>'+
+      '<div class="facts"><span>Invitations<b>3 of 3</b></span><span>Paid<b>EGP 100 · Cash</b></span></div>'+
+      '<div class="actions"><button type="button" class="btn primary"><i class="ti ti-refresh"></i> Renew</button><button type="button" class="btn"><i class="ti ti-snowflake"></i> Freeze</button><button type="button" class="btn danger" id="btnCancel"><i class="ti ti-ban"></i> Cancel</button></div>';
+  }
+  function render(){
+    document.getElementById('oldCard').innerHTML=oldHtml();
+    var neu=document.getElementById('newCard');
+    neu.className='card'+(sc==='done'?' cancelled':'');
+    neu.innerHTML=newHtml();
+    var b=document.getElementById('btnCancel');
+    if(b) b.addEventListener('click',function(){ document.getElementById('dlg').hidden=false; });
+  }
+  document.getElementById('scenarios').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    sc=b.getAttribute('data-sc');
+    document.querySelectorAll('#scenarios button').forEach(function(x){ x.classList.toggle('act', x===b); });
+    render();
+  });
+  document.querySelectorAll('.controls button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.controls button').forEach(function(x){ x.classList.remove('act'); });
+      b.classList.add('act');
+      var v=b.getAttribute('data-view');
+      document.getElementById('viewCards').hidden=v!=='cards';
+      document.getElementById('viewRules').hidden=v!=='rules';
+    });
+  });
+  document.getElementById('dlgNo').addEventListener('click',function(){ document.getElementById('dlg').hidden=true; });
+  document.getElementById('dlgYes').addEventListener('click',function(){
+    document.getElementById('dlg').hidden=true;
+    sc='done';
+    document.querySelectorAll('#scenarios button').forEach(function(x){ x.classList.toggle('act', x.getAttribute('data-sc')==='done'); });
+    render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

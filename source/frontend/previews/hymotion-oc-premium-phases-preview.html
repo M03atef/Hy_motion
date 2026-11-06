@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Consolidation status preview (not a production mirror)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ds-lime-400: #a0e040;
+  --ds-lime-500: #7acc00;
+  --ds-teal-500: #148f8f;
+  --ds-bg-canvas: #101010;
+  --ds-bg-sidebar: #141414;
+  --ds-surface: #1a1a1a;
+  --ds-surface-2: #222222;
+  --ds-border: #2e2e2e;
+  --ds-text: #f3f3f0;
+  --ds-text-muted: #9c9c96;
+  --ds-text-faint: #6e6e68;
+  --ds-text-on-lime: #0d0d0d;
+  --ds-status-success: #3ddc82;
+  --ds-status-warning: #f0b429;
+  --ds-status-danger: #f07171;
+  --ds-status-info: #4ec4c4;
+  --ds-font: Cairo, system-ui, sans-serif;
+  --ds-radius: 8px;
+  --ds-shadow: 0 16px 40px rgba(0,0,0,.55);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--ds-font);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(122,204,0,.12), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(20,143,143,.14), transparent 50%),
+    var(--ds-bg-canvas);
+  color: var(--ds-text);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100dvh;
+}
+[data-theme="light"] {
+  --ds-bg-canvas: #f4f4f1;
+  --ds-bg-sidebar: #ffffff;
+  --ds-surface: #ffffff;
+  --ds-surface-2: #f0f0ec;
+  --ds-border: #e2e2dc;
+  --ds-text: #141414;
+  --ds-text-muted: #5c5c56;
+  --ds-text-faint: #8a8a84;
+  --ds-shadow: 0 12px 32px rgba(13,13,13,.12);
+}
+body[data-theme="light"] {
+  background:
+    radial-gradient(1000px 500px at 0% 0%, rgba(122,204,0,.08), transparent 50%),
+    var(--ds-bg-canvas);
+}
+
+.banner {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(20,20,20,.92);
+  border-bottom: 1px solid var(--ds-border);
+  backdrop-filter: blur(10px);
+}
+[data-theme="light"] .banner { background: rgba(255,255,255,.92); }
+.banner strong { color: var(--ds-lime-500); }
+.banner-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip, .btn {
+  border: 1px solid var(--ds-border);
+  background: var(--ds-surface-2);
+  color: var(--ds-text);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--ds-lime-500);
+  color: var(--ds-text-on-lime);
+  border-color: transparent;
+}
+.chip[aria-pressed="true"], .nav-tab[aria-selected="true"] {
+  border-color: rgba(122,204,0,.45);
+  background: rgba(122,204,0,.12);
+  color: var(--ds-text);
+}
+
+.wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 64px; }
+.hero {
+  display: grid; gap: 8px; margin-bottom: 24px;
+  animation: rise .5s ease both;
+}
+.hero h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.hero p { margin: 0; color: var(--ds-text-muted); max-width: 62ch; }
+.phase-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pill {
+  font-size: 12px; font-weight: 700;
+  padding: 4px 10px; border-radius: 999px;
+  background: rgba(20,143,143,.16);
+  color: var(--ds-status-info);
+  border: 1px solid rgba(78,196,196,.32);
+}
+
+.screen-nav {
+  display: flex; gap: 6px; overflow-x: auto;
+  padding-bottom: 12px; margin-bottom: 16px;
+  border-bottom: 1px solid var(--ds-border);
+}
+.nav-tab {
+  flex: 0 0 auto;
+  border: 0; background: transparent;
+  color: var(--ds-text-muted);
+  font: inherit; font-weight: 700; font-size: 13px;
+  padding: 10px 12px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.nav-tab[aria-selected="true"] {
+  color: var(--ds-text);
+  border-bottom-color: var(--ds-teal-500);
+  background: transparent;
+}
+
+.panel { display: none; animation: rise .35s ease both; }
+.panel.is-active { display: block; }
+
+.frame {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  min-height: 640px;
+  border: 1px solid var(--ds-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--ds-surface);
+  box-shadow: var(--ds-shadow);
+}
+@media (max-width: 900px) {
+  .frame { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+}
+
+.sidebar {
+  background: var(--ds-bg-sidebar);
+  border-inline-end: 1px solid var(--ds-border);
+  padding: 16px 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px 16px;
+}
+.mark {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: linear-gradient(145deg, var(--ds-lime-400), var(--ds-lime-500));
+  box-shadow: 0 0 0 1px rgba(122,204,0,.35), 0 8px 20px rgba(122,204,0,.2);
+}
+.brand h2 { margin: 0; font-size: 15px; }
+.brand small { color: var(--ds-text-muted); font-size: 12px; }
+.side-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 8px;
+  color: var(--ds-text-muted); text-decoration: none; font-weight: 600;
+}
+.side-link.active {
+  background: rgba(122,204,0,.12);
+  color: var(--ds-text);
+  box-shadow: inset 3px 0 0 var(--ds-lime-500);
+}
+.side-foot {
+  margin-top: auto; padding: 12px;
+  border-top: 1px solid var(--ds-border);
+  font-size: 12px; color: var(--ds-text-muted);
+}
+
+.main { min-width: 0; background: var(--ds-bg-canvas); }
+.topbar {
+  height: 56px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px; border-bottom: 1px solid var(--ds-border);
+  background: var(--ds-bg-sidebar);
+}
+.topbar-title { font-weight: 700; }
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+.content { padding: 20px; display: grid; gap: 16px; }
+
+.h-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; justify-content: space-between; }
+.h-row h3 { margin: 0; font-size: 22px; line-height: 1.2; }
+.h-row p { margin: 4px 0 0; color: var(--ds-text-muted); }
+
+.grid { display: grid; gap: 12px; }
+.grid-4 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+
+.card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius);
+  padding: 14px;
+}
+.card.attention { border-inline-start: 3px solid var(--ds-status-warning); }
+.metric { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+.muted { color: var(--ds-text-muted); }
+.faint { color: var(--ds-text-faint); font-size: 12px; }
+
+.status {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 700;
+  padding: 3px 8px; border-radius: 999px;
+  border: 1px solid transparent;
+}
+.status.ok { color: var(--ds-status-success); background: rgba(61,220,130,.12); border-color: rgba(61,220,130,.32); }
+.status.warn { color: var(--ds-status-warning); background: rgba(240,180,41,.12); border-color: rgba(240,180,41,.32); }
+.status.danger { color: var(--ds-status-danger); background: rgba(240,113,113,.12); border-color: rgba(240,113,113,.32); }
+.status.info { color: var(--ds-status-info); background: rgba(20,143,143,.16); border-color: rgba(78,196,196,.32); }
+
+.tabs { display: flex; gap: 4px; overflow-x: auto; border-bottom: 1px solid var(--ds-border); }
+.tabs button {
+  border: 0; background: transparent; color: var(--ds-text-muted);
+  font: inherit; font-weight: 700; font-size: 13px;
+  padding: 10px 12px; border-bottom: 2px solid transparent; cursor: pointer;
+}
+.tabs button[aria-selected="true"] {
+  color: var(--ds-text); border-bottom-color: var(--ds-teal-500);
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: start; padding: 10px 12px; border-bottom: 1px solid var(--ds-border); vertical-align: top; }
+th { font-size: 12px; color: var(--ds-text-muted); background: var(--ds-surface-2); }
+.msg-preview { color: var(--ds-text); }
+.msg-subject { font-size: 12px; color: var(--ds-text-muted); margin-top: 2px; }
+.strike { text-decoration: line-through; color: var(--ds-text-faint); }
+
+.callout {
+  border: 1px dashed rgba(122,204,0,.4);
+  background: rgba(122,204,0,.08);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+}
+.callout strong { color: var(--ds-lime-400); }
+
+.role-matrix td:nth-child(n+2) { text-align: center; }
+.yes { color: var(--ds-status-success); font-weight: 700; }
+.no { color: var(--ds-status-danger); font-weight: 700; }
+
+.redirect {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center;
+  padding: 12px; border: 1px solid var(--ds-border); border-radius: 8px; background: var(--ds-surface);
+}
+.redirect code {
+  font-family: ui-monospace, monospace; font-size: 12px;
+  background: var(--ds-surface-2); padding: 4px 8px; border-radius: 4px;
+}
+.arrow { color: var(--ds-lime-500); font-weight: 700; }
+
+.legend {
+  margin-top: 20px;
+  display: grid; gap: 8px;
+  color: var(--ds-text-muted); font-size: 13px;
+}
+.legend li { margin-inline-start: 18px; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body data-theme="dark">
+  <div class="banner">
+    <div>
+      <strong>STATUS PREVIEW</strong> — Tokens match live <code>/oc</code>.
+      Consolidation cutover is live: legacy <code>/gyms</code>, <code>/settings/*</code>, <code>/tenants/:id</code> redirect into HyMotion.
+      Counts below are layout placeholders only — live Overview uses real APIs.
+    </div>
+    <div class="banner-actions">
+      <button class="chip" id="themeBtn" type="button" aria-pressed="true">Dark</button>
+      <button class="chip" id="langBtn" type="button">العربية</button>
+      <a class="btn btn-primary" href="../apps/platform-console/design-system.html" id="liveDs">Open live Design System</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="faint">HyMotion · rebrand/hymotion · consolidation Phase 0+</div>
+      <h1 id="heroTitle">HyMotion — one product shell</h1>
+      <p id="heroSub">Daily work lives under <b>/oc</b>. Legacy list/detail URLs redirect into HyMotion. Some mounted editors still use older CP chrome inside the same shell (visual residual). This page must not invent Overview KPIs.</p>
+      <div class="phase-pills">
+        <span class="pill">P0 Guardrails</span>
+        <span class="pill">P1 Shell+Brand</span>
+        <span class="pill">P2 Security</span>
+        <span class="pill">P3–8 Cutover</span>
+        <span class="pill">Incomplete</span>
+      </div>
+    </header>
+
+    <nav class="screen-nav" role="tablist" aria-label="Preview screens">
+      <button class="nav-tab" role="tab" aria-selected="true" data-panel="overview">1 · Overview</button>
+      <button class="nav-tab" role="tab" aria-selected="false" data-panel="gym360">2 · Local Gym360</button>
+      <button class="nav-tab" role="tab" aria-selected="false" data-panel="feedback">3 · Feedback inbox</button>
+      <button class="nav-tab" role="tab" aria-selected="false" data-panel="roles">4 · Role gates</button>
+      <button class="nav-tab" role="tab" aria-selected="false" data-panel="redirects">5 · Redirects</button>
+      <button class="nav-tab" role="tab" aria-selected="false" data-panel="tokens">6 · Design tokens</button>
+    </nav>
+
+    <!-- 1 Overview — mirrors live OverviewPage attention taxonomy (illustrative counts only) -->
+    <section class="panel is-active" id="panel-overview">
+      <div class="frame">
+        <aside class="sidebar">
+          <div class="brand">
+            <div class="mark" aria-hidden="true"></div>
+            <div>
+              <h2>HyMotion</h2>
+              <small>/oc shell</small>
+            </div>
+          </div>
+          <a class="side-link active" href="#">Overview</a>
+          <a class="side-link" href="#">Gyms</a>
+          <a class="side-link" href="#">Sales</a>
+          <a class="side-link" href="#">Support</a>
+          <a class="side-link" href="#">Settings</a>
+          <div class="side-foot">
+            Ops · Cairo<br>
+            <span class="faint">Legacy editors still reachable until cutover</span>
+          </div>
+        </aside>
+        <div class="main">
+          <div class="topbar">
+            <div class="topbar-title">Overview</div>
+            <div class="topbar-actions">
+              <span class="status info">Live attention cards</span>
+            </div>
+          </div>
+          <div class="content">
+            <div class="callout">Live Overview uses role-gated attention cards from real APIs (not invented KPI tiles). Counts below are <b>placeholders for layout only</b> — production shows live values or “…” while loading.</div>
+            <div class="grid grid-4">
+              <div class="card attention">
+                <div class="faint">Local problems</div>
+                <div class="metric">…</div>
+                <div class="muted">filter=not_live</div>
+              </div>
+              <div class="card">
+                <div class="faint">Unlinked</div>
+                <div class="metric">…</div>
+                <div class="muted">licenses without customer</div>
+              </div>
+              <div class="card">
+                <div class="faint">Pending licenses</div>
+                <div class="metric">…</div>
+                <div class="muted">awaiting activation</div>
+              </div>
+              <div class="card">
+                <div class="faint">Open tickets</div>
+                <div class="metric">…</div>
+                <div class="muted">Support queue</div>
+              </div>
+            </div>
+            <div class="grid grid-2">
+              <div class="card">
+                <strong>Also on live Overview</strong>
+                <p class="muted" style="margin:8px 0 0">Blocked licenses · Urgent tickets · Prospects · Cloud past_due · Cloud risk</p>
+                <p class="muted" style="margin:4px 0 0">Stale installs table · not-live / tickets / prospects lists</p>
+              </div>
+              <div class="card">
+                <strong>Not on live Overview</strong>
+                <p class="muted" style="margin:8px 0 0">No “Feedback today” KPI · No “Issue license” topbar CTA · No fake offline/expiring story cards</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 Gym360 -->
+    <section class="panel" id="panel-gym360">
+      <div class="frame">
+        <aside class="sidebar">
+          <div class="brand">
+            <div class="mark"></div>
+            <div><h2>HyMotion</h2><small>/oc shell</small></div>
+          </div>
+          <a class="side-link" href="#">Overview</a>
+          <a class="side-link active" href="#">Gyms</a>
+          <a class="side-link" href="#">Sales</a>
+          <a class="side-link" href="#">Support</a>
+          <div class="side-foot">Local default workspace</div>
+        </aside>
+        <div class="main">
+          <div class="topbar">
+            <div class="topbar-title">Local · Iron Peak Giza</div>
+            <div class="topbar-actions">
+              <span class="status ok">Active</span>
+              <span class="status warn">License · Grace</span>
+              <button class="btn" type="button">Also in Cloud</button>
+              <button class="btn btn-primary" type="button">Sales</button>
+            </div>
+          </div>
+          <div class="content">
+            <div class="callout">Phase 3 — Local Gym360 sections: <b>Summary · Sales · Support · Activity</b> (License tab removed; license actions stay in header when a target is selected).</div>
+            <div class="h-row">
+              <div>
+                <h3>Iron Peak Giza</h3>
+                <p>Owner · Sara Hassan · +20 100 000 0000</p>
+              </div>
+            </div>
+            <div class="tabs" role="tablist">
+              <button type="button" aria-selected="true">Summary</button>
+              <button type="button" aria-selected="false">Sales</button>
+              <button type="button" aria-selected="false">Support</button>
+              <button type="button" aria-selected="false">Activity</button>
+              <button type="button" aria-selected="false" class="strike" title="Removed">License</button>
+            </div>
+            <div class="grid grid-2">
+              <div class="card">
+                <strong>People</strong>
+                <p class="muted">Owner + contact. Cloud link only for Ops+.</p>
+              </div>
+              <div class="card">
+                <strong>Installations</strong>
+                <p class="muted">2 devices · 1 online · 1 offline</p>
+              </div>
+              <div class="card">
+                <strong>Sales contract</strong>
+                <p class="muted">Issue · preview · reprint · change status (parity with CP)</p>
+              </div>
+              <div class="card">
+                <strong>Multi-license safety</strong>
+                <p class="muted">Mutations withheld until an explicit license target is selected.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 Feedback -->
+    <section class="panel" id="panel-feedback">
+      <div class="frame">
+        <aside class="sidebar">
+          <div class="brand"><div class="mark"></div><div><h2>HyMotion</h2><small>Support</small></div></div>
+          <a class="side-link" href="#">Overview</a>
+          <a class="side-link active" href="#">Support</a>
+          <div class="side-foot">Desk feedback inbox</div>
+        </aside>
+        <div class="main">
+          <div class="topbar">
+            <div class="topbar-title">Feedback</div>
+            <span class="status info">Support+</span>
+          </div>
+          <div class="content">
+            <div class="callout">Phase 4 fix — list always shows the <b>message</b>. Optional subject is secondary. Old bug: subject hid the body (“title only”).</div>
+            <div class="card" style="padding:0; overflow:hidden;">
+              <table>
+                <thead>
+                  <tr><th>When</th><th>Gym</th><th>Preview</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="muted">Today 14:02</td>
+                    <td>Iron Peak</td>
+                    <td>
+                      <div class="msg-preview">Please add clearer batch preview options for PVC cards.</div>
+                      <div class="msg-subject">Subject · Short title</div>
+                    </td>
+                    <td><span class="status warn">New</span></td>
+                  </tr>
+                  <tr>
+                    <td class="muted">Today 11:40</td>
+                    <td>Nile Fitness</td>
+                    <td>
+                      <div class="msg-preview">Owner recovery email never arrived after we rotated the PC.</div>
+                      <div class="msg-subject faint">No subject</div>
+                    </td>
+                    <td><span class="status info">Open</span></td>
+                  </tr>
+                  <tr class="strike" title="Old broken list cell">
+                    <td class="muted">—</td>
+                    <td>—</td>
+                    <td>OLD · showed only “Short title”</td>
+                    <td>—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Roles -->
+    <section class="panel" id="panel-roles">
+      <div class="callout" style="margin-bottom:16px;">Role gates: Sales works Sales + Local gyms paths; Feedback inbox is Support+; Cloud deep tools are Support+/Ops+/Admin. Legacy <code>/gyms</code> editors remain for Admin until Settings/Gyms cutover — not a second product name.</div>
+      <div class="card" style="padding:0; overflow:auto;">
+        <table class="role-matrix">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>Sales</th>
+              <th>Support</th>
+              <th>Ops</th>
+              <th>Admin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>OC Overview / Local gyms</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Issue / sales contracts</td><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Feedback inbox</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Cloud suspend / impersonate</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+            <tr><td>Plan change / Restore license</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">Yes</td></tr>
+            <tr><td>Customer cloud-link (TenantId)</td><td class="no">No</td><td class="no">No</td><td class="yes">Ops+</td><td class="yes">Yes</td></tr>
+            <tr><td>Legacy editors (/gyms, /settings) until cutover</td><td class="no">No</td><td class="no">No</td><td class="no">No*</td><td class="yes">Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="faint" style="margin-top:10px;">*Ops uses /oc daily; some deep editors still live under legacy AppShell until Phases 3–5 parity.</p>
+    </section>
+
+    <!-- 5 Redirects -->
+    <section class="panel" id="panel-redirects">
+      <div class="callout" style="margin-bottom:16px;">Redirects only after parity. <code>/tenants/:id</code>, <code>/gyms</code>, and most <code>/settings/*</code> editors stay until Cloud/Gyms/Settings cutover — consolidation is <b>not</b> complete.</div>
+      <div class="grid" style="gap:10px;">
+        <div class="redirect"><code>/local-licenses/:id</code><span class="arrow">→</span><code>/oc/gyms/local/…</code></div>
+        <div class="redirect"><code>/ops-playbooks</code><span class="arrow">→</span><code>/oc/support/playbooks</code></div>
+        <div class="redirect"><code>/customers/:id</code><span class="arrow">→</span><code>/oc/gyms/local/:id</code></div>
+        <div class="redirect"><code>/metrics</code><span class="arrow">→</span><code>/oc/settings/metrics</code></div>
+        <div class="redirect"><code>/tenants/:id</code><span class="arrow">→</span><code>/oc/gyms/cloud/:id</code></div>
+        <div class="redirect"><code>/gyms</code> · <code>/settings/*</code><span class="arrow">→</span><code>/oc/gyms</code> · <code>/oc/settings/*</code></div>
+      </div>
+    </section>
+
+    <!-- 6 Tokens -->
+    <section class="panel" id="panel-tokens">
+      <div class="grid grid-2">
+        <div class="card">
+          <strong>Brand</strong>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+            <span style="width:56px;height:56px;border-radius:8px;background:#7acc00;" title="lime-500"></span>
+            <span style="width:56px;height:56px;border-radius:8px;background:#a0e040;" title="lime-400"></span>
+            <span style="width:56px;height:56px;border-radius:8px;background:#148f8f;" title="teal"></span>
+            <span style="width:56px;height:56px;border-radius:8px;background:#101010;border:1px solid #2e2e2e;" title="canvas"></span>
+            <span style="width:56px;height:56px;border-radius:8px;background:#1a1a1a;border:1px solid #2e2e2e;" title="surface"></span>
+          </div>
+          <p class="muted" style="margin-top:12px;">Lime = identity / primary CTA only. Status uses success / warning / danger / info — never lime for status.</p>
+        </div>
+        <div class="card">
+          <strong>Type · Cairo</strong>
+          <p style="font-size:32px;font-weight:700;margin:12px 0 0;line-height:1.2;">HyMotion</p>
+          <p style="font-size:22px;font-weight:600;margin:8px 0 0;">HyMotion</p>
+          <p class="muted" style="margin:8px 0 0;">Body 14 · Label 13 · Caption 12 · Metric 28</p>
+          <p style="margin-top:16px;direction:rtl;font-weight:700;">حركة</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:16px;">
+        Live interactive component gallery (buttons, forms, tables, overlays, EN/AR, dark/light):
+        run Platform Console Vite → open <b>/design-system.html</b>.
+        Live product: <b>http://localhost:5174/oc</b> (needs API + login).
+      </div>
+    </section>
+
+    <ul class="legend">
+      <li>This file is a <b>status / concept</b> aid — not a claim that production Overview matches invented KPIs.</li>
+      <li>Live product: <code>/oc</code> (login + API). Live DS gallery: <code>/design-system.html</code>.</li>
+      <li>Desk feedback modal still uses gym-web CSS until Feedback unification (Phase 7).</li>
+      <li>One HyMotion product is the goal; dual-shell retirement is Phases 3–8.</li>
+    </ul>
+  </div>
+
+<script>
+const panels = [...document.querySelectorAll('.panel')];
+const tabs = [...document.querySelectorAll('.nav-tab')];
+tabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+    panels.forEach((p) => p.classList.toggle('is-active', p.id === 'panel-' + tab.dataset.panel));
+  });
+});
+
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.body.setAttribute('data-theme', next);
+  document.documentElement.setAttribute('data-theme', next);
+  themeBtn.textContent = next === 'dark' ? 'Dark' : 'Light';
+  themeBtn.setAttribute('aria-pressed', String(next === 'dark'));
+});
+
+const copy = {
+  en: {
+    title: 'HyMotion — one product shell',
+    sub: 'Daily work lives under /oc. Legacy list/detail URLs redirect into HyMotion. Some mounted editors still use older CP chrome inside the same shell (visual residual). This page must not invent Overview KPIs.'
+  },
+  ar: {
+    title: 'HyMotion — واجهة منتج واحدةحدة',
+    sub: 'العمل اليومي تحت /oc. المسارات القديمة تُحوَّل إلى HyMotion. بعض المحررات ما زالت بمظهر أقدم داخل نفس الواجهة. هذه الصفحة لا تخترع مؤشرات.'
+  }
+};
+let lang = 'en';
+document.getElementById('langBtn').addEventListener('click', () => {
+  lang = lang === 'en' ? 'ar' : 'en';
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('heroTitle').textContent = copy[lang].title;
+  document.getElementById('heroSub').textContent = copy[lang].sub;
+  document.getElementById('langBtn').textContent = lang === 'en' ? 'العربية' : 'English';
+});
+
+// Prefer live Vite DS when available
+const live = document.getElementById('liveDs');
+live.addEventListener('click', (e) => {
+  // If opened from disk, try localhost first
+  if (location.protocol === 'file:') {
+    e.preventDefault();
+    window.open('http://localhost:5174/design-system.html', '_blank');
+  }
+});
+</script>
+</body>
+</html>

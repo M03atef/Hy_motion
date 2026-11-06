@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Your shop (simple preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l500:#7ACC00;--l400:#A0E040;--l100:#EDFCD8;
+  --ls1:#FFFefb;--ls2:#F4F6F3;--ls3:#E4E8E2;
+  --ltp:#1F2420;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--fb);color:var(--ltp);
+  background:#F6F7F3;
+}
+[hidden]{display:none!important}
+img{display:block;max-width:100%;object-fit:cover}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:50
+}
+.banner .note{font-weight:500;opacity:.9;font-size:12px;max-width:40rem;line-height:1.4}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.3);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d}
+.app{display:flex;min-height:calc(100vh - 48px)}
+.sidebar{width:200px;background:var(--c900);padding:18px 0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:0 16px 16px;color:var(--l400);font-family:var(--fd);font-weight:700}
+.mark{width:28px;height:28px;border-radius:8px;background:var(--l500)}
+.sb-item{
+  display:flex;align-items:center;gap:10px;width:100%;padding:12px 18px;border:none;background:transparent;
+  color:#9a9a9a;font:inherit;font-size:14px;font-weight:600;cursor:pointer;text-align:left
+}
+.sb-item.act{color:#fff;background:rgba(122,204,0,.16);border-right:3px solid var(--l500)}
+.main{flex:1;min-width:0}
+.top{height:52px;display:flex;align-items:center;padding:0 28px;background:#fff;border-bottom:1px solid var(--ls3);font-weight:600;color:var(--lts)}
+.content{padding:24px 28px 56px;max-width:1120px}
+h1{font-family:var(--fd);font-size:28px;letter-spacing:-.03em}
+.hello{font-size:16px;color:var(--lts);margin:6px 0 22px;line-height:1.5;max-width:36rem}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.btn{
+  height:44px;padding:0 16px;border-radius:999px;border:none;font:inherit;font-weight:700;font-size:14px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px
+}
+.btn-lime{background:var(--l500);color:var(--c900)}
+.btn-white{background:#fff;color:var(--lts);border:1px solid var(--ls3)}
+.search{
+  display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--ls3);
+  border-radius:999px;padding:0 16px;height:44px;min-width:240px;flex:1
+}
+.search input{border:none;outline:none;flex:1;font:inherit;background:transparent}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.chip{
+  height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--ls3);background:#fff;
+  font:inherit;font-size:13px;font-weight:700;color:var(--lts);cursor:pointer
+}
+.chip.act{background:var(--c900);color:#fff;border-color:var(--c900)}
+
+/* Product shop cards */
+.shop{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.pcard{
+  background:#fff;border-radius:20px;overflow:hidden;border:1px solid var(--ls3);
+  cursor:pointer;box-shadow:0 8px 24px rgba(20,30,20,.04);text-align:left;padding:0;font:inherit;color:inherit;width:100%
+}
+.pcard:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(20,30,20,.08)}
+.pcard .photo{height:180px;position:relative;background:#eee}
+.pcard .photo img{width:100%;height:100%}
+.stock-pill{
+  position:absolute;left:10px;bottom:10px;height:28px;padding:0 10px;border-radius:999px;
+  font-size:12px;font-weight:800;display:flex;align-items:center;gap:4px;background:#fff
+}
+.stock-pill.ok{color:#166534}.stock-pill.low{color:#B45309;background:#FEF3C7}.stock-pill.out{color:#991B1B;background:#FEE2E2}
+.offer-pill{
+  position:absolute;right:10px;top:10px;background:var(--c900);color:var(--l400);
+  font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px
+}
+.pcard .body{padding:12px 14px 16px}
+.pcard h3{font-family:var(--fd);font-size:17px}
+.pcard .price{font-family:var(--fd);font-size:18px;font-weight:700;margin:4px 0}
+.pcard .who{font-size:12px;color:var(--ltt);display:flex;align-items:center;gap:6px;margin-top:6px}
+.pcard .who img{width:22px;height:22px;border-radius:50%}
+
+/* Product story */
+.hero{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start
+}
+@media(max-width:900px){.hero,.people,.buy-grid,.phones{grid-template-columns:1fr}}
+.hero-photo{border-radius:28px;overflow:hidden;height:420px;background:#ddd;position:relative}
+.hero-photo img{width:100%;height:100%}
+.qty-bubble{
+  position:absolute;left:16px;bottom:16px;background:#fff;border-radius:20px;padding:12px 16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12)
+}
+.qty-bubble b{font-family:var(--fd);font-size:32px;display:block;line-height:1}
+.qty-bubble span{font-size:12px;color:var(--ltt);font-weight:600}
+.story h2{font-family:var(--fd);font-size:22px;margin:18px 0 8px}
+.story p{color:var(--lts);line-height:1.55;margin-bottom:12px}
+.toggles{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.tog{
+  display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--ls3);
+  border-radius:16px;padding:12px 14px
+}
+.switch{width:44px;height:26px;border-radius:999px;border:none;background:#D1D5DB;position:relative;cursor:pointer}
+.switch.on{background:var(--l500)}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff}
+.switch.on::after{transform:translateX(18px)}
+.timeline{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.tl{display:flex;gap:12px;align-items:flex-start}
+.tl .dot{width:12px;height:12px;border-radius:50%;background:var(--l500);margin-top:6px;flex-shrink:0}
+.tl .txt{padding-bottom:14px}
+.tl .txt b{display:block;font-size:14px}
+.tl .txt span{font-size:12px;color:var(--ltt)}
+
+/* People / suppliers */
+.people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.person{
+  background:#fff;border-radius:24px;overflow:hidden;border:1px solid var(--ls3);cursor:pointer;text-align:left;font:inherit;padding:0
+}
+.person .cover{height:120px}
+.person .cover img{width:100%;height:100%}
+.avatar{
+  width:72px;height:72px;border-radius:50%;border:4px solid #fff;margin:-36px 16px 0;overflow:hidden;background:#eee
+}
+.avatar img{width:100%;height:100%}
+.person .info{padding:8px 16px 18px}
+.person h3{font-family:var(--fd);font-size:18px}
+.owes{font-family:var(--fd);font-size:20px;font-weight:700;margin-top:8px}
+.owes.zero{color:var(--ltt);font-size:16px}
+
+/* Buy like shopping */
+.buy-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+.basket{background:#fff;border-radius:24px;padding:20px;border:1px solid var(--ls3)}
+.bline{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--ls3)}
+.bline img{width:64px;height:64px;border-radius:14px}
+.bline input{width:64px;height:40px;border:1px solid var(--ls3);border-radius:12px;text-align:center;font:inherit;font-weight:700}
+.pay{display:flex;gap:8px;margin:14px 0}
+.pay button{
+  flex:1;height:44px;border-radius:14px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;cursor:pointer
+}
+.pay button.act{background:var(--c900);color:#fff;border-color:var(--c900)}
+.after{
+  background:linear-gradient(180deg,#1a2e05,#0D0D0D);color:#fff;border-radius:24px;padding:22px;min-height:280px
+}
+.after h3{font-family:var(--fd);color:var(--l400);margin-bottom:12px}
+.arrow-qty{display:flex;align-items:center;gap:10px;margin:12px 0}
+.arrow-qty img{width:56px;height:56px;border-radius:14px}
+.was{opacity:.55;text-decoration:line-through}
+.now{font-family:var(--fd);font-size:28px;font-weight:800;color:var(--l400)}
+
+/* Phones */
+.phones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.phone{background:#111;border-radius:32px;padding:12px;border:3px solid #2a2a2a;max-width:300px;margin:0 auto}
+.notch{width:90px;height:6px;background:#333;border-radius:99px;margin:4px auto 10px}
+.scr{background:#F7F8F5;border-radius:22px;overflow:hidden;min-height:520px}
+.scr h4{padding:14px;font-family:var(--fd);background:#fff}
+.item{margin:10px 12px;background:#fff;border-radius:16px;overflow:hidden}
+.item img{height:140px;width:100%}
+.item .pad{padding:10px 12px 14px}
+.cta{height:36px;border:none;border-radius:999px;background:var(--l500);font:inherit;font-weight:800;padding:0 12px;cursor:pointer}
+
+.flow-pics{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0}
+.flow-pics img{width:72px;height:72px;border-radius:16px}
+.flow-pics .arr{font-size:22px;color:var(--l500);font-weight:800}
+.simple{background:#fff;border-radius:20px;padding:18px;border:1px solid var(--ls3);margin-top:16px}
+.stop{margin-top:18px;padding:16px;border-radius:16px;background:var(--l100);font-size:14px;line-height:1.5}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--c900);color:#fff;padding:12px 16px;border-radius:14px;opacity:0;transform:translateY(80px);transition:.25s;z-index:40}
+.toast.show{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <div>PREVIEW — friendlier shop (photos, not spreadsheets)</div>
+    <div class="note">Nothing is saved. Look at the pictures: products, people you buy from, and what happens when stock comes in.</div>
+  </div>
+  <div class="controls" id="tabs">
+    <button type="button" class="act" data-v="shop">Your products</button>
+    <button type="button" data-v="item">One product</button>
+    <button type="button" data-v="people">Who you buy from</button>
+    <button type="button" data-v="buy">I bought this</button>
+    <button type="button" data-v="app">On the phone</button>
+    <button type="button" data-v="flow">The story</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div>HyMotion</div>
+    <button type="button" class="sb-item act" data-v="shop"><i class="ti ti-bottle"></i> Products</button>
+    <button type="button" class="sb-item" data-v="people"><i class="ti ti-users"></i> Suppliers</button>
+    <button type="button" class="sb-item" data-v="buy"><i class="ti ti-shopping-bag"></i> Purchases</button>
+  </aside>
+  <div class="main">
+    <div class="top" id="crumb">Your shop</div>
+
+    <!-- SHOP -->
+    <div class="content" id="v-shop">
+      <div class="row">
+        <div>
+          <h1>What’s on the shelf</h1>
+          <p class="hello">Tap a photo. You’ll see how many you have — like counting bottles in the fridge. No warehouses.</p>
+        </div>
+        <button type="button" class="btn btn-lime" data-v="buy"><i class="ti ti-plus"></i> I bought more</button>
+      </div>
+      <div class="chips">
+        <button type="button" class="chip act" data-f="all">All</button>
+        <button type="button" class="chip" data-f="low">Almost gone</button>
+        <button type="button" class="chip" data-f="out">Empty</button>
+      </div>
+      <div class="shop" id="shop"></div>
+    </div>
+
+    <!-- ONE PRODUCT -->
+    <div class="content" id="v-item" hidden>
+      <button type="button" class="btn btn-white" data-v="shop" style="margin-bottom:16px"><i class="ti ti-arrow-left"></i> Back to shelf</button>
+      <div class="hero">
+        <div class="hero-photo">
+          <img src="https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=900&q=80" alt="Protein shake">
+          <div class="qty-bubble">
+            <b>18</b>
+            <span>bottles left · still fine</span>
+          </div>
+        </div>
+        <div class="story">
+          <h1>Protein Shake</h1>
+          <p>Chocolate whey. Members see this photo in the app. You sell it at the desk for <strong>EGP 120</strong>.</p>
+          <div class="toggles">
+            <div class="tog"><div><strong>Sell at the desk</strong><div style="font-size:12px;color:var(--ltt)">POS</div></div><button type="button" class="switch on" data-sw></button></div>
+            <div class="tog"><div><strong>Show in Member App</strong><div style="font-size:12px;color:var(--ltt)">Same photo, same product</div></div><button type="button" class="switch on" data-sw></button></div>
+          </div>
+          <div class="who" style="display:flex;align-items:center;gap:10px;margin:12px 0">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&q=80" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+            <div><strong>You buy this from Mona</strong><div style="font-size:12px;color:var(--ltt)">ABC Nutrition · last cost EGP 80</div></div>
+          </div>
+          <button type="button" class="btn btn-lime" data-v="buy">Buy more from Mona</button>
+          <h2>What happened lately</h2>
+          <div class="timeline">
+            <div class="tl"><div class="dot"></div><div class="txt"><b>Mona delivered 20 bottles</b><span>Shelf went 18 → wait, that was last week’s +20</span></div></div>
+            <div class="tl"><div class="dot"></div><div class="txt"><b>Sold 2 at the desk</b><span>A member grabbed them after training</span></div></div>
+            <div class="tl"><div class="dot"></div><div class="txt"><b>One came back</b><span>Refund — bottle back on the shelf</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEOPLE -->
+    <div class="content" id="v-people">
+      <h1>People you buy from</h1>
+      <p class="hello">Not a warehouse. Just who delivers the shakes, bars, and shirts — and if you still owe them.</p>
+      <div class="people" style="margin-top:8px">
+        <button type="button" class="person" data-v="buy">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80" alt=""></div>
+          <div class="avatar"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80" alt="Mona"></div>
+          <div class="info">
+            <h3>Mona · ABC Nutrition</h3>
+            <p style="font-size:13px;color:var(--ltt);margin:4px 0 8px">Shakes, bars, pre-workout · 0100 111 2222</p>
+            <div class="owes">You owe EGP 2,950</div>
+          </div>
+        </button>
+        <button type="button" class="person">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80" alt=""></div>
+          <div class="avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="Karim"></div>
+          <div class="info">
+            <h3>Karim · Fit Supply</h3>
+            <p style="font-size:13px;color:var(--ltt);margin:4px 0 8px">Protein bars · 0122 333 4444</p>
+            <div class="owes">You owe EGP 1,250</div>
+          </div>
+        </button>
+        <button type="button" class="person">
+          <div class="cover"><img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=80" alt=""></div>
+          <div class="avatar"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="Hany"></div>
+          <div class="info">
+            <h3>Hany · Local Sports</h3>
+            <p style="font-size:13px;color:var(--ltt);margin:4px 0 8px">T-shirts &amp; bottles · 0111 555 6666</p>
+            <div class="owes zero">All paid</div>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- BUY -->
+    <div class="content" id="v-buy" hidden>
+      <h1>I bought this from Mona</h1>
+      <p class="hello">Put the delivery on the shelf. That’s it. No warehouse, no barcode of a room.</p>
+      <div class="buy-grid">
+        <div class="basket">
+          <div class="bline">
+            <img src="https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=200&q=80" alt="">
+            <div style="flex:1"><strong>Protein Shake</strong><div style="font-size:12px;color:var(--ltt)">EGP 80 each</div></div>
+            <input type="number" value="20" aria-label="qty">
+          </div>
+          <div class="bline">
+            <img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=200&q=80" alt="">
+            <div style="flex:1"><strong>Protein Bar</strong><div style="font-size:12px;color:var(--ltt)">EGP 45 each</div></div>
+            <input type="number" value="30" aria-label="qty">
+          </div>
+          <div style="text-align:right;padding:14px 0 6px;font-family:var(--fd);font-size:24px;font-weight:800">EGP 2,950</div>
+          <div class="pay" id="pay">
+            <button type="button">I paid</button>
+            <button type="button">Paid some</button>
+            <button type="button" class="act">Pay later</button>
+          </div>
+          <button type="button" class="btn btn-lime" id="putShelf" style="width:100%;justify-content:center">Put on the shelf</button>
+        </div>
+        <div class="after" id="after">
+          <h3>After you tap…</h3>
+          <p style="opacity:.8;font-size:14px;line-height:1.5">The photos will show the new count. Members can buy them. Mona’s balance goes up if you pay later.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- APP -->
+    <div class="content" id="v-app" hidden>
+      <h1>Same photos on the member’s phone</h1>
+      <p class="hello">If “Show in Member App” is on, they see the product. Offers (Buy 2 Get 1) sit on the same bar — not a second shop.</p>
+      <div class="phones">
+        <div>
+          <p style="text-align:center;font-weight:700;margin-bottom:8px">Store</p>
+          <div class="phone"><div class="notch"></div><div class="scr">
+            <h4>Store</h4>
+            <div class="item"><img src="https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=400&q=80" alt=""><div class="pad"><strong>Protein Shake</strong><p style="font-size:12px;color:var(--ltt)">EGP 120</p><button type="button" class="cta">View</button></div></div>
+            <div class="item"><img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=400&q=80" alt=""><div class="pad"><span style="font-size:11px;font-weight:800;color:#5EAF00">BUY 2 GET 1</span><strong style="display:block">Protein Bar</strong><p style="font-size:12px;color:var(--ltt)">EGP 80</p><button type="button" class="cta">Add</button></div></div>
+          </div></div>
+        </div>
+        <div>
+          <p style="text-align:center;font-weight:700;margin-bottom:8px">Product</p>
+          <div class="phone"><div class="notch"></div><div class="scr">
+            <img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=500&q=80" alt="" style="height:220px;width:100%">
+            <div class="pad" style="padding:14px">
+              <div style="font-size:12px;font-weight:800;color:#3f6212">🔥 Offer on this bar</div>
+              <h4 style="padding:6px 0;background:none">Protein Bar</h4>
+              <p style="color:var(--ltt);font-size:13px">EGP 80 · Buy 2 Get 1</p>
+              <button type="button" class="cta" style="width:100%;margin-top:10px">Add to cart</button>
+            </div>
+          </div></div>
+        </div>
+        <div>
+          <p style="text-align:center;font-weight:700;margin-bottom:8px">Cart</p>
+          <div class="phone"><div class="notch"></div><div class="scr">
+            <h4>Cart</h4>
+            <div class="item" style="display:flex;gap:10px;padding:10px;align-items:center">
+              <img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=120&q=80" alt="" style="width:72px;height:72px;border-radius:12px">
+              <div><strong>Bar × 3</strong><div style="font-size:12px;color:var(--ltt)">EGP 240</div></div>
+            </div>
+            <div style="margin:12px;padding:12px;background:#DCFCE7;border-radius:14px;font-size:13px;font-weight:700;color:#166534">Free bar · − EGP 80</div>
+            <div style="padding:0 14px;font-family:var(--fd);font-size:22px;font-weight:800">Pay EGP 160</div>
+          </div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY -->
+    <div class="content" id="v-flow" hidden>
+      <h1>The whole story in pictures</h1>
+      <p class="hello">Mona brings boxes → you put them on the shelf → members buy → the photo count goes down. If they return it, the bottle comes back.</p>
+      <div class="flow-pics">
+        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&q=80" alt="Mona">
+        <span class="arr">→</span>
+        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=200&q=80" alt="Delivery">
+        <span class="arr">→</span>
+        <img src="https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=200&q=80" alt="Shake">
+        <span class="arr">→</span>
+        <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=200&q=80" alt="Gym">
+        <span class="arr">→</span>
+        <img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=200&q=80" alt="Bar offer">
+      </div>
+      <div class="simple">
+        <strong>You never see:</strong> warehouses, transfers, stock counts, bins, batches.<br>
+        <strong>The computer still knows:</strong> buy adds, sale subtracts, refund puts back.
+      </div>
+      <div class="stop"><strong>Stop for your approval.</strong> File: <code>previews/products-purchasing-simplify.html</code> — preview only.</div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+(function () {
+  var ITEMS = [
+    { id:'shake', name:'Protein Shake', price:'EGP 120', img:'https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=600&q=80', qty:18, stock:'ok', stockTxt:'18 left', who:'Mona', whoImg:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&q=80', offer:false },
+    { id:'bar', name:'Protein Bar', price:'EGP 70', img:'https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=600&q=80', qty:6, stock:'low', stockTxt:'Only 6 left', who:'Karim', whoImg:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&q=80', offer:true },
+    { id:'pre', name:'Pre-Workout', price:'EGP 180', img:'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600&q=80', qty:12, stock:'ok', stockTxt:'12 left', who:'Mona', whoImg:'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&q=80', offer:false },
+    { id:'tee', name:'Gym T-Shirt', price:'EGP 350', img:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80', qty:25, stock:'ok', stockTxt:'25 left', who:'Hany', whoImg:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&q=80', offer:false },
+    { id:'bot', name:'Water Bottle', price:'EGP 90', img:'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=600&q=80', qty:0, stock:'out', stockTxt:'Empty', who:'Hany', whoImg:'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&q=80', offer:false }
+  ];
+  var filter = 'all';
+  var labels = { shop:'Your shop', item:'Protein Shake', people:'Who you buy from', buy:'I bought this', app:'On the phone', flow:'The story' };
+
+  function renderShop() {
+    var list = ITEMS.filter(function (p) {
+      if (filter === 'low') return p.stock === 'low';
+      if (filter === 'out') return p.stock === 'out';
+      return true;
+    });
+    document.getElementById('shop').innerHTML = list.map(function (p) {
+      return '<button type="button" class="pcard" data-v="item">' +
+        '<div class="photo"><img src="'+p.img+'" alt="'+p.name+'">' +
+        (p.offer ? '<span class="offer-pill">Buy 2 Get 1</span>' : '') +
+        '<span class="stock-pill '+p.stock+'">'+p.stockTxt+'</span></div>' +
+        '<div class="body"><h3>'+p.name+'</h3><div class="price">'+p.price+'</div>' +
+        '<div class="who"><img src="'+p.whoImg+'" alt=""> From '+p.who+'</div></div></button>';
+    }).join('') || '<p>Nothing in this pile.</p>';
+  }
+
+  function go(v) {
+    ['shop','item','people','buy','app','flow'].forEach(function (id) {
+      document.getElementById('v-' + id).hidden = id !== v;
+    });
+    document.querySelectorAll('#tabs button').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-v') === v);
+    });
+    document.querySelectorAll('.sb-item').forEach(function (b) {
+      var n = b.getAttribute('data-v');
+      b.classList.toggle('act', n === v || (v === 'item' && n === 'shop') || (v === 'app' && n === 'shop') || (v === 'flow' && n === 'shop'));
+    });
+    document.getElementById('crumb').textContent = labels[v] || v;
+    if (v === 'shop') renderShop();
+  }
+
+  document.body.addEventListener('click', function (e) {
+    var v = e.target.closest('[data-v]');
+    if (v) go(v.getAttribute('data-v'));
+    var f = e.target.closest('[data-f]');
+    if (f) {
+      filter = f.getAttribute('data-f');
+      document.querySelectorAll('.chip').forEach(function (c) { c.classList.toggle('act', c === f); });
+      renderShop();
+    }
+    if (e.target.closest('[data-sw]')) e.target.closest('[data-sw]').classList.toggle('on');
+  });
+  document.getElementById('pay').addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b) return;
+    document.querySelectorAll('#pay button').forEach(function (x) { x.classList.toggle('act', x === b); });
+  });
+  document.getElementById('putShelf').onclick = function () {
+    document.getElementById('after').innerHTML =
+      '<h3>On the shelf now</h3>' +
+      '<div class="arrow-qty"><img src="https://images.unsplash.com/photo-1579722821273-0f6c7d44362f?w=120&q=80" alt=""><span class="was">18</span><span>→</span><span class="now">38</span><span>shakes</span></div>' +
+      '<div class="arrow-qty"><img src="https://images.unsplash.com/photo-1622484212850-eb596d769edc?w=120&q=80" alt=""><span class="was">6</span><span>→</span><span class="now">36</span><span>bars</span></div>' +
+      '<p style="opacity:.85;margin-top:12px;font-size:14px">Mona is waiting for EGP 2,950 (pay later).</p>';
+    var t = document.getElementById('toast');
+    t.textContent = 'Preview only — the photos would update in the real app.';
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2800);
+  };
+  renderShop();
+})();
+</script>
+</body>
+</html>

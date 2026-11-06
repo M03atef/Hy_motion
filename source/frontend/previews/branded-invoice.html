@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Branded Invoice</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c900:#0D0D0D;--l500:#7ACC00;--l400:#A0E040;
+  --lbg:#F6F7F9;--ls1:#FFF;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --brand:#7ACC00;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg)}
+.banner{background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:46rem;line-height:1.4}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls button,.controls label{height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 56px)}
+.side{background:#fff;border-right:1px solid var(--ls3);padding:18px}
+.side h2{font-family:var(--fd);font-size:15px;margin-bottom:8px}
+.side p{font-size:12px;color:var(--lts);line-height:1.45;margin-bottom:14px}
+.fg{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--lts);margin-bottom:10px}
+.fg input{height:36px;border:1px solid var(--ls3);border-radius:10px;padding:0 10px;font:inherit}
+.main{padding:24px}
+.sheet{max-width:190mm;margin:0 auto;background:#fff;border:1px solid var(--ls3);padding:12mm;box-shadow:0 8px 30px rgba(0,0,0,.06)}
+.hdr{display:flex;justify-content:space-between;gap:16px;border-bottom:3px solid var(--brand);padding-bottom:14px;margin-bottom:18px}
+.brand{display:flex;gap:12px;align-items:center}
+.mark{width:56px;height:56px;border-radius:10px;background:var(--brand)}
+.logo{width:56px;height:56px;object-fit:contain;border:1px solid var(--ls3);border-radius:10px;background:#fff}
+.gym{font-family:var(--fd);font-weight:800;font-size:22px}
+.gym-ar{font-weight:700;color:var(--lts);direction:rtl}
+.contact{font-size:11px;color:var(--lts);margin-top:8px;line-height:1.45}
+.doc{text-align:right}
+.kicker{font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--brand)}
+.num{display:inline-block;margin-top:6px;padding:6px 12px;border-radius:999px;background:var(--l400);font-weight:800}
+.cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
+.card{background:#F5F5F5;border-radius:10px;padding:10px 12px}
+.card .k{font-size:10px;font-weight:700;color:var(--ltt);text-transform:uppercase}
+.card .v{font-size:14px;font-weight:700;margin-top:3px}
+table{width:100%;border-collapse:collapse;margin-bottom:16px}
+th{text-align:left;font-size:11px;text-transform:uppercase;background:var(--brand);color:#0D0D0D;padding:9px 10px}
+td{padding:10px;border-bottom:1px solid var(--ls3);font-size:13px}
+th.r,td.r{text-align:right}
+.totals{margin-left:auto;width:280px;background:#F5F5F5;border-radius:12px;padding:12px 14px}
+.totals .row{display:flex;justify-content:space-between;margin:4px 0;font-size:13px}
+.totals .grand{font-size:18px;font-weight:800;margin-top:8px;padding-top:8px;border-top:2px solid var(--brand)}
+.foot{margin-top:22px;padding-top:12px;border-top:1px solid var(--ls3);text-align:center;font-size:11px;color:var(--ltt)}
+.thermal{width:80mm;margin:0 auto;background:#fff;border:1px dashed #ccc;padding:6mm 5mm;font-size:11px}
+.thermal .gym{font-size:14px;text-align:center}
+.thermal .num{display:block;text-align:center;background:transparent;padding:0}
+.thermal hr{border:0;border-top:1px dashed #bbb;margin:8px 0}
+[hidden]{display:none!important}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>Unified branded invoice — Gym Identity drives name, logo, and color. No hardcoded gym.
+    <div class="note">A4 is the standard invoice. 80mm stays a compact thermal receipt. Same invoice number and totals.</div>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-view="a4">A4 invoice</button>
+    <button type="button" data-view="thermal">80mm receipt</button>
+    <button type="button" data-dir>AR / RTL</button>
+  </div>
+</div>
+<div class="layout">
+  <aside class="side">
+    <h2>Gym Identity</h2>
+    <p>Change these to prove the template is not bound to one gym. Production values come from Settings → Gym Identity.</p>
+    <label class="fg">Gym name<input id="gymName" value="Nile Fitness"></label>
+    <label class="fg">Arabic name<input id="gymNameAr" value="نايل فتنس" dir="rtl"></label>
+    <label class="fg">Phone<input id="phone" value="010 0000 0000"></label>
+    <label class="fg">Address<input id="address" value="Cairo, Egypt"></label>
+    <label class="fg">Brand color<input id="color" type="color" value="#7ACC00"></label>
+    <label class="fg" style="flex-direction:row;align-items:center;gap:8px"><input id="showLogo" type="checkbox"> Show logo box</label>
+  </aside>
+  <div class="main">
+    <section class="sheet" id="panel-a4">
+      <div class="hdr">
+        <div class="brand">
+          <div class="mark" id="mark"></div>
+          <div>
+            <div class="gym" id="a4Gym">Nile Fitness</div>
+            <div class="gym-ar" id="a4GymAr">نايل فتنس</div>
+            <div class="contact" id="a4Contact">Cairo, Egypt<br>010 0000 0000</div>
+          </div>
+        </div>
+        <div class="doc">
+          <div class="kicker">INVOICE<div dir="rtl" style="letter-spacing:0;margin-top:2px">فاتورة</div></div>
+          <div class="num">INV-2026-000084</div>
+        </div>
+      </div>
+      <div class="cards">
+        <div class="card"><div class="k">From</div><div class="v" id="a4From">Nile Fitness</div></div>
+        <div class="card"><div class="k">Date</div><div class="v">2026-08-17 17:10</div></div>
+        <div class="card"><div class="k">Member</div><div class="v">Ahmed Mohamed</div></div>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>Item / Description</th><th class="r">Qty</th><th class="r">Unit price</th><th class="r">Total</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Pre Workout</td><td class="r">1</td><td class="r">30.00 EGP</td><td class="r">30.00 EGP</td></tr>
+        </tbody>
+      </table>
+      <div class="totals">
+        <div class="row"><span>Subtotal</span><span>30.00 EGP</span></div>
+        <div class="row"><span>Discount</span><span>0.00 EGP</span></div>
+        <div class="row"><span>VAT (0%)</span><span>0.00 EGP</span></div>
+        <div class="row grand"><span>TOTAL</span><span>30.00 EGP</span></div>
+      </div>
+      <div class="foot">Thank you for choosing <strong id="a4Thanks">Nile Fitness</strong><div>This is a computer generated invoice and does not require a signature.</div></div>
+    </section>
+    <section class="thermal" id="panel-thermal" hidden>
+      <div class="gym" id="tGym">Nile Fitness</div>
+      <div class="gym-ar" id="tGymAr" style="text-align:center">نايل فتنس</div>
+      <div class="contact" id="tContact" style="text-align:center;margin-top:4px">Cairo, Egypt<br>010 0000 0000</div>
+      <div class="kicker" style="text-align:center;margin-top:8px">INVOICE · فاتورة</div>
+      <div class="num">INV-2026-000084</div>
+      <div style="display:flex;justify-content:space-between"><span>Date</span><span>2026-08-17 17:10</span></div>
+      <div style="display:flex;justify-content:space-between"><span>Member</span><span>Ahmed Mohamed</span></div>
+      <hr>
+      <div style="display:flex;justify-content:space-between"><span>1. Pre Workout ×1</span><span>30.00 EGP</span></div>
+      <hr>
+      <div style="display:flex;justify-content:space-between"><span>Subtotal</span><span>30.00 EGP</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:800"><span>TOTAL</span><span>30.00 EGP</span></div>
+      <div class="foot">Thank you for choosing <strong id="tThanks">Nile Fitness</strong></div>
+    </section>
+  </div>
+</div>
+<script>
+(function () {
+  function $(id) { return document.getElementById(id); }
+  function paint() {
+    var name = $('gymName').value.trim() || 'HyMotion Gym';
+    var ar = $('gymNameAr').value.trim();
+    var phone = $('phone').value.trim();
+    var address = $('address').value.trim();
+    var color = $('color').value;
+    document.documentElement.style.setProperty('--brand', color);
+    $('mark').style.background = color;
+    $('a4Gym').textContent = name;
+    $('a4GymAr').textContent = ar;
+    $('a4From').textContent = name;
+    $('a4Thanks').textContent = name;
+    $('tGym').textContent = name;
+    $('tGymAr').textContent = ar;
+    $('tThanks').textContent = name;
+    var contact = [address, phone].filter(Boolean).join('\\n').replace('\\n', '\n');
+    var html = [address, phone].filter(Boolean).join('<br>');
+    $('a4Contact').innerHTML = html;
+    $('tContact').innerHTML = html;
+    $('mark').hidden = $('showLogo').checked;
+  }
+  ['gymName','gymNameAr','phone','address','color','showLogo'].forEach(function (id) {
+    $(id).addEventListener('input', paint);
+    $(id).addEventListener('change', paint);
+  });
+  document.querySelectorAll('[data-view]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('[data-view]').forEach(function (b) { b.classList.remove('act'); });
+      btn.classList.add('act');
+      var a4 = btn.getAttribute('data-view') === 'a4';
+      $('panel-a4').hidden = !a4;
+      $('panel-thermal').hidden = a4;
+    });
+  });
+  document.querySelector('[data-dir]').addEventListener('click', function () {
+    var rtl = document.documentElement.dir !== 'rtl';
+    document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+    document.documentElement.lang = rtl ? 'ar' : 'en';
+  });
+})();
+</script>
+</body>
+</html>

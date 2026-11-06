@@ -1,0 +1,25 @@
+{
+  "name": "@gymflowpro/i18n",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./locales/en.json": "./locales/en.json",
+    "./locales/ar.json": "./locales/ar.json"
+  },
+  "files": [
+    "src",
+    "locales"
+  ],
+  "scripts": {
+    "test": "node src/selftest.js",
+    "validate": "node ../../scripts/i18n/validate.mjs"
+  }
+}

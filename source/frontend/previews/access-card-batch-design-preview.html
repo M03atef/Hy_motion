@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gym PVC access card — front + back final preview</title>
+<style>
+  :root {
+    --brand: #7ACC00;
+    --ink: #0D0D0D;
+    --muted: #6B6B6B;
+    --line: #D8D8D8;
+    --bg: #E8EAED;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', 'IBM Plex Sans', Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    padding: 36px 20px 72px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .lead { color: var(--muted); font-size: 14px; margin-bottom: 10px; line-height: 1.55; max-width: 64ch; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--brand); margin-bottom: 24px;
+  }
+  .section {
+    font-size: 12px; font-weight: 700; color: var(--muted); margin: 10px 0 14px;
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+  .pair {
+    display: flex; flex-wrap: wrap; gap: 28px; justify-content: center;
+    align-items: flex-start; margin-bottom: 36px;
+  }
+  .col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .face-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .card {
+    width: 86mm; height: 54mm;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 2.4mm;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 12px 36px rgba(13,13,13,.14);
+    position: relative;
+  }
+  .accent { height: 2.2mm; width: 100%; background: var(--brand); flex: 0 0 auto; }
+  .accent-bottom { margin-top: auto; }
+  .stock-hdr { display: flex; align-items: center; gap: 2.8mm; padding: 3.2mm 3.6mm 1.2mm; }
+  .mark-lg {
+    width: 11mm; height: 11mm; border-radius: 2mm; background: var(--brand); flex-shrink: 0;
+  }
+  .gym-en {
+    font-weight: 800; font-size: 4.4mm; line-height: 1.1; text-transform: uppercase;
+    letter-spacing: -0.02em;
+  }
+  .gym-ar {
+    font-weight: 700; font-size: 3.2mm; color: #4A4A4A; direction: rtl; margin-top: .6mm;
+  }
+  .stock-label {
+    text-align: center; font-weight: 700; font-size: 2.6mm; letter-spacing: .28em;
+    color: var(--brand); margin-top: 1mm;
+  }
+  .stock-label-ar {
+    text-align: center; font-size: 2.1mm; color: #8C8C8C; direction: rtl;
+    margin-top: .3mm; margin-bottom: .6mm;
+  }
+  .scan {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.2mm; padding: 0 3mm 2.4mm;
+  }
+  .bars {
+    height: 12mm; width: 70mm;
+    background: repeating-linear-gradient(
+      90deg,
+      #0D0D0D 0 1.1px,
+      transparent 1.1px 2.2px,
+      #0D0D0D 2.2px 3px,
+      transparent 3px 4.6px,
+      #0D0D0D 4.6px 5.2px,
+      transparent 5.2px 6.8px
+    );
+  }
+  .num {
+    font-family: Consolas, 'Courier New', monospace;
+    font-weight: 700; font-size: 3.2mm; letter-spacing: .14em;
+  }
+  .back-body {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.8mm; padding: 4mm 4mm 2mm;
+  }
+  .logo-back-demo {
+    width: 22mm; height: 22mm; border-radius: 3mm; background: var(--brand);
+    display: flex; align-items: center; justify-content: center;
+    color: #0D0D0D; font-weight: 800; font-size: 7mm; letter-spacing: -0.04em;
+  }
+  .back-gym {
+    font-weight: 800; font-size: 3.4mm; letter-spacing: -0.02em;
+    text-transform: uppercase; text-align: center;
+  }
+  .back-gym-ar {
+    font-weight: 700; font-size: 2.6mm; color: #4A4A4A; direction: rtl; text-align: center;
+  }
+  .powered {
+    text-align: center; font-size: 1.55mm; color: #B0B0B0;
+    letter-spacing: .04em; padding: 0.8mm 0 1.4mm;
+  }
+  .batch { display: flex; flex-wrap: wrap; gap: 18px; justify-content: center; margin-bottom: 28px; }
+  .batch .card { box-shadow: 0 8px 24px rgba(13,13,13,.12); }
+  .mock { margin: 0 0 28px; text-align: center; }
+  .mock img {
+    max-width: 100%; height: auto; border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(13,13,13,.12);
+  }
+  .note {
+    padding: 16px 18px; background: #fff; border: 1px solid #E8E8E8;
+    border-radius: 12px; font-size: 13px; color: var(--muted); line-height: 1.55;
+  }
+  .note strong { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Pulse Fitness — PVC access card (final)</h1>
+  <p class="lead">
+    Gym-owned blank stock. <strong>Front</strong> = gym identity + AccessCard barcode.
+    <strong>Back</strong> = large gym logo on white. HyMotion only as a tiny powered-by on the back.
+  </p>
+  <div class="tag">CR80 · 86 × 54 mm · front + back</div>
+
+  <figure class="mock">
+    <img src="gym-access-card-front-back-final.png" alt="Pulse Fitness PVC front and back final mockup">
+  </figure>
+
+  <div class="section">Final layout — front &amp; back</div>
+  <div class="pair">
+    <div class="col">
+      <div class="face-tag">Front · CARD-0001</div>
+      <div class="card">
+        <div class="accent"></div>
+        <div class="stock-hdr">
+          <div class="mark-lg" aria-hidden="true"></div>
+          <div>
+            <div class="gym-en">Pulse Fitness</div>
+            <div class="gym-ar">نبض للياقة</div>
+          </div>
+        </div>
+        <div class="stock-label">ACCESS CARD</div>
+        <div class="stock-label-ar">كارنيه الدخول</div>
+        <div class="scan">
+          <div class="bars" aria-hidden="true"></div>
+          <div class="num">CARD-0001</div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="face-tag">Back</div>
+      <div class="card">
+        <div class="back-body">
+          <div class="logo-back-demo" aria-hidden="true">P</div>
+          <div class="back-gym">Pulse Fitness</div>
+          <div class="back-gym-ar">نبض للياقة</div>
+        </div>
+        <div class="accent accent-bottom"></div>
+        <div class="powered">Powered by HyMotion</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">Batch fronts (identical design, unique codes)</div>
+  <div class="batch">
+    <div class="card">
+      <div class="accent"></div>
+      <div class="stock-hdr">
+        <div class="mark-lg"></div>
+        <div>
+          <div class="gym-en">Pulse Fitness</div>
+          <div class="gym-ar">نبض للياقة</div>
+        </div>
+      </div>
+      <div class="stock-label">ACCESS CARD</div>
+      <div class="stock-label-ar">كارنيه الدخول</div>
+      <div class="scan"><div class="bars"></div><div class="num">CARD-0001</div></div>
+    </div>
+    <div class="card">
+      <div class="accent"></div>
+      <div class="stock-hdr">
+        <div class="mark-lg"></div>
+        <div>
+          <div class="gym-en">Pulse Fitness</div>
+          <div class="gym-ar">نبض للياقة</div>
+        </div>
+      </div>
+      <div class="stock-label">ACCESS CARD</div>
+      <div class="stock-label-ar">كارنيه الدخول</div>
+      <div class="scan"><div class="bars"></div><div class="num">CARD-0002</div></div>
+    </div>
+    <div class="card">
+      <div class="accent"></div>
+      <div class="stock-hdr">
+        <div class="mark-lg"></div>
+        <div>
+          <div class="gym-en">Pulse Fitness</div>
+          <div class="gym-ar">نبض للياقة</div>
+        </div>
+      </div>
+      <div class="stock-label">ACCESS CARD</div>
+      <div class="stock-label-ar">كارنيه الدخول</div>
+      <div class="scan"><div class="bars"></div><div class="num">CARD-0003</div></div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Print:</strong> Access cards → Print / preview batch.
+    Each card prints as <strong>front page then back page</strong> (duplex / print shop).
+    Logo comes from Gym Settings. Same back for every card in the batch.
+  </div>
+</div>
+</body>
+</html>

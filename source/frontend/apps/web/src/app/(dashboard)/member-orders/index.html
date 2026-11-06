@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Member Orders</title>
+<meta name="description" content="Pack what the member asked for from the app.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css?v=theme2">
+<link rel="stylesheet" href="member-orders.css?v=theme2">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav"><a class="sb-item" href="/dashboard/"><i class="ti ti-layout-dashboard"></i>Dashboard</a></nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Front desk" data-ar="الاستقبال">Front desk</span><span class="sep">/</span><span class="current" data-en="Member Orders" data-ar="طلبات الأعضاء">Member Orders</span></div></div>
+  <div class="tb-right">
+    <div class="gym-name" id="gymName">Gym</div>
+  </div>
+</header>
+
+<div class="content">
+  <div id="featureDisabled" class="banner warn is-off" hidden>
+    <i class="ti ti-flag-off"></i>
+    <div><strong data-en="Member Orders unavailable" data-ar="طلبات الأعضاء غير متاحة">Member Orders unavailable</strong>
+      <p id="featureDisabledBody" data-en="This feature is disabled or you do not have access." data-ar="الميزة مقفولة أو مفيش صلاحية.">This feature is disabled or you do not have access.</p>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ti ti-shopping-bag"></i> <span data-en="From the app" data-ar="من التطبيق">From the app</span></h1>
+      <p class="page-subtitle" data-en="Pack what the member asked for. Completing creates the sale invoice — print from the order." data-ar="جهّز اللي العضو طلبه. عند الاستلام تتولد فاتورة البيع — اطبعها من الطلب.">Pack what the member asked for. Completing creates the sale invoice — print from the order.</p>
+    </div>
+    <div class="hdr-actions">
+      <button type="button" class="btn secondary" id="btnRefresh"><i class="ti ti-refresh"></i> <span data-en="Refresh" data-ar="تحديث">Refresh</span></button>
+    </div>
+  </div>
+
+  <div class="filter-chips" id="statusFilters" role="tablist">
+    <button type="button" class="chip act" data-status="" data-en="All" data-ar="الكل">All</button>
+    <button type="button" class="chip" data-status="Pending" data-en="New" data-ar="جديد">New</button>
+    <button type="button" class="chip" data-status="Accepted" data-en="Preparing" data-ar="بنجهّز">Preparing</button>
+    <button type="button" class="chip" data-status="Ready" data-en="Ready" data-ar="جاهز">Ready</button>
+    <button type="button" class="chip" data-status="Completed" data-en="Done" data-ar="تمام">Done</button>
+    <button type="button" class="chip" data-status="Rejected" data-en="Couldn't" data-ar="مش قادرين">Couldn't</button>
+  </div>
+
+  <div class="list-bar">
+    <div class="pager" id="pager"></div>
+  </div>
+  <div class="table-wrap">
+    <table class="mo">
+      <thead>
+        <tr>
+          <th data-en="Who" data-ar="مين">Who</th>
+          <th data-en="What" data-ar="إيه">What</th>
+          <th data-en="Total" data-ar="الإجمالي">Total</th>
+          <th data-en="When" data-ar="إمتى">When</th>
+          <th data-en="Status" data-ar="الحالة">Status</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"><tr><td colspan="5" class="mo-loading" data-en="Loading…" data-ar="جاري التحميل…">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="drawer-overlay" id="detailDrawer" hidden>
+  <aside class="drawer" role="dialog" aria-labelledby="dName">
+    <div class="drawer-hdr">
+      <div>
+        <h2 id="dName">—</h2>
+        <div class="drawer-meta" id="dMeta"></div>
+      </div>
+      <button type="button" class="btn secondary" id="btnCloseDetail" data-en="Close" data-ar="إغلاق">Close</button>
+    </div>
+    <div class="drawer-body">
+      <div id="detailLoading" class="muted" hidden data-en="Loading…" data-ar="جاري التحميل…">Loading…</div>
+      <div id="detailBody">
+        <div class="hero-amt" id="dTotal">—</div>
+        <div class="mo-lines" id="dLines"></div>
+        <p class="muted" id="dNote" hidden></p>
+        <p class="hint" id="dHint"></p>
+        <div class="mo-actions" id="dActions"></div>
+        <div class="reject-box" id="rejectBox">
+          <label><span data-en="Why? (optional)" data-ar="ليه؟ (اختياري)">Why? (optional)</span>
+            <input id="rejectReason" maxlength="200" data-en-placeholder="Out of stock…" data-ar-placeholder="نفد المخزون…">
+          </label>
+          <button type="button" class="btn primary" id="btnRejectConfirm" data-en="Confirm" data-ar="تأكيد">Confirm</button>
+        </div>
+        <p id="dMemberLinkWrap"></p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="pos-print-overlay" id="moPrintOverlay" hidden>
+  <div class="pos-print-sheet" role="dialog" aria-modal="true" aria-labelledby="moPrintTitle">
+    <div class="pos-print-actions">
+      <button type="button" class="btn primary" id="btnMoPrintDo"><i class="ti ti-printer"></i> <span data-en="Print" data-ar="طباعة">Print</span></button>
+      <button type="button" class="btn secondary" id="btnMoPrintClose"><i class="ti ti-x"></i> <span data-en="Close" data-ar="إغلاق">Close</span></button>
+    </div>
+    <p class="pos-print-caption" id="moPrintTitle" data-en="Receipt" data-ar="إيصال">Receipt</p>
+    <iframe id="moPrintFrame" title="Receipt print"></iframe>
+  </div>
+</div>
+<script src="/shared/member-orders-api.js?v=3"></script>
+<script src="/shared/vendor/signalr/signalr.min.js"></script>
+<script src="member-orders-app.js?v=4"></script>
+</body>
+</html>

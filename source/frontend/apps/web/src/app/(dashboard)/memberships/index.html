@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Memberships</title>
+<meta name="description" content="Manage gym memberships — freeze, renew, assign plans, and track subscription lifecycle.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="memberships.css?v=theme1">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">AO</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left">
+    <div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current" data-en="Memberships" data-ar="الاشتراكات">Memberships</span></div>
+  </div>
+  <div class="tb-right">
+    <div class="gym-chip" id="gymChip"></div>
+    <button class="lang-toggle" id="langToggle">AR عربي</button>
+  </div>
+</header>
+
+<!-- KPI Strip -->
+<div class="kpi-strip">
+  <div class="kpi-card"><div class="kpi-ico active"><i class="ti ti-circle-check"></i></div><div class="kpi-body"><div class="kpi-val" id="kpiActive">—</div><div class="kpi-lbl" data-en="Active" data-ar="نشط">Active</div></div></div>
+  <div class="kpi-card"><div class="kpi-ico frozen"><i class="ti ti-snowflake"></i></div><div class="kpi-body"><div class="kpi-val" id="kpiFrozen">—</div><div class="kpi-lbl" data-en="Frozen" data-ar="مجمد">Frozen</div></div></div>
+  <div class="kpi-card"><div class="kpi-ico expired"><i class="ti ti-clock-x"></i></div><div class="kpi-body"><div class="kpi-val" id="kpiExpired">—</div><div class="kpi-lbl" data-en="Expired" data-ar="منتهي">Expired</div></div></div>
+</div>
+
+<!-- Main Grid -->
+<div class="content-grid">
+  <!-- Left: Table -->
+  <div class="table-section">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="search-wrap"><i class="ti ti-search"></i><input type="text" id="searchInput" placeholder="Search by name, phone or ID…"><button class="search-x" id="searchClear" style="display:none"><i class="ti ti-x"></i></button></div>
+      </div>
+      <div class="filter-bar" id="filterBar">
+        <button class="ftab active" data-f="all">All</button>
+        <button class="ftab" data-f="active">Active</button>
+        <button class="ftab" data-f="frozen">Frozen</button>
+        <button class="ftab" data-f="expired">Expired</button>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr>
+            <th>Member</th><th>Plan</th><th>Status</th><th>Start → End</th><th>Days / Sessions</th><th></th>
+          </tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="pag" id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- Right: Detail Panel -->
+  <div class="detail-section">
+    <div class="card detail-card" id="detailCard">
+      <div class="detail-empty" id="detailEmpty">
+        <i class="ti ti-click"></i>
+        <p>Select a member to view their membership</p>
+      </div>
+      <div id="detailContent" style="display:none"></div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="modalOverlay" style="display:none">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- Toast -->
+<div id="toasts"></div>
+
+<div class="pos-print-overlay" id="accessCardPrintOverlay" hidden>
+  <div class="pos-print-sheet" role="dialog" aria-modal="true" aria-labelledby="accessCardPrintTitle">
+    <div class="pos-print-actions">
+      <button type="button" class="btn btn-primary" id="btnAccessCardPrintDo"><i class="ti ti-printer"></i> <span data-en="Print" data-ar="طباعة">Print</span></button>
+      <button type="button" class="btn btn-outline" id="btnAccessCardPrintClose"><i class="ti ti-x"></i> <span data-en="Close" data-ar="إغلاق">Close</span></button>
+    </div>
+    <p class="pos-print-caption" id="accessCardPrintTitle" data-en="Member card" data-ar="كارنيه العضو">Member card</p>
+    <iframe id="accessCardPrintFrame" title="Member card print"></iframe>
+  </div>
+</div>
+
+<style>
+.pos-print-overlay{position:fixed;inset:0;background:rgba(13,13,13,.45);z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px}
+.pos-print-overlay[hidden]{display:none!important}
+.pos-print-sheet{background:#fff;border-radius:16px;border:1px solid #E8E8E8;width:min(480px,100%);max-height:90vh;display:flex;flex-direction:column;padding:14px;gap:10px}
+.pos-print-actions{display:flex;gap:8px;justify-content:flex-end}
+.pos-print-caption{font-family:var(--fd);font-weight:700;font-size:14px;margin:0}
+#accessCardPrintFrame{width:100%;min-height:280px;border:1px solid #E8E8E8;border-radius:10px;background:#F6F7F9}
+</style>
+
+<script>
+(function(){
+  const Gfp=window.GfpApi;
+  function getUser(){
+    if(Gfp&&Gfp.tokens) return Gfp.tokens.getUser();
+    try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}
+    catch(e){return null;}
+  }
+  const user=getUser();
+  if(!user){location.href='/auth/login/';return;}
+  const Authz=window.GfpAuthz;
+  if(Authz&&!Authz.useCanRole('AnyStaff')){location.href='/auth/login/';return;}
+  const ini=(user.fullName||'U').split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+  document.getElementById('userAvatar').textContent=ini;
+  document.getElementById('userName').textContent=user.fullName||'User';
+  document.getElementById('userRole').textContent=user.role||'Staff';
+  if(Authz&&Authz.useCanRole('OwnerOnly')){const ns=document.getElementById('navStaff');if(ns) ns.style.display='flex';}
+  document.getElementById('btnLogout').addEventListener('click',function(){
+    if(Gfp) Gfp.logout();
+    else {
+      ['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(function(k){localStorage.removeItem(k);sessionStorage.removeItem(k);});
+      location.href='/auth/login/';
+    }
+  });
+})();
+</script>
+<script src="/shared/gfp-deployment.js"></script>
+<script src="memberships-helpers.js"></script>
+<script src="memberships-app.js"></script>
+<script src="memberships-detail.js"></script>
+<script>
+(function () {
+  var closeBtn = document.getElementById('btnAccessCardPrintClose');
+  if (closeBtn) closeBtn.onclick = closeAccessCardPrint;
+  var doBtn = document.getElementById('btnAccessCardPrintDo');
+  if (doBtn) {
+    doBtn.onclick = function () {
+      var frame = document.getElementById('accessCardPrintFrame');
+      try {
+        frame.contentWindow.focus();
+        frame.contentWindow.print();
+      } catch (e) {
+        toast(t('Print failed — try again.', 'فشلت الطباعة — حاول تاني.'), 'error');
+      }
+    };
+  }
+  var ov = document.getElementById('accessCardPrintOverlay');
+  if (ov) {
+    ov.addEventListener('click', function (e) {
+      if (e.target === ov) closeAccessCardPrint();
+    });
+  }
+})();
+</script>
+</body>
+</html>

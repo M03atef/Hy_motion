@@ -1,0 +1,72 @@
+@import url('../warehouses/warehouses.css');
+.modal-body textarea{min-height:64px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:8px 10px;font:inherit;resize:vertical}
+.modal-body input[type=email],.modal-body input[type=number],.modal-body input[type=date],.modal-body select{height:38px;border:1px solid var(--ls3);border-radius:var(--rmd);padding:0 10px;font:inherit}
+.modal.wide{max-width:720px}
+/* warehouses.css centers overlays with no max-height — a long statement clips
+   top and bottom, and neither the page nor the modal can scroll. */
+.modal-overlay{
+  align-items:flex-start;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+.modal{
+  max-height:calc(100vh - 32px);
+  min-height:0;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  margin-block:auto;
+}
+.modal-hdr{flex-shrink:0}
+.modal-body{
+  overflow-y:auto;
+  min-height:0;
+  flex:1;
+}
+.modal-actions{flex-shrink:0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+@media(max-width:900px){.kpi-row{grid-template-columns:1fr}}
+.kpi-card{background:var(--ls1);border:1px solid var(--ls3);border-radius:var(--rlg);padding:14px 16px}
+.kpi-card .label{font-size:12px;color:var(--ltt);margin-bottom:4px}
+.kpi-card .value{font-family:var(--fd);font-size:22px;font-weight:700}
+.kpi-card .value.due{color:var(--dng500)}
+.section-label{font-size:12px;font-weight:700;color:var(--lts);margin:4px 0 8px}
+.money-due{color:var(--dng500);font-weight:700}
+.money-ok{color:var(--suc500);font-weight:600}
+.stmt-bal{margin-bottom:10px;font-size:13px}
+.stmt-hint{margin:0 0 8px;font-size:12px}
+.stmt-row{cursor:pointer}
+.stmt-row:hover{background:var(--ls2)}
+.name-link,.due-link{
+  font:inherit;font-weight:700;color:var(--ltp);background:none;border:none;padding:0;cursor:pointer;text-align:inherit
+}
+.name-link:hover,.due-link:hover{text-decoration:underline}
+.due-link.money-due{color:var(--dng500)}
+.stmt-back{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px}
+.stmt-detail-title{font-family:var(--fd);font-size:16px;margin:0 0 12px}
+.stmt-meta{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;font-size:13px}
+.stmt-meta .row{display:flex;justify-content:space-between;gap:12px}
+.stmt-meta .row span:first-child{color:var(--ltt)}
+.prod-cell{display:flex;align-items:center;gap:10px}
+.prod-cell .thumb,.prod-cell .thumb-ph{
+  width:40px;height:40px;border-radius:10px;object-fit:contain;background:#F7F7F5;border:1px solid var(--ls3);flex-shrink:0
+}
+.thumb-ph{display:flex;align-items:center;justify-content:center;color:var(--ltt);font-size:16px}
+.muted{font-size:12px;color:var(--ltt)}
+.row-actions{display:flex;gap:8px;flex-wrap:wrap}
+.people-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.person-card{
+  background:var(--ls1);border:1px solid var(--ls3);border-radius:20px;padding:16px;
+  display:flex;flex-direction:column;gap:8px;text-align:left
+}
+.person-top{display:flex;gap:12px;align-items:center}
+.person-av{
+  width:52px;height:52px;border-radius:50%;background:#EDFCD8;color:#3f6212;
+  display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:800;font-size:18px;flex-shrink:0
+}
+.person-card h3{font-family:var(--fd);font-size:16px;margin:0}
+.person-card .meta{font-size:12px;color:var(--ltt)}
+.person-owe{font-family:var(--fd);font-size:18px;font-weight:700;margin-top:4px}
+.person-owe.zero{color:var(--ltt);font-size:14px;font-weight:600}

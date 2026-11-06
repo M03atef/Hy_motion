@@ -1,0 +1,436 @@
+import type { FailureCase, Playbook } from '../types'
+import { bi } from '../i18n'
+
+const RESTORE_LATEST = `$dir = Split-Path ((Get-CimInstance Win32_Service -Filter "Name='HyMotion'").PathName.Trim('"'))
+Set-Location $dir
+.\\install-scripts\\backup\\Restore-HyMotion.ps1 -Latest`
+
+const restoreById = (id: string) =>
+  `$dir = Split-Path ((Get-CimInstance Win32_Service -Filter "Name='HyMotion'").PathName.Trim('"'))
+Set-Location $dir
+.\\install-scripts\\backup\\Restore-HyMotion.ps1 -BackupId ${id}`
+
+function fail(
+  id: string,
+  title: FailureCase['title'],
+  rest: Omit<FailureCase, 'id' | 'title'>,
+): FailureCase {
+  return { id, title, audience: 'support', ...rest }
+}
+
+export const restorePlaybook: Playbook = {
+  id: 'restore-local',
+  category: 'restore',
+  title: { en: 'Restore the gym from a copy', ar: 'رجّع النادي من نسخة' },
+  purpose: {
+    en: 'Put this PC back to a saved copy. This overwrites the live gym. Owners use HyMotion Backup; PowerShell is for the team.',
+    ar: 'رجّع الجهاز لنسخة محفوظة. ده بيمسح بيانات النادي الحالية. المالك بيستخدم HyMotion Backup؛ PowerShell للفريق.',
+  },
+  whenToUse: {
+    en: 'Bad data, a bad change, disk repair, or a new PC after you copied the Backups folder onto it.',
+    ar: 'بيانات بايظة، تغيير غلط، تصليح قرص، أو جهاز جديد بعد ما نسختوا مجلد النسخ عليه.',
+  },
+  preconditions: [
+    bi('HyMotion Local is on this PC (or a replacement with SQL and the copied Backups folder).', 'HyMotion المحلي على الجهاز (أو جهاز بديل فيه SQL ومجلد النسخ).'),
+    bi('You have a Healthy copy named HyMotionBackup_… unless support is rolling back a PreRestore_… copy.', 'عندك نسخة سليمة HyMotionBackup_… إلا لو الدعم بيرجع نسخة PreRestore_…'),
+    bi('The owner agreed the Desk will be down. Staff stopped selling and checking in.', 'المالك وافق إن المكتب هيقف. الموظفين وقفوا البيع والحضور.'),
+  ],
+  requiredAccess: {
+    en: 'Windows Administrator on the gym PC. Owner approval before you run anything.',
+    ar: 'مسؤول ويندوز على جهاز النادي. موافقة المالك قبل أي تشغيل.',
+  },
+  risk: 'destructive',
+  audience: 'both',
+  customerSummary: {
+    en: 'Your gym is being restored. Expect a few minutes of downtime. Do not use the Desk until support says it is done.',
+    ar: 'ناديكم بيتستعاد. التوقف المتوقع دقايق. متستخدموش المكتب لحد ما الدعم يقول خلص.',
+  },
+  steps: [
+    {
+      id: 'outage',
+      action: bi('Tell staff: HyMotion will be closed for a few minutes. Nobody sells or checks in.', 'قول للموظفين: HyMotion هيقفل دقايق. محدش يبيع أو يسجّل حضور.'),
+      who: 'owner',
+      expected: bi('The floor is quiet. Nobody is in the app.', 'الصالة هادية. محدش جوه التطبيق.'),
+      verification: bi('You said it out loud. Then continue.', 'قلتها بصوت. بعدين كمّل.'),
+      risk: 'safe',
+      audience: 'both',
+    },
+    {
+      id: 'healthy',
+      action: bi('On Backup & Recovery, pick a Healthy row. Do not restore a Failed row.', 'في صفحة النسخ، اختار صف سليم. متستعيدش صف فشل.'),
+      who: 'support',
+      expected: bi('You know the folder name under Backups.', 'تعرف اسم المجلد تحت Backups.'),
+      verification: bi('If the newest row is Failed, use an older Healthy row, or take a new backup if live data is still good.', 'لو أحدث صف فشل، استخدم أقدم سليم، أو خد نسخة جديدة لو البيانات الحية لسه كويسة.'),
+      risk: 'safe',
+      audience: 'support',
+      tech: bi(
+        'Folders: C:\\ProgramData\\HyMotion\\Backups\\<BackupId>\\. Failed cannot restore (Test-BackupIntegrity). Partial is skipped by -Latest; -BackupId only if hashes match. Do not edit manifest.json to fake Healthy.',
+        'المجلدات تحت C:\\ProgramData\\HyMotion\\Backups. Failed مش بيتستعاد. Partial بيتعدّى في -Latest. متعدلش manifest عشان تزيف Healthy.',
+      ),
+    },
+    {
+      id: 'owner-app',
+      action: bi('On Backup, pick a good copy, tick the warning, click Open Restore. If Windows asks, click Yes. Type RESTORE.', 'في النسخ، اختار نسخة كويسة، علّم على التحذير، اضغط افتح الاستعادة. لو ويندوز سأل، دوّس نعم. اكتب RESTORE.'),
+      who: 'owner',
+      expected: bi('A restore window opens. Wait. Do not use HyMotion until it opens again.', 'نافذة استعادة تفتح. استنى. متستخدمش HyMotion لحد ما يفتح تاني.'),
+      verification: bi('If nothing opens, search Start for HyMotion Backup. Then tap I need help.', 'لو مفيش حاجة فتحت، دور في ابدأ على HyMotion Backup. بعدين اضغط محتاج مساعدة.'),
+      risk: 'destructive',
+      audience: 'both',
+      tech: bi(
+        'HyMotionBackup.exe next to GMS.Api.exe. Protocol hymotion-backup:restore?id=. USB copies live in <USB>:\\HyMotionBackups\\ and are imported into ProgramData before Restore-HyMotion.ps1 -BackupId -Force (UI already collected RESTORE).',
+        'HyMotionBackup.exe جنب GMS.Api.exe. البروتوكول hymotion-backup:restore?id=. نسخ USB في HyMotionBackups وبتتنسخ لـ ProgramData قبل Restore-HyMotion.ps1 -Force بعد تأكيد الشاشة.',
+      ),
+    },
+    {
+      id: 'offpc',
+      action: bi('If the good copy is only on USB, copy the whole backup folder into the PC Backups folder first.', 'لو النسخة الكويسة على USB بس، انسخ المجلد كامل إلى مجلد النسخ على الجهاز الأول.'),
+      who: 'support',
+      expected: bi('The folder has database.bak, uploads.zip, and manifest.json.', 'المجلد فيه database.bak و uploads.zip و manifest.json.'),
+      verification: bi('Then restore by that folder name, not by -Latest, unless it is also the newest Healthy on disk.', 'بعدين استعد باسم المجلد، مش -Latest، إلا لو هي كمان أحدث سليم على القرص.'),
+      risk: 'admin',
+      audience: 'support',
+      tech: bi(
+        'Copy into C:\\ProgramData\\HyMotion\\Backups\\<same folder name>. A loose database.bak without zip+manifest is not an official restore source. Local has no cloud backup.',
+        'انسخ إلى C:\\ProgramData\\HyMotion\\Backups بنفس اسم المجلد. ملف .bak لوحده مش مصدر رسمي. مفيش نسخة سحابة للمحلي.',
+      ),
+    },
+    {
+      id: 'admin-ps',
+      action: bi('Open PowerShell as Administrator. Go to the folder Windows actually uses for the HyMotion service. Do not guess Program Files.', 'افتح PowerShell كمسؤول. روح للمجلد اللي ويندوز بيستخدمه لخدمة HyMotion. متخمّنش Program Files.'),
+      who: 'support',
+      expected: bi('That folder has GMS.Api.exe and Restore-HyMotion.ps1.', 'المجلد فيه GMS.Api.exe و Restore-HyMotion.ps1.'),
+      verification: bi('HyMotion service exists. The restore script path is True.', 'خدمة HyMotion موجودة. مسار سكربت الاستعادة True.'),
+      risk: 'admin',
+      audience: 'support',
+      commands: [
+        {
+          id: 'cd-service',
+          label: bi('Go to the running HyMotion folder', 'روح لمجلد HyMotion الشغال'),
+          text: `$dir = Split-Path ((Get-CimInstance Win32_Service -Filter "Name='HyMotion'").PathName.Trim('"'))
+Set-Location $dir
+Get-ChildItem .\\install-scripts\\backup\\Restore-HyMotion.ps1`,
+          supportOnly: true,
+        },
+      ],
+      tech: bi(
+        'Service name HyMotion. PathName may be publish-local or {autopf}\\HyMotion\\app. Scripts live in install-scripts\\backup next to GMS.Api.exe. A Program Files copy can have the exe without scripts.',
+        'اسم الخدمة HyMotion. PathName ممكن publish-local أو مجلد التثبيت. السكربتات جنب GMS.Api.exe. نسخة Program Files ممكن تبقى من غير سكربتات.',
+      ),
+    },
+    {
+      id: 'run-latest',
+      action: bi('To restore the newest good copy: run the restore script with -Latest. Type RESTORE and press Enter. Do not use -Force while the owner is watching.', 'لأحدث نسخة كويسة: شغّل سكربت الاستعادة بـ -Latest. اكتب RESTORE واضغط Enter. متستخدمش -Force والمالك شايف.'),
+      who: 'support',
+      expected: bi('A safety copy is taken first. Then the service stops, data comes back, and health is OK.', 'بتتاخد نسخة احترازية الأول. بعدين الخدمة تقف، البيانات ترجع، والصحة تمام.'),
+      verification: bi('The script says restore finished successfully. Exit code 0.', 'السكربت يقول الاستعادة خلصت بنجاح. كود الخروج 0.'),
+      risk: 'destructive',
+      audience: 'support',
+      commands: [{ id: 'latest', label: bi('Restore latest Healthy', 'استعادة أحدث سليم'), text: RESTORE_LATEST, supportOnly: true }],
+      tech: bi(
+        'Restore-HyMotion.ps1 -Latest. Confirm word RESTORE. -Force skips confirm (support). Flow: integrity → confirm → PreRestore_* (exit 0 or 2 Partial OK) → stop service → SQL REPLACE → uploads zip swap (uploads.rollback-*) → start service → GET http://localhost:7140/health → core table counts. Exit 0 health 200; 1 error; 3 cancelled. Do not use -SkipSafetyBackup except support with an existing PreRestore.',
+        'Confirm: RESTORE. التسلسل: سلامة → تأكيد → PreRestore_* (0 أو 2) → وقف الخدمة → SQL REPLACE → تبديل uploads → تشغيل الخدمة → /health → عد الجداول. خروج 0/1/3. -SkipSafetyBackup للدعم فقط.',
+      ),
+    },
+    {
+      id: 'run-id',
+      action: bi('To restore a named folder, pass that folder name. PreRestore_… folders are for undo, not for normal restore.', 'لاستعادة مجلد معيّن، مرّر اسم المجلد. مجلدات PreRestore_… للتراجع، مش للاستعادة العادية.'),
+      who: 'support',
+      expected: bi('Integrity check passes. Failed is refused even if you pass the id.', 'فحص السلامة يعدي. حالة فشل تترفض حتى بالمعرف.'),
+      verification: bi('Log says the integrity re-check passed.', 'السجل يقول فحص السلامة عدّى تاني.'),
+      risk: 'destructive',
+      audience: 'support',
+      commands: [
+        {
+          id: 'by-id',
+          label: bi('Restore by backup id (replace the id)', 'استعادة بالمعرف (بدّل الاسم)'),
+          text: restoreById('HyMotionBackup_yyyy-MM-dd_HHmmss'),
+          supportOnly: true,
+        },
+      ],
+      tech: bi(
+        '-BackupId HyMotionBackup_yyyy-MM-dd_HHmmss with no extra quotes. Also accepts PreRestore_* (needed for rollback). Failed status is always refused.',
+        '-BackupId من غير علامات اقتباس زيادة. يقبل PreRestore_* للرجوع. Failed يترفض دايمًا.',
+      ),
+    },
+    {
+      id: 'verify-app',
+      action: bi('When HyMotion opens again, sign in. Check that members look like the day you saved.', 'لما HyMotion يفتح تاني، ادخل. شوف الأعضاء شبه يوم ما حفظتوا.'),
+      who: 'owner',
+      expected: bi('Login works. It is not an empty gym unless that copy was empty.', 'الدخول يشتغل. مش نادي فاضي إلا لو النسخة كانت فاضية.'),
+      verification: bi('Open one member. If names look wrong, tap I need help. Do not keep selling yet.', 'افتح عضو. لو الأسامي غلط، اضغط محتاج مساعدة. متبيعوش لسه.'),
+      risk: 'safe',
+      audience: 'both',
+      tech: bi(
+        'ValidateCoreTables typically: tenants, app_users, gym_members, sales, gym_attendance, uploads. Last attempt folder: C:\\ProgramData\\HyMotion\\Backups\\_last-restore-attempt\\.',
+        'فحص الجداول الأساسية. آخر محاولة: C:\\ProgramData\\HyMotion\\Backups\\_last-restore-attempt\\.',
+      ),
+    },
+  ],
+  failures: [
+    fail('case-healthy', bi('CASE 1 — Latest copy is Healthy', 'حالة 1 — أحدث نسخة سليمة'), {
+      whatHappened: bi('The newest HyMotionBackup_… is Healthy.', 'أحدث HyMotionBackup_… سليم.'),
+      doNot: bi('Do not skip typing RESTORE on a live gym.', 'متتخطاش كتابة RESTORE على نادي شغال.'),
+      immediate: bi('After owner OK, run -Latest as Administrator.', 'بعد موافقة المالك، شغّل -Latest كمسؤول.'),
+      recovery: bi('If this run fails later, use the PreRestore_… folder created at the start.', 'لو التشغيل فشل بعد كده، استخدم مجلد PreRestore_… اللي اتعمل في البداية.'),
+      escalation: bi('Escalate only if -Latest exits 1 even though a Healthy row exists.', 'صعّد فقط لو -Latest يخرج 1 مع وجود صف سليم.'),
+      logs: bi('Today’s backup log and _last-restore-attempt', 'سجل النسخ النهارده و _last-restore-attempt'),
+      customerMessage: bi('We will restore the latest good copy. The Desk will be down a few minutes.', 'هنستعيد آخر نسخة كويسة. المكتب هيقف دقايق.'),
+      closure: bi('Health 200 and the owner accepts members, sales, and photos.', 'الصحة 200 والمالك يقبل الأعضاء والبيع والصور.'),
+      tech: bi(
+        'Command: Restore-HyMotion.ps1 -Latest from the service directory. Newest Failed/Partial HyMotionBackup_* is ignored. Exit 0 = health 200.',
+        'الأمر -Latest من مجلد الخدمة. أحدث Failed/Partial بيتعدّى. خروج 0 = صحة 200.',
+      ),
+    }),
+    fail('case-failed', bi('CASE 2 — Latest copy is Failed', 'حالة 2 — أحدث نسخة فشلت'), {
+      whatHappened: bi('The newest row is Failed. The official restore will refuse it.', 'أحدث صف فشل. الاستعادة الرسمية هترفضه.'),
+      doNot: bi('Do not use -Latest. Do not edit the manifest to say Healthy.', 'متستخدمش -Latest. متعدلش ملف البيان عشان تقول سليم.'),
+      immediate: bi('Restore an older Healthy folder by id. Or take a new backup if live data is good.', 'استعد مجلد سليم أقدم بالمعرف. أو خد نسخة جديدة لو البيانات الحية كويسة.'),
+      recovery: bi('The .bak file may still sit on disk. It is not an official restore source while status is Failed.', 'ملف القاعدة ممكن يبقى على القرص. مش مصدر رسمي وأثناء الحالة فشل.'),
+      escalation: bi('Escalate if there is no Healthy copy on the PC or USB.', 'صعّد لو مفيش نسخة سليمة على الجهاز أو USB.'),
+      logs: bi('manifest.json status Failed; backup log VERIFYONLY lines', 'manifest الحالة Failed؛ سطور VERIFYONLY'),
+      customerMessage: bi('The newest copy is not safe to restore. We will use an older good copy or take a new backup.', 'أحدث نسخة مش آمنة للاستعادة. هنستخدم أقدم كويسة أو ناخد نسخة جديدة.'),
+      closure: bi('Restore used a Healthy id, or a new Healthy backup exists and restore was not needed.', 'الاستعادة من معرف سليم، أو نسخة جديدة سليمة من غير استعادة.'),
+      tech: bi(
+        'Common cause: VERIFYONLY CREATE DATABASE denied then old scripts marked Failed. Test-BackupIntegrity rejects Failed even if hashes match. Use -BackupId on newest Healthy HyMotionBackup_*.',
+        'سبب شائع: VERIFYONLY + CREATE DATABASE ثم سكربت قديم علّم Failed. استخدم -BackupId لأحدث Healthy.',
+      ),
+    }),
+    fail('case-partial', bi('CASE 3 — Latest copy is Partial', 'حالة 3 — أحدث نسخة جزئية'), {
+      whatHappened: bi('-Latest ignores Partial. It only picks Healthy.', '-Latest بيتعدّى الجزئي. بيختار السليم بس.'),
+      doNot: bi('Do not assume photos are complete if you force that Partial by id.', 'متفترضش الصور كاملة لو أجبرت الجزئي بالمعرف.'),
+      immediate: bi('Prefer the newest Healthy copy. If you must use Partial, restore by id after reading skipped files.', 'فضّل أحدث سليم. لو لازم الجزئي، استعد بالمعرف بعد قراءة الملفات المتعدّية.'),
+      recovery: bi('Hashes must still match. Failed is still blocked.', 'الهاش لسه مطلوب. الفشل لسه مقفول.'),
+      escalation: bi('Escalate if Partial is the only copy and skipped files are critical.', 'صعّد لو الجزئي هو النسخة الوحيدة والملفات المتعدّية مهمة.'),
+      logs: bi('manifest uploads.skippedFiles', 'manifest uploads.skippedFiles'),
+      customerMessage: bi('A copy exists but some files were missing. We will pick a complete copy if we have one.', 'في نسخة بس ملفات ناقصة. هنختار نسخة كاملة لو موجودة.'),
+      closure: bi('Owner accepts missing files, or a complete Healthy restore ran.', 'المالك يقبل النقص، أو اتعمل استعادة سليمة كاملة.'),
+      tech: bi(
+        '-Latest filters Healthy HyMotionBackup_* only. -BackupId + matching hashes can restore Partial. skippedFiles will be absent after uploads swap.',
+        '-Latest = Healthy بس. -BackupId للجزئي لو الهاش مطابق. skippedFiles هتختفي بعد التبديل.',
+      ),
+    }),
+    fail('case-not-listed', bi('CASE 4 — Open Restore did not launch HyMotion Backup', 'حالة 4 — افتح الاستعادة ما فتحش HyMotion Backup'), {
+      whatHappened: bi('The Desk has Open Restore (protocol hymotion-backup:restore?id=). It is not an in-browser Run. If the protocol fails, the Backup app may be missing or UAC was cancelled.', 'المكتب فيه افتح الاستعادة (بروتوكول hymotion-backup). مش تشغيل داخل المتصفح. لو البروتوكول فشل، التطبيق ممكن يكون مش موجود أو صلاحيات ويندوز اتلغت.'),
+      doNot: bi('Do not add a fake Restore Run on the Desk (the API cannot stop its own HyMotion service). Do not send the owner to PowerShell first.', 'متعملش زر تشغيل استعادة وهمي في المكتب (الـ API يقدرش يوقف خدمته). ومتبعتش المالك لـ PowerShell الأول.'),
+      immediate: bi('Start → HyMotion Backup. Owner types RESTORE in that app. Team fallback: PowerShell Restore-HyMotion.ps1 with the folder name. Failed is still refused.', 'ابدأ ← HyMotion Backup. المالك يكتب RESTORE هناك. بديل الفريق: PowerShell باسم المجلد. الفشل لسه مرفوض.'),
+      recovery: bi('If hashes mismatch, copy the folder from USB again — the files changed on disk. USB copies live in <USB>:\\HyMotionBackups\\.', 'لو الهاش اختلف، انسخ المجلد من USB تاني. نسخ USB في HyMotionBackups.'),
+      escalation: bi('Escalate if HyMotionBackup.exe is missing next to GMS.Api.exe, or the manifest cannot be read.', 'صعّد لو HyMotionBackup.exe مش جنب GMS.Api.exe، أو ملف البيان متعذر.'),
+      logs: bi('Protocol handler; Test-BackupIntegrity messages', 'معالج البروتوكول؛ رسائل السلامة'),
+      customerMessage: bi('Restore opens the HyMotion Backup app on this PC. Type RESTORE there. There is no restore button that runs inside the web page.', 'الاستعادة بتفتح تطبيق HyMotion Backup على الجهاز. اكتبوا RESTORE هناك. مفيش زر استعادة بيشتغل جوه صفحة الويب.'),
+      closure: bi('Owner restored from the Backup app, or the team used the script after a passing integrity check.', 'المالك استعاد من التطبيق، أو الفريق استخدم السكربت بعد فحص سلامة ناجح.'),
+      tech: bi('HyMotionBackup.exe next to GMS.Api.exe. hymotion-backup:restore?id=. No Desk restore API that stops the service. Integrity: manifest status, database.bak, uploads.zip, checksums. Do not SQL RESTORE by hand as a product substitute.', 'مفيش API استعادة بيوقف الخدمة من المكتب. السلامة من manifest والملفات. متستبدلش سكربت المنتج بـ SQL يدوي.'),
+    }),
+    fail('case-usb', bi('CASE 5 — Copy only on USB', 'حالة 5 — النسخة على USB بس'), {
+      whatHappened: bi('The PC Backups folder is empty or old. The good copy is on USB.', 'مجلد النسخ على الجهاز فاضي أو قديم. النسخة الكويسة على USB.'),
+      doNot: bi('Do not restore from a lone database.bak without the zip and manifest.', 'متستعيدش من ملف قاعدة لوحده من غير الضغط وملف البيان.'),
+      immediate: bi('Copy the whole backup folder into C:\\ProgramData\\HyMotion\\Backups, then restore by id.', 'انسخ المجلد كامل ثم استعد بالمعرف.'),
+      recovery: bi('If the USB cannot be read, stop. Local has no cloud backup.', 'لو USB متعذر، قف. المحلي مفيهوش نسخة سحابة.'),
+      escalation: bi('Escalate if there is no off-PC copy and the disk is dead.', 'صعّد لو مفيش نسخة برا والجهاز ميت.'),
+      logs: bi('Folder listing of USB and ProgramData Backups', 'قائمة USB و Backups'),
+      customerMessage: bi('We need the backup folder from the USB on this PC before we can restore.', 'محتاجين مجلد النسخ من الـ USB على الجهاز قبل الاستعادة.'),
+      closure: bi('Copied folder restores successfully.', 'المجلد المنسوخ استعاد بنجاح.'),
+      tech: bi(
+        'Keep the original folder name as BackupId. Then Restore-HyMotion.ps1 -BackupId <name>.',
+        'خلّي اسم المجلد هو BackupId. بعدين -BackupId.',
+      ),
+    }),
+    fail('case-script-missing', bi('CASE 6 — Restore script missing', 'حالة 6 — سكربت الاستعادة مش موجود'), {
+      whatHappened: bi('Restore-HyMotion.ps1 is not next to the running GMS.Api.exe.', 'Restore-HyMotion.ps1 مش جنب GMS.Api.exe الشغال.'),
+      doNot: bi('Do not run a random SQL RESTORE instead of the product script.', 'متشغلش RESTORE SQL عشوائي بدل سكربت المنتج.'),
+      immediate: bi('Go to the service folder. Copy scripts from the installer. Confirm the file exists.', 'روح لمجلد الخدمة. انسخ سكربتات المثبّت. أكد إن الملف موجود.'),
+      recovery: bi('Installer puts scripts under the app folder. Dev publish-local must copy them too.', 'المثبّت يحط السكربتات تحت مجلد التطبيق. نشر التطوير لازم ينسخهم كمان.'),
+      escalation: bi('Escalate if the install media has no backup scripts at all.', 'صعّد لو وسائط التثبيت من غير سكربتات.'),
+      logs: bi('Service PathName; listing of install-scripts', 'PathName؛ قائمة install-scripts'),
+      customerMessage: bi('The restore files are not on this PC yet. Support will copy them.', 'ملفات الاستعادة مش على الجهاز. الدعم هينسخها.'),
+      closure: bi('Restore-HyMotion.ps1 exists beside the running exe.', 'السكربت موجود جنب الـ exe الشغال.'),
+      tech: bi(
+        'Path: <PathName dir>\\install-scripts\\backup\\Restore-HyMotion.ps1. Inno {app}\\install-scripts\\backup. Get-CimInstance Win32_Service Name=HyMotion.',
+        'المسار جنب exe الخدمة. استخدم PathName مش تخمين Program Files.',
+      ),
+    }),
+    fail('case-path', bi('CASE 7 — Install folder is not Program Files', 'حالة 7 — التثبيت مش Program Files'), {
+      whatHappened: bi('The service may run from a publish folder. Program Files may be an empty or old copy.', 'الخدمة ممكن تشتغل من مجلد نشر. Program Files ممكن يبقى نسخة فاضية أو قديمة.'),
+      doNot: bi('Do not cd to Program Files unless the restore script is actually there.', 'متنزلش Program Files إلا لو سكربت الاستعادة هناك فعلًا.'),
+      immediate: bi('Always take the folder from the HyMotion service path.', 'دايمًا خد المجلد من مسار خدمة HyMotion.'),
+      recovery: bi('Same copy-paste command as the top of this playbook.', 'نفس أمر النسخ في رأس الدليل.'),
+      escalation: bi('Escalate if the HyMotion service path is empty.', 'صعّد لو مسار الخدمة فاضي.'),
+      logs: bi('sc.exe qc HyMotion', 'sc.exe qc HyMotion'),
+      customerMessage: bi('We will run restore from the folder this PC actually uses.', 'هنشغّل الاستعادة من المجلد اللي الجهاز بيستخدمه فعلًا.'),
+      closure: bi('Commands ran from the service directory.', 'الأوامر اتنفّذت من مجلد الخدمة.'),
+      tech: bi(
+        `$dir = Split-Path ((Get-CimInstance Win32_Service -Filter "Name='HyMotion'").PathName.Trim('"'))`,
+        `$dir = Split-Path ((Get-CimInstance Win32_Service -Filter "Name='HyMotion'").PathName.Trim('"'))`,
+      ),
+    }),
+    fail('case-no-service', bi('CASE 8 — HyMotion service not found', 'حالة 8 — خدمة HyMotion مش موجودة'), {
+      whatHappened: bi('Windows has no HyMotion service. The Desk might be a console process instead.', 'ويندوز مفيهوش خدمة HyMotion. ممكن المكتب يكون عملية كونسول.'),
+      doNot: bi('Do not Start-Service a name that does not exist. Do not skip SQL restore only because the service is missing.', 'متشغلش Start-Service لاسم مش موجود. متتخطاش استعادة SQL لأن الخدمة مش موجودة.'),
+      immediate: bi('On a real gym PC, register the service as Administrator from the published folder.', 'على جهاز نادي حقيقي، سجّل الخدمة كمسؤول من مجلد النشر.'),
+      recovery: bi('The current script can restore data even if the service is missing. You must start GMS.Api yourself after.', 'السكربت الحالي يقدر يستعيد البيانات حتى لو الخدمة مش متثبتة. لازم تشغّل GMS.Api بنفسك بعدين.'),
+      escalation: bi('Escalate if the gym expected a Windows service and it was never registered.', 'صعّد لو النادي متوقع خدمة ويندوز وماتسجلتش.'),
+      logs: bi('Get-Service HyMotion; install-service.ps1 output', 'Get-Service؛ مخرجات install-service.ps1'),
+      customerMessage: bi('Windows is not running HyMotion as a service. Support will register it after data is restored.', 'ويندوز مش مشغّل HyMotion كخدمة. الدعم هيسجّلها بعد استعادة البيانات.'),
+      closure: bi('Service exists and health 200, or an accepted console-run exception is documented.', 'الخدمة موجودة والصحة 200، أو الاستثناء موثّق.'),
+      tech: bi(
+        'install-service.ps1 -InstallDir <folder>. Account NETWORK SERVICE. ASPNETCORE_ENVIRONMENT=Local. URLs http://localhost:7140. Script logs “service not installed” and continues restore.',
+        'install-service.ps1. الحساب NETWORK SERVICE. البيئة Local. المنفذ 7140. السكربت يسجّل إن الخدمة مش متثبتة ويكمل.',
+      ),
+    }),
+    fail('case-sql-fail', bi('CASE 9 — Database restore fails', 'حالة 9 — استعادة القاعدة فشلت'), {
+      whatHappened: bi('SQL could not replace the live database. The gym may be inconsistent. Do not use the Desk.', 'SQL ما قدرش يبدّل القاعدة الحية. النادي ممكن يبقى غير مستقر. متستخدمش المكتب.'),
+      doNot: bi('Do not skip the safety copy on the next try unless a PreRestore folder already exists.', 'متتخطاش النسخة الاحترازية في المحاولة الجاية إلا لو مجلد PreRestore موجود.'),
+      immediate: bi('Read the console error. Restore the PreRestore_… folder by id.', 'اقرأ الخطأ. استعد مجلد PreRestore_… بالمعرف.'),
+      recovery: bi('If PreRestore also fails, stop and escalate with the restore log.', 'لو PreRestore فشل كمان، قف وصعّد بالسجل.'),
+      escalation: bi('Always escalate a leftover locked database or failed RESTORE on a live gym.', 'صعّد دايمًا لو القاعدة اتقفلت أو RESTORE فشل على نادي حي.'),
+      logs: bi('_last-restore-attempt; backup log RestoreDatabase FAILED', '_last-restore-attempt؛ فشل RestoreDatabase'),
+      customerMessage: bi('Database restore did not finish. We will not say the gym is OK until a later restore succeeds.', 'استعادة القاعدة ما كملتش. مش هنقول إن النادي تمام لحد ما استعادة لاحقة تنجح.'),
+      closure: bi('A later restore succeeded, or PreRestore rolled back and the owner accepts that state.', 'استعادة لاحقة نجحت، أو الرجوع اتقبل.'),
+      tech: bi(
+        'RESTORE DATABASE … WITH REPLACE. Script tries MULTI_USER again after failure. Typical DB HyMotionLocal, Server=. in appsettings.json. Do not hand-mix tables.',
+        'RESTORE DATABASE WITH REPLACE. السكربت يحاول MULTI_USER تاني. القاعدة HyMotionLocal. متخلطش جداول بإيدك.',
+      ),
+    }),
+    fail('case-uploads-fail', bi('CASE 10 — Photos fail after the database succeeds', 'حالة 10 — الصور فشلت بعد نجاح القاعدة'), {
+      whatHappened: bi('Member records were replaced. Unzipping photos failed. The old photos folder is kept when possible.', 'بيانات الأعضاء اتبدلت. فك ضغط الصور فشل. مجلد الصور القديم محفوظ إن أمكن.'),
+      doNot: bi('Do not tell the owner photos are restored. Do not delete rollback folders.', 'متقولش إن الصور رجعت. متمسحش مجلدات الرجوع.'),
+      immediate: bi('Read the PreRestore hint in the script. Decide: roll back SQL, or fix the zip with support.', 'اقرأ تلميح PreRestore في السكربت. قرر: رجوع SQL، أو إصلاح الضغط مع الدعم.'),
+      recovery: bi('Rollback photo folders sit next to uploads under ProgramData\\HyMotion.', 'مجلدات رجوع الصور جنب uploads تحت ProgramData\\HyMotion.'),
+      escalation: bi('Escalate if SQL is from the backup but photos are from a different day.', 'صعّد لو القاعدة من النسخة والصور من يوم تاني.'),
+      logs: bi('RestoreUploads FAILED; rollback path in the log', 'فشل RestoreUploads؛ مسار الرجوع في السجل'),
+      customerMessage: bi('Member records restored; some photos may not have. Do not add new sales until we confirm.', 'بيانات الأعضاء رجعت؛ بعض الصور ممكن لأ. متضيفوش بيع جديد لحد التأكيد.'),
+      closure: bi('Photo count matches the backup zip. The service account still has Modify on the folder.', 'عدد الصور يطابق الضغط. حساب الخدمة لسه عنده تعديل على المجلد.'),
+      tech: bi(
+        'uploads.zip extract then swap. Previous folder may be uploads.rollback-*. NETWORK SERVICE needs Modify on C:\\ProgramData\\HyMotion\\uploads. PreRestore -BackupId undoes SQL if you choose rollback.',
+        'فك uploads.zip ثم التبديل. المجلد السابق uploads.rollback-*. NETWORK SERVICE محتاج Modify. PreRestore للتراجع عن SQL.',
+      ),
+    }),
+    fail('case-service-start', bi('CASE 11 — Service will not start', 'حالة 11 — الخدمة ما تقومش'), {
+      whatHappened: bi('Data is on disk. Start-Service HyMotion failed.', 'البيانات على القرص. تشغيل الخدمة فشل.'),
+      doNot: bi('Do not restore again just to start the service.', 'متستعيدش تاني بس عشان تشغّل الخدمة.'),
+      immediate: bi('Read Event Viewer. Confirm the service environment is Local.', 'اقرأ Event Viewer. أكد إن بيئة الخدمة Local.'),
+      recovery: bi('Fix the exe path, then Start-Service. Health is http://localhost:7140/health.', 'صلّح مسار الـ exe، بعدين Start-Service. الصحة على المنفذ 7140.'),
+      escalation: bi('Escalate if the service ran before restore and now crash-loops.', 'صعّد لو كانت شغالة قبل الاستعادة ودلوقتي بتتهار.'),
+      logs: bi('StartServiceAndHealthCheck; Windows Event Log', 'StartService؛ Event Log'),
+      customerMessage: bi('Data is on disk but HyMotion is not listening yet. Support is starting the service.', 'البيانات على القرص بس البرنامج لسه مش سامع. الدعم هيشغّل الخدمة.'),
+      closure: bi('Service Running and health 200.', 'الخدمة Running والصحة 200.'),
+      tech: bi(
+        'ASPNETCORE_ENVIRONMENT=Local on the HyMotion service. Account NT AUTHORITY\\NETWORK SERVICE. Do not bind a LAN URL for Local without a security review.',
+        'البيئة Local. الحساب NETWORK SERVICE. متفتحش عنوان شبكة للمحلي من غير مراجعة.',
+      ),
+    }),
+    fail('case-health', bi('CASE 12 — Health check fails', 'حالة 12 — فحص الصحة يفشل'), {
+      whatHappened: bi('The service may be running but http://localhost:7140/health is not OK within about 60 seconds. Script exit 1.', 'الخدمة ممكن تكون شغالة بس مسار الصحة مش تمام خلال حوالي 60 ثانية. خروج 1.'),
+      doNot: bi('Do not tell the gym it is live. Local is localhost:7140, not a LAN IP.', 'متقولش للنادي إنه شغال. المحلي localhost:7140 مش عنوان شبكة.'),
+      immediate: bi('Wait and retry health. Confirm nothing else is using the port.', 'استنى وجرب الصحة. تأكد مفيش حاجة ماسكة البورت.'),
+      recovery: bi('Open the Desk only after 200. If SQL restored but the app cannot start, escalate.', 'افتح المكتب بعد 200 بس. لو القاعدة رجعت والتطبيق مش قادر يقوم، صعّد.'),
+      escalation: bi('Escalate after a minute of failed health with a Running service.', 'صعّد بعد دقيقة فشل والصحة واقفة والخدمة Running.'),
+      logs: bi('Health request; GMS.Api logs under ProgramData\\HyMotion\\logs', 'طلب الصحة؛ سجلات GMS.Api'),
+      customerMessage: bi('We restored files but the app has not answered OK yet. Please wait.', 'رجّعنا الملفات بس التطبيق لسه مجاوبش تمام. استنوا.'),
+      closure: bi('GET /health returns 200.', 'GET /health يرجع 200.'),
+      tech: bi(
+        'MapHealthChecks on GMS.Api. Invoke-WebRequest http://localhost:7140/health -UseBasicParsing. Timeout ~60s in Restore-HyMotion.ps1.',
+        'Health checks في GMS.Api. المهلة حوالي 60 ثانية في سكربت الاستعادة.',
+      ),
+    }),
+    fail('case-login', bi('CASE 13 — Login fails after restore', 'حالة 13 — الدخول يفشل بعد الاستعادة'), {
+      whatHappened: bi('The app is up. Users and passwords are from the backup day, not from later changes.', 'التطبيق شغال. المستخدمين وكلمات السر من يوم النسخة، مش من التعديلات اللي بعدها.'),
+      doNot: bi('Do not reset secrets over chat. Do not restore again until you picked the right folder.', 'متصفرش الأسرار في الشات. متستعيدش تاني لحد ما تختار المجلد الصح.'),
+      immediate: bi('Check the backup date. Try the owner account from that day’s handover notes.', 'شوف تاريخ النسخة. جرب حساب المالك من ملاحظات التسليم لنفس اليوم.'),
+      recovery: bi('If the wrong day was restored, roll back with PreRestore_… then restore the intended id.', 'لو اليوم غلط، ارجع بـ PreRestore_… بعدين استعد المعرف المقصود.'),
+      escalation: bi('Escalate if license or secrets files do not match after a replacement PC.', 'صعّد لو ملفات الترخيص أو الأسرار اختلفت على جهاز بديل.'),
+      logs: bi('Desk login error; backup createdAtLocal', 'خطأ الدخول؛ تاريخ النسخة'),
+      customerMessage: bi('The app is up. Sign-in uses the users from the backup date.', 'التطبيق شغال. الدخول من مستخدمي تاريخ النسخة.'),
+      closure: bi('Owner signed in.', 'المالك دخل.'),
+      tech: bi(
+        'Users live in the restored HyMotionLocal database (app_users), not in Control Plane. License/config stay in C:\\ProgramData\\HyMotion\\config\\ unless copied.',
+        'المستخدمين في قاعدة HyMotionLocal. الترخيص/الإعداد تحت config إلا لو اتنسخوا.',
+      ),
+    }),
+    fail('case-wrong-data', bi('CASE 14 — Wrong business data after restore', 'حالة 14 — بيانات الشغل غلط بعد الاستعادة'), {
+      whatHappened: bi('Login works but members or sales are from the wrong backup.', 'الدخول تمام بس الأعضاء أو البيع من نسخة غلط.'),
+      doNot: bi('Do not mix tables by hand in SQL. Do not restore again without a new safety copy.', 'متخلطش جداول بإيدك في SQL. متستعيدش تاني من غير نسخة احترازية جديدة.'),
+      immediate: bi('Compare counts to the backup time. Restore the correct folder after a safety copy.', 'قارن الأعداد بتاريخ النسخة. استعد المجلد الصح بعد نسخة احترازية.'),
+      recovery: bi('The PreRestore from the mistaken restore is the undo.', 'PreRestore من الاستعادة الغلط هو التراجع.'),
+      escalation: bi('Escalate if two backups were mixed or USB ids were confused.', 'صعّد لو نسختين اتخلطوا أو معرفات USB لبخت.'),
+      logs: bi('Core table counts; backup ids used', 'أعداد الجداول؛ معرفات النسخ'),
+      customerMessage: bi('We restored a copy from the wrong time. We will undo, then restore the agreed backup.', 'استعدنا نسخة من وقت غلط. هنلغي، بعدين نستعيد النسخة المتفق عليها.'),
+      closure: bi('Owner accepts members, sales, and invoices for the intended date.', 'المالك يقبل بيانات التاريخ المقصود.'),
+      tech: bi(
+        'Do not -Latest to undo (that reapplies the backup you just restored). Use -BackupId PreRestore_*. Then -BackupId of the intended HyMotionBackup_*.',
+        'متستخدمش -Latest للتراجع. استخدم PreRestore_* ثم HyMotionBackup_* المقصود.',
+      ),
+    }),
+    fail('case-rollback', bi('CASE 15 — Restore must be undone', 'حالة 15 — لازم نلغي الاستعادة'), {
+      whatHappened: bi('Restore finished but the gym must go back to how it was just before.', 'الاستعادة خلصت بس النادي لازم يرجع لوضعه قبلها.'),
+      doNot: bi('Do not use -Latest (that is the copy you just applied).', 'متستخدمش -Latest (دي النسخة اللي لسه متطبقة).'),
+      immediate: bi('Find the PreRestore_… folder created just before the bad restore. Restore that id.', 'لاقي مجلد PreRestore_… اللي قبل الاستعادة الغلط. استعد المعرف ده.'),
+      recovery: bi('See the Rollback playbook. Photo rollback folders may still sit beside uploads.', 'شوف دليل الرجوع. مجلدات رجوع الصور ممكن تبقى جنب uploads.'),
+      escalation: bi('Escalate if no PreRestore folder exists (safety copy was skipped).', 'صعّد لو مفيش PreRestore (اتتخطّت النسخة الاحترازية).'),
+      logs: bi('PreRestore manifest; _last-restore-attempt restoredBackupId', 'بيان PreRestore؛ restoredBackupId'),
+      customerMessage: bi('We will undo the restore using the safety copy taken automatically before it.', 'هنلغي الاستعادة بالنسخة الاحترازية اللي اتاخدت قبلها.'),
+      closure: bi('PreRestore restore succeeded and the owner accepts the undone state.', 'رجوع PreRestore نجح والمالك يقبل.'),
+      tech: bi(
+        'Open the Rollback playbook. Restore-HyMotion.ps1 -BackupId PreRestore_yyyy-MM-dd_HHmmss. -SkipSafetyBackup only with an existing good PreRestore.',
+        'دليل الرجوع. -BackupId PreRestore_…. -SkipSafetyBackup فقط مع PreRestore موجود.',
+      ),
+    }),
+    fail('case-safety-fail', bi('CASE 16 — Safety copy itself fails', 'حالة 16 — النسخة الاحترازية نفسها تفشل'), {
+      whatHappened: bi('Restore stops if it cannot take a PreRestore copy first (complete or Partial is OK).', 'الاستعادة بتقف لو ما قدرتش تاخد نسخة PreRestore الأول (كاملة أو جزئية تمام).'),
+      doNot: bi('Do not immediately skip the safety copy on a live gym.', 'متتخطاش النسخة الاحترازية على طول على نادي حي.'),
+      immediate: bi('Fix backup (scripts, disk, SQL), then retry restore so a PreRestore exists.', 'صلّح النسخ (سكربت، قرص، SQL)، بعدين أعد الاستعادة عشان يبقى PreRestore.'),
+      recovery: bi('Skipping the safety copy is support-only when a known-good PreRestore already exists and backup cannot run.', 'تخطي الاحترازية للدعم بس لو PreRestore كويس موجود والنسخ مش قادر يشتغل.'),
+      escalation: bi('Escalate before skipping the safety copy on production.', 'صعّد قبل تخطي الاحترازية على إنتاج.'),
+      logs: bi('PreRestore backup log; restore refused to proceed', 'سجل PreRestore؛ الاستعادة رفضت تكمل'),
+      customerMessage: bi('We did not overwrite your gym because we could not take a safety copy first.', 'ما مسحناش النادي لأن ما قدرناش ناخد نسخة احترازية الأول.'),
+      closure: bi('Either a PreRestore exists and restore proceeded, or restore was cancelled safely.', 'إما PreRestore موجود والاستعادة كملت، أو اتلغت بأمان.'),
+      tech: bi(
+        'PreRestore exit 0 or 2 (Partial) allowed; other exits abort. Flag -SkipSafetyBackup. Cancelled restore is exit 3.',
+        'خروج PreRestore 0 أو 2 مسموح. غير كده بيوقف. -SkipSafetyBackup. الإلغاء خروج 3.',
+      ),
+    }),
+    fail('case-dead-pc', bi('CASE 17 — Customer PC died; replacement being prepared', 'حالة 17 — جهاز العميل مات؛ جهاز بديل'), {
+      whatHappened: bi('Old disk gone. Need SQL, HyMotion Local, license, then data.', 'القرص القديم راح. محتاج SQL و HyMotion المحلي والترخيص ثم البيانات.'),
+      doNot: bi('Do not invent a cloud download. Local has no SaaS backup.', 'متخترعش تحميل من السحابة. المحلي مفيهوش نسخة SaaS.'),
+      immediate: bi('Install Local on the new PC. Copy Backups (and license/config if you have them) into ProgramData. Restore by id.', 'ثبّت المحلي على الجديد. انسخ Backups (والترخيص/الإعداد لو موجودين) لـ ProgramData. استعد بالمعرف.'),
+      recovery: bi('Without an off-PC copy, data is unrecoverable — say so clearly.', 'من غير نسخة برا الجهاز البيانات مش هترجع — قولها بوضوح.'),
+      escalation: bi('Escalate license/device transfer in the Control Plane if the device changed.', 'صعّد نقل الترخيص/الجهاز في لوحة التحكم لو الجهاز اتغيّر.'),
+      logs: bi('New service path; copied backup ids; license status', 'مسار الخدمة الجديد؛ معرفات النسخ؛ حالة الترخيص'),
+      customerMessage: bi('A new PC starts empty until we restore a backup folder you kept off the old machine.', 'الجهاز الجديد فاضي لحد ما نستعيد مجلد نسخ كنتوا محتفظين بيه برا الجهاز القديم.'),
+      closure: bi('Replacement health 200, owner login, Healthy backup after go-live.', 'صحة البديل 200، دخول المالك، نسخة سليمة بعد التشغيل.'),
+      tech: bi(
+        'Install SQL Express, HyMotion Local via HyMotionSetup.exe, license in Control Plane against the existing customer (authorize-transfer if the device changed). Copy C:\\ProgramData\\HyMotion\\Backups (and config if available) or import from <USB>:\\HyMotionBackups\\. Restore via HyMotion Backup or Restore-HyMotion.ps1 -BackupId. Then Save a copy now for a new Healthy row.',
+        'SQL Express + HyMotionSetup + ترخيص مربوط بالعميل (نقل لو الجهاز اتغيّر). انسخ Backups أو HyMotionBackups. استعادة من التطبيق أو -BackupId ثم احفظ نسخة دلوقتي.',
+      ),
+    }),
+  ],
+  recovery: {
+    en: 'To undo, restore the PreRestore_… folder by id. Do not use -Latest to undo. See the Rollback playbook.',
+    ar: 'للتراجع، استعد مجلد PreRestore_… بالمعرف. متستخدمش -Latest للتراجع. شوف دليل الرجوع.',
+  },
+  escalation: {
+    en: 'Escalate SQL restore failure, missing PreRestore after a bad restore, a dead PC with no USB copy, or a license mismatch.',
+    ar: 'صعّد فشل استعادة SQL، ضياع PreRestore بعد استعادة غلط، جهاز ميت من غير USB، أو اختلاف الترخيص.',
+  },
+  customerCommunication: {
+    en: 'Restore overwrites this gym. Expect a few minutes down. Do not use the Desk until support says it is done. There is no undo button in the browser.',
+    ar: 'الاستعادة بتمسح بيانات النادي الحالية. التوقف دقايق. متستخدموش المكتب لحد ما الدعم يقول خلص. مفيش زر تراجع في المتصفح.',
+  },
+  securityWarnings: [
+    bi('Administrator PowerShell only. -Force and skip-safety are support-only.', 'PowerShell كمسؤول فقط. -Force وتخطي الاحترازية للدعم بس.'),
+    bi('Never ask the owner to paste passwords into chat. Never email .bak files.', 'متطلبش من المالك يلصق كلمات سر في الشات. متبعتش .bak.'),
+  ],
+  finalVerification: [
+    bi('Health 200 at http://localhost:7140/health', 'الصحة 200'),
+    bi('Owner login', 'دخول المالك'),
+    bi('Members, sales, and one photo spot-checked', 'أعضاء وبيع وصورة واحدة'),
+    bi('Last restore attempt result Succeeded', 'نتيجة آخر استعادة Succeeded'),
+  ],
+  closure: [
+    bi('Owner approved downtime', 'المالك وافق على التوقف'),
+    bi('Healthy (or accepted Partial) source used', 'المصدر سليم أو جزئي مقبول'),
+    bi('Verification completed', 'التحقق خلص'),
+    bi('Logs kept', 'السجلات محفوظة'),
+    bi('Customer told the gym is OK or not', 'اتقال للعميل النادي تمام أو لأ'),
+    bi('Case closed', 'الحالة اتقفلت'),
+  ],
+}

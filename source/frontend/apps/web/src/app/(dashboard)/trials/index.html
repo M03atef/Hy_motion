@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HyMotion — Free Trials</title>
+<meta name="description" content="Initiate trial OTP and confirm new trial members.">
+<link href="/shared/vendor/fonts/cairo.css" rel="stylesheet">
+<link rel="stylesheet" href="/shared/vendor/tabler-icons/tabler-icons.min.css">
+<link rel="stylesheet" href="../pos/pos.css">
+<link rel="stylesheet" href="trials.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="sb-hdr"><svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#7ACC00"/><path d="M10 22L16 10L22 22" stroke="#0D0D0D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 18H20" stroke="#0D0D0D" stroke-width="2" stroke-linecap="round"/></svg><span>HyMotion</span></div>
+<nav class="sb-nav">
+<!-- Shell (GfpShell) injects role-aware navigation; keep empty to avoid legacy flash. -->
+</nav>
+<div class="sb-ft"><div class="av-sm" id="userAvatar">U</div><div class="sb-ft-info"><div class="sb-ft-name" id="userName">User</div><div class="sb-ft-role" id="userRole">Staff</div></div><button class="sb-logout" id="btnLogout" title="Logout"><i class="ti ti-logout"></i></button></div>
+</aside>
+
+<div class="main">
+<header class="topbar">
+  <div class="tb-left"><div class="tb-breadcrumb"><span data-en="Dashboard" data-ar="لوحة التحكم">Dashboard</span><span class="sep">/</span><span class="current">Trials</span></div></div>
+  <div class="tb-right"><div class="gym-name" id="gymName">Gym</div></div>
+</header>
+
+<div class="content">
+  <div id="featureDisabled" class="banner warn" style="display:none">
+    <i class="ti ti-flag-off"></i>
+    <div><strong>Trials disabled</strong><p><code>FEATURE_DISABLED</code> for this tenant.</p></div>
+  </div>
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title"><i class="ti ti-flask"></i> Free trials</h1>
+      <p class="page-subtitle">Initiate → OTP confirm. Phone that already used a trial returns <code>TRIAL_ALREADY_USED</code>. Profile is seeded from the confirm response (no extra fetch required).</p>
+    </div>
+  </div>
+
+  <div class="ops-grid">
+    <section class="card" id="stepInitiate">
+      <div class="card-h"><h2>1. Initiate</h2></div>
+      <form id="initForm" class="form-stack">
+        <label>Full name<input id="fullName" required></label>
+        <label>Full name (AR)<input id="fullNameAr" dir="rtl"></label>
+        <label>Phone<input id="phone" required dir="ltr" placeholder="+20…"></label>
+        <label>Trial plan
+          <select id="planId" required>
+            <option value="">Loading…</option>
+          </select>
+        </label>
+        <button type="submit" class="btn primary full">Send OTP</button>
+      </form>
+    </section>
+
+    <section class="card" id="stepConfirm" style="opacity:.45;pointer-events:none">
+      <div class="card-h"><h2>2. Confirm OTP</h2></div>
+      <p class="hint" id="otpHint">Complete initiate first.</p>
+      <form id="confirmForm" class="form-stack">
+        <label>Phone<input id="confirmPhone" required dir="ltr"></label>
+        <label>OTP<input id="otp" required inputmode="numeric" maxlength="8" autocomplete="one-time-code"></label>
+        <button type="submit" class="btn primary full">Confirm trial</button>
+      </form>
+    </section>
+
+    <section class="card span2" id="seedCard" style="display:none">
+      <div class="card-h">
+        <h2>Member profile (seeded)</h2>
+        <a class="btn secondary" id="openProfile" href="#">Open full profile</a>
+      </div>
+      <div id="seedBody"></div>
+    </section>
+  </div>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+const API_BASE=window.API_BASE||window.GFP_DEFAULT_API_BASE||'/api';
+function getToken(){return localStorage.getItem('gfp_access_token')||sessionStorage.getItem('gfp_access_token');}
+function getH(){const t=getToken();const h={'Content-Type':'application/json'};if(t)h['Authorization']='Bearer '+t;return h;}
+function getUser(){try{return JSON.parse(localStorage.getItem('gfp_user')||sessionStorage.getItem('gfp_user'));}catch(e){return null;}}
+const user=getUser();
+if(!user||!getToken()) location.href='/auth/login/';
+document.getElementById('userAvatar').textContent=(user.fullName||'U').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+document.getElementById('userName').textContent=user.fullName||'User';
+document.getElementById('userRole').textContent=user.role||'Staff';
+if(/^Owner$/i.test(user.role||'')) document.getElementById('navStaff').style.display='';
+document.getElementById('btnLogout').onclick=function(){['gfp_access_token','gfp_refresh_token','gfp_user','gfp_expires_at'].forEach(k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);});location.href='/auth/login/';};
+(async()=>{const r=await fetch(API_BASE+'/settings',{headers:getH()});if(r.ok){const s=await r.json();document.getElementById('gymName').textContent=s.gymName||'';}})();
+</script>
+<script src="trials-app.js"></script>
+</body>
+</html>

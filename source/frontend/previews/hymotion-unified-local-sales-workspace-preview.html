@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion OC — Unified Local Sales Workspace (Preview only)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ds-lime-500: #7acc00;
+  --ds-teal-500: #148f8f;
+  --ds-bg: #0d0d0d;
+  --ds-elevated: #1a1a1a;
+  --ds-muted-bg: #2a2a2a;
+  --ds-border: #333;
+  --ds-text: #f2f2f2;
+  --ds-muted: #a3a3a3;
+  --ds-faint: #737373;
+  --ds-danger: #ef4444;
+  --ds-warning: #f59e0b;
+  --ds-success: #22c55e;
+  --ds-info: #38bdf8;
+  --ds-radius: 8px;
+  --ds-font: Cairo, system-ui, sans-serif;
+  --ds-space: 16px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--ds-font);
+  background: var(--ds-bg);
+  color: var(--ds-text);
+  font-size: 14px;
+  line-height: 1.45;
+  min-height: 100dvh;
+}
+[dir="rtl"] body, body[dir="rtl"] { /* handled on html */ }
+
+.banner {
+  position: sticky; top: 0; z-index: 40;
+  background: #111827; color: #fff;
+  padding: 10px 16px;
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start;
+  border-bottom: 1px solid #1f2937;
+}
+.banner strong { display: block; font-size: 13px; }
+.banner .note { font-size: 12px; opacity: .9; max-width: 48rem; margin-top: 4px; line-height: 1.45; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px; }
+.controls button, .chip {
+  height: 32px; padding: 0 12px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28); background: transparent; color: #fff;
+  font: inherit; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.controls button.act, .chip.act { background: #fff; color: #111827; border-color: #fff; }
+.scenario-bar {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px;
+  background: var(--ds-elevated); border-bottom: 1px solid var(--ds-border);
+}
+.scenario-bar .chip { border-color: var(--ds-border); color: var(--ds-text); background: var(--ds-muted-bg); }
+.scenario-bar .chip.act { background: var(--ds-lime-500); color: #0d0d0d; border-color: var(--ds-lime-500); }
+
+.shell {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 0;
+  max-width: 1180px;
+  margin: 0 auto;
+  min-height: calc(100dvh - 120px);
+}
+@media (max-width: 960px) {
+  .shell { grid-template-columns: 1fr; }
+  .rail { order: -1; position: sticky; top: 72px; z-index: 20; }
+}
+
+.main { padding: 20px 16px 48px; min-width: 0; }
+.rail {
+  padding: 20px 16px;
+  border-inline-start: 1px solid var(--ds-border);
+  background: color-mix(in srgb, var(--ds-elevated) 80%, transparent);
+}
+[dir="rtl"] .rail { border-inline-start: 0; border-inline-end: 1px solid var(--ds-border); }
+
+h1 { font-size: 22px; margin: 0 0 4px; font-weight: 700; }
+.sub { margin: 0 0 20px; color: var(--ds-muted); font-size: 13px; }
+
+.section {
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius);
+  background: var(--ds-elevated);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.section.is-disabled { opacity: .55; pointer-events: none; }
+.section-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+  margin-bottom: 12px;
+}
+.section-title {
+  margin: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ds-muted); font-weight: 700;
+}
+.badge {
+  display: inline-flex; align-items: center; height: 22px; padding: 0 8px;
+  border-radius: 999px; font-size: 11px; font-weight: 700;
+  background: var(--ds-muted-bg); color: var(--ds-muted);
+}
+.badge.ok { background: color-mix(in srgb, var(--ds-success) 22%, transparent); color: #86efac; }
+.badge.warn { background: color-mix(in srgb, var(--ds-warning) 22%, transparent); color: #fcd34d; }
+.badge.danger { background: color-mix(in srgb, var(--ds-danger) 22%, transparent); color: #fca5a5; }
+.badge.info { background: color-mix(in srgb, var(--ds-info) 18%, transparent); color: #7dd3fc; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+
+label.field { display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: var(--ds-muted); font-weight: 600; }
+input, select, textarea {
+  height: 40px; padding: 0 12px; border-radius: 6px;
+  border: 1px solid var(--ds-border); background: var(--ds-bg); color: var(--ds-text);
+  font: inherit;
+}
+textarea { height: auto; padding: 10px 12px; resize: vertical; }
+input:focus, select:focus, textarea:focus { outline: 2px solid color-mix(in srgb, var(--ds-teal-500) 55%, transparent); border-color: var(--ds-teal-500); }
+.field-error input, .field-error select { border-color: var(--ds-danger); }
+.err { color: var(--ds-danger); font-size: 12px; margin: 4px 0 0; }
+
+.product {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  padding: 10px 12px; border: 1px solid var(--ds-border); border-radius: 6px; margin-bottom: 8px;
+  cursor: pointer;
+}
+.product.is-on { border-color: var(--ds-teal-500); background: color-mix(in srgb, var(--ds-teal-500) 10%, transparent); }
+.product .name { font-weight: 700; min-width: 10rem; }
+.product .meta { color: var(--ds-muted); font-size: 12px; }
+.product input[type="number"] { width: 88px; height: 34px; }
+
+.money-row { display: flex; justify-content: space-between; gap: 8px; margin: 6px 0; font-size: 13px; }
+.money-row.total { font-size: 16px; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--ds-border); }
+.ltr { direction: ltr; unicode-bidi: isolate; }
+
+.btn {
+  height: 40px; padding: 0 14px; border-radius: 6px; border: 1px solid transparent;
+  font: inherit; font-weight: 700; font-size: 13px; cursor: pointer;
+}
+.btn-primary { background: var(--ds-lime-500); color: #0d0d0d; }
+.btn-secondary { background: var(--ds-muted-bg); color: var(--ds-text); border-color: var(--ds-border); }
+.btn-ghost { background: transparent; color: var(--ds-muted); border-color: var(--ds-border); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+.alert {
+  padding: 10px 12px; border-radius: 6px; font-size: 13px; margin: 0 0 12px;
+  border: 1px solid var(--ds-border);
+}
+.alert.info { background: color-mix(in srgb, var(--ds-info) 12%, transparent); border-color: color-mix(in srgb, var(--ds-info) 35%, var(--ds-border)); }
+.alert.warn { background: color-mix(in srgb, var(--ds-warning) 12%, transparent); border-color: color-mix(in srgb, var(--ds-warning) 35%, var(--ds-border)); }
+.alert.ok { background: color-mix(in srgb, var(--ds-success) 12%, transparent); border-color: color-mix(in srgb, var(--ds-success) 35%, var(--ds-border)); }
+.alert.danger { background: color-mix(in srgb, var(--ds-danger) 12%, transparent); border-color: color-mix(in srgb, var(--ds-danger) 35%, var(--ds-border)); }
+
+.toast {
+  position: fixed; inset-inline-end: 16px; bottom: 16px; z-index: 50;
+  background: #111827; color: #fff; padding: 12px 14px; border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.45); max-width: 22rem; font-size: 13px;
+  display: none;
+}
+.toast.show { display: block; }
+
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 60;
+  display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  width: min(720px, 100%); max-height: 90vh; overflow: auto;
+  background: #fff; color: #16181d; border-radius: 10px; padding: 20px;
+}
+.modal[dir="rtl"] { font-family: Cairo, sans-serif; }
+.modal h3 { margin: 0 0 8px; }
+.modal .meta { color: #5b616c; font-size: 12px; margin-bottom: 12px; }
+.modal table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.modal th, .modal td { border-bottom: 1px solid #e5e7eb; padding: 8px 4px; text-align: start; }
+.modal .wm {
+  text-align: center; color: rgba(22,24,29,.08); font-size: 28px; font-weight: 800;
+  letter-spacing: .2em; margin: 12px 0;
+}
+
+.rail h2 { margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--ds-muted); }
+.rail .status-pill {
+  display: inline-flex; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 12px; margin-bottom: 12px;
+}
+.done-list { margin: 12px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--ds-muted); }
+.done-list li { margin: 0 0 6px; padding-inline-start: 16px; position: relative; }
+.done-list li::before { content: "○"; position: absolute; inset-inline-start: 0; }
+.done-list li.done::before { content: "●"; color: var(--ds-success); }
+.hint { font-size: 12px; color: var(--ds-faint); margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    <strong>PREVIEW ONLY — Unified Local Sales Workspace</strong>
+    <div class="note">
+      DEMO data. Does not call APIs, create customers, record payments, issue licenses, or issue contracts.
+      Production behavior unchanged until Accept.
+    </div>
+  </div>
+  <div class="controls">
+    <button type="button" id="btnEn" class="act">EN</button>
+    <button type="button" id="btnAr">AR</button>
+  </div>
+</div>
+
+<div class="scenario-bar" role="tablist" aria-label="Demo scenarios">
+  <button type="button" class="chip act" data-scenario="A">A · New + paid</button>
+  <button type="button" class="chip" data-scenario="B">B · Partial 5k/15k</button>
+  <button type="button" class="chip" data-scenario="C">C · No contract</button>
+  <button type="button" class="chip" data-scenario="D">D · Issue contract</button>
+  <button type="button" class="chip" data-scenario="E">E · Validation</button>
+</div>
+
+<div class="shell">
+  <main class="main">
+    <h1 id="pageTitle">New Local sale</h1>
+    <p class="sub" id="pageSub">One workspace: customer → products → payment → optional paper contract → complete.</p>
+
+    <div id="pageAlert" class="alert info" hidden></div>
+
+    <!-- CUSTOMER -->
+    <section class="section" id="secCustomer">
+      <div class="section-head">
+        <h2 class="section-title" data-i="s.customer">1 · Customer</h2>
+        <span class="badge" id="badgeCustomer">Required</span>
+      </div>
+      <div class="actions" style="margin-top:0;margin-bottom:12px">
+        <button type="button" class="btn btn-secondary" id="modeExisting" data-i="c.existing">Select existing</button>
+        <button type="button" class="btn btn-ghost" id="modeNew" data-i="c.new">Create new</button>
+      </div>
+      <div id="existingBlock">
+        <label class="field" id="customerSelectWrap">
+          <span data-i="c.pick">Customer</span>
+          <select id="customerSelect">
+            <option value="">—</option>
+            <option value="c1">Gold Fitness · Ahmed Hassan · 0100…</option>
+            <option value="c2">Nile Strength · Sara Ali · 0111…</option>
+            <option value="c3">HHHHHHHH · ABjsac · ali@gmail.com</option>
+          </select>
+        </label>
+        <p class="hint" data-i="c.dupHint">Creating a new customer does not check for duplicates today — search first.</p>
+      </div>
+      <div id="newBlock" hidden>
+        <div class="grid2">
+          <label class="field" id="bizWrap"><span data-i="c.biz">Business / gym name</span><input id="bizName" value=""></label>
+          <label class="field" id="ownerWrap"><span data-i="c.owner">Owner name</span><input id="ownerName" value=""></label>
+          <label class="field"><span data-i="c.phone">Phone</span><input id="phone" value=""></label>
+          <label class="field"><span data-i="c.email">Email</span><input id="email" value=""></label>
+        </div>
+      </div>
+      <div id="customerCard" class="alert ok" hidden style="margin-top:12px"></div>
+    </section>
+
+    <!-- PRODUCT / LICENSE -->
+    <section class="section" id="secProduct">
+      <div class="section-head">
+        <h2 class="section-title" data-i="s.product">2 · Product &amp; license</h2>
+        <span class="badge" id="badgeProduct">Required</span>
+      </div>
+      <p class="hint" style="margin-top:0;margin-bottom:10px" data-i="p.hint">Catalog prices are DEMO. Live workspace uses GET /platform-api/catalog-products.</p>
+      <div id="productList"></div>
+      <div class="grid2" style="margin-top:12px">
+        <label class="field">
+          <span data-i="p.edition">License edition</span>
+          <select id="edition" disabled>
+            <option value="Lifetime" selected>Lifetime (only supported)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span data-i="p.devices">Device limit</span>
+          <input id="deviceLimit" type="number" min="1" value="1">
+        </label>
+      </div>
+      <p class="hint" data-i="p.opsHint">Issuing the Local license key requires Ops/Admin today. Sales can finish the commercial sale and leave license for Ops — or Ops completes it here.</p>
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" id="btnIssueLicense" data-i="p.issue">Issue license (Ops)</button>
+        <button type="button" class="btn btn-ghost" id="btnSkipLicense" data-i="p.skip">Skip license for now</button>
+      </div>
+      <div id="licenseNote" class="alert info" hidden></div>
+    </section>
+
+    <!-- PRICING (read-only derived) -->
+    <section class="section" id="secPricing">
+      <div class="section-head">
+        <h2 class="section-title" data-i="s.pricing">3 · Pricing</h2>
+        <span class="badge info" data-i="px.live">Derived from sale</span>
+      </div>
+      <div class="money-row"><span data-i="px.sub">Subtotal</span><span class="ltr" id="mSub">0 EGP</span></div>
+      <div class="money-row"><span data-i="px.disc">Header discount</span>
+        <span><input id="discount" type="number" min="0" value="0" style="width:110px;height:34px"> <span class="ltr">EGP</span></span>
+      </div>
+      <div class="money-row total"><span data-i="px.total">Final</span><span class="ltr" id="mTotal">0 EGP</span></div>
+    </section>
+
+    <!-- PAYMENT -->
+    <section class="section" id="secPayment">
+      <div class="section-head">
+        <h2 class="section-title" data-i="s.payment">4 · Payment</h2>
+        <span class="badge" id="badgePay">Optional amount</span>
+      </div>
+      <div class="grid2">
+        <label class="field" id="payAmtWrap"><span data-i="pay.amount">Amount now</span><input id="payAmount" type="number" min="0" value=""></label>
+        <label class="field"><span data-i="pay.method">Method</span>
+          <select id="payMethod">
+            <option value="cash">Cash</option>
+            <option value="bank_transfer">Bank transfer</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+      </div>
+      <p class="hint" data-i="pay.hint">No installment scheduler in product. Partial payments are separate recorded rows. Zero amount = unpaid sale (allowed).</p>
+      <div class="actions">
+        <button type="button" class="btn btn-secondary" id="btnRecordPay" data-i="pay.record">Record payment</button>
+      </div>
+      <div id="payHistory" class="hint"></div>
+    </section>
+
+    <!-- OPTIONAL CONTRACT -->
+    <section class="section" id="secContract">
+      <div class="section-head">
+        <h2 class="section-title" data-i="s.contract">5 · Paper contract (optional)</h2>
+        <span class="badge ok" data-i="ct.optional">Not required to complete sale</span>
+      </div>
+      <div class="alert info" data-i="ct.hint">HyMotion ↔ gym owner Local purchase paper. Not a gym-member membership contract. Issue freezes snapshot; later payments do not rewrite issued paper.</div>
+      <label class="field" style="max-width:220px">
+        <span data-i="ct.lang">Document language</span>
+        <select id="contractLang">
+          <option value="en">English</option>
+          <option value="ar">العربية</option>
+        </select>
+      </label>
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" id="btnPreview" data-i="ct.preview">Preview</button>
+        <button type="button" class="btn btn-secondary" id="btnIssuePaper" data-i="ct.issue">Issue &amp; print</button>
+        <button type="button" class="btn btn-primary" id="btnReprint" data-i="ct.print" disabled>Print contract</button>
+        <button type="button" class="btn btn-ghost" id="btnSkipPaper" data-i="ct.skip">Skip — complete without paper</button>
+      </div>
+      <div id="contractStatus" class="hint"></div>
+    </section>
+
+    <!-- COMPLETE -->
+    <section class="section" id="secComplete">
+      <div class="section-head">
+        <h2 class="section-title" data-i="s.complete">6 · Complete</h2>
+        <span class="badge" id="badgeComplete">Review</span>
+      </div>
+      <ul class="done-list" id="checklist"></ul>
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btnComplete" data-i="done.cta">Complete sale</button>
+        <button type="button" class="btn btn-ghost" id="btnReset" data-i="done.reset">Reset demo</button>
+      </div>
+      <div id="completeMsg" class="alert ok" hidden></div>
+    </section>
+  </main>
+
+  <aside class="rail" aria-label="Sale summary">
+    <h2 data-i="rail.title">Sale summary</h2>
+    <div class="status-pill" id="payPill" style="background:#2a2a2a;color:#a3a3a3">unpaid</div>
+    <div class="money-row"><span data-i="rail.total">Total</span><span class="ltr" id="rTotal">0</span></div>
+    <div class="money-row"><span data-i="rail.paid">Paid</span><span class="ltr" id="rPaid">0</span></div>
+    <div class="money-row total"><span data-i="rail.out">Outstanding</span><span class="ltr" id="rOut">0</span></div>
+    <p class="hint" id="railCustomer">—</p>
+    <p class="hint" id="railLicense">License: —</p>
+    <p class="hint" id="railPaper">Paper: not issued</p>
+    <p class="hint" style="margin-top:16px" data-i="rail.note">Figures mirror backend FromAmounts(total, paid). Outstanding = max(0, total − paid).</p>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="modal">
+  <div class="modal" id="modalSheet">
+    <div class="wm">PREVIEW</div>
+    <h3 id="modalTitle">HyMotion Local — Customer Sales Contract</h3>
+    <div class="meta" id="modalMeta"></div>
+    <table>
+      <thead><tr><th>Item</th><th>Qty</th><th>Line</th></tr></thead>
+      <tbody id="modalBody"></tbody>
+    </table>
+    <p class="meta" id="modalMoney" style="margin-top:12px"></p>
+    <p class="meta" id="modalTerms"></p>
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" id="modalClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const PRODUCTS = [
+    { id: 'soft', name: 'HyMotion Local Lifetime', type: 'software', price: 12000 },
+    { id: 'install', name: 'On-site install', type: 'service', price: 2000 },
+    { id: 'pvc', name: 'PVC card kit', type: 'consumable', price: 1000 },
+  ];
+
+  const I18N = {
+    en: {
+      's.customer': '1 · Customer',
+      's.product': '2 · Product & license',
+      's.pricing': '3 · Pricing',
+      's.payment': '4 · Payment',
+      's.contract': '5 · Paper contract (optional)',
+      's.complete': '6 · Complete',
+      'c.existing': 'Select existing',
+      'c.new': 'Create new',
+      'c.pick': 'Customer',
+      'c.dupHint': 'Creating a new customer does not check for duplicates today — search first.',
+      'c.biz': 'Business / gym name',
+      'c.owner': 'Owner name',
+      'c.phone': 'Phone',
+      'c.email': 'Email',
+      'p.hint': 'Catalog prices are DEMO. Live workspace uses GET /platform-api/catalog-products.',
+      'p.edition': 'License edition',
+      'p.devices': 'Device limit',
+      'p.opsHint': 'Issuing the Local license key requires Ops/Admin today. Sales can finish the commercial sale and leave license for Ops — or Ops completes it here.',
+      'p.issue': 'Issue license (Ops)',
+      'p.skip': 'Skip license for now',
+      'px.live': 'Derived from sale',
+      'px.sub': 'Subtotal',
+      'px.disc': 'Header discount',
+      'px.total': 'Final',
+      'pay.amount': 'Amount now',
+      'pay.method': 'Method',
+      'pay.hint': 'No installment scheduler in product. Partial payments are separate recorded rows. Zero amount = unpaid sale (allowed).',
+      'pay.record': 'Record payment',
+      'ct.optional': 'Not required to complete sale',
+      'ct.hint': 'HyMotion ↔ gym owner Local purchase paper. Not a gym-member membership contract. Issue freezes snapshot; later payments do not rewrite issued paper.',
+      'ct.lang': 'Document language',
+      'ct.preview': 'Preview',
+      'ct.issue': 'Issue & print',
+      'ct.print': 'Print contract',
+      'ct.skip': 'Skip — complete without paper',
+      'done.cta': 'Complete sale',
+      'done.reset': 'Reset demo',
+      'rail.title': 'Sale summary',
+      'rail.total': 'Total',
+      'rail.paid': 'Paid',
+      'rail.out': 'Outstanding',
+      'rail.note': 'Figures mirror backend FromAmounts(total, paid). Outstanding = max(0, total − paid).',
+      pageTitle: 'New Local sale',
+      pageSub: 'One workspace: customer → products → payment → optional paper contract → complete.',
+    },
+    ar: {
+      's.customer': '١ · العميل',
+      's.product': '٢ · المنتج والرخصة',
+      's.pricing': '٣ · التسعير',
+      's.payment': '٤ · الدفع',
+      's.contract': '٥ · عقد ورقي (اختياري)',
+      's.complete': '٦ · إتمام',
+      'c.existing': 'اختيار موجود',
+      'c.new': 'إنشاء جديد',
+      'c.pick': 'العميل',
+      'c.dupHint': 'إنشاء عميل جديد لا يفحص التكرار اليوم — ابحث أولاً.',
+      'c.biz': 'اسم النشاط / الصالة',
+      'c.owner': 'اسم المالك',
+      'c.phone': 'الهاتف',
+      'c.email': 'البريد',
+      'p.hint': 'أسعار الكتالوج تجريبية. الشاشة الحية تستخدم واجهة الكتالوج.',
+      'p.edition': 'إصدار الرخصة',
+      'p.devices': 'حد الأجهزة',
+      'p.opsHint': 'إصدار مفتاح الرخصة يتطلب تشغيل/إدارة اليوم. المبيعات تكمل البيع التجاري وتترك الرخصة للتشغيل إن لزم.',
+      'p.issue': 'إصدار رخصة (تشغيل)',
+      'p.skip': 'تخطي الرخصة الآن',
+      'px.live': 'من البيع الحي',
+      'px.sub': 'المجموع الفرعي',
+      'px.disc': 'خصم الرأس',
+      'px.total': 'النهائي',
+      'pay.amount': 'المبلغ الآن',
+      'pay.method': 'الطريقة',
+      'pay.hint': 'لا يوجد جدول أقساط. الدفعات الجزئية صفوف منفصلة. صفر = بيع غير مدفوع (مسموح).',
+      'pay.record': 'تسجيل دفعة',
+      'ct.optional': 'غير مطلوب لإتمام البيع',
+      'ct.hint': 'ورقة شراء HyMotion Local بين HyMotion ومالك الصالة. ليست عقد عضوية عضو. الإصدار يجمّد اللقطة.',
+      'ct.lang': 'لغة الوثيقة',
+      'ct.preview': 'معاينة',
+      'ct.issue': 'إصدار وطباعة',
+      'ct.print': 'طباعة العقد',
+      'ct.skip': 'تخطي — إتمام بلا ورقة',
+      'done.cta': 'إتمام البيع',
+      'done.reset': 'إعادة تعيين العرض',
+      'rail.title': 'ملخص البيع',
+      'rail.total': 'الإجمالي',
+      'rail.paid': 'المدفوع',
+      'rail.out': 'المتبقي',
+      'rail.note': 'الأرقام تطابق FromAmounts في الخادم. المتبقي = max(0, الإجمالي − المدفوع).',
+      pageTitle: 'بيع محلي جديد',
+      pageSub: 'مساحة واحدة: عميل ← منتجات ← دفع ← عقد ورقي اختياري ← إتمام.',
+    },
+  };
+
+  const state = {
+    locale: 'en',
+    scenario: 'A',
+    mode: 'existing',
+    customerId: '',
+    customerLabel: '',
+    lines: new Map(),
+    discount: 0,
+    payments: [],
+    license: null, // 'issued' | 'skipped' | null
+    licenseKey: null,
+    paper: null, // 'issued' | 'skipped' | null
+    paperPrints: 0,
+    completed: false,
+    role: 'sales', // demo: sales cannot issue license unless scenario says ops
+  };
+
+  const $ = (id) => document.getElementById(id);
+
+  function egp(n) {
+    return new Intl.NumberFormat('en-EG', { maximumFractionDigits: 0 }).format(Math.max(0, Math.round(n))) + ' EGP';
+  }
+
+  function subtotal() {
+    let s = 0;
+    for (const [id, qty] of state.lines) {
+      const p = PRODUCTS.find((x) => x.id === id);
+      if (p) s += p.price * qty;
+    }
+    return s;
+  }
+
+  function total() {
+    return Math.max(0, subtotal() - (Number(state.discount) || 0));
+  }
+
+  function paid() {
+    return state.payments.reduce((a, p) => a + p.amount, 0);
+  }
+
+  function outstanding() {
+    return Math.max(0, total() - paid());
+  }
+
+  function payStatus() {
+    const t = total();
+    const p = paid();
+    if (p <= 0) return 'unpaid';
+    if (p >= t) return 'paid';
+    return 'partial';
+  }
+
+  function toast(msg) {
+    const el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('show'), 2800);
+  }
+
+  function applyI18n() {
+    const dict = I18N[state.locale];
+    document.documentElement.lang = state.locale;
+    document.documentElement.dir = state.locale === 'ar' ? 'rtl' : 'ltr';
+    document.querySelectorAll('[data-i]').forEach((node) => {
+      const key = node.getAttribute('data-i');
+      if (dict[key]) node.textContent = dict[key];
+    });
+    $('pageTitle').textContent = dict.pageTitle;
+    $('pageSub').textContent = dict.pageSub;
+    $('btnEn').classList.toggle('act', state.locale === 'en');
+    $('btnAr').classList.toggle('act', state.locale === 'ar');
+  }
+
+  function renderProducts() {
+    const root = $('productList');
+    root.innerHTML = '';
+    PRODUCTS.forEach((p) => {
+      const on = state.lines.has(p.id);
+      const qty = state.lines.get(p.id) || 1;
+      const row = document.createElement('label');
+      row.className = 'product' + (on ? ' is-on' : '');
+      row.innerHTML = `
+        <input type="checkbox" ${on ? 'checked' : ''} data-id="${p.id}">
+        <span class="name">${p.name}</span>
+        <span class="meta ltr">${egp(p.price)} · ${p.type}</span>
+        ${on ? `<input type="number" min="1" value="${qty}" data-qty="${p.id}">` : ''}
+      `;
+      root.appendChild(row);
+    });
+    root.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        const id = cb.getAttribute('data-id');
+        if (cb.checked) state.lines.set(id, 1);
+        else state.lines.delete(id);
+        render();
+      });
+    });
+    root.querySelectorAll('input[data-qty]').forEach((inp) => {
+      inp.addEventListener('change', () => {
+        state.lines.set(inp.getAttribute('data-qty'), Math.max(1, Number(inp.value) || 1));
+        render();
+      });
+    });
+  }
+
+  function customerReady() {
+    if (state.mode === 'existing') return Boolean(state.customerId);
+    return Boolean($('bizName').value.trim() && $('ownerName').value.trim());
+  }
+
+  function productsReady() {
+    return state.lines.size > 0;
+  }
+
+  function render() {
+    applyI18n();
+    renderProducts();
+
+    $('discount').value = state.discount;
+    const t = total();
+    const p = paid();
+    const o = outstanding();
+    const st = payStatus();
+
+    $('mSub').textContent = egp(subtotal());
+    $('mTotal').textContent = egp(t);
+    $('rTotal').textContent = egp(t);
+    $('rPaid').textContent = egp(p);
+    $('rOut').textContent = egp(o);
+
+    const pill = $('payPill');
+    pill.textContent = st;
+    pill.style.background = st === 'paid' ? 'rgba(34,197,94,.2)' : st === 'partial' ? 'rgba(245,158,11,.2)' : '#2a2a2a';
+    pill.style.color = st === 'paid' ? '#86efac' : st === 'partial' ? '#fcd34d' : '#a3a3a3';
+
+    $('badgeCustomer').textContent = customerReady() ? 'Ready' : 'Required';
+    $('badgeCustomer').className = 'badge ' + (customerReady() ? 'ok' : 'warn');
+    $('badgeProduct').textContent = productsReady() ? 'Ready' : 'Required';
+    $('badgeProduct').className = 'badge ' + (productsReady() ? 'ok' : 'warn');
+    $('badgePay').textContent = st;
+    $('badgePay').className = 'badge ' + (st === 'paid' ? 'ok' : st === 'partial' ? 'warn' : 'info');
+
+    $('existingBlock').hidden = state.mode !== 'existing';
+    $('newBlock').hidden = state.mode !== 'new';
+    $('modeExisting').className = 'btn ' + (state.mode === 'existing' ? 'btn-secondary' : 'btn-ghost');
+    $('modeNew').className = 'btn ' + (state.mode === 'new' ? 'btn-secondary' : 'btn-ghost');
+
+    const card = $('customerCard');
+    if (customerReady()) {
+      card.hidden = false;
+      card.textContent = state.mode === 'existing'
+        ? 'Selected: ' + state.customerLabel
+        : `New (demo): ${$('bizName').value} · ${$('ownerName').value}`;
+      $('railCustomer').textContent = card.textContent;
+    } else {
+      card.hidden = true;
+      $('railCustomer').textContent = 'Customer: —';
+    }
+
+    const ln = $('licenseNote');
+    if (state.license === 'issued') {
+      ln.hidden = false;
+      ln.className = 'alert ok';
+      ln.textContent = 'DEMO license issued (masked): ' + state.licenseKey + ' · Lifetime · devices ' + ($('deviceLimit').value || 1);
+      $('railLicense').textContent = 'License: issued (demo)';
+    } else if (state.license === 'skipped') {
+      ln.hidden = false;
+      ln.className = 'alert warn';
+      ln.textContent = 'License skipped — Ops can issue later from this sale (existing rule).';
+      $('railLicense').textContent = 'License: skipped for Ops';
+    } else {
+      ln.hidden = true;
+      $('railLicense').textContent = 'License: not issued';
+    }
+
+    $('payHistory').textContent = state.payments.length
+      ? 'Payments: ' + state.payments.map((x) => egp(x.amount) + ' ' + x.method).join(' · ')
+      : 'No payments recorded yet.';
+
+    $('btnReprint').disabled = state.paper !== 'issued';
+    $('btnIssuePaper').disabled = state.paper === 'issued';
+    if (state.paper === 'issued') {
+      $('contractStatus').textContent = `Paper issued (DEMO). Print count: ${state.paperPrints}. Snapshot frozen at issue.`;
+      $('railPaper').textContent = 'Paper: issued · reprints ' + state.paperPrints;
+    } else if (state.paper === 'skipped') {
+      $('contractStatus').textContent = 'Paper skipped — sale can still complete.';
+      $('railPaper').textContent = 'Paper: skipped';
+    } else {
+      $('contractStatus').textContent = 'Paper not issued.';
+      $('railPaper').textContent = 'Paper: not issued';
+    }
+
+    const checks = [
+      { ok: customerReady(), label: 'Customer selected or created' },
+      { ok: productsReady(), label: 'At least one catalog line' },
+      { ok: state.license === 'issued' || state.license === 'skipped', label: 'License issued or explicitly skipped' },
+      { ok: true, label: 'Payment recorded or left unpaid (allowed)' },
+      { ok: state.paper === 'issued' || state.paper === 'skipped' || state.scenario === 'C', label: 'Paper issued, skipped, or left optional' },
+    ];
+    // For complete: paper is optional — always ok unless we require decision in scenario D
+    checks[4].ok = true;
+
+    $('checklist').innerHTML = checks.map((c) =>
+      `<li class="${c.ok ? 'done' : ''}">${c.label}</li>`
+    ).join('');
+
+    const canComplete = customerReady() && productsReady() && (state.license === 'issued' || state.license === 'skipped') && !state.completed;
+    $('btnComplete').disabled = !canComplete;
+
+    if (state.completed) {
+      $('completeMsg').hidden = false;
+      $('completeMsg').textContent = `DEMO sale complete. Total ${egp(t)} · Paid ${egp(p)} · Outstanding ${egp(o)} · Paper ${state.paper || 'none'}.`;
+      $('badgeComplete').textContent = 'Done';
+      $('badgeComplete').className = 'badge ok';
+    } else {
+      $('completeMsg').hidden = true;
+      $('badgeComplete').textContent = 'Review';
+      $('badgeComplete').className = 'badge';
+    }
+
+    // Scenario banner
+    const alert = $('pageAlert');
+    const messages = {
+      A: 'Scenario A — New customer, fully paid. Create customer, add products, pay full total, optionally issue paper, complete.',
+      B: 'Scenario B — Existing customer, partial payment. Target 15,000 total with 5,000 paid → 10,000 outstanding.',
+      C: 'Scenario C — Complete a valid sale without issuing paper. Contract stays optional.',
+      D: 'Scenario D — Contract path: language → preview → issue & print → reprint from frozen snapshot.',
+      E: 'Scenario E — Validation: try Complete with missing customer/products, or double Issue paper.',
+    };
+    alert.hidden = false;
+    alert.className = 'alert info';
+    alert.textContent = messages[state.scenario];
+  }
+
+  function loadScenario(id) {
+    state.scenario = id;
+    state.completed = false;
+    state.payments = [];
+    state.license = null;
+    state.licenseKey = null;
+    state.paper = null;
+    state.paperPrints = 0;
+    state.discount = 0;
+    state.lines = new Map();
+    state.role = id === 'A' || id === 'D' ? 'ops' : 'sales';
+
+    document.querySelectorAll('.scenario-bar .chip').forEach((c) => {
+      c.classList.toggle('act', c.getAttribute('data-scenario') === id);
+    });
+
+    if (id === 'A') {
+      state.mode = 'new';
+      $('bizName').value = 'Sunrise Gym';
+      $('ownerName').value = 'Mona Farid';
+      $('phone').value = '01220000000';
+      $('email').value = 'mona@example.com';
+      state.customerId = '';
+      state.customerLabel = '';
+      state.lines.set('soft', 1);
+      state.lines.set('install', 1);
+      $('payAmount').value = String(totalAfter());
+    } else if (id === 'B') {
+      state.mode = 'existing';
+      state.customerId = 'c3';
+      state.customerLabel = $('customerSelect').options[3].text;
+      $('customerSelect').value = 'c3';
+      state.lines.set('soft', 1);
+      state.lines.set('install', 1);
+      state.lines.set('pvc', 1);
+      // force 15k: soft 12k + install 2k + pvc 1k
+      state.payments = [{ amount: 5000, method: 'bank_transfer' }];
+      $('payAmount').value = '';
+      state.license = 'skipped';
+    } else if (id === 'C') {
+      state.mode = 'existing';
+      state.customerId = 'c1';
+      state.customerLabel = $('customerSelect').options[1].text;
+      $('customerSelect').value = 'c1';
+      state.lines.set('soft', 1);
+      state.payments = [{ amount: 12000, method: 'cash' }];
+      state.license = 'skipped';
+      state.paper = 'skipped';
+    } else if (id === 'D') {
+      state.mode = 'existing';
+      state.customerId = 'c2';
+      state.customerLabel = $('customerSelect').options[2].text;
+      $('customerSelect').value = 'c2';
+      state.lines.set('soft', 1);
+      state.lines.set('install', 1);
+      state.payments = [{ amount: 14000, method: 'cash' }];
+      state.license = 'issued';
+      state.licenseKey = 'HY-LCL-****-DEMO';
+      state.paper = null;
+    } else if (id === 'E') {
+      state.mode = 'existing';
+      state.customerId = '';
+      state.customerLabel = '';
+      $('customerSelect').value = '';
+      state.lines = new Map();
+      state.payments = [];
+      state.license = null;
+      state.paper = null;
+      $('payAmount').value = '-100';
+    }
+    render();
+  }
+
+  function totalAfter() {
+    let s = 0;
+    for (const [id, qty] of state.lines) {
+      const p = PRODUCTS.find((x) => x.id === id);
+      if (p) s += p.price * qty;
+    }
+    return Math.max(0, s - (Number(state.discount) || 0));
+  }
+
+  function openPreview(issued) {
+    const lang = $('contractLang').value;
+    const sheet = $('modalSheet');
+    sheet.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    $('modalTitle').textContent = lang === 'ar'
+      ? 'عقد بيع عميل HyMotion Local'
+      : 'HyMotion Local — Customer Sales Contract';
+    $('modalMeta').textContent = `${issued ? 'ISSUED SNAPSHOT' : 'LIVE PREVIEW'} · ${state.customerLabel || $('bizName').value || '—'} · HY-CTR-2026-DEMO · ${payStatus()} · Outstanding ${egp(outstanding())}`;
+    $('modalBody').innerHTML = [...state.lines.entries()].map(([id, qty]) => {
+      const p = PRODUCTS.find((x) => x.id === id);
+      return `<tr><td>${p.name}</td><td class="ltr">${qty}</td><td class="ltr">${egp(p.price * qty)}</td></tr>`;
+    }).join('') || '<tr><td colspan="3">No lines</td></tr>';
+    const frozenNote = issued
+      ? 'Paid/outstanding frozen at issue. Later payments do not change this paper.'
+      : 'Preview uses live balances. Issue to freeze.';
+    $('modalMoney').textContent = `Total ${egp(total())} · Paid ${egp(paid())} · Outstanding ${egp(outstanding())}. ${frozenNote}`;
+    $('modalTerms').textContent = lang === 'ar'
+      ? 'شروط تجريبية (لقطة). ليست شروط عضوية أعضاء النادي.'
+      : 'DEMO terms (snapshot). Not gym-member membership terms.';
+    $('modal').classList.add('open');
+  }
+
+  // Events
+  $('btnEn').onclick = () => { state.locale = 'en'; render(); };
+  $('btnAr').onclick = () => { state.locale = 'ar'; render(); };
+  document.querySelectorAll('.scenario-bar .chip').forEach((c) => {
+    c.onclick = () => loadScenario(c.getAttribute('data-scenario'));
+  });
+  $('modeExisting').onclick = () => { state.mode = 'existing'; render(); };
+  $('modeNew').onclick = () => { state.mode = 'new'; render(); };
+  $('customerSelect').onchange = (e) => {
+    state.customerId = e.target.value;
+    state.customerLabel = e.target.selectedOptions[0]?.text || '';
+    render();
+  };
+  ['bizName', 'ownerName', 'phone', 'email'].forEach((id) => {
+    $(id).addEventListener('input', () => render());
+  });
+  $('discount').onchange = () => { state.discount = Number($('discount').value) || 0; render(); };
+
+  $('btnIssueLicense').onclick = () => {
+    if (!customerReady() || !productsReady()) {
+      toast('Customer and products required before license.');
+      return;
+    }
+    if (state.role !== 'ops' && state.scenario !== 'D') {
+      toast('DEMO: Sales role cannot issue license (PlatformOpsOrAbove). Skip or hand to Ops.');
+      return;
+    }
+    if (state.license === 'issued') {
+      toast('License already issued — no duplicate in demo.');
+      return;
+    }
+    state.license = 'issued';
+    state.licenseKey = 'HY-LCL-****-DEMO';
+    toast('DEMO license issued (masked key).');
+    render();
+  };
+
+  $('btnSkipLicense').onclick = () => {
+    state.license = 'skipped';
+    toast('License skipped for Ops later.');
+    render();
+  };
+
+  $('btnRecordPay').onclick = () => {
+    const amt = Number($('payAmount').value);
+    if (!amt || amt <= 0) {
+      $('payAmtWrap').classList.add('field-error');
+      toast('Enter a positive amount, or leave unpaid.');
+      return;
+    }
+    $('payAmtWrap').classList.remove('field-error');
+    state.payments.push({ amount: amt, method: $('payMethod').value });
+    $('payAmount').value = '';
+    toast('DEMO payment recorded. Outstanding updated from totals.');
+    render();
+  };
+
+  $('btnPreview').onclick = () => {
+    if (!productsReady()) { toast('Add products first.'); return; }
+    openPreview(false);
+  };
+
+  $('btnIssuePaper').onclick = () => {
+    if (!customerReady() || !productsReady()) {
+      toast('Customer and products required.');
+      return;
+    }
+    if (state.paper === 'issued') {
+      toast('Already issued — use Print (reprint). No duplicate paper.');
+      return;
+    }
+    state.paper = 'issued';
+    state.paperPrints = 1;
+    openPreview(true);
+    toast('DEMO paper issued & print dialog would open.');
+    render();
+  };
+
+  $('btnReprint').onclick = () => {
+    if (state.paper !== 'issued') return;
+    state.paperPrints += 1;
+    openPreview(true);
+    toast('DEMO reprint from frozen snapshot. Print count ' + state.paperPrints);
+    render();
+  };
+
+  $('btnSkipPaper').onclick = () => {
+    if (state.paper === 'issued') {
+      toast('Paper already issued — cannot un-issue in v1.');
+      return;
+    }
+    state.paper = 'skipped';
+    toast('Completing without paper is allowed.');
+    render();
+  };
+
+  $('btnComplete').onclick = () => {
+    if (!customerReady()) {
+      $('customerSelectWrap').classList.add('field-error');
+      toast('Select or create a customer.');
+      return;
+    }
+    if (!productsReady()) {
+      toast('Select at least one product.');
+      return;
+    }
+    if (!state.license) {
+      toast('Issue or skip license before complete.');
+      return;
+    }
+    // Paper remains optional — no force
+    state.completed = true;
+    toast('DEMO sale completed without leaving this screen.');
+    render();
+  };
+
+  $('btnReset').onclick = () => loadScenario(state.scenario);
+  $('modalClose').onclick = () => $('modal').classList.remove('open');
+  $('modal').onclick = (e) => { if (e.target === $('modal')) $('modal').classList.remove('open'); };
+
+  loadScenario('A');
+})();
+</script>
+</body>
+</html>

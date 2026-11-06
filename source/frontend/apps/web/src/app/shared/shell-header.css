@@ -1,0 +1,176 @@
+/**
+ * HyMotion — header / topbar (Task 3).
+ * Injected after shell-layout.css. Does not restyle colors, type, or icons.
+ * Page chrome (height, 32px desktop padding) stays; this file owns overflow
+ * and the tablet/mobile arrangement.
+ */
+
+.topbar,
+header.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.topbar .tb-left,
+header.topbar .tb-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.topbar .tb-right,
+header.topbar .tb-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* Menu trigger never shrinks away */
+.topbar .gfp-sb-toggle,
+.topbar #mobToggle,
+.topbar .mob-toggle {
+  flex-shrink: 0;
+}
+
+.topbar .tb-breadcrumb {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar .tb-breadcrumb a,
+.topbar .tb-breadcrumb span {
+  max-width: 100%;
+}
+
+.topbar .gfp-lang-toggle,
+.topbar .gfp-appear-toggle,
+.topbar .lang-toggle {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.topbar .gfp-tb-gym,
+.topbar .gym-chip {
+  flex: 0 1 14rem;
+  min-width: 0;
+  max-width: min(14rem, 36vw);
+}
+
+.topbar .tb-gym-name,
+.topbar .tb-gym-name-ar,
+.topbar .gym-name,
+.topbar .gym-name-ar {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Desktop: keep the authored single row ── */
+@media (min-width: 1024px) {
+  .topbar,
+  header.topbar {
+    flex-wrap: nowrap;
+  }
+
+  .topbar .tb-right,
+  header.topbar .tb-right {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ── Tablet: tighter gaps, wrap only if the row cannot fit ── */
+@media (max-width: 1023px) {
+  .topbar,
+  header.topbar {
+    height: auto;
+    min-height: 56px;
+    padding-inline: var(--gfp-pad-x, 16px);
+    padding-block: 8px;
+    flex-wrap: wrap;
+    column-gap: 12px;
+    row-gap: 8px;
+  }
+
+  .topbar .tb-left,
+  header.topbar .tb-left {
+    gap: 10px;
+  }
+
+  .topbar .tb-right,
+  header.topbar .tb-right {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .topbar .gfp-tb-gym,
+  .topbar .gym-chip {
+    max-width: min(12rem, 30vw);
+  }
+}
+
+/* ── Mobile: menu + title on row 1; actions on row 2 ── */
+@media (max-width: 767.98px) {
+  .topbar,
+  header.topbar {
+    min-height: 52px;
+    padding-inline: 12px;
+    padding-block: 8px;
+    column-gap: 8px;
+    row-gap: 8px;
+  }
+
+  .topbar .tb-left,
+  header.topbar .tb-left {
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+
+  .topbar .tb-right,
+  header.topbar .tb-right {
+    flex: 1 0 100%;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .topbar .gfp-tb-gym,
+  .topbar .gym-chip {
+    flex: 1 1 8rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 479.98px) {
+  .topbar .gfp-appear-toggle button {
+    min-width: 28px;
+    height: 24px;
+    padding: 0 6px;
+  }
+
+  .topbar .gfp-lang-toggle,
+  .topbar .lang-toggle {
+    height: 28px;
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+}
+
+html.stock-embed .topbar .gfp-sb-toggle,
+html.hr-embed .topbar .gfp-sb-toggle {
+  display: none !important;
+}

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Offers &amp; Promotions (redesign preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --suc500:#16A34A;--suc100:#F0FDF4;--wrn500:#A16207;--wrn100:#FEFCE8;
+  --dng500:#DC2626;--dng100:#FEF2F2;--inf500:#2563EB;--inf100:#EFF6FF;
+  --lbg:#F6F7F9;--ls1:#FFFFFF;--ls2:#F5F5F5;--ls3:#E8E8E8;
+  --ltp:#1A1A1A;--lts:#4A4A4A;--ltt:#8C8C8C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:10px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh;line-height:1.5}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:56rem;line-height:1.45}
+.banner code{background:rgba(255,255,255,.15);padding:1px 6px;border-radius:4px;font-weight:500}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 72px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300);border-left:3px solid transparent}
+.sb-item.act{color:var(--l400);background:rgba(160,224,64,.08);font-weight:600;border-left-color:var(--l500)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;background:#fff;border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.crumb .cur{color:var(--ltp)}
+.content{padding:28px 32px 56px;flex:1}
+.page-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap}
+.page-title{font-family:var(--fd);font-size:24px;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-title i{color:var(--l600);font-size:22px}
+.page-sub{font-size:13px;color:var(--ltt);margin-top:4px;max-width:40rem;line-height:1.5}
+.hdr-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.quiet-link{font-size:12px;font-weight:600;color:var(--ltt);text-decoration:none}
+.quiet-link:hover{color:var(--lts)}
+.btn{height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn.danger{background:var(--dng500);border-color:var(--dng500);color:#fff}
+.btn.ghost{background:transparent}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.search{flex:1;min-width:220px;height:40px;border:1px solid var(--ls3);border-radius:12px;background:#fff;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--ltt)}
+.search input{border:none;outline:none;flex:1;font:inherit;color:var(--ltp);background:transparent}
+select.filter{height:40px;border:1px solid var(--ls3);border-radius:12px;padding:0 12px;font:inherit;font-weight:600;color:var(--lts);background:#fff}
+.tabs{display:flex;gap:2px;flex-wrap:wrap;margin-bottom:12px;border-bottom:1px solid var(--ls3)}
+.tab{
+  height:36px;padding:0 12px;border:none;border-bottom:2px solid transparent;background:transparent;
+  font:inherit;font-size:13px;font-weight:600;color:var(--ltt);cursor:pointer;margin-bottom:-1px
+}
+.tab.act{color:var(--ltp);border-bottom-color:var(--ltp)}
+.tab .n{margin-inline-start:4px;font-weight:500;color:var(--ltt)}
+.table-wrap{background:#fff;border:1px solid var(--ls3);border-radius:var(--rmd);overflow:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:start;padding:10px 16px;font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--ltt);background:#FAFAFA;font-weight:600;white-space:nowrap;border-bottom:1px solid var(--ls3)}
+td{padding:14px 16px;border-bottom:1px solid var(--ls3);vertical-align:middle;font-size:13px;color:var(--lts)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer}
+tbody tr:hover td{background:#FAFAFA}
+tbody tr.sel td{background:#F5F5F5}
+.disc{font-weight:600;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums;direction:ltr;color:var(--ltp)}
+.offer-name{font-weight:600;font-size:14px;line-height:1.35;color:var(--ltp)}
+.offer-short{font-size:12px;color:var(--ltt);margin-top:2px}
+.meta-line{font-size:12px;color:var(--ltt);margin-top:3px}
+.meta-line b{font-weight:600;color:var(--lts);font-family:ui-monospace,Menlo,Consolas,monospace}
+.pill{color:var(--lts);font-size:13px;font-weight:500}
+.dates{font-weight:500;white-space:nowrap;color:var(--lts)}
+.dates .sub{display:block;font-size:12px;font-weight:400;color:var(--ltt);margin-top:2px}
+.dates.warn .sub{color:var(--wrn500)}
+.dates.mute{color:var(--ltt)}
+.use{font-size:13px;font-weight:500;color:var(--lts);white-space:nowrap}
+.use .hint{display:block;font-size:12px;font-weight:400;color:var(--ltt);margin-top:2px}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--lts);white-space:nowrap}
+.st .dot{width:6px;height:6px;border-radius:50%;background:#A3A3A3}
+.st.on .dot{background:#16A34A}
+.st.end .dot{background:#CA8A04}
+.st.sched .dot{background:#64748B}
+.st.exp .dot{background:#A3A3A3}
+.st.draft .dot{background:#D4D4D4}
+.st.exp,.st.draft{color:var(--ltt)}
+.kebab{width:32px;height:32px;border-radius:8px;border:1px solid var(--ls3);background:#fff;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.kebab:hover{border-color:#D4D4D4;color:var(--ltp);background:#FAFAFA}
+.menu{
+  position:absolute;z-index:40;min-width:168px;background:#fff;border:1px solid var(--ls3);
+  border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:6px;display:none
+}
+.menu.show{display:block}
+.menu button{width:100%;text-align:start;border:none;background:transparent;padding:8px 10px;border-radius:8px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ltp)}
+.menu button:hover{background:var(--ls2)}
+.menu button.danger{color:#991B1B}
+.empty,.skel-wrap{padding:48px 24px;text-align:center;color:var(--ltt)}
+.empty i{font-size:28px;color:var(--ltt);display:block;margin-bottom:8px}
+.empty-title{font-family:var(--fd);font-weight:700;color:var(--ltp);margin-bottom:4px}
+.skel{height:12px;border-radius:6px;background:var(--ls2)}
+.drawer-ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:220;display:flex;justify-content:flex-end}
+.drawer{width:min(420px,100%);height:100%;background:#fff;box-shadow:0 8px 30px rgba(0,0,0,.12);display:flex;flex-direction:column}
+.drawer-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px;border-bottom:1px solid var(--ls3)}
+.drawer-hdr h2{font-family:var(--fd);font-size:18px;margin:0;line-height:1.3}
+.drawer-body{padding:18px;overflow:auto;flex:1}
+.drawer-ft{padding:14px 18px;border-top:1px solid var(--ls3);display:flex;gap:8px;flex-wrap:wrap}
+.hero-disc{font-size:20px;font-weight:600;margin:4px 0 12px;direction:ltr;color:var(--ltp)}
+.meta{display:grid;gap:8px;font-size:13px;margin:12px 0 16px}
+.meta .row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--ls2);padding-bottom:6px}
+.meta .row span:first-child{color:var(--ltt)}
+.warn-box{background:#FAFAFA;color:var(--lts);border:1px solid var(--ls3);border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.45;margin-top:8px}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#fff;border-radius:var(--rlg);padding:20px;width:100%;max-width:400px}
+.modal h3{font-family:var(--fd);margin-bottom:8px}
+.modal p{font-size:13px;color:var(--lts);line-height:1.5;margin-bottom:16px}
+.modal .row{display:flex;justify-content:flex-end;gap:8px}
+.wiz-concept{background:#fff;border:1px solid var(--ls3);border-radius:var(--rmd);padding:20px;max-width:640px}
+.wiz-concept h3{font-family:var(--fd);margin-bottom:6px}
+.wiz-concept p{font-size:13px;color:var(--lts);line-height:1.5;margin-bottom:14px}
+.steps{display:flex;flex-wrap:wrap;gap:8px}
+.steps span{font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--ls2);color:var(--lts)}
+.steps span.on{background:var(--ls2);color:var(--ltp);border:1px solid var(--ls3)}
+.toast{position:fixed;bottom:20px;inset-inline-end:20px;background:var(--c900);color:#fff;padding:12px 16px;border-radius:12px;font-size:13px;font-weight:600;z-index:400;transform:translateY(120px);opacity:0;transition:.25s ease}
+.toast.show{transform:none;opacity:1}
+@media (max-width:1100px){.col-for{display:none}}
+@media (max-width:800px){
+  .sidebar{display:none}
+  .content{padding:16px}
+  .col-dates,.col-use{display:none}
+  .disc{font-size:14px}
+}
+[dir=rtl] th,[dir=rtl] td{text-align:start}
+[dir=rtl] .menu{inset-inline-end:0}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    DESIGN PREVIEW — accepted 16 Aug 2026 (quieter list). Live desk: <code>/dashboard/offers/</code>
+  </div>
+  <div class="controls">
+    <button type="button" class="act" data-scene="list">List</button>
+    <button type="button" data-scene="empty">Empty</button>
+    <button type="button" data-scene="loading">Loading</button>
+    <button type="button" data-scene="create">Create concept</button>
+    <button type="button" data-scene="rtl">RTL</button>
+  </div>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+    <div class="sb-sec">Money</div>
+    <div class="sb-item">Shifts</div>
+    <div class="sb-item act"><i class="ti ti-discount-2"></i> Offers &amp; Promotions</div>
+    <div class="sb-item">Invoices</div>
+    <div class="sb-sec">Catalog</div>
+    <div class="sb-item">Plans</div>
+    <div class="sb-item">Products</div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="crumb">Money <span style="opacity:.4">/</span> <span class="cur" id="crumb">Offers &amp; Promotions</span></div>
+      <div style="font-size:12px;font-weight:700;color:var(--lts)">Fitness Hub</div>
+    </header>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<div class="menu" id="menu" role="menu"></div>
+<div id="overlays"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  var TODAY = new Date(2026, 7, 16);
+  var scene = 'list';
+  var tab = 'all';
+  var q = '';
+  var typeF = '';
+  var appliesF = '';
+  var selected = null;
+  var menuId = null;
+
+  var OFFERS = [
+    {
+      id: 'o1',
+      name: 'Summer Membership Offer',
+      short: 'Save on a 3-month join',
+      discountType: 'percentage',
+      value: 20,
+      applies: 'memberships',
+      start: '2026-08-01',
+      end: '2026-09-15',
+      used: 0,
+      limit: 100,
+      tracked: true,
+      featured: true,
+      showApp: true,
+      redemption: 'code',
+      code: 'SUMMER20',
+      pos: true,
+      newOnly: false,
+      isDraft: false,
+      plans: ['3 Months']
+    },
+    {
+      id: 'o2',
+      name: 'Ramadan PT Pack',
+      short: 'Personal training add-on',
+      discountType: 'percentage',
+      value: 25,
+      applies: 'memberships',
+      start: '2026-08-01',
+      end: '2026-08-18',
+      used: 31,
+      limit: 80,
+      tracked: true,
+      featured: false,
+      showApp: true,
+      redemption: 'code',
+      code: 'RAMADAN25',
+      pos: true,
+      newOnly: false,
+      isDraft: false,
+      plans: ['PT 8 sessions']
+    },
+    {
+      id: 'o3',
+      name: 'New Year Join',
+      short: 'January acquisition push',
+      discountType: 'percentage',
+      value: 30,
+      applies: 'memberships',
+      start: '2026-01-01',
+      end: '2026-01-31',
+      used: 64,
+      limit: 200,
+      tracked: true,
+      featured: false,
+      showApp: false,
+      redemption: 'code',
+      code: 'NY2026',
+      pos: false,
+      newOnly: true,
+      isDraft: false,
+      plans: ['12 Months']
+    },
+    {
+      id: 'o4',
+      name: 'Welcome Cut',
+      short: 'Front-desk closer',
+      discountType: 'percentage',
+      value: 15,
+      applies: 'memberships',
+      start: '2026-07-01',
+      end: '2026-12-31',
+      used: 94,
+      limit: 100,
+      tracked: true,
+      featured: false,
+      showApp: true,
+      redemption: 'code',
+      code: 'WELCOME15',
+      pos: true,
+      newOnly: true,
+      isDraft: false,
+      plans: ['All plans']
+    },
+    {
+      id: 'o5',
+      name: 'Staff family rate',
+      short: 'Fixed EGP off any membership',
+      discountType: 'fixed',
+      value: 200,
+      applies: 'memberships',
+      start: '2026-01-01',
+      end: '2026-12-31',
+      used: 12,
+      limit: null,
+      tracked: true,
+      featured: false,
+      showApp: false,
+      redemption: 'code',
+      code: 'FAMILY200',
+      pos: true,
+      newOnly: false,
+      isDraft: false,
+      plans: ['All plans']
+    },
+    {
+      id: 'o6',
+      name: 'Protein Bundle',
+      short: 'Retail: buy 2 get 1',
+      discountType: 'bxgy',
+      buy: 2,
+      get: 1,
+      applies: 'products',
+      start: '2026-09-01',
+      end: '2026-09-30',
+      used: 0,
+      limit: 50,
+      tracked: false,
+      featured: false,
+      showApp: true,
+      redemption: 'auto',
+      code: null,
+      pos: false,
+      newOnly: false,
+      isDraft: false,
+      plans: [],
+      products: ['Whey 2kg', 'Creatine']
+    },
+    {
+      id: 'o7',
+      name: 'Autumn Join',
+      short: 'Draft — not on Member App or POS',
+      discountType: 'percentage',
+      value: 10,
+      applies: 'both',
+      start: '2026-09-15',
+      end: '2026-10-31',
+      used: 0,
+      limit: 100,
+      tracked: false,
+      featured: false,
+      showApp: true,
+      redemption: 'auto',
+      code: null,
+      pos: false,
+      newOnly: false,
+      isDraft: true,
+      plans: ['3 Months'],
+      products: []
+    }
+  ];
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function parseD(s) {
+    var p = s.split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function fmt(s) {
+    var d = parseD(s);
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  }
+  function daysUntil(s) {
+    return Math.round((parseD(s) - TODAY) / 86400000);
+  }
+  function statusOf(o) {
+    if (o.isDraft) return 'draft';
+    if (parseD(o.end) < TODAY) return 'expired';
+    if (parseD(o.start) > TODAY) return 'scheduled';
+    if (daysUntil(o.end) <= 7) return 'ending';
+    return 'active';
+  }
+  function discLabel(o) {
+    if (o.discountType === 'bxgy') return 'Buy ' + o.buy + ' Get ' + o.get;
+    if (o.discountType === 'fixed') return 'EGP ' + o.value + ' OFF';
+    return o.value + '% OFF';
+  }
+  function kindLabel(t) {
+    return t === 'fixed' ? 'Fixed amount' : t === 'bxgy' ? 'Buy X Get Y' : 'Percentage';
+  }
+  function appliesLabel(a) {
+    return a === 'products' ? 'Products' : a === 'both' ? 'Both' : 'Memberships';
+  }
+  function tabKey(s) {
+    if (s === 'ending' || s === 'active') return 'active';
+    return s;
+  }
+
+  function filtered() {
+    if (scene === 'empty') return [];
+    return OFFERS.filter(function (o) {
+      var st = statusOf(o);
+      var hay = (o.name + ' ' + o.short + ' ' + discLabel(o) + ' ' + (o.code || '')).toLowerCase();
+      if (q && hay.indexOf(q.toLowerCase()) < 0) return false;
+      if (typeF && o.discountType !== typeF) return false;
+      if (appliesF && o.applies !== appliesF) return false;
+      if (tab !== 'all' && tabKey(st) !== tab) return false;
+      return true;
+    });
+  }
+
+  function stBadge(s) {
+    var map = {
+      active: ['on', 'Active'],
+      ending: ['end', 'Ending'],
+      scheduled: ['sched', 'Scheduled'],
+      expired: ['exp', 'Expired'],
+      draft: ['draft', 'Draft']
+    };
+    var m = map[s];
+    return '<span class="st ' + m[0] + '"><span class="dot"></span>' + m[1] + '</span>';
+  }
+
+  function usageHtml(o) {
+    if (!o.tracked) {
+      return '<div class="use">—<span class="hint">Not tracked</span></div>';
+    }
+    if (o.limit == null) {
+      return '<div class="use">' + o.used + '<span class="hint">No cap</span></div>';
+    }
+    return '<div class="use">' + o.used + ' of ' + o.limit + '</div>';
+  }
+
+  function dateHtml(o) {
+    var st = statusOf(o);
+    var left = daysUntil(o.end);
+    var sub = st === 'expired' ? 'Ended' : st === 'scheduled' ? 'Starts in ' + daysUntil(o.start) + ' days' : left === 0 ? 'Ends today' : left + ' days left';
+    var cls = st === 'expired' ? ' mute' : st === 'ending' ? ' warn' : '';
+    return '<div class="dates' + cls + '">' + fmt(o.start) + ' – ' + fmt(o.end) + '<span class="sub">' + sub + '</span></div>';
+  }
+
+  function metaLine(o) {
+    var bits = [];
+    if (o.code) bits.push('<b>' + o.code + '</b>');
+    if (o.pos) bits.push('POS');
+    else if (!o.isDraft) bits.push('App only');
+    if (o.showApp && o.featured) bits.push('Featured');
+    if (!o.showApp) bits.push('Hidden');
+    return bits.length ? '<div class="meta-line">' + bits.join(' · ') + '</div>' : '';
+  }
+
+  function counts() {
+    var c = { all: OFFERS.length, active: 0, scheduled: 0, draft: 0, expired: 0 };
+    OFFERS.forEach(function (o) {
+      c[tabKey(statusOf(o))]++;
+    });
+    return c;
+  }
+
+  function listHtml() {
+    var rows = filtered();
+    var c = counts();
+    var body;
+    if (scene === 'loading') {
+      body = '<tr><td colspan="7"><div class="skel-wrap"><div class="skel" style="height:18px;margin:8px 0"></div><div class="skel" style="height:18px;margin:8px 0"></div><div class="skel" style="height:18px;margin:8px 0"></div></div></td></tr>';
+    } else if (!rows.length) {
+      body = '';
+    } else {
+      body = rows.map(function (o) {
+        var st = statusOf(o);
+        return (
+          '<tr data-id="' + o.id + '"' + (selected === o.id ? ' class="sel"' : '') + '>' +
+          '<td><div class="offer-name">' + o.name + '</div><div class="offer-short">' + o.short + '</div>' + metaLine(o) + '</td>' +
+          '<td><div class="disc" dir="ltr">' + discLabel(o) + '</div></td>' +
+          '<td class="col-for"><span class="pill">' + appliesLabel(o.applies) + '</span></td>' +
+          '<td class="col-dates">' + dateHtml(o) + '</td>' +
+          '<td class="col-use">' + usageHtml(o) + '</td>' +
+          '<td>' + stBadge(st) + '</td>' +
+          '<td style="text-align:end;width:1%"><button type="button" class="kebab" data-menu="' + o.id + '" aria-label="Actions"><i class="ti ti-dots-vertical"></i></button></td>' +
+          '</tr>'
+        );
+      }).join('');
+    }
+    var empty = scene !== 'loading' && !rows.length;
+    var emptyCopy = OFFERS.length && (q || typeF || appliesF || tab !== 'all')
+      ? ['No offers match', 'Clear search or filters.']
+      : ['No offers yet', 'Create an offer for memberships or products.'];
+
+    return (
+      '<div class="page-header">' +
+      '<div><h1 class="page-title"><i class="ti ti-discount-2"></i> Offers &amp; Promotions</h1>' +
+      '<p class="page-sub">Who can get a deal, for how long, and how it is redeemed.</p></div>' +
+      '<div class="hdr-actions">' +
+      '<a class="quiet-link" href="#">Promo codes</a>' +
+      '<button type="button" class="btn ghost" id="btnApp">Member App</button>' +
+      '<button type="button" class="btn primary" id="btnCreate">Create Offer</button>' +
+      '</div></div>' +
+      '<div class="toolbar">' +
+      '<div class="search"><i class="ti ti-search"></i><input id="searchQ" type="search" placeholder="Search name, discount, or code" value="' + q.replace(/"/g, '&quot;') + '"></div>' +
+      '<select class="filter" id="filterType"><option value="">All types</option><option value="percentage"' + (typeF === 'percentage' ? ' selected' : '') + '>Percentage</option><option value="fixed"' + (typeF === 'fixed' ? ' selected' : '') + '>Fixed amount</option><option value="bxgy"' + (typeF === 'bxgy' ? ' selected' : '') + '>Buy X Get Y</option></select>' +
+      '<select class="filter" id="filterApplies"><option value="">All targets</option><option value="memberships"' + (appliesF === 'memberships' ? ' selected' : '') + '>Memberships</option><option value="products"' + (appliesF === 'products' ? ' selected' : '') + '>Products</option><option value="both"' + (appliesF === 'both' ? ' selected' : '') + '>Both</option></select>' +
+      '</div>' +
+      '<div class="tabs">' +
+      tabBtn('all', 'All', c.all) + tabBtn('active', 'Active', c.active) +
+      tabBtn('scheduled', 'Scheduled', c.scheduled) + tabBtn('draft', 'Draft', c.draft) +
+      tabBtn('expired', 'Expired', c.expired) +
+      '</div>' +
+      '<div class="table-wrap"><table><thead><tr>' +
+      '<th>Offer</th><th>Discount</th><th class="col-for">For</th><th class="col-dates">Validity</th><th class="col-use">Usage</th><th>Status</th><th></th>' +
+      '</tr></thead><tbody id="tbody">' + body + '</tbody></table>' +
+      (empty ? '<div class="empty" id="empty"><i class="ti ti-discount-off"></i><div class="empty-title">' + emptyCopy[0] + '</div><div>' + emptyCopy[1] + '</div></div>' : '') +
+      '</div>'
+    );
+  }
+
+  function tabBtn(id, lab, n) {
+    return '<button type="button" class="tab' + (tab === id ? ' act' : '') + '" data-tab="' + id + '">' + lab + ' <span class="n">' + n + '</span></button>';
+  }
+
+  function createHtml() {
+    return (
+      '<div class="page-header"><div><h1 class="page-title"><i class="ti ti-plus"></i> Create Offer</h1>' +
+      '<p class="page-sub">Existing 7-step wizard stays. This preview does not restyle it. List + drawer are the change.</p></div>' +
+      '<button type="button" class="btn ghost" id="btnBack">Back to list</button></div>' +
+      '<div class="wiz-concept">' +
+      '<h3>Keep the guided setup</h3>' +
+      '<p>Live API: <code>POST /api/offers</code> with <code>isDraft</code>. Publishing a promo-code membership %/fixed offer still syncs <code>promo_codes</code> for POS.</p>' +
+      '<div class="steps">' +
+      '<span class="on">1 Details</span><span>2 Applies to</span><span>3 Discount</span><span>4 Eligibility</span><span>5 Member App</span><span>6 Redemption</span><span>7 Review</span>' +
+      '</div>' +
+      '<p style="margin-top:16px">When implementing the list, also fix wizard copy: Automatic does not apply at Sale; banner upload is not an API.</p>' +
+      '</div>'
+    );
+  }
+
+  function drawerHtml(o) {
+    var st = statusOf(o);
+    var posNote = o.pos
+      ? ''
+      : '<div class="warn-box">POS will not apply this offer. Automatic, product, and BXGY are Member App / catalog only. Sale still needs a membership promo code or a manual discount.</div>';
+    var use = !o.tracked
+      ? 'Not tracked (no linked promo consume)'
+      : o.limit == null
+        ? o.used + ' redemptions · no cap'
+        : o.used + ' of ' + o.limit + ' redemptions';
+    return (
+      '<div class="drawer-ov" id="drawerOv"><div class="drawer">' +
+      '<div class="drawer-hdr"><div><h2>' + o.name + '</h2><div style="margin-top:8px">' + stBadge(st) + '</div></div>' +
+      '<button type="button" class="btn ghost" id="closeDrawer" aria-label="Close">✕</button></div>' +
+      '<div class="drawer-body">' +
+      '<div class="hero-disc" dir="ltr">' + discLabel(o) + '</div>' +
+      '<div class="offer-short">' + o.short + '</div>' + metaLine(o) +
+      '<div class="meta">' +
+      row('Applies to', appliesLabel(o.applies) + (o.plans && o.plans.length ? ' · ' + o.plans.join(', ') : '') + (o.products && o.products.length ? ' · ' + o.products.join(', ') : '')) +
+      row('Valid', fmt(o.start) + ' → ' + fmt(o.end) + ' 2026') +
+      row('Redemption', o.redemption === 'code' ? 'Promo code · ' + o.code : 'Automatic (not applied at Sale)') +
+      row('Eligibility', o.newOnly ? 'New members only (Member App filter)' : 'All members') +
+      row('Usage', use) +
+      row('Member App', !o.showApp ? 'Hidden' : o.featured ? 'Shown · Featured' : 'Shown') +
+      '</div>' + posNote +
+      '</div>' +
+      '<div class="drawer-ft">' +
+      (st !== 'expired' && !o.isDraft ? '<button type="button" class="btn" data-end="' + o.id + '">End</button>' : '') +
+      '<button type="button" class="btn" data-dup="' + o.id + '">Duplicate</button>' +
+      '<button type="button" class="btn primary" data-edit="' + o.id + '">Edit</button>' +
+      '</div></div></div>'
+    );
+  }
+
+  function row(k, v) {
+    return '<div class="row"><span>' + k + '</span><strong>' + v + '</strong></div>';
+  }
+
+  function render() {
+    document.documentElement.dir = scene === 'rtl' ? 'rtl' : 'ltr';
+    document.documentElement.lang = scene === 'rtl' ? 'ar' : 'en';
+    document.getElementById('crumb').textContent = scene === 'create' ? 'Create Offer' : 'Offers & Promotions';
+    var root = document.getElementById('content');
+    if (scene === 'create') root.innerHTML = createHtml();
+    else root.innerHTML = listHtml();
+    bind();
+    if (selected) {
+      var o = OFFERS.find(function (x) { return x.id === selected; });
+      if (o) showDrawer(o);
+    }
+  }
+
+  function bind() {
+    document.querySelectorAll('[data-scene]').forEach(function (b) {
+      b.classList.toggle('act', b.getAttribute('data-scene') === scene || (scene === 'rtl' && b.getAttribute('data-scene') === 'rtl'));
+    });
+    var back = document.getElementById('btnBack');
+    if (back) back.onclick = function () { scene = 'list'; selected = null; render(); };
+    var create = document.getElementById('btnCreate');
+    if (create) create.onclick = function () { scene = 'create'; selected = null; render(); };
+    var app = document.getElementById('btnApp');
+    if (app) app.onclick = function () { toast('Member App mock stays as today — not restyled in this pass.'); };
+    var sq = document.getElementById('searchQ');
+    if (sq) {
+      sq.oninput = function () { q = sq.value; renderKeepFocus('searchQ'); };
+    }
+    var ft = document.getElementById('filterType');
+    if (ft) ft.onchange = function () { typeF = ft.value; render(); };
+    var fa = document.getElementById('filterApplies');
+    if (fa) fa.onchange = function () { appliesF = fa.value; render(); };
+    document.querySelectorAll('[data-tab]').forEach(function (b) {
+      b.onclick = function () { tab = b.getAttribute('data-tab'); render(); };
+    });
+    var tb = document.getElementById('tbody');
+    if (tb) {
+      tb.onclick = function (e) {
+        var menuBtn = e.target.closest('[data-menu]');
+        if (menuBtn) {
+          e.stopPropagation();
+          openMenu(menuBtn.getAttribute('data-menu'), menuBtn);
+          return;
+        }
+        var tr = e.target.closest('tr[data-id]');
+        if (tr) {
+          selected = tr.getAttribute('data-id');
+          var o = OFFERS.find(function (x) { return x.id === selected; });
+          showDrawer(o);
+        }
+      };
+    }
+  }
+
+  function renderKeepFocus(id) {
+    var v = document.getElementById(id) && document.getElementById(id).value;
+    render();
+    var el = document.getElementById(id);
+    if (el) { el.focus(); el.value = v; }
+  }
+
+  function openMenu(id, btn) {
+    menuId = id;
+    var o = OFFERS.find(function (x) { return x.id === id; });
+    var st = statusOf(o);
+    var menu = document.getElementById('menu');
+    menu.innerHTML =
+      '<button type="button" data-a="view">View</button>' +
+      '<button type="button" data-a="edit">Edit</button>' +
+      '<button type="button" data-a="dup">Duplicate</button>' +
+      (st !== 'expired' && !o.isDraft ? '<button type="button" class="danger" data-a="end">End…</button>' : '');
+    var r = btn.getBoundingClientRect();
+    menu.style.top = r.bottom + 4 + 'px';
+    menu.style.left = document.documentElement.dir === 'rtl' ? r.left + 'px' : (r.right - 168) + 'px';
+    menu.classList.add('show');
+    menu.onclick = function (e) {
+      var a = e.target.getAttribute('data-a');
+      menu.classList.remove('show');
+      if (a === 'view') { selected = id; showDrawer(o); }
+      if (a === 'edit') toast('Opens the existing wizard (PUT /api/offers/{id}).');
+      if (a === 'dup') toast('Duplicates as draft via POST /api/offers.');
+      if (a === 'end') confirmEnd(o);
+    };
+  }
+
+  function showDrawer(o) {
+    selected = o.id;
+    document.querySelectorAll('tbody tr').forEach(function (tr) {
+      tr.classList.toggle('sel', tr.getAttribute('data-id') === o.id);
+    });
+    var ov = document.getElementById('overlays');
+    ov.innerHTML = drawerHtml(o);
+    document.getElementById('closeDrawer').onclick = closeDrawer;
+    document.getElementById('drawerOv').onclick = function (e) {
+      if (e.target.id === 'drawerOv') closeDrawer();
+    };
+    ov.querySelectorAll('[data-edit]').forEach(function (b) {
+      b.onclick = function () { toast('Opens the existing wizard (PUT /api/offers/{id}).'); };
+    });
+    ov.querySelectorAll('[data-dup]').forEach(function (b) {
+      b.onclick = function () { toast('Duplicates as draft via POST /api/offers.'); };
+    });
+    ov.querySelectorAll('[data-end]').forEach(function (b) {
+      b.onclick = function () { confirmEnd(o); };
+    });
+  }
+
+  function closeDrawer() {
+    selected = null;
+    document.getElementById('overlays').innerHTML = '';
+    document.querySelectorAll('tbody tr').forEach(function (tr) { tr.classList.remove('sel'); });
+  }
+
+  function confirmEnd(o) {
+    var ov = document.getElementById('overlays');
+    ov.insertAdjacentHTML(
+      'beforeend',
+      '<div class="modal-ov" id="endOv"><div class="modal">' +
+      '<h3>End this offer?</h3>' +
+      '<p><strong>' + o.name + '</strong> will expire immediately (end date = yesterday, Cairo). A linked promo code is deactivated. This matches <code>POST /api/offers/{id}/end</code>.</p>' +
+      '<div class="row"><button type="button" class="btn" id="endNo">Cancel</button><button type="button" class="btn danger" id="endYes">End offer</button></div>' +
+      '</div></div>'
+    );
+    document.getElementById('endNo').onclick = function () { document.getElementById('endOv').remove(); };
+    document.getElementById('endYes').onclick = function () {
+      document.getElementById('endOv').remove();
+      closeDrawer();
+      toast('Preview only — live End sets EndDate to yesterday Cairo.');
+    };
+  }
+
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2800);
+  }
+
+  document.querySelector('.controls').onclick = function (e) {
+    var b = e.target.closest('[data-scene]');
+    if (!b) return;
+    var s = b.getAttribute('data-scene');
+    q = '';
+    typeF = '';
+    appliesF = '';
+    tab = 'all';
+    selected = null;
+    document.getElementById('menu').classList.remove('show');
+    document.getElementById('overlays').innerHTML = '';
+    scene = s;
+    render();
+  };
+
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('#menu') && !e.target.closest('[data-menu]')) {
+      document.getElementById('menu').classList.remove('show');
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

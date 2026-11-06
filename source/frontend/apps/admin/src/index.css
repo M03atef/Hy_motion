@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  --c900: #0d0d0d;
+  --c800: #1a1a1a;
+  --c700: #2a2a2a;
+  --c600: #3a3a3a;
+  --c500: #4a4a4a;
+  --c400: #6b6b6b;
+  --c300: #8c8c8c;
+  --c200: #b0b0b0;
+  --c100: #d4d4d4;
+  --c50: #f0f0f0;
+  --l600: #5eaf00;
+  --l500: #7acc00;
+  --l400: #a0e040;
+  --l300: #beec73;
+  --lglow: rgba(160, 224, 64, 0.25);
+  --t500: #148f8f;
+  --t400: #3db5b5;
+  --dng500: #ef4444;
+  --dng600: #dc2626;
+  --dng100: #fee2e2;
+  --dngtxt: #991b1b;
+  --inf100: #dbeafe;
+  --inftxt: #1e40af;
+  --lbg: #fafafa;
+  --ls1: #ffffff;
+  --ls2: #f5f5f5;
+  --ls3: #ebebeb;
+  --ltp: #1a1a1a;
+  --lts: #4a4a4a;
+  --ltt: #8c8c8c;
+  --lbd: #d4d4d4;
+  --dbg: #0d0d0d;
+  --dtp: #f0f0f0;
+  --dts: #b0b0b0;
+  --fd: 'Cairo', sans-serif;
+  --fb: 'Cairo', sans-serif;
+  --rmd: 10px;
+  --rpl: 9999px;
+  --shg: 0 0 20px var(--lglow);
+  --tf: 150ms ease;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  max-width: 100%;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tables scroll inside their wrapper; the page stays horizontally stable. */
+.overflow-x-auto {
+  max-width: 100%;
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+input:not([type='checkbox']):not([type='radio']):not([type='range']),
+select,
+textarea {
+  max-width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 767.98px) {
+  form .grid,
+  .sm\:grid-cols-\[1fr_200px\] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+[role='dialog'] {
+  max-width: 100%;
+  max-height: min(90dvh, calc(100dvh - 24px));
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+main,
+.flex-1 {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.toast,
+[role='alert'] {
+  max-width: min(420px, calc(100vw - 32px));
+  overflow-wrap: anywhere;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fb);
+  background: var(--lbg);
+  color: var(--ltp);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: break-word;
+}
+
+* {
+  box-sizing: border-box;
+}

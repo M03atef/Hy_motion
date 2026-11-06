@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HyMotion — Staff Management (preview)</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root{
+  --c900:#0D0D0D;--c800:#1A1A1A;--c700:#2A2A2A;--c300:#8C8C8C;
+  --l600:#5EAF00;--l500:#7ACC00;--l400:#A0E040;
+  --gold:#D97706;--blue:#3B82F6;--teal:#0D9488;--pur:#7C3AED;
+  --suc500:#22C55E;--suc100:#DCFCE7;--wrn500:#F59E0B;--wrn100:#FEF3C7;
+  --dng500:#EF4444;--dng100:#FEE2E2;--inf500:#3B82F6;--inf100:#DBEAFE;
+  --lbg:#F4F5F3;--ls1:#FFFEFB;--ls2:#F3F5F2;--ls3:#E4E8E2;
+  --ltp:#1A1A1A;--lts:#4A524C;--ltt:#7A847C;
+  --fd:'Space Grotesk',sans-serif;--fb:'IBM Plex Sans','IBM Plex Sans Arabic',sans-serif;
+  --rmd:12px;--rlg:16px;--sidebar:220px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:var(--fb);color:var(--ltp);background:var(--lbg);min-height:100vh}
+.banner{
+  background:#14532d;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:80
+}
+.banner .note{font-weight:500;opacity:.92;font-size:12px;max-width:52rem;line-height:1.45}
+.controls{display:flex;gap:6px;flex-wrap:wrap}
+.controls button{
+  height:32px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);
+  background:transparent;color:#fff;font:inherit;font-size:12px;font-weight:600;cursor:pointer
+}
+.controls button.act{background:#fff;color:#14532d;border-color:#fff}
+.app{display:flex;min-height:calc(100vh - 72px)}
+.sidebar{width:var(--sidebar);background:var(--c900);color:#F0F0F0;flex-shrink:0}
+.sb-hdr{display:flex;align-items:center;gap:10px;padding:20px 16px;border-bottom:1px solid var(--c700)}
+.sb-hdr .mark{width:32px;height:32px;border-radius:8px;background:var(--l500)}
+.sb-hdr span{font-family:var(--fd);font-weight:700;color:var(--l400)}
+.sb-sec{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#666;padding:14px 20px 6px}
+.sb-item{display:flex;align-items:center;gap:8px;padding:10px 20px;font-size:13px;color:var(--c300)}
+.sb-item.act{color:#0D0D0D;background:var(--l500);font-weight:700}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;background:rgba(255,254,251,.92);border-bottom:1px solid var(--ls3);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.crumb{font-family:var(--fd);font-weight:600;font-size:13px;color:var(--lts)}
+.content{padding:22px 28px 48px;flex:1}
+.page-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:16px}
+.page-title{font-family:var(--fd);font-size:26px;font-weight:700;display:flex;align-items:center;gap:10px}
+.page-title i{color:var(--l500)}
+.page-sub{font-size:14px;color:var(--lts);margin-top:6px;max-width:40rem;line-height:1.5}
+.btn{height:40px;padding:0 14px;border-radius:12px;border:1px solid var(--ls3);background:#fff;font:inherit;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn.primary{background:var(--l500);border-color:var(--l500);color:#0D0D0D}
+.btn.danger{background:var(--dng500);border-color:var(--dng500);color:#fff}
+.btn.ghost{background:transparent}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.search{flex:1;min-width:220px;height:40px;border:1px solid var(--ls3);border-radius:12px;background:#fff;display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--ltt)}
+.search input{border:none;outline:none;flex:1;font:inherit;color:var(--ltp);background:transparent}
+select.filter{height:40px;border:1px solid var(--ls3);border-radius:12px;padding:0 12px;font:inherit;font-weight:600;color:var(--lts);background:#fff}
+.table-wrap{background:#fff;border:1px solid var(--ls3);border-radius:var(--rlg);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:12px 16px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ltt);background:var(--ls2)}
+td{padding:14px 16px;border-top:1px solid var(--ls3);vertical-align:middle;font-size:14px}
+tbody tr:hover{background:rgba(160,224,64,.08)}
+.who{display:flex;align-items:center;gap:12px}
+.av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700;font-size:13px;flex-shrink:0}
+.av.owner{background:rgba(217,119,6,.12);color:var(--gold)}
+.av.manager{background:rgba(59,130,246,.12);color:var(--blue)}
+.av.trainer{background:rgba(13,148,136,.12);color:var(--teal)}
+.av.rec{background:rgba(139,92,246,.12);color:var(--pur)}
+.nm{font-family:var(--fd);font-weight:700}
+.email{font-size:13px;color:var(--lts)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.badge.owner{background:rgba(217,119,6,.1);color:var(--gold)}
+.badge.manager{background:rgba(59,130,246,.1);color:var(--blue)}
+.badge.trainer{background:rgba(13,148,136,.1);color:var(--teal)}
+.badge.rec{background:rgba(139,92,246,.1);color:var(--pur)}
+.st{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.st.on{background:var(--suc100);color:#166534}
+.st.off{background:var(--dng100);color:#991B1B}
+.st .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.muted{color:var(--ltt);font-size:13px}
+.acts{display:flex;gap:6px}
+.icon-btn{width:34px;height:34px;border:1px solid var(--ls3);border-radius:10px;background:#fff;color:var(--c300);display:inline-flex;align-items:center;justify-content:center}
+.icon-btn[disabled]{opacity:.3}
+.empty,.loading{padding:56px 16px;text-align:center;color:var(--ltt)}
+.loader{width:24px;height:24px;border:3px solid var(--ls3);border-top-color:var(--l500);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay{position:fixed;inset:0;background:rgba(13,13,13,.42);z-index:40;display:flex;align-items:center;justify-content:center}
+.overlay.right{justify-content:flex-end;align-items:stretch}
+.modal{width:min(520px,94vw);background:#fff;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:92vh;overflow:auto}
+.modal.sm{width:min(420px,94vw)}
+.drawer{width:min(480px,100%);background:#fff;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.12)}
+.mh,.dh{padding:20px 22px;border-bottom:1px solid var(--ls3);display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.mh h2,.dh h2{font-family:var(--fd);font-size:20px;display:flex;align-items:center;gap:8px}
+.sub{font-size:12px;color:var(--ltt);margin-top:4px}
+.mb{padding:20px 22px}
+.mf{padding:0 22px 20px;display:flex;justify-content:flex-end;gap:8px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:700;color:var(--lts);margin-bottom:6px}
+.fg .req{color:var(--dng500)}
+.fg input,.fg select{width:100%;height:44px;border:1px solid var(--ls3);border-radius:12px;padding:0 12px;font:inherit}
+.hint{font-size:12px;color:var(--ltt);margin-top:6px;line-height:1.45}
+.roles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.role-card{border:1px solid var(--ls3);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer}
+.role-card.sel{border-color:var(--l500);background:rgba(122,204,0,.12)}
+.role-card b{display:block;font-family:var(--fd);font-size:13px;margin-top:6px}
+.role-card span{font-size:11px;color:var(--ltt)}
+.pw-req{font-size:12px;color:var(--ltt);display:flex;align-items:center;gap:6px;margin-top:4px}
+.pw-req.ok{color:var(--suc500)}
+.sec{margin-bottom:18px}
+.sec h3{font-family:var(--fd);font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--ltt);margin-bottom:10px}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid var(--ls2);font-size:14px}
+.kv span{color:var(--ltt)}
+.perm{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13px}
+.perm i{color:var(--suc500)}
+.hero{text-align:center;margin-bottom:18px}
+.hero .av{width:64px;height:64px;font-size:20px;margin:0 auto 8px}
+.confirm{text-align:center;padding:28px 22px}
+.confirm .ico{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px}
+.confirm .ico.dng{background:var(--dng100);color:var(--dng500)}
+.confirm .ico.ok{background:var(--suc100);color:var(--suc500)}
+.confirm h2{font-family:var(--fd);font-size:20px;margin-bottom:8px}
+.confirm p{font-size:13px;color:var(--lts);line-height:1.5;margin-bottom:18px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0}
+.screen{display:none}
+.screen.show{display:block}
+.callout{margin:0 16px 0;padding:10px 14px;border-radius:12px;background:#fff;border:1px solid var(--ls3);font-size:12px;color:var(--lts);line-height:1.5}
+.callout strong{color:var(--ltp)}
+.callout code{font-size:11px;background:var(--ls2);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="banner">
+  <div>
+    Preview — Staff Management
+    <div class="note">Identity + AppUser only. No Employee / Branch / HR fields. Owner is view-only. Last login is real (or Never). Password matches backend: 6+, upper, lower, digit — special optional.</div>
+  </div>
+  <div class="controls">
+    <button type="button" data-screen="list" class="act">List</button>
+    <button type="button" data-screen="empty">Empty</button>
+    <button type="button" data-screen="loading">Loading</button>
+    <button type="button" data-screen="create">Create</button>
+    <button type="button" data-screen="360">Staff 360</button>
+    <button type="button" data-screen="edit">Edit</button>
+    <button type="button" data-screen="reset">Reset password</button>
+    <button type="button" data-screen="deact">Deactivate</button>
+  </div>
+</div>
+<p class="callout" style="margin-top:12px"><strong>Architecture:</strong> list <code>id</code> is <code>ApplicationUser.Id</code> (JWT sub), not <code>AppUser.Id</code>. Roles on the wire are PascalCase. Access list is the live role → permission map, not custom per-user grants.</p>
+
+<div class="app">
+<aside class="sidebar">
+  <div class="sb-hdr"><div class="mark"></div><span>HyMotion</span></div>
+  <div class="sb-sec">Administration</div>
+  <div class="sb-item">Import</div>
+  <div class="sb-item">Audit</div>
+  <div class="sb-item act">Staff</div>
+  <div class="sb-item">Settings</div>
+</aside>
+<div class="main">
+  <header class="topbar">
+    <div class="crumb">Administration / Staff</div>
+    <div class="crumb">Fitness Hub</div>
+  </header>
+  <div class="content">
+
+    <div id="screen-list" class="screen show">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title"><i class="ti ti-user-shield"></i> Staff</h1>
+          <p class="page-sub">Who can sign in to this gym. Role decides access. Owner cannot be changed here.</p>
+        </div>
+        <button class="btn primary"><i class="ti ti-user-plus"></i> Add staff</button>
+      </div>
+      <div class="toolbar">
+        <div class="search"><i class="ti ti-search"></i><input value="" placeholder="Search name or email" readonly></div>
+        <select class="filter"><option>All roles</option><option>Owner</option><option>Manager</option><option>Trainer</option><option>Receptionist</option></select>
+        <select class="filter"><option>All statuses</option><option>Active</option><option>Inactive</option></select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Employee</th><th>Role</th><th>Email</th><th>Status</th><th>Last login</th><th>Created</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><div class="who"><div class="av owner">AO</div><div class="nm">Ahmed Owner</div></div></td>
+              <td><span class="badge owner"><i class="ti ti-crown"></i> Owner</span></td>
+              <td class="email">owner@gymflow.test</td>
+              <td><span class="st on"><span class="dot"></span>Active</span></td>
+              <td>Today at 9:14 AM</td>
+              <td class="muted">12 Jan 2025</td>
+              <td><div class="acts">
+                <button class="icon-btn" title="View"><i class="ti ti-eye"></i></button>
+                <button class="icon-btn" disabled title="Owner cannot be edited"><i class="ti ti-edit"></i></button>
+                <button class="icon-btn" disabled><i class="ti ti-key"></i></button>
+                <button class="icon-btn" disabled><i class="ti ti-user-off"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td><div class="who"><div class="av manager">SM</div><div class="nm">Sara Manager</div></div></td>
+              <td><span class="badge manager"><i class="ti ti-briefcase"></i> Manager</span></td>
+              <td class="email">sara@gymflow.test</td>
+              <td><span class="st on"><span class="dot"></span>Active</span></td>
+              <td>Yesterday</td>
+              <td class="muted">03 Mar 2025</td>
+              <td><div class="acts">
+                <button class="icon-btn"><i class="ti ti-eye"></i></button>
+                <button class="icon-btn"><i class="ti ti-edit"></i></button>
+                <button class="icon-btn"><i class="ti ti-key"></i></button>
+                <button class="icon-btn"><i class="ti ti-user-off"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td><div class="who"><div class="av rec">NR</div><div class="nm">Nour Reception</div></div></td>
+              <td><span class="badge rec"><i class="ti ti-desk"></i> Receptionist</span></td>
+              <td class="email">nour@gymflow.test</td>
+              <td><span class="st on"><span class="dot"></span>Active</span></td>
+              <td class="muted">Never logged in</td>
+              <td class="muted">01 Aug 2026</td>
+              <td><div class="acts">
+                <button class="icon-btn"><i class="ti ti-eye"></i></button>
+                <button class="icon-btn"><i class="ti ti-edit"></i></button>
+                <button class="icon-btn"><i class="ti ti-key"></i></button>
+                <button class="icon-btn"><i class="ti ti-user-off"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td><div class="who"><div class="av trainer">KT</div><div class="nm">Karim Trainer</div></div></td>
+              <td><span class="badge trainer"><i class="ti ti-barbell"></i> Trainer</span></td>
+              <td class="email">karim@gymflow.test</td>
+              <td><span class="st off"><span class="dot"></span>Inactive</span></td>
+              <td>12 days ago</td>
+              <td class="muted">18 Feb 2025</td>
+              <td><div class="acts">
+                <button class="icon-btn"><i class="ti ti-eye"></i></button>
+                <button class="icon-btn"><i class="ti ti-edit"></i></button>
+                <button class="icon-btn"><i class="ti ti-key"></i></button>
+                <button class="icon-btn"><i class="ti ti-user-check"></i></button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="screen-empty" class="screen">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title"><i class="ti ti-user-shield"></i> Staff</h1>
+          <p class="page-sub">No one matches these filters.</p>
+        </div>
+        <button class="btn primary"><i class="ti ti-user-plus"></i> Add staff</button>
+      </div>
+      <div class="table-wrap"><div class="empty"><i class="ti ti-users-group" style="font-size:36px;display:block;margin-bottom:8px"></i>No staff members found</div></div>
+    </div>
+
+    <div id="screen-loading" class="screen">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title"><i class="ti ti-user-shield"></i> Staff</h1>
+          <p class="page-sub">Who can sign in to this gym.</p>
+        </div>
+      </div>
+      <div class="table-wrap"><div class="loading"><div class="loader"></div>Loading staff…</div></div>
+    </div>
+
+    <div id="screen-create" class="screen">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title"><i class="ti ti-user-shield"></i> Staff</h1>
+          <p class="page-sub">Create uses the live Identity contract only.</p>
+        </div>
+      </div>
+      <div class="overlay">
+        <div class="modal">
+          <div class="mh"><div><h2><i class="ti ti-user-plus"></i> Add staff</h2><div class="sub">Owner and Member cannot be created here.</div></div><button class="icon-btn"><i class="ti ti-x"></i></button></div>
+          <div class="mb">
+            <div class="fg"><label>Full name <span class="req">*</span></label><input value="Mona Hassan" readonly></div>
+            <div class="fg"><label>Email <span class="req">*</span></label><input value="mona@gymflow.test" readonly>
+              <div class="hint">Must be unique across HyMotion, not only this gym.</div>
+            </div>
+            <div class="fg"><label>Password <span class="req">*</span></label><input type="password" value="Welcome1" readonly>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> 6+ characters</div>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> Uppercase letter</div>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> Lowercase letter</div>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> Number</div>
+              <div class="hint">A special character is optional. Backend does not require one.</div>
+            </div>
+            <div class="fg"><label>Role <span class="req">*</span></label>
+              <div class="roles">
+                <div class="role-card"><i class="ti ti-briefcase"></i><b>Manager</b><span>Ops, not settings</span></div>
+                <div class="role-card sel"><i class="ti ti-barbell"></i><b>Trainer</b><span>Check-in</span></div>
+                <div class="role-card"><i class="ti ti-desk"></i><b>Receptionist</b><span>Front desk</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="mf"><button class="btn ghost">Cancel</button><button class="btn primary">Create account</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-360" class="screen">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title"><i class="ti ti-user-shield"></i> Staff</h1>
+          <p class="page-sub">Click a row to open Staff 360. Only fields that exist.</p>
+        </div>
+      </div>
+      <div class="overlay right">
+        <div class="drawer">
+          <div class="dh"><div><h2>Staff 360</h2><div class="sub">Identity user · not an employee record</div></div><button class="icon-btn"><i class="ti ti-x"></i></button></div>
+          <div class="mb" style="overflow:auto;flex:1">
+            <div class="hero">
+              <div class="av rec">NR</div>
+              <div class="nm" style="font-size:18px">Nour Reception</div>
+              <div class="muted">nour@gymflow.test</div>
+            </div>
+            <div class="sec">
+              <h3>Profile</h3>
+              <div class="kv"><span>Full name</span><b>Nour Reception</b></div>
+              <div class="kv"><span>Email</span><b>nour@gymflow.test</b></div>
+              <div class="hint">Phone is not on the staff API yet. Photo uses initials unless a profile URL already exists.</div>
+            </div>
+            <div class="sec">
+              <h3>Account</h3>
+              <div class="kv"><span>Status</span><span class="st on"><span class="dot"></span>Active</span></div>
+              <div class="kv"><span>Created</span><b>01 Aug 2026</b></div>
+              <div class="kv"><span>Last login</span><b>Never logged in</b></div>
+            </div>
+            <div class="sec">
+              <h3>Access</h3>
+              <div class="kv"><span>Role</span><span class="badge rec">Receptionist</span></div>
+              <div class="hint" style="margin-bottom:8px">From role → effective permissions. Not custom per-user grants.</div>
+              <div class="perm"><i class="ti ti-check"></i> View members</div>
+              <div class="perm"><i class="ti ti-check"></i> Create members</div>
+              <div class="perm"><i class="ti ti-check"></i> Edit members</div>
+              <div class="perm"><i class="ti ti-check"></i> Manual check-in</div>
+              <div class="perm"><i class="ti ti-check"></i> Sell</div>
+              <div class="perm"><i class="ti ti-check"></i> Apply sales discount</div>
+              <div class="perm"><i class="ti ti-check"></i> Accept cash payments</div>
+              <div class="perm"><i class="ti ti-check"></i> Request refund</div>
+              <div class="perm"><i class="ti ti-check"></i> Open / close shift</div>
+              <div class="perm"><i class="ti ti-check"></i> View inventory</div>
+              <div class="perm"><i class="ti ti-check"></i> Member app orders</div>
+            </div>
+            <div class="sec">
+              <h3>Activity</h3>
+              <div class="kv"><span>staff.create</span><span class="muted">01 Aug 2026</span></div>
+              <div class="hint">From tenant audit events for this Identity user. Empty until staff CRUD is audited.</div>
+            </div>
+          </div>
+          <div class="mf">
+            <button class="btn">Edit</button>
+            <button class="btn">Reset password</button>
+            <button class="btn danger">Deactivate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-edit" class="screen">
+      <div class="overlay">
+        <div class="modal">
+          <div class="mh"><div><h2><i class="ti ti-edit"></i> Edit staff</h2><div class="sub">Sara Manager · Identity id is the staff API id</div></div><button class="icon-btn"><i class="ti ti-x"></i></button></div>
+          <div class="mb">
+            <div class="fg"><label>Full name</label><input value="Sara Manager" readonly></div>
+            <div class="fg"><label>Role</label>
+              <div class="roles">
+                <div class="role-card sel"><i class="ti ti-briefcase"></i><b>Manager</b><span>Ops</span></div>
+                <div class="role-card"><i class="ti ti-barbell"></i><b>Trainer</b><span>Floor</span></div>
+                <div class="role-card"><i class="ti ti-desk"></i><b>Receptionist</b><span>Desk</span></div>
+              </div>
+            </div>
+            <div class="toggle">
+              <div><div style="font-weight:700">Account status</div><div class="hint">Inactive accounts cannot log in or refresh. Open access tokens may last ~15 minutes.</div></div>
+              <span class="st on"><span class="dot"></span>Active</span>
+            </div>
+            <div class="hint">Owner accounts are view-only. The API also rejects demoting or deactivating Owner.</div>
+          </div>
+          <div class="mf"><button class="btn ghost">Cancel</button><button class="btn primary">Save changes</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-reset" class="screen">
+      <div class="overlay">
+        <div class="modal sm">
+          <div class="mh"><div><h2><i class="ti ti-key"></i> Reset password</h2><div class="sub">For Sara Manager. Does not log the password.</div></div><button class="icon-btn"><i class="ti ti-x"></i></button></div>
+          <div class="mb">
+            <div class="fg"><label>New password <span class="req">*</span></label><input type="password" value="TempPass1" readonly>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> 6+ characters</div>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> Uppercase</div>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> Lowercase</div>
+              <div class="pw-req ok"><i class="ti ti-circle-check-filled"></i> Number</div>
+            </div>
+            <div class="fg"><label>Confirm password <span class="req">*</span></label><input type="password" value="TempPass1" readonly></div>
+            <div class="hint">After reset, existing refresh sessions are revoked. Current access tokens expire on their own (~15 min).</div>
+          </div>
+          <div class="mf"><button class="btn ghost">Cancel</button><button class="btn primary">Reset password</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-deact" class="screen">
+      <div class="overlay">
+        <div class="modal sm">
+          <div class="confirm">
+            <div class="ico dng"><i class="ti ti-user-off"></i></div>
+            <h2>Deactivate Karim Trainer?</h2>
+            <p>This account cannot log in or refresh its session. Existing access tokens may remain valid until their normal expiry. History, sales, and attendance stay in place. This is not a delete.</p>
+            <div style="display:flex;justify-content:center;gap:8px">
+              <button class="btn ghost">Cancel</button>
+              <button class="btn danger">Deactivate</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<script>
+document.querySelectorAll('.controls button').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.controls button').forEach(function(b){ b.classList.remove('act'); });
+    btn.classList.add('act');
+    var id = btn.getAttribute('data-screen');
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('show'); });
+    document.getElementById('screen-' + id).classList.add('show');
+  });
+});
+</script>
+</body>
+</html>
